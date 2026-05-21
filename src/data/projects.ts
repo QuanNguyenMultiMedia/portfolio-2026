@@ -30,21 +30,21 @@ export const projects: Project[] = [
     colors: ["#001219", "#005f73", "#0a9396"],
     description:
       "Visual identity design for GOM MEN, focusing on minimalist and modern aesthetics.",
-    coverImage: "/projects/gom-men.png",
+    coverImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg/1024px-The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg",
     screens: [
       {
         type: "bento",
         images: [
-          "/projects/gom-men.png",
-          "/projects/gom-men.png",
-          "/projects/gom-men.png",
-          "/projects/gom-men.png",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg/1024px-The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg/1024px-The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg/1024px-The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg/1024px-The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg",
         ],
         caption: "Exploration of the core identity system.",
       },
       {
         type: "image",
-        src: "/projects/gom-men.png",
+        src: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg/1024px-The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg",
         caption: "01. Logo Construction & Typography",
       },
       {
@@ -55,7 +55,7 @@ export const projects: Project[] = [
       {
         type: "bento",
         layout: "split",
-        images: ["/projects/gom-men.png", "/projects/gom-men.png"],
+        images: ["https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg/1024px-The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg", "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg/1024px-The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg"],
         caption: "Brand applications and digital presence.",
       },
     ],
@@ -69,19 +69,19 @@ export const projects: Project[] = [
     colors: ["#94d2bd", "#e9d8a6", "#ee9b00"],
     description:
       "Animated lyric video for 'Mơ Làm Ma', featuring dynamic typography and atmospheric motion.",
-    coverImage: "/projects/mo-lam-ma.png",
+    coverImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/1665_Girl_with_a_Pearl_Earring.jpg/800px-1665_Girl_with_a_Pearl_Earring.jpg",
     screens: [
       {
         type: "image",
-        src: "/projects/mo-lam-ma.png",
+        src: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/1665_Girl_with_a_Pearl_Earring.jpg/800px-1665_Girl_with_a_Pearl_Earring.jpg",
         caption: "01. Keyframe Selection",
       },
       {
         type: "bento",
         images: [
-          "/projects/mo-lam-ma.png",
-          "/projects/mo-lam-ma.png",
-          "/projects/mo-lam-ma.png",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/1665_Girl_with_a_Pearl_Earring.jpg/800px-1665_Girl_with_a_Pearl_Earring.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/1665_Girl_with_a_Pearl_Earring.jpg/800px-1665_Girl_with_a_Pearl_Earring.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/1665_Girl_with_a_Pearl_Earring.jpg/800px-1665_Girl_with_a_Pearl_Earring.jpg",
         ],
       },
     ],
@@ -95,11 +95,11 @@ export const projects: Project[] = [
     colors: ["#ca6702", "#bb3e03", "#ae2012"],
     description:
       "UI/UX motion design for SquarePeg, enhancing user engagement through fluid transitions.",
-    coverImage: "/projects/squarepeg.png",
+    coverImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Georges_Seurat_-_A_Sunday_on_La_Grande_Jatte_--_1884_-_Google_Art_Project.jpg/1024px-Georges_Seurat_-_A_Sunday_on_La_Grande_Jatte_--_1884_-_Google_Art_Project.jpg",
     screens: [
       {
         type: "image",
-        src: "/projects/squarepeg.png",
+        src: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Georges_Seurat_-_A_Sunday_on_La_Grande_Jatte_--_1884_-_Google_Art_Project.jpg/1024px-Georges_Seurat_-_A_Sunday_on_La_Grande_Jatte_--_1884_-_Google_Art_Project.jpg",
         caption: "01. Interaction Prototyping",
       },
     ],
@@ -116,7 +116,7 @@ export const projects: Project[] = [
     screens: [
       {
         type: "image",
-        src: "/projects/gom-men.png", // Fallback for demo
+        src: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg/1024px-The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg", // Fallback for demo
       },
     ],
   },
@@ -132,7 +132,7 @@ export const projects: Project[] = [
     screens: [
       {
         type: "image",
-        src: "/projects/mo-lam-ma.png", // Fallback for demo
+        src: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/1665_Girl_with_a_Pearl_Earring.jpg/800px-1665_Girl_with_a_Pearl_Earring.jpg", // Fallback for demo
       },
     ],
   },
@@ -149,15 +149,15 @@ export const projects: Project[] = [
       {
         type: "bento",
         images: [
-          "/projects/vietnam-forest-1.jpg",
-          "/projects/vietnam-forest-1.jpg",
-          "/projects/vietnam-forest-1.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Sanzio_01.jpg/1024px-Sanzio_01.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Sanzio_01.jpg/1024px-Sanzio_01.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Sanzio_01.jpg/1024px-Sanzio_01.jpg",
         ],
         caption: "Data mapping and visualization phases.",
       },
       {
         type: "image",
-        src: "/projects/vietnam-forest-1.jpg",
+        src: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Sanzio_01.jpg/1024px-Sanzio_01.jpg",
         caption: "01. Real-time Rendering Implementation",
       },
       {
