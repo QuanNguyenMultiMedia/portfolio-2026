@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400;1,700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400;1,700&family=JetBrains+Mono:wght@400;500&display=swap");
 @import "tailwindcss";
 
 :root {
   --background: #f5f5f5;
   --foreground: #111111;
   --primary: #000000;
-  --tech-blue: #0029FF;
+  --tech-blue: #0029ff;
   --border-neutral: rgba(0, 0, 0, 0.08);
   --surface: #ffffff;
 }
@@ -14,7 +14,7 @@
   --background: #0a0a0a;
   --foreground: #f5f5f5;
   --primary: #ffffff;
-  --tech-blue: #0029FF;
+  --tech-blue: #0029ff;
   --border-neutral: rgba(255, 255, 255, 0.1);
   --surface: #111111;
 }
@@ -26,7 +26,7 @@
   --color-tech-blue: var(--tech-blue);
   --color-border-neutral: var(--border-neutral);
   --color-surface: var(--surface);
-  
+
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
@@ -53,12 +53,24 @@
     display: none;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-display font-bold tracking-tight uppercase;
   }
 }
 
 @layer components {
+  .text-subhead {
+    @apply text-xl md:text-2xl font-light leading-snug opacity-80 font-sans;
+  }
+  .text-body {
+    @apply text-base font-light text-foreground/80 leading-relaxed font-sans;
+  }
+
   .sharp-card {
     @apply bg-surface/10 backdrop-blur-md border border-border-neutral rounded-none;
   }
@@ -73,7 +85,7 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
-  
+
   .horizontal-container::-webkit-scrollbar {
     display: none;
   }
@@ -108,10 +120,18 @@
   }
 
   /* Hairline helpers */
-  .hairline-t { border-top-width: 0.5px; }
-  .hairline-b { border-bottom-width: 0.5px; }
-  .hairline-l { border-left-width: 0.5px; }
-  .hairline-r { border-right-width: 0.5px; }
+  .hairline-t {
+    border-top-width: 0.5px;
+  }
+  .hairline-b {
+    border-bottom-width: 0.5px;
+  }
+  .hairline-l {
+    border-left-width: 0.5px;
+  }
+  .hairline-r {
+    border-right-width: 0.5px;
+  }
 
   /* --- LENIS SMOOTH SCROLLING --- */
   html.lenis,
@@ -137,8 +157,12 @@
 
   /* --- ANIMATIONS --- */
   @keyframes scanline {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(1000%); }
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(1000%);
+    }
   }
   .animate-scanline {
     animation: scanline 8s linear infinite;

@@ -27,7 +27,7 @@ export default function GlobalSideBar() {
     topic = "HOME";
   } else if (segments[0] === "works") {
     if (segments[1]) {
-      const project = projects.find(p => p.slug === segments[1]);
+      const project = projects.find((p) => p.slug === segments[1]);
       if (project) {
         colors = project.colors;
         topic = project.category.toUpperCase();
@@ -38,7 +38,7 @@ export default function GlobalSideBar() {
     }
   } else if (segments[0] === "takes") {
     if (segments[1]) {
-      const take = takes.find(t => t.slug === segments[1]);
+      const take = takes.find((t) => t.slug === segments[1]);
       if (take) {
         colors = take.colors;
         topic = take.topic.toUpperCase();
@@ -61,17 +61,19 @@ export default function GlobalSideBar() {
   const toggleTheme = () => setTheme(isDark ? "light" : "dark");
 
   return (
-    <div className={`fixed left-0 top-24 bottom-0 z-[60] flex flex-col w-6 md:w-8 pointer-events-none bg-background transition-opacity duration-300 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
+    <div
+      className={`fixed left-0 top-24 bottom-0 z-[60] flex flex-col w-6 md:w-8 pointer-events-none bg-background transition-opacity duration-300 ${mounted ? "opacity-100" : "opacity-0"}`}
+    >
       {!mounted ? null : (
         <>
           {/* 0. Right Border Stroke */}
-          <motion.div 
+          <motion.div
             initial={false}
             animate={{ opacity: isHome ? 0 : 1 }}
-            transition={{ 
-              duration: isHome ? 0.2 : 0.4, 
+            transition={{
+              duration: isHome ? 0.2 : 0.4,
               delay: isHome ? 0 : 0.6,
-              ease: "linear"
+              ease: "linear",
             }}
             className="absolute top-0 right-0 bottom-0 w-[1px] bg-foreground/5 z-[70]"
           />
@@ -88,14 +90,18 @@ export default function GlobalSideBar() {
               }}
               transition={{
                 duration: 0.6,
-                ease: [0.23, 1, 0.32, 1]
+                ease: [0.23, 1, 0.32, 1],
               }}
               className="h-full flex items-center group focus:outline-none whitespace-nowrap overflow-visible"
               aria-label="Toggle Theme"
             >
-              <motion.div 
+              <motion.div
                 animate={{
-                  width: isHome ? 40 : (typeof window !== 'undefined' && window.innerWidth < 768 ? 24 : 32),
+                  width: isHome
+                    ? 40
+                    : typeof window !== "undefined" && window.innerWidth < 768
+                      ? 24
+                      : 32,
                   height: isHome ? 40 : 32,
                 }}
                 className="relative flex items-center justify-center flex-shrink-0"
@@ -103,15 +109,33 @@ export default function GlobalSideBar() {
                 <motion.div
                   animate={{ rotate: isDark ? 360 : 0 }}
                   transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
-                  className={`w-3.5 h-3.5 md:w-4 md:h-4 transition-colors ${isHome ? 'text-primary' : 'text-foreground/40 group-hover:text-foreground'}`}
+                  className={`w-3.5 h-3.5 md:w-4 md:h-4 transition-colors ${isHome ? "text-primary" : "text-foreground/40 group-hover:text-foreground"}`}
                 >
                   {isDark ? (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                      />
                     </svg>
                   ) : (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                      />
                     </svg>
                   )}
                 </motion.div>
@@ -119,7 +143,7 @@ export default function GlobalSideBar() {
 
               <AnimatePresence mode="wait">
                 {isHome && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, x: -5 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -5 }}
@@ -133,16 +157,22 @@ export default function GlobalSideBar() {
                 )}
               </AnimatePresence>
             </motion.button>
-            
-            <motion.div 
+
+            <motion.div
               animate={{ opacity: isHome ? 0 : 1 }}
-              transition={{ duration: isHome ? 0.2 : 0.4, delay: isHome ? 0 : 0.6 }}
+              transition={{
+                duration: isHome ? 0.2 : 0.4,
+                delay: isHome ? 0 : 0.6,
+              }}
               className="absolute left-0 right-0 bottom-0 h-[1px] bg-foreground/5"
             />
           </div>
 
           <div className="flex-grow w-full pointer-events-auto relative">
-            <WaveGradientBar colors={colors} className="absolute inset-0 w-full h-full" />
+            <WaveGradientBar
+              colors={colors}
+              className="absolute inset-0 w-full h-full"
+            />
           </div>
 
           {topic && (

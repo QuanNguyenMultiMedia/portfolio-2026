@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thống Kê Thể Thao TP.HCM - VĐV & Huy Chương</title>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-headline: 'Merriweather', serif;
+      --font-body: 'Open Sans', sans-serif;
+      --color-text-primary: #1a1a1a;
+      --color-text-secondary: #4d4d4d;
+      --color-background: #ffffff;
+      --color-surface: #f8f9fa;
+      --color-border: #e0e0e0;
+      --color-accent: #d90000; /* A Vox-like red accent */
+      --padding-base: 16px;
+      --padding-large: 24px;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: var(--font-body);
+      background-color: var(--color-background);
+      color: var(--color-text-primary);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow: hidden; /* Single screen */
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh; /* Full viewport height */
+      width: 100vw; /* Full viewport width */
+    }
+
+    .main-header {
+      padding: var(--padding-base) var(--padding-large);
+      border-bottom: 1px solid var(--color-border);
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .main-header h1 {
+      font-family: var(--font-headline);
+      font-size: 1.8em;
+      margin: 0 0 4px 0;
+      color: var(--color-text-primary);
+    }
+    .main-header .kicker {
+        font-size: 0.85em;
+        color: var(--color-accent);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+
+    .content-wrapper {
+      display: flex;
+      flex-grow: 1;
+      overflow: hidden; /* Prevent internal scroll */
+      padding: var(--padding-base);
+      gap: var(--padding-base);
+    }
+
+    .chart-section {
+      flex: 2; /* Chart takes more space */
+      display: flex;
+      flex-direction: column;
+      min-width: 0; /* Important for flex item shrinking */
+    }
+    
+    .controls-container {
+        z-index: 3;
+      display: flex;
+      gap: 12px;
+      margin-bottom: var(--padding-base);
+      padding: 12px;
+      background-color: var(--color-surface);
+      border-radius: 6px;
+      justify-content: center; /* Center controls */
+      align-items: center;
+      flex-wrap: wrap; /* Allow controls to wrap on small screens */
+    }
+
+    .controls-container select, .controls-container button {
+      font-family: var(--font-body);
+      padding: 8px 12px;
+      font-size: 0.9em;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      background-color: var(--color-background);
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .controls-container select:hover, .controls-container button:hover {
+      border-color: var(--color-accent);
+    }
+    .controls-container select:focus, .controls-container button:focus {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
+    }
+
+
+    .chart-container {
+    flex-grow: 1;
+    position: relative; /* For SVG positioning */
+    min-height: 200px; /* Minimum height for the chart */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url("/pexels-diversephotographyqs-31618486.jpg");
+    background-size: cover; /* scales the image to cover the entire element */
+    background-position: center top; /* centers the image horizontally and vertically */
+    }
+
+    .centered-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    aspect-ratio: 1; /* maintain a 1:1 aspect ratio */
+    width: 12vw; /* adjust to desired size */
+    min-width: 70px;
+    z-index: 2; 
+    pointer-events: none; 
+    }
+
+    .ribbon-image {
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    z-index: 1; 
+    aspect-ratio: 1; 
+    width: 25vw; 
+    min-width: 300px;
+    pointer-events: none; 
+    
+    }
+
+    #chart-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    font: 10px var(--font-body);
+    margin: auto;
+    z-index: 3; 
+    }
+
+    .info-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--padding-base);
+      overflow-y: auto; 
+      padding: var(--padding-base);
+      background-color: var(--color-surface);
+      border-radius: 6px;
+      min-width: 0; 
+    }
+    
+    .info-box {
+        padding-bottom: var(--padding-base);
+    }
+    .info-box:not(:last-child) {
+        border-bottom: 1px solid var(--color-border);
+        margin-bottom: var(--padding-base);
+    }
+
+    .info-box h3 {
+      font-family: var(--font-headline);
+      font-size: 1.1em;
+      margin-top: 0;
+      margin-bottom: 8px;
+      color: var(--color-text-primary);
+    }
+     .info-box h3.summary-title {
+        font-size: 1.2em;
+        text-align: left;
+     }
+
+    .info-box p, .info-box span {
+      font-size: 0.9em;
+      color: var(--color-text-secondary);
+      margin-bottom: 8px;
+    }
+    .summary-details span {
+        display: block; 
+        margin-bottom: 4px;
+    }
+    .summary-details strong {
+        color: var(--color-text-primary);
+        font-weight: 600;
+    }
+
+    .summary-bar-container {
+       margin-top: var(--padding-base);
+       padding-top: var(--padding-base);
+       border-top: 1px solid var(--color-border); /* Separator line */
+    }
+    
+    /* Add styles for summary bar text labels */
+    .summary-bar-label {
+        fill: var(--color-text-primary);
+        font-size: 10px;
+        text-anchor: middle;
+        pointer-events: none; /* Don't interfere with mouse events on bars */
+        font-weight: 600;
+        text-shadow: 
+            -1px -1px 0 var(--color-background),  
+             1px -1px 0 var(--color-background),
+            -1px  1px 0 var(--color-background),
+             1px  1px 0 var(--color-background); /* Outline for readability */
+    }
+
+    /* Style for the summary bar legend text */
+    .summary-legend-text {
+        font-size: 10px;
+        fill: var(--color-text-secondary);
+    }
+
+
+    .tooltip {
+      position: absolute;
+      background: rgba(26, 26, 26, 0.9);
+      color: #f0f0f0;
+      padding: 8px 12px;
+      border-radius: 4px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      font-size: 0.85em;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 100;
+      max-width: 250px;
+      transform: scale(0.95);
+    }
+    .tooltip strong { color: #ffffff; }
+
+    /* D3 chart specific styles */
+    .axis-label, .y-axis-title { fill: #ffffff;; font-size: 9px; }
+    .tick line { stroke: #ffffff;; }
+    .tick text { fill: #ffffff;; font-size: 8px;}
+    .sport-label { fill: #ffffff;; font-size: 1.2rem; } 
+    .participant-bar { fill: #cccccc; stroke: #bbbbbb; stroke-width: 0.5px; }
+    .participant-bar:hover { fill: #b0b0b0; }
+    
+    .chart-legend-text {
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8); /* Adjust values/color as needed */
+    }
+
+
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .content-wrapper {
+        flex-direction: column;
+        padding: calc(var(--padding-base) / 2);
+        width: 100%;
+      }
+      .chart-section {
+        min-height: 50vh; 
+        flex-basis: auto; 
+      }
+      .info-section {
+        max-height: 40vh; 
+        flex-basis: auto;
+      }
+      .main-header h1 { font-size: 1.5em; }
+      .info-box h3 { font-size: 1em; }
+      .info-box p, .info-box span { font-size: 0.85em; }
+       .controls-container {
+         justify-content: space-around; 
+       }
+       .controls-container select, .controls-container button {
+         flex-grow: 1; 
+         min-width: 120px; 
+         text-align: center;
+       }
+       .sport-label { font-size: 1rem; } 
+    }
+     @media (max-width: 480px) {
+      
+        .content-wrapper {
+        flex-direction: column;
+        padding: calc(var(--padding-base) / 2);
+        width: 100%;
+      }
+        .main-header h1 { font-size: 1.3em; }
+        .main-header .kicker { font-size: 0.8em;}
+        :root { --padding-base: 8px; --padding-large: 12px; }
+        .sport-label { font-size: 0.9rem; } 
+        .chart-legend-group {
+          display: none;
+        }
+        
+     }
+
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="main-header">
+        <div class="kicker">Dữ liệu thể thao</div>
+        <h1>TP. Hồ Chí Minh: Vận Động Viên & Huy Chương</h1>
+    </header>
+
+    <div class="content-wrapper">
+      <section class="chart-section">
+        <div class="controls-container">
+          <select id="sort">
+            <option value="totalParticipants">Sắp xếp theo Tổng VĐV</option>
+            <option value="totalMedals">Sắp xếp theo Tổng Huy Chương</option>
+            <option value="name">Sắp xếp theo Tên Môn</option>
+            <option value="HCV">Sắp xếp theo Huy Chương Vàng</option>
+            <option value="HCB">Sắp xếp theo Huy Chương Bạc</option>
+            <option value="HCD">Sắp xếp theo Huy Chương Đồng</option>
+          </select>
+          <button id="invert">Đảo Ngược</button>
+        </div>
+        <div class="chart-container">
+            <img src="/ribbon.png" class="ribbon-image" />
+            <svg id="chart-svg" width="100%" height="100%"></svg>
+            <img src="/goldmedal.png" class="centered-image" />
+            
+          </div>
+      </section>
+
+      <aside class="info-section">
+               <div class="info-box summary-box">
+                 <h3 class="summary-title">Tổng Quan</h3>
+                 <div class="summary-details" id="chart-summary">
+                   </div>
+                    <div class="summary-bar-container">
+                        <svg id="summary-bar-svg" width="100%" height="100%"></svg> </div>
+               </div>
+        <div class="info-box about-data">
+          <h3>Thông Tin Biểu Đồ</h3>
+          <p>Biểu đồ này trực quan hóa số lượng vận động viên tham gia và số huy chương (Vàng, Bạc, Đồng) đạt được theo từng môn thể thao tại TP. Hồ Chí Minh, dựa trên dữ liệu cung cấp.</p>
+          <p>Sử dụng các bộ lọc để khám phá dữ liệu. Di chuột qua các phần của biểu đồ để xem thông tin chi tiết. Kéo biểu đồ để xoay.</p>
+        </div>
+        <div class="info-box source-disclaimer">
+          <h3>Nguồn & Lưu Ý</h3>
+          <p><strong>Nguồn dữ liệu:</strong> <a href="https://opendata.hochiminhcity.gov.vn/dataset/d%E1%BB%AF-li%E1%BB%87u-v%E1%BB%81-th%C3%A0nh-t%C3%ADch-thi-%C4%91%E1%BA%A5u-th%E1%BB%83-thao" target="_blank">Cổng dữ liệu mở TP. Hồ Chí Minh</a> </p>
+          <p><strong>Lưu ý:</strong> "VĐV không có huy chương" được tính bằng cách lấy tổng số VĐV trừ đi tổng số huy chương. Đây là một dự án cá nhân bởi Nguyễn Minh Quân, thực hiện để tự học Data Visualization. Dữ liệu lưu dưới dạng .csv, vẽ bằng D3.js và thể hiện trên trang web với một chút GSAP và HTML.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="tooltip" id="tooltip"></div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    const svg = d3.select("#chart-svg");
+    const tooltip = d3.select("#tooltip");
+    const summaryDiv = d3.select("#chart-summary");
+
+    let originalData = [];
+    let currentRotation = 0; 
+    // Remove previousDragAngle as it's not used in the corrected logic
+    let angularVelocity = 0; 
+    let momentumTimer = null; 
+    let chartGroup; // Make chartGroup accessible for momentum function
+    // Add variables to store the last known mouse position in SVG coordinates
+    let lastX = 0;
+    let lastY = 0;
+
+    const medalKeys = ["HCV", "HCB", "HCD"];
+    const medalNames = { "HCV": "Vàng", "HCB": "Bạc", "HCD": "Đồng", "participantsWithoutMedals": "VĐV không HC" }; // Added VĐV không HC
+    const medalColors = { "HCV": "#ffd700", "HCB": "#c0c0c0", "HCD": "#cd7f32", "participantsWithoutMedals": "#cccccc" }; // Added color for VĐV không HC
+    const participantBarColor = "#cccccc"; 
+
+    // Define keys and order for the summary bar segments
+    const summaryBarKeys = ["participantsWithoutMedals", "HCD", "HCB", "HCV"]; 
+
+    // Create a color scale specifically for the summary bar
+    const colorScaleSummaryBar = d3.scaleOrdinal()
+        .domain(summaryBarKeys)
+        .range(summaryBarKeys.map(key => medalColors[key]))
+        .unknown("#999999");
+
+    const colorScaleMedals = d3.scaleOrdinal()
+        .domain(medalKeys)
+        .range(medalKeys.map(key => medalColors[key]))
+        .unknown("#999999");
+
+    const formatValue = x => isNaN(x) ? "N/A" : x.toLocaleString("vi-VN");
+
+    function calculateChartDimensions() {
+        const container = d3.select(".chart-container").node();
+        const availableWidth = container.clientWidth;
+        const availableHeight = container.clientHeight;
+        
+        const chartDiameter = Math.min(availableWidth, availableHeight) * 0.9; 
+        const calculatedOuterRadius = chartDiameter / 2;
+        const minOuterRadius = 50; 
+        const finalOuterRadius = Math.max(calculatedOuterRadius, minOuterRadius);
+        const finalInnerRadius = finalOuterRadius * 0.35; 
+
+        return {
+            width: availableWidth, 
+            height: availableHeight, 
+            outerRadius: finalOuterRadius,
+            innerRadius: finalInnerRadius,
+            centerX: 0, 
+            centerY: 0
+        };
+    }
+
+
+    d3.csv("international_cleaned.csv").then(raw_data => {
+      originalData = Array.from(d3.group(raw_data, d => d.Sport), ([sport, entries]) => {
+        const medalSums = { HCV: 0, HCB: 0, HCD: 0 };
+        entries.forEach(entry => {
+          medalSums.HCV += +entry.HCV || 0;
+          medalSums.HCB += +entry.HCB || 0;
+          medalSums.HCD += +entry.HCD || 0;
+        });
+        const totalMedals = medalSums.HCV + medalSums.HCB + medalSums.HCD;
+        const totalParticipants = d3.sum(entries, d => +d.VDV || 0);
+        return {
+          name: sport, ...medalSums, totalMedals, totalParticipants,
+          participantsWithoutMedals: Math.max(0, totalParticipants - totalMedals)
+        };
+      });
+      originalData.sort((a, b) => b.totalParticipants - a.totalParticipants);
+      renderChart(originalData);
+
+      d3.select("#sort").on("change", function() {
+        const val = this.value;
+        if (momentumTimer) momentumTimer.stop(); // Stop momentum on sort
+        if (val === "name") originalData.sort((a,b) => d3.ascending(a.name, b.name));
+        else originalData.sort((a, b) => (b[val] || 0) - (a[val] || 0));
+        renderChart(originalData);
+      });
+      d3.select("#invert").on("click", () => {
+        if (momentumTimer) momentumTimer.stop(); // Stop momentum on invert
+        originalData.reverse();
+        renderChart(originalData);
+      });
+      
+      window.addEventListener('resize', () => {
+        if (momentumTimer) momentumTimer.stop(); // Stop momentum on resize
+        renderChart(originalData);
+      });
+
+    }).catch(error => {
+        console.error("Lỗi tải dữ liệu CSV:", error);
+        summaryDiv.html("<p style='color:red;'>Không thể tải dữ liệu.</p>");
+    });
+
+    function startMomentum() {
+        if (momentumTimer) {
+            momentumTimer.stop(); 
+        }
+
+        const friction = 0.95; 
+        const minVelocity = 0.1; 
+
+        momentumTimer = d3.timer(() => {
+            if (!chartGroup) { // Ensure chartGroup is defined
+                momentumTimer.stop();
+                return;
+            }
+            currentRotation += angularVelocity;
+            chartGroup.attr("transform", `rotate(${currentRotation})`);
+
+            angularVelocity *= friction;
+
+            if (Math.abs(angularVelocity) < minVelocity) {
+                momentumTimer.stop();
+                momentumTimer = null;
+                angularVelocity = 0;
+            }
+        });
+    }
+
+    function renderChart(dataToRender) {
+      svg.selectAll("*").remove(); 
+
+      const dims = calculateChartDimensions();
+      
+      const sportLabelOffset = 15; 
+      const sportLabelTextBuffer = 30; 
+      const yAxisTitleOffset = 40; 
+      
+      const maxRadialElementExtent = dims.outerRadius + sportLabelOffset + sportLabelTextBuffer;
+      const maxOtherExtent = dims.outerRadius + yAxisTitleOffset; 
+
+      const maxContentExtent = Math.max(maxRadialElementExtent, maxOtherExtent, dims.outerRadius);
+      const svgPadding = maxContentExtent * 0.15; 
+
+      const effectiveRadius = maxContentExtent + svgPadding;
+
+      svg.attr("viewBox", [-effectiveRadius, -effectiveRadius, effectiveRadius * 2, effectiveRadius * 2]);
+      
+      const filteredData = dataToRender.filter(d => d.totalParticipants > 0);
+
+      if (filteredData.length === 0 || dims.outerRadius <= dims.innerRadius) {
+        svg.append("text")
+           .attr("text-anchor", "middle")
+           .attr("dy", "0.35em")
+           .attr("fill", "var(--color-text-secondary)")
+           .text(dims.outerRadius <= dims.innerRadius ? "Không đủ không gian" : "Không có dữ liệu.");
+        renderLegend(dims, effectiveRadius); // Pass effectiveRadius
+        updateSummary(filteredData);
+        return;
+      }
+
+      const x = d3.scaleBand()
+          .domain(filteredData.map(d => d.name))
+          .range([0, 2 * Math.PI])
+          .align(0);
+
+      const yMax = d3.max(filteredData, d => d.totalParticipants);
+      const y = d3.scaleRadial()
+          .domain([0, yMax > 0 ? yMax : 1])
+          .range([dims.innerRadius, dims.outerRadius]);
+      
+      chartGroup = svg.append("g") // Assign to the globally accessible chartGroup
+                            .attr("transform", `rotate(${currentRotation})`);
+
+      // --- START: Add Drag Behavior ---
+            const dragBehavior = d3.drag()
+    .on("start", function(event) {
+       d3.select(this).style("cursor", "grabbing");
+       if (momentumTimer) {
+           momentumTimer.stop();
+           momentumTimer = null;
+       }
+
+       // Get initial pointer position relative to the SVG's internal coordinate system (viewBox origin at 0,0)
+       const [svgX, svgY] = d3.pointer(event, svg.node());
+       lastX = svgX;
+       lastY = svgY;
+       angularVelocity = 0; // Reset velocity at start of drag
+    })
+    .on("drag", function(event) {
+       const [svgX, svgY] = d3.pointer(event, svg.node());
+
+       // Calculate angles relative to the chart center (0,0 in SVG's internal coordinates)
+       // These angles represent the position of the pointer relative to the origin.
+       const angle1 = Math.atan2(lastY, lastX); 
+       const angle2 = Math.atan2(svgY, svgX); 
+       
+       // Calculate the difference in angle. Positive delta means counter-clockwise pointer movement.
+       let deltaAngle = angle2 - angle1;
+
+       // Handle angle wrapping around -PI and PI to find the shortest angular distance
+       if (deltaAngle > Math.PI) deltaAngle -= 2 * Math.PI;
+       if (deltaAngle < -Math.PI) deltaAngle += 2 * Math.PI;
+
+       const deltaDeg = deltaAngle * (180 / Math.PI);
+
+       // Apply the rotation to the chart. If positive deltaDeg means counter-clockwise pointer movement
+       // and you want downward drag to cause clockwise chart rotation, then the chart should rotate
+       // by the negative of the pointer's angular delta.
+       const chartRotationDelta = deltaDeg; 
+       
+       currentRotation += chartRotationDelta;
+       chartGroup.attr("transform", `rotate(${currentRotation})`);
+
+       // Update angularVelocity based on chart's rotation delta for momentum
+       angularVelocity = chartRotationDelta; 
+
+       // Update last position for the next drag event
+       lastX = svgX;
+       lastY = svgY;
+    })
+    .on("end", function(event) {
+       d3.select(this).style("cursor", "grab");
+       // Start momentum if there's sufficient velocity
+       if (Math.abs(angularVelocity) > 0.5) {
+           startMomentum();
+       } else {
+            // If velocity is too low, stop momentum timer just in case
+            if (momentumTimer) {
+                momentumTimer.stop();
+                momentumTimer = null;
+            }
+        }
+    });
+
+      // Apply the drag behavior to a transparent circle covering the chart area
+      chartGroup.append("circle")
+         .attr("r", dims.outerRadius + sportLabelOffset + sportLabelTextBuffer) 
+         .style("fill", "transparent") 
+         .style("cursor", "grab")
+         .call(dragBehavior);
+      // --- END: Add Drag Behavior ---
+
+
+      chartGroup.append("g")
+        .selectAll("path.participant-bar")
+        .data(filteredData, d => d.name)
+        .join("path")
+          .attr("class", "participant-bar")
+          .style("opacity", 0)
+          .attr("fill", participantBarColor)
+          .on("mouseover", (event, d_moused) => { 
+            tooltip.style("opacity", 1).style("transform", "scale(1)");
+            tooltip.html(`
+              <strong>${d_moused.name}</strong><br>
+              Tổng VĐV: ${formatValue(d_moused.totalParticipants)}<br>
+              Tổng Huy Chương: ${formatValue(d_moused.totalMedals)}<br>
+              (V: ${formatValue(d_moused.HCV)}, B: ${formatValue(d_moused.HCB)}, Đ: ${formatValue(d_moused.HCD)})<br>
+              Không có HC: ${formatValue(d_moused.participantsWithoutMedals)}
+            `);
+          })
+          .on("mousemove", (event) => {
+            tooltip.style("left", (event.pageX + 15) + "px")
+                   .style("top", (event.pageY - 15) + "px");
+          })
+          .on("mouseleave", () => {
+            tooltip.style("opacity", 0).style("transform", "scale(0.95)");
+          })
+        .transition()
+          .delay((d_trans, i) => i * 20) 
+          .duration(600)
+          .style("opacity", 1)
+          .attrTween("d", function(d_bound) {
+              const prevParams = this._current || { startAngle: x(d_bound.name), endAngle: x(d_bound.name), outerRadius: dims.innerRadius };
+              const targetParams = { startAngle: x(d_bound.name), endAngle: x(d_bound.name) + x.bandwidth(), outerRadius: y(d_bound.totalParticipants) };
+              const interpolator = d3.interpolate(prevParams, targetParams);
+              this._current = targetParams;
+              const tempArc = d3.arc().innerRadius(dims.innerRadius).padAngle(0.01).padRadius(dims.innerRadius);
+              return t => tempArc(interpolator(t));
+          });
+
+      const medalStackGen = d3.stack().keys(medalKeys).value((d_stack, key) => d_stack[key]); 
+      const medalSeries = medalStackGen(filteredData); 
+
+      chartGroup.append("g")
+        .selectAll("g.medal-series")
+        .data(medalSeries)
+        .join("g")
+          .attr("class", "medal-series")
+          .attr("fill", d_series => colorScaleMedals(d_series.key)) 
+        .selectAll("path.medal-bar")
+        .data(D => D.map(d_map => { d_map.key = D.key; return d_map; }), d_key => d_key.data.name + "-" + d_key.key) 
+        .join("path")
+          .attr("class", "medal-bar")
+          .style("opacity", 0)
+          .on("mouseover", (event, d_stacked) => {
+            tooltip.style("opacity", 1).style("transform", "scale(1)");
+            const sportData = d_stacked.data;
+            tooltip.html(`
+              <strong>${sportData.name}</strong> (${medalNames[d_stacked.key]})<br>
+              Số lượng: ${formatValue(d_stacked[1] - d_stacked[0])}<br>
+              (Tổng HC môn: ${formatValue(sportData.totalMedals)})
+            `);
+          })
+          .on("mousemove", (event) => {
+            tooltip.style("left", (event.pageX + 15) + "px")
+                   .style("top", (event.pageY - 15) + "px");
+          })
+          .on("mouseleave", () => {
+            tooltip.style("opacity", 0).style("transform", "scale(0.95)");
+          })
+        .transition()
+          .delay((d_trans, i) => i * 5 + filteredData.length * 10) 
+          .duration(500)
+          .style("opacity", 0.85)
+          .attrTween("d", function(d_s) { 
+              const prev = this._current || { startAngle: x(d_s.data.name), endAngle: x(d_s.data.name), innerRadius: y(d_s[0]), outerRadius: y(d_s[0])};
+              const target = { startAngle: x(d_s.data.name), endAngle: x(d_s.data.name) + x.bandwidth(), innerRadius: y(d_s[0]), outerRadius: y(d_s[1]) };
+              const interpolator = d3.interpolate(prev, target);
+              this._current = target;
+              const tempArc = d3.arc().padAngle(0.01).padRadius(dims.innerRadius);
+              return t => tempArc(interpolator(t));
+          });
+
+      const xAxis = chartGroup.append("g").attr("text-anchor", "middle");
+      xAxis.selectAll("g.x-axis-tick")
+        .data(x.domain())
+        .join("g")
+          .attr("class", "x-axis-tick sport-label-group")
+          .attr("transform", d_axis => `rotate(${((x(d_axis) + x.bandwidth() / 2) * 180 / Math.PI - 90)}) translate(${dims.outerRadius + sportLabelOffset},0)`) 
+          .style("opacity", 0)
+          .call(g => g.append("line").attr("x1", -100).attr("x2", 3).attr("stroke", "var(--color-text-secondary)").attr("stroke-opacity", 1))
+          .call(g => g.append("text").attr("class", "sport-label")
+             .attr("transform", d_text => {
+                const groupAngle = (x(d_text) + x.bandwidth() / 2) * 180 / Math.PI - 90; 
+                let textRotation = 0;
+                if (groupAngle >= 90 && groupAngle < 270) { 
+                  textRotation = 180;
+                }
+                const translateY = (textRotation === 180) ? -6 : 3; 
+                return `rotate(${textRotation}) translate(0, ${translateY})`;
+             })
+             .attr("text-anchor", d_text => {
+                const groupAngle = (x(d_text) + x.bandwidth() / 2) * 180 / Math.PI - 90;
+                return (groupAngle >= 90 && groupAngle < 270) ? "end" : "start";
+             })
+             .attr("dx", d_text => {
+                const groupAngle = (x(d_text) + x.bandwidth() / 2) * 180 / Math.PI - 90;
+                return (groupAngle >= 90 && groupAngle < 270) ? "-0.4em" : "0.4em";
+             })
+             .text(d_text => d_text)) 
+         .transition().duration(500).delay((d_trans,i) => i * 10 + 200).style("opacity", 1);
+
+      const yAxis = chartGroup.append("g").attr("text-anchor", "middle").style("opacity", 0);
+      yAxis.append("text").attr("class", "y-axis-title")
+          .attr("y", -(dims.outerRadius + 10)) 
+          .attr("dy", "-0.5em") 
+          .attr("text-anchor", "middle") 
+          .text("Số Lượng");
+      yAxis.selectAll("g.y-axis-tick")
+        .data(y.ticks(4).slice(1)) 
+        .join("g").attr("class", "y-axis-tick").attr("fill", "none")
+          .call(g => g.append("circle").attr("stroke", "var(--color-border)").attr("stroke-opacity", 0.5).attr("r", y)) 
+          .call(g => g.append("text").attr("y", d_tick => -y(d_tick)).attr("dy", "0.35em") 
+              .attr("stroke", "var(--color-background)").attr("stroke-width", 4).text(y.tickFormat(4, "s")) 
+            .clone(true).attr("fill", "var(--color-text-secondary)").attr("stroke", "none"));
+      yAxis.transition().duration(500).delay(300).style("opacity", 1);
+      
+      renderLegend(dims, effectiveRadius); // Pass effectiveRadius
+      updateSummary(filteredData);
+    }
+
+    function updateSummary(dataForSummary) {
+      const totalP = d3.sum(dataForSummary, d => d.totalParticipants);
+      const totalG = d3.sum(dataForSummary, d => d.HCV);
+      const totalS = d3.sum(dataForSummary, d => d.HCB);
+      const totalB = d3.sum(dataForSummary, d => d.HCD);
+        const totalMedals = totalG + totalS + totalB;
+      const participantsWithoutMedals = Math.max(0, totalP - totalMedals); // Calculate VĐV without medals
+
+        // Structure the summary data to pass to the bar chart
+        const summaryData = {
+            totalParticipants: totalP,
+            HCV: totalG,
+            HCB: totalS,
+            HCD: totalB,
+            totalMedals: totalMedals,
+            participantsWithoutMedals: participantsWithoutMedals
+        };
+
+      // REMOVE OR COMMENT OUT THIS SECTION:
+      // summaryDiv.html(`
+      //    <span><strong>Tổng VĐV:</strong> ${formatValue(summaryData.totalParticipants)}</span>
+      //    <span><strong>Tổng Vàng:</strong> ${formatValue(summaryData.HCV)}</span>
+      //    <span><strong>Tổng Bạc:</strong> ${formatValue(summaryData.HCB)}</span>
+      //    <span><strong>Tổng Đồng:</strong> ${formatValue(summaryData.HCD)}</span>
+      //    <span><strong>Tổng HC:</strong> ${formatValue(summaryData.totalMedals)}</span>
+      // `);
+
+        renderSummaryBar(summaryData); // Call the new function to render the bar chart
+    }
+
+
+function renderSummaryBar(summaryData) {
+        const svgBar = d3.select("#summary-bar-svg");
+        svgBar.selectAll("*").remove(); // Clear previous content
+
+        const container = svgBar.node().parentNode; // Get the parent div to calculate available width
+        const containerWidth = container.clientWidth;
+        const svgHeight = +svgBar.attr("height");
+
+        const margin = { top: 10, right: 10, bottom: 10, left: 10 }; // Increased bottom margin for legend
+        const width = containerWidth - margin.left - margin.right;
+        const barHeight = 40; // Height of the main bar itself
+        const legendHeight = 0; // Height per legend item line
+        const legendSpacing = 5; // Spacing between legend items
+
+        // Adjust SVG height to accommodate the legend
+        const legendRowCount = summaryBarKeys.length;
+        const requiredSvgHeight = margin.top + barHeight + margin.bottom + (legendRowCount * (legendHeight + legendSpacing));
+        svgBar.attr("height", requiredSvgHeight);
+
+
+        if (summaryData.totalParticipants === 0 || width <= 0 || barHeight <= 0) {
+            svgBar.append("text")
+               .attr("x", width / 2 + margin.left)
+               .attr("y", svgHeight / 2)
+               .attr("text-anchor", "middle")
+               .attr("dy", "0.35em")
+               .attr("fill", "var(--color-text-secondary)")
+               .text(width <=0 || barHeight <= 0 ? "Không đủ không gian" : "Không có dữ liệu.");
+            return;
+        }
+
+        const xScale = d3.scaleLinear()
+            .domain([0, summaryData.totalParticipants])
+            .range([0, width]);
+
+        // Prepare data for the bar segments, calculating start positions
+        const barData = summaryBarKeys.map(key => ({
+            key: key,
+            value: summaryData[key] || 0 // Use || 0 for keys that might be zero
+        }));
+
+        let currentXPosition = 0;
+        barData.forEach(d => {
+            d.start = currentXPosition;
+            currentXPosition += d.value;
+        });
+
+        const barGroup = svgBar.append("g")
+            .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+        // Draw the bar segments
+        barGroup.selectAll(".bar-segment")
+            .data(barData)
+          .join("rect")
+            .attr("class", "bar-segment")
+            .attr("x", d => xScale(d.start))
+            .attr("y", 0)
+            .attr("width", d => xScale(d.value))
+            .attr("height", barHeight)
+            .attr("fill", d => colorScaleSummaryBar(d.key))
+             .on("mouseover", (event, d) => {
+                tooltip.style("opacity", 1).style("transform", "scale(1)");
+                tooltip.html(`
+                    <strong>${medalNames[d.key]}</strong><br>
+                    Số lượng: ${formatValue(d.value)} (${d3.format(".1%")(d.value / summaryData.totalParticipants)})
+                `);
+             })
+             .on("mousemove", (event) => {
+                 tooltip.style("left", (event.pageX + 15) + "px")
+                     .style("top", (event.pageY - 15) + "px");
+             })
+             .on("mouseleave", () => {
+                 tooltip.style("opacity", 0).style("transform", "scale(0.95)");
+             });
+            // Add click behavior if needed, but hover is standard for this detail level.
+            // .on("click", (event, d) => { /* Add click action here if required */ });
+
+
+        // Add text labels for segments
+        barGroup.selectAll(".bar-label")
+            .data(barData.filter(d => xScale(d.value) > 20)) // Only add labels for segments wide enough
+            .join("text")
+            .attr("class", "summary-bar-label")
+            .attr("x", d => xScale(d.start) + xScale(d.value) / 2) // Center text in the segment
+            .attr("y", barHeight / 2) // Vertically center text
+            .attr("dy", "0.35em") // Align baseline
+            .text(d => formatValue(d.value));
+
+
+        // Add Legend below the bar
+        const legendGroup = svgBar.append("g")
+            .attr("transform", `translate(${margin.left}, ${margin.top + barHeight + margin.bottom / 2})`);
+
+        const legendItemSize = 10;
+        const legendHorizontalSpacing = 20; // Space between legend items
+
+        let currentLegendX = 0;
+        summaryBarKeys.forEach((key, i) => {
+            const item = legendGroup.append("g")
+                 .attr("transform", `translate(${currentLegendX}, 0)`);
+
+            item.append("rect")
+                .attr("width", legendItemSize)
+                .attr("height", legendItemSize)
+                .attr("fill", colorScaleSummaryBar(key));
+
+            item.append("text")
+                .attr("x", legendItemSize + 5)
+                .attr("y", legendItemSize / 2)
+                .attr("dy", "0.35em")
+                .attr("class", "summary-legend-text")
+                .text(medalNames[key]);
+
+            // Position the next legend item
+            currentLegendX += item.node().getBBox().width + legendHorizontalSpacing;
+        });
+    }
+    
+    function renderLegend(dims, effectiveRadius) { // Accept effectiveRadius
+      svg.select(".chart-legend-group").remove();
+      const legendX = -effectiveRadius + 20; 
+      const legendY = -effectiveRadius + 20; 
+
+      const legendGroup = svg.append("g").attr("class", "chart-legend-group")
+          .attr("transform", `translate(${legendX}, ${legendY})`)
+          .style("opacity", 0);
+
+      const legendItemSize = 20; const legendSpacing = 4;
+      
+      const participantLegend = legendGroup.append("g").attr("transform", `translate(0, 0)`);
+      participantLegend.append("rect").attr("width", legendItemSize).attr("height", legendItemSize).style("fill", participantBarColor);
+      participantLegend.append("text").attr("x", legendItemSize + legendSpacing).attr("y", legendItemSize / 2 + 1).text("Tổng VĐV").style("font-size", "1rem").attr("fill", "#ffffff").attr("alignment-baseline", "middle");
+
+      medalKeys.forEach((key, i) => {
+        const item = legendGroup.append("g").attr("transform", `translate(0, ${(i + 1) * (legendItemSize + legendSpacing + 2)})`);
+        item.append("rect").attr("width", legendItemSize).attr("height", legendItemSize).style("fill", colorScaleMedals(key));
+        item.append("text").attr("x", legendItemSize + legendSpacing).attr("y", legendItemSize / 2 + 1).text(medalNames[key]).style("font-size", "1rem").attr("fill", "#ffffff").attr("alignment-baseline", "middle");
+      });
+      legendGroup.transition().duration(500).delay(400).style("opacity", 1);
+    }
+  </script>
+</body>
+</html>

@@ -6,20 +6,24 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import dynamic from "next/dynamic";
 
-const VietnamForest3D = dynamic(() => import("@/components/projects/VietnamForest3D"), { ssr: false });
+const VietnamForest3D = dynamic(
+  () => import("@/components/projects/VietnamForest3D"),
+  { ssr: false },
+);
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function VietnamForestationPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  
+
   const screens = [
     {
       type: "hero",
       title: "Vietnam Forestation",
       subtitle: "3D Extrusion & GIS Data Visualization",
-      description: "A technical study on high-fidelity environmental data rendering.",
+      description:
+        "A technical study on high-fidelity environmental data rendering.",
     },
     {
       type: "visual",
@@ -28,41 +32,41 @@ export default function VietnamForestationPage() {
     },
     {
       type: "details",
-      content: "Optimized for 3050 Ti systems using hardware-aware rendering and performance monitoring.",
+      content:
+        "Optimized for 3050 Ti systems using hardware-aware rendering and performance monitoring.",
     },
   ];
 
-  useGSAP(() => {
-    if (!containerRef.current || !scrollRef.current) return;
-    const sections = gsap.utils.toArray(".horizontal-slide");
-    
-    gsap.to(sections, {
-      xPercent: -100 * (sections.length - 1),
-      ease: "none",
-      scrollTrigger: {
-        trigger: scrollRef.current,
-        pin: true,
-        scrub: 1,
-        snap: 1 / (sections.length - 1),
-        end: () => "+=" + containerRef.current!.offsetWidth,
-      }
-    });
-  }, { scope: scrollRef });
+  useGSAP(
+    () => {
+      if (!containerRef.current || !scrollRef.current) return;
+      const sections = gsap.utils.toArray(".horizontal-slide");
+
+      gsap.to(sections, {
+        xPercent: -100 * (sections.length - 1),
+        ease: "none",
+        scrollTrigger: {
+          trigger: scrollRef.current,
+          pin: true,
+          scrub: 1,
+          snap: 1 / (sections.length - 1),
+          end: () => "+=" + containerRef.current!.offsetWidth,
+        },
+      });
+    },
+    { scope: scrollRef },
+  );
 
   return (
     <div ref={scrollRef} className="bg-background overflow-x-hidden">
-      <div 
-        ref={containerRef}
-        className="flex w-[300vw] h-screen"
-      >
+      <div ref={containerRef} className="flex w-[300vw] h-screen">
         {screens.map((screen, i) => (
-          <section 
-            key={i} 
+          <section
+            key={i}
             className="horizontal-slide flex-shrink-0 w-screen h-screen flex items-center justify-center p-12 border-r border-primary/5 relative"
           >
-            
             <div className="absolute top-12 right-12 tech-label">
-              SEC_0{i+1} // {screen.type.toUpperCase()}
+              SEC_0{i + 1} // {screen.type.toUpperCase()}
             </div>
 
             {screen.type === "hero" && (
@@ -72,8 +76,12 @@ export default function VietnamForestationPage() {
                 </h1>
                 <div className="flex flex-col md:flex-row gap-12 items-start">
                   <div className="space-y-4">
-                    <p className="text-xs font-bold tracking-widest uppercase opacity-40">{screen.subtitle}</p>
-                    <p className="text-xl font-light max-w-md">{screen.description}</p>
+                    <p className="text-xs font-bold tracking-widest uppercase opacity-40">
+                      {screen.subtitle}
+                    </p>
+                    <p className="text-xl font-light max-w-md">
+                      {screen.description}
+                    </p>
                   </div>
                 </div>
               </div>

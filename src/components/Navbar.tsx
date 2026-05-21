@@ -23,17 +23,21 @@ export default function Navbar() {
   if (pathname === "/") {
     title = "HOME";
   } else {
-    const activeItem = navItems.find(item => item.path !== "/" && pathname.startsWith(item.path));
+    const activeItem = navItems.find(
+      (item) => item.path !== "/" && pathname.startsWith(item.path),
+    );
     if (activeItem) {
       title = activeItem.name.toUpperCase();
-      
+
       // Special handling for dynamic routes or specific sections
       if (pathname.startsWith("/takes/")) {
         directory = "ESSAYS";
-        title = pathname.split("/").pop()?.toUpperCase().replace(/-/g, "_") || title;
+        title =
+          pathname.split("/").pop()?.toUpperCase().replace(/-/g, "_") || title;
       } else if (pathname.startsWith("/works/")) {
         directory = "ARCHIVE";
-        title = pathname.split("/").pop()?.toUpperCase().replace(/-/g, "_") || title;
+        title =
+          pathname.split("/").pop()?.toUpperCase().replace(/-/g, "_") || title;
       }
     }
   }
@@ -41,7 +45,7 @@ export default function Navbar() {
   return (
     <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex flex-col items-end w-max">
       {/* Physical HUD Notch */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
         key={pathname}
@@ -55,14 +59,18 @@ export default function Navbar() {
       {/* Main Navigation Bar */}
       <nav className="relative z-10 flex items-center gap-1 p-1 bg-background/95 backdrop-blur-2xl border border-primary/10 rounded-none shadow-[0_-8px_20px_-10px_rgba(0,0,0,0.15)]">
         {navItems.map((item) => {
-          const isActive = pathname === item.path || (item.path !== "/" && pathname.startsWith(item.path));
-          
+          const isActive =
+            pathname === item.path ||
+            (item.path !== "/" && pathname.startsWith(item.path));
+
           return (
             <Link
               key={item.path}
               href={item.path}
               className={`relative px-5 py-2 text-[10px] font-mono tracking-[0.2em] uppercase transition-colors ${
-                isActive ? "text-background" : "text-foreground/60 hover:text-foreground"
+                isActive
+                  ? "text-background"
+                  : "text-foreground/60 hover:text-foreground"
               }`}
             >
               {isActive && (

@@ -57,7 +57,7 @@ const HeroBio = () => (
     <div className="space-y-6">
       <BalancedText
         text="Crafting high-fidelity digital experiences through the lens of architectural precision and cinematic motion design."
-        className="text-xl font-light italic leading-snug opacity-80 md:text-2xl"
+        className="text-subhead"
         maxWidth={450}
         font="300 24px Inter"
         showHUD={false}

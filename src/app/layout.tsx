@@ -27,7 +27,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
-      <body className="bg-background text-foreground min-h-full" suppressHydrationWarning>
+      <body
+        className="bg-background text-foreground min-h-full"
+        suppressHydrationWarning
+      >
         <ThemeProvider>
           <LoadingScreen />
           <SmoothScroll>

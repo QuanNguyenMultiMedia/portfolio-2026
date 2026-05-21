@@ -18,28 +18,34 @@ const dummyProject = {
       type: "hero",
       title: "FREEBIE PACK 01",
       subtitle: "ASSET DROP // 2026",
-      description: "High quality digital assets crafted for modern creative workflows. Usable in both personal and commercial projects."
+      description:
+        "High quality digital assets crafted for modern creative workflows. Usable in both personal and commercial projects.",
     },
     {
       type: "image",
       caption: "PREVIEW_RENDER_01",
-      src: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop"
+      src: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop",
     },
     {
       type: "details",
-      content: "All files are organized, layered, and prepared for immediate deployment in standard design software."
-    }
-  ]
+      content:
+        "All files are organized, layered, and prepared for immediate deployment in standard design software.",
+    },
+  ],
 };
 
-export default function FreebiesPage({ params }: { params: Promise<{ slug: string }> }) {
+export default function FreebiesPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = use(params);
   const scrollRef = useRef<HTMLDivElement>(null);
   const lenisRef = useRef<Lenis | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  
+
   // Using dummy data
   const project = dummyProject;
   const screens = project.screens;
@@ -50,9 +56,9 @@ export default function FreebiesPage({ params }: { params: Promise<{ slug: strin
 
     const lenis = new Lenis({
       wrapper: scrollRef.current,
-      content: scrollRef.current.querySelector('.lenis-content') as HTMLElement,
-      orientation: 'horizontal',
-      gestureOrientation: 'both',
+      content: scrollRef.current.querySelector(".lenis-content") as HTMLElement,
+      orientation: "horizontal",
+      gestureOrientation: "both",
       smoothWheel: true,
       wheelMultiplier: 1,
       lerp: 0.1,
@@ -93,8 +99,8 @@ export default function FreebiesPage({ params }: { params: Promise<{ slug: strin
   const handleMouseLeave = () => setIsDragging(false);
 
   return (
-    <div 
-      ref={scrollRef} 
+    <div
+      ref={scrollRef}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
@@ -104,13 +110,12 @@ export default function FreebiesPage({ params }: { params: Promise<{ slug: strin
     >
       {/* Back Button */}
       <div className="fixed top-16 left-16 z-50 pointer-events-auto">
-        <Link 
-          href="/freebies"
-          className="group flex items-center gap-4 py-2"
-        >
+        <Link href="/freebies" className="group flex items-center gap-4 py-2">
           <div className="relative w-8 h-8 flex items-center justify-center">
             <div className="absolute inset-0 border border-primary/20 group-hover:border-primary/60 transition-colors" />
-            <span className="text-[10px] font-mono group-hover:-translate-x-1 transition-transform">←</span>
+            <span className="text-[10px] font-mono group-hover:-translate-x-1 transition-transform">
+              ←
+            </span>
           </div>
           <span className="text-[10px] font-mono tracking-[0.4em] uppercase opacity-40 group-hover:opacity-100 transition-opacity">
             Return_Archive
@@ -118,12 +123,15 @@ export default function FreebiesPage({ params }: { params: Promise<{ slug: strin
         </Link>
       </div>
 
-      <WaveGradientBar colors={["#5e60ce", "#5390d9", "#4ea8de", "#48bfe3", "#56cfe1"]} topic="FREEBIES" />
+      <WaveGradientBar
+        colors={["#5e60ce", "#5390d9", "#4ea8de", "#48bfe3", "#56cfe1"]}
+        topic="FREEBIES"
+      />
 
       <div className="lenis-content h-screen w-fit flex">
         {screens.map((screen, i) => (
-          <section 
-            key={i} 
+          <section
+            key={i}
             className={`flex-shrink-0 h-screen flex items-center justify-center relative px-24 
               ${screen.type === "hero" ? "min-w-[80vw]" : ""}
               ${screen.type === "image" ? "min-w-[100vw]" : ""}
@@ -131,22 +139,24 @@ export default function FreebiesPage({ params }: { params: Promise<{ slug: strin
             `}
           >
             <div className="absolute top-12 right-12 tech-label">
-              SEC_0{i+1} // {screen.type.toUpperCase()}
+              SEC_0{i + 1} // {screen.type.toUpperCase()}
             </div>
 
             {screen.type === "hero" && (
               <div className="max-w-4xl w-full">
-                <MeasuredHeader 
-                  text={screen.title || ""} 
+                <MeasuredHeader
+                  text={screen.title || ""}
                   className="text-5xl md:text-7xl font-display uppercase leading-tight mb-8"
                   maxWidth={1000}
                   font="800 72px Plus Jakarta Sans"
                 />
                 <div className="flex flex-col md:flex-row gap-12 items-start">
                   <div className="space-y-4">
-                    <p className="text-[10px] font-mono tracking-[0.3em] uppercase opacity-40">{screen.subtitle}</p>
-                    <BalancedText 
-                      text={screen.description || ""} 
+                    <p className="text-[10px] font-mono tracking-[0.3em] uppercase opacity-40">
+                      {screen.subtitle}
+                    </p>
+                    <BalancedText
+                      text={screen.description || ""}
                       className="text-xl font-light opacity-80"
                       maxWidth={448}
                       font="300 20px Inter"
@@ -160,13 +170,13 @@ export default function FreebiesPage({ params }: { params: Promise<{ slug: strin
             {screen.type === "image" && (
               <div className="w-full h-full flex flex-col items-center justify-center space-y-6">
                 <div className="w-full max-w-6xl aspect-video bg-primary/5 rounded-none relative overflow-hidden border border-primary/5">
-                   {screen.src && (
-                     <img 
-                       src={screen.src} 
-                       alt={screen.caption || "Project Image"}
-                       className="w-full h-full object-cover grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-700 pointer-events-none"
-                     />
-                   )}
+                  {screen.src && (
+                    <img
+                      src={screen.src}
+                      alt={screen.caption || "Project Image"}
+                      className="w-full h-full object-cover grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-700 pointer-events-none"
+                    />
+                  )}
                 </div>
                 <p className="tech-label opacity-40">{screen.caption}</p>
               </div>
@@ -174,8 +184,8 @@ export default function FreebiesPage({ params }: { params: Promise<{ slug: strin
 
             {screen.type === "details" && (
               <div className="max-w-2xl text-center space-y-8">
-                <BalancedText 
-                  text={screen.content || ""} 
+                <BalancedText
+                  text={screen.content || ""}
                   className="text-3xl font-light leading-relaxed italic"
                   maxWidth={672}
                   font="300 30px Inter"

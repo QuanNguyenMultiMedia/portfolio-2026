@@ -11,7 +11,10 @@ interface LogoMarkProps {
   className?: string;
 }
 
-export default function LogoMark({ variant = "auto", className = "" }: LogoMarkProps) {
+export default function LogoMark({
+  variant = "auto",
+  className = "",
+}: LogoMarkProps) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -23,14 +26,15 @@ export default function LogoMark({ variant = "auto", className = "" }: LogoMarkP
   // auto: reacts to theme
   // default: forced light mode (black logo)
   // inverted: forced dark mode (white logo)
-  
+
   let logoSrc = "/assets/Logo_Full_LightMode.svg";
-  
+
   if (mounted) {
     if (variant === "auto") {
-      logoSrc = resolvedTheme === "dark" 
-        ? "/assets/Logo_Full_DarkMode.svg" 
-        : "/assets/Logo_Full_LightMode.svg";
+      logoSrc =
+        resolvedTheme === "dark"
+          ? "/assets/Logo_Full_DarkMode.svg"
+          : "/assets/Logo_Full_LightMode.svg";
     } else if (variant === "inverted") {
       logoSrc = "/assets/Logo_Full_DarkMode.svg";
     } else {
@@ -39,9 +43,9 @@ export default function LogoMark({ variant = "auto", className = "" }: LogoMarkP
   }
 
   const isDefault = variant === "default" || variant === "auto";
-  
+
   return (
-    <motion.div 
+    <motion.div
       initial={isDefault ? { opacity: 0, y: -10 } : false}
       animate={isDefault ? { opacity: 1, y: 0 } : false}
       transition={{ delay: 0.1, duration: 0.8, ease: "easeOut" }}
@@ -49,11 +53,10 @@ export default function LogoMark({ variant = "auto", className = "" }: LogoMarkP
     >
       <Link href="/" className="group flex items-center">
         <div className="relative w-32 h-16 overflow-hidden">
-          <Image 
-            src={logoSrc} 
-            alt="Minh Quan Logo" 
-            fill 
-            priority
+          <Image
+            src={logoSrc}
+            alt="Minh Quan Logo"
+            fill
             className="object-contain group-hover:scale-105 transition-transform duration-700"
           />
         </div>

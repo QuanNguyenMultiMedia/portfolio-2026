@@ -17,18 +17,18 @@ export default function FreebiesPage() {
   return (
     <PageWrapper>
       <div className="relative min-h-screen pb-64">
-        <SectionHeader 
+        <SectionHeader
           directory="Archive // 01"
           title="Boutique"
           subtitle="Digital Assets"
         />
 
         {/* Minimal Staggered Grid */}
-        <motion.div 
-          animate={{ 
+        <motion.div
+          animate={{
             filter: selectedItem ? "blur(20px)" : "blur(0px)",
             opacity: selectedItem ? 0.3 : 1,
-            scale: selectedItem ? 0.98 : 1
+            scale: selectedItem ? 0.98 : 1,
           }}
           transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
           className="grid grid-cols-1 md:grid-cols-12 gap-x-12 gap-y-32 md:gap-y-48 relative"
@@ -39,7 +39,7 @@ export default function FreebiesPage() {
               "md:col-start-7 md:col-span-4 mt-24",
               "md:col-start-4 md:col-span-3",
               "md:col-start-8 md:col-span-3 mt-12",
-              "md:col-start-3 md:col-span-4"
+              "md:col-start-3 md:col-span-4",
             ][idx % 5];
 
             return (
@@ -49,7 +49,7 @@ export default function FreebiesPage() {
                 className={`${layoutConfig} group cursor-pointer`}
                 onClick={() => setSelectedItem(item)}
               >
-                <motion.div 
+                <motion.div
                   layoutId={`thumb-${item.id}`}
                   className="relative aspect-[4/5] overflow-hidden bg-primary/5 border border-primary/5 mb-4"
                 >
@@ -113,9 +113,9 @@ export default function FreebiesPage() {
                 transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
                 className="fixed inset-0 z-[110] pointer-events-none hidden md:block"
               >
-                <LogoMark 
-                  variant="inverted" 
-                  className="!right-16 md:!right-24 !top-16 md:!top-24 scale-110 origin-right" 
+                <LogoMark
+                  variant="inverted"
+                  className="!right-16 md:!right-24 !top-16 md:!top-24 scale-110 origin-right"
                 />
               </motion.div>
 
@@ -130,13 +130,20 @@ export default function FreebiesPage() {
               >
                 {/* Minimal Header */}
                 <div className="p-8 md:p-12 pb-0 flex justify-between items-start">
-                  <HUDLabel text={selectedItem.category} className="!opacity-40" />
-                  <button 
+                  <HUDLabel
+                    text={selectedItem.category}
+                    className="!opacity-40"
+                  />
+                  <button
                     onClick={() => setSelectedItem(null)}
                     className="p-1 hover:opacity-40 transition-opacity z-[111] pointer-events-auto"
                   >
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                      <path d="M1 1L13 13M1 13L13 1" stroke="currentColor" strokeWidth="1" />
+                      <path
+                        d="M1 1L13 13M1 13L13 1"
+                        stroke="currentColor"
+                        strokeWidth="1"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -155,10 +162,16 @@ export default function FreebiesPage() {
                   </p>
 
                   <div className="space-y-2">
-                    <span className="text-[8px] font-mono opacity-20 tracking-widest block">TECH_SPEC // 2026_EDITION</span>
+                    <span className="text-[8px] font-mono opacity-20 tracking-widest block">
+                      TECH_SPEC // 2026_EDITION
+                    </span>
                     <div className="flex gap-1">
                       {selectedItem.colors.map((color, i) => (
-                        <div key={i} className="w-4 h-0.5" style={{ backgroundColor: color }} />
+                        <div
+                          key={i}
+                          className="w-4 h-0.5"
+                          style={{ backgroundColor: color }}
+                        />
                       ))}
                     </div>
                   </div>
@@ -166,7 +179,10 @@ export default function FreebiesPage() {
 
                 {/* Action Area */}
                 <div className="p-8 md:p-12 pt-0">
-                  <TechButton href={selectedItem.downloadUrl} className="w-full !py-6">
+                  <TechButton
+                    href={selectedItem.downloadUrl}
+                    className="w-full !py-6"
+                  >
                     Download_Asset
                   </TechButton>
                 </div>

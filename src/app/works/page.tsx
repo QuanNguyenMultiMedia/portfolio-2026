@@ -9,15 +9,15 @@ import { projects } from "@/data/projects";
 export default function WorksPage() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDialDragging, setIsDialDragging] = useState(false);
-  
+
   // Refs for extreme performance (no React state renders during dragging)
   const dialRef = useRef<HTMLDivElement>(null);
   const knobRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
-  
+
   const rotationRef = useRef<number>(0);
   const activeIndexRef = useRef<number>(0);
-  
+
   const lastDragAngleRef = useRef<number | null>(null);
   const accumulatedRotationRef = useRef<number>(0);
   const lastTickTimeRef = useRef<number>(0);
@@ -27,13 +27,14 @@ export default function WorksPage() {
 
   const activeProject = projects[activeIndex];
 
-  const getCoverImage = (proj: typeof projects[0]) => {
+  const getCoverImage = (proj: (typeof projects)[0]) => {
     return proj.coverImage || proj.screens[0]?.src || "/projects/gom-men.png";
   };
 
   const initAudioContext = () => {
     if (!audioCtxRef.current) {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioContextClass =
+        window.AudioContext || (window as any).webkitAudioContext;
       if (AudioContextClass) {
         audioCtxRef.current = new AudioContextClass();
       }
@@ -51,9 +52,9 @@ export default function WorksPage() {
       if (!itemEl) return;
 
       // Infinite seamless circular module wrap formula
-      let diff = i - (currentRot / sectorSize);
+      let diff = i - currentRot / sectorSize;
       const N = projects.length;
-      diff = ((diff + N / 2) % N + N) % N - N / 2;
+      diff = ((((diff + N / 2) % N) + N) % N) - N / 2;
 
       const angle = diff * 28; // Increased from 22 to 28 degrees for more space between items!
       const rad = (angle * Math.PI) / 180;
@@ -65,12 +66,12 @@ export default function WorksPage() {
 
       const curveAmount = 140;
       const translateX = (1 - Math.cos(rad)) * curveAmount;
-      
+
       const isActive = i === activeIndexRef.current;
       const scale = isActive ? 1.02 : 1 - Math.min(Math.abs(diff) * 0.08, 0.3);
       const opacity = isActive ? 1 : Math.max(0.12, 1 - Math.abs(diff) * 0.3);
       const blur = isActive ? 0 : Math.min(Math.abs(diff) * 1.5, 4);
-      
+
       const isVisible = Math.abs(diff) <= 2.2;
       const finalOpacity = isVisible ? opacity : 0;
 
@@ -90,28 +91,30 @@ export default function WorksPage() {
   const handleDialStart = (clientX: number, clientY: number) => {
     setIsDialDragging(true);
     initAudioContext();
-    
+
     // Set continuous transition speed for dragging weight
     if (knobRef.current) {
-      knobRef.current.style.transition = "transform 0.08s cubic-bezier(0.1, 0.8, 0.2, 1)";
+      knobRef.current.style.transition =
+        "transform 0.08s cubic-bezier(0.1, 0.8, 0.2, 1)";
     }
     projects.forEach((_, i) => {
       const itemEl = itemRefs.current[i];
       if (itemEl) {
-        itemEl.style.transition = "transform 0.12s cubic-bezier(0.1, 0.8, 0.2, 1), opacity 0.12s, filter 0.12s";
+        itemEl.style.transition =
+          "transform 0.12s cubic-bezier(0.1, 0.8, 0.2, 1), opacity 0.12s, filter 0.12s";
       }
     });
 
     const dialEl = dialRef.current;
     if (!dialEl) return;
-    
+
     const rect = dialEl.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
 
     const dx = clientX - centerX;
     const dy = clientY - centerY;
-    
+
     const startAngle = (Math.atan2(dy, dx) * 180) / Math.PI;
     lastDragAngleRef.current = startAngle;
     accumulatedRotationRef.current = 0;
@@ -172,9 +175,14 @@ export default function WorksPage() {
     // React state updates ONLY when active index actually swaps (optimizes paint operations)
     const sectorSize = 360 / projects.length;
     const normalizedRotation = ((rotationRef.current % 360) + 360) % 360;
-    const nearestIndex = Math.round(normalizedRotation / sectorSize) % projects.length;
-    
-    if (nearestIndex !== activeIndexRef.current && nearestIndex >= 0 && nearestIndex < projects.length) {
+    const nearestIndex =
+      Math.round(normalizedRotation / sectorSize) % projects.length;
+
+    if (
+      nearestIndex !== activeIndexRef.current &&
+      nearestIndex >= 0 &&
+      nearestIndex < projects.length
+    ) {
       activeIndexRef.current = nearestIndex;
       setActiveIndex(nearestIndex); // Trigger text description React render
       triggerVibration();
@@ -183,27 +191,33 @@ export default function WorksPage() {
 
   const handleDialEnd = () => {
     setIsDialDragging(false);
-    
+
     const sectorSize = 360 / projects.length;
-    const snappedRotation = Math.round(rotationRef.current / sectorSize) * sectorSize;
+    const snappedRotation =
+      Math.round(rotationRef.current / sectorSize) * sectorSize;
     rotationRef.current = snappedRotation;
 
     // Direct lock snaps with spring-bezier curve on snap
     if (knobRef.current) {
-      knobRef.current.style.transition = "transform 0.75s cubic-bezier(0.19, 1, 0.22, 1)";
+      knobRef.current.style.transition =
+        "transform 0.75s cubic-bezier(0.19, 1, 0.22, 1)";
       knobRef.current.style.transform = `rotate(${snappedRotation}deg)`;
     }
-    
+
     projects.forEach((_, i) => {
       const itemEl = itemRefs.current[i];
       if (itemEl) {
-        itemEl.style.transition = "transform 0.75s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.75s, filter 0.75s";
+        itemEl.style.transition =
+          "transform 0.75s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.75s, filter 0.75s";
       }
     });
 
     updateItemStyles(snappedRotation);
 
-    const normalizedIndex = ((Math.round(snappedRotation / sectorSize) % projects.length) + projects.length) % projects.length;
+    const normalizedIndex =
+      ((Math.round(snappedRotation / sectorSize) % projects.length) +
+        projects.length) %
+      projects.length;
     activeIndexRef.current = normalizedIndex;
     setActiveIndex(normalizedIndex);
 
@@ -259,17 +273,23 @@ export default function WorksPage() {
 
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      
+
       // Dynamic frequency scaling (buzz pitch) based on rotational velocity
       const baseFreq = 180 + Math.min(velocity * 18, 1000);
-      
+
       osc.type = "triangle";
       osc.frequency.setValueAtTime(baseFreq, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.25, ctx.currentTime + 0.015);
-      
-      gain.gain.setValueAtTime(0.06 + Math.min(velocity / 200, 0.08), ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(
+        baseFreq * 0.25,
+        ctx.currentTime + 0.015,
+      );
+
+      gain.gain.setValueAtTime(
+        0.06 + Math.min(velocity / 200, 0.08),
+        ctx.currentTime,
+      );
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.015);
-      
+
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start();
@@ -287,14 +307,14 @@ export default function WorksPage() {
 
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      
+
       osc.type = "sine";
       osc.frequency.setValueAtTime(1100, ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.04);
-      
+
       gain.gain.setValueAtTime(0.14, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
-      
+
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start();
@@ -317,23 +337,25 @@ export default function WorksPage() {
 
     const sectorSize = 360 / projects.length;
     const currentRev = Math.floor(rotationRef.current / 360);
-    
+
     let targetRotation = currentRev * 360 + i * sectorSize;
-    let diff = targetRotation - rotationRef.current;
+    const diff = targetRotation - rotationRef.current;
     if (diff > 180) targetRotation -= 360;
     if (diff < -180) targetRotation += 360;
-    
+
     rotationRef.current = targetRotation;
 
     if (knobRef.current) {
-      knobRef.current.style.transition = "transform 0.75s cubic-bezier(0.19, 1, 0.22, 1)";
+      knobRef.current.style.transition =
+        "transform 0.75s cubic-bezier(0.19, 1, 0.22, 1)";
       knobRef.current.style.transform = `rotate(${targetRotation}deg)`;
     }
-    
+
     projects.forEach((_, index) => {
       const itemEl = itemRefs.current[index];
       if (itemEl) {
-        itemEl.style.transition = "transform 0.75s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.75s, filter 0.75s";
+        itemEl.style.transition =
+          "transform 0.75s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.75s, filter 0.75s";
       }
     });
 
@@ -345,43 +367,46 @@ export default function WorksPage() {
   return (
     <PageWrapper variant="hero">
       <div className="relative w-full h-full flex flex-col justify-between pt-24 lg:pt-28 pb-28 lg:pb-36 px-8 lg:px-24 overflow-y-auto lg:overflow-hidden z-10">
-        
         {/* Dynamic ambient backgrounds */}
-        <div 
+        <div
           className="absolute -left-1/4 top-1/4 w-[600px] h-[600px] pointer-events-none opacity-[0.06] rounded-full transition-all duration-1000 ease-out z-0"
           style={{
             background: `radial-gradient(circle, ${activeProject.colors?.[0] || "#ffffff"} 0%, transparent 70%)`,
-            filter: "blur(90px)"
+            filter: "blur(90px)",
           }}
         />
-        <div 
+        <div
           className="absolute -right-1/4 bottom-1/4 w-[600px] h-[600px] pointer-events-none opacity-[0.04] rounded-full transition-all duration-1000 ease-out z-0"
           style={{
             background: `radial-gradient(circle, ${activeProject.colors?.[1] || "#ffffff"} 0%, transparent 70%)`,
-            filter: "blur(90px)"
+            filter: "blur(90px)",
           }}
         />
 
         {/* Minimal SubHeader */}
         <div className="w-full flex justify-between items-end border-b border-primary/10 pb-4 mb-4 lg:mb-6 shrink-0">
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-mono tracking-[0.4em] opacity-40 uppercase">Selected Works</span>
-            <h1 className="text-2xl md:text-3xl font-display uppercase tracking-tight font-bold">DIRECTORY</h1>
+            <span className="text-[10px] font-mono tracking-[0.4em] opacity-40 uppercase">
+              Selected Works
+            </span>
+            <h1 className="text-2xl md:text-3xl font-display uppercase tracking-tight font-bold">
+              DIRECTORY
+            </h1>
           </div>
         </div>
 
         {/* Main Grid conformed to viewport */}
         <div className="relative z-10 w-full max-w-none grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch flex-1 min-h-0">
-          
           {/* Left Column: Widescreen Viewport & Details */}
           <div className="col-span-12 lg:col-span-5 flex flex-col justify-between h-full min-h-0 space-y-4 lg:space-y-6 items-end text-right pb-2">
-            
             <div className="relative w-full flex-1 min-h-[240px] lg:min-h-[300px] bg-transparent border border-primary/10 rounded-sm overflow-hidden group shadow-2xl transition-all duration-700 ml-auto mr-0">
-              <div 
+              <div
                 className="absolute inset-0 opacity-10 blur-xl group-hover:opacity-20 transition-opacity duration-700 pointer-events-none"
-                style={{ backgroundColor: activeProject.colors?.[0] || "#ffffff" }}
+                style={{
+                  backgroundColor: activeProject.colors?.[0] || "#ffffff",
+                }}
               />
-              
+
               <div className="absolute inset-0 pointer-events-none z-20">
                 <div className="absolute top-4 left-4 w-3.5 h-3.5 border-t border-l border-primary/30 group-hover:border-primary transition-colors duration-500" />
                 <div className="absolute top-4 right-4 w-3.5 h-3.5 border-t border-r border-primary/30 group-hover:border-primary transition-colors duration-500" />
@@ -422,14 +447,10 @@ export default function WorksPage() {
                 className="flex flex-col gap-3 shrink-0 w-full items-end text-right"
               >
                 <div className="flex flex-wrap items-center gap-3 shrink-0 justify-end w-full">
-                  <span className="tech-label">
-                    {activeProject.category}
-                  </span>
+                  <span className="tech-label">{activeProject.category}</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-primary/20" />
-                  <span className="tech-label">
-                    {activeProject.year}
-                  </span>
-                  
+                  <span className="tech-label">{activeProject.year}</span>
+
                   <div className="flex gap-1.5 ml-2">
                     <span className="px-2 py-0.5 bg-primary/5 rounded-none text-[8px] font-bold font-mono uppercase tracking-widest opacity-60">
                       CASE_STUDY
@@ -440,7 +461,7 @@ export default function WorksPage() {
                   </div>
                 </div>
 
-                <p className="text-base font-light text-foreground/70 leading-relaxed font-sans max-w-[480px] text-right ml-auto">
+                <p className="text-body max-w-[480px] text-right ml-auto">
                   {activeProject.description}
                 </p>
               </motion.div>
@@ -449,12 +470,9 @@ export default function WorksPage() {
 
           {/* Right Column: Dynamic 3D Cylinder Scroll Wheel & Integrated Axle Dial */}
           <div className="col-span-12 lg:col-span-7 flex flex-col justify-center relative min-h-[440px] lg:min-h-0 lg:h-full select-none pl-4">
-            
             <div className="relative w-full h-full flex items-center">
-              
               {/* Left Section: 3D Cylinder Scroll Container */}
               <div className="relative flex-1 h-full pr-[120px] flex items-center justify-start overflow-hidden">
-                
                 {/* Viewfinder Selection Frame - aligns perfectly to Bezel boundary */}
                 <div className="absolute left-0 right-[110px] h-[160px] border-y border-primary/10 bg-transparent pointer-events-none z-0">
                   {/* Persistent, stationary vertical indicator on the left edge */}
@@ -462,34 +480,39 @@ export default function WorksPage() {
                 </div>
 
                 {/* Cylindrical 3D Scroll Container */}
-                <div 
+                <div
                   className="relative w-full h-full flex items-center justify-start overflow-hidden"
-                  style={{ perspective: "1500px", transformStyle: "preserve-3d" }}
+                  style={{
+                    perspective: "1500px",
+                    transformStyle: "preserve-3d",
+                  }}
                 >
-                  <div 
+                  <div
                     className="relative w-full h-[160px] flex items-center justify-start"
                     style={{ transformStyle: "preserve-3d" }}
                   >
                     {projects.map((project, i) => {
                       const isActive = i === activeIndex;
-                      
+
                       return (
                         <div
                           key={project.slug}
-                          ref={(el) => { itemRefs.current[i] = el; }}
+                          ref={(el) => {
+                            itemRefs.current[i] = el;
+                          }}
                           onClick={() => handleItemClick(i)}
                           className={`absolute left-0 w-[95%] max-w-[580px] pl-8 pr-6 h-[160px] flex items-center cursor-pointer select-none group/wheel-item ${
-                            isActive 
-                              ? "bg-foreground/[0.02]" 
+                            isActive
+                              ? "bg-foreground/[0.02]"
                               : "hover:bg-foreground/[0.003]"
                           }`}
                           style={{
                             transformOrigin: "left center",
-                            transformStyle: "preserve-3d"
+                            transformStyle: "preserve-3d",
                           }}
                         >
                           {isActive ? (
-                            <Link 
+                            <Link
                               href={`/works/${project.slug}`}
                               className="w-full h-full flex items-center justify-between pointer-events-auto animate-pulse-subtle"
                             >
@@ -517,8 +540,7 @@ export default function WorksPage() {
 
               {/* Integrated Dial Bezel (Pristine wireframe strokes only) */}
               <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[220px] h-[220px] flex items-center justify-center z-20">
-                
-                <div 
+                <div
                   ref={dialRef}
                   className="relative w-[210px] h-[210px] rounded-full border border-primary/10 bg-transparent flex items-center justify-center select-none cursor-pointer"
                   onMouseDown={(e) => {
@@ -527,7 +549,10 @@ export default function WorksPage() {
                   }}
                   onTouchStart={(e) => {
                     if (e.touches.length > 0) {
-                      handleDialStart(e.touches[0].clientX, e.touches[0].clientY);
+                      handleDialStart(
+                        e.touches[0].clientX,
+                        e.touches[0].clientY,
+                      );
                     }
                   }}
                 >
@@ -541,10 +566,10 @@ export default function WorksPage() {
                         className="absolute inset-0 flex items-start justify-center pointer-events-none"
                         style={{ transform: `rotate(${angle}deg)` }}
                       >
-                        <div 
+                        <div
                           className={`w-0.5 transition-all duration-300 ${
-                            isActive 
-                              ? "h-3.5 bg-primary" 
+                            isActive
+                              ? "h-3.5 bg-primary"
                               : "h-2 bg-foreground/20 mt-1.5"
                           }`}
                         />
@@ -571,17 +596,11 @@ export default function WorksPage() {
                       0{activeIndex + 1}
                     </span>
                   </div>
-
                 </div>
-
               </div>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
     </PageWrapper>
   );

@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { prepareWithSegments, walkLineRanges, materializeLineRange } from "@chenglou/pretext";
+import {
+  prepareWithSegments,
+  walkLineRanges,
+  materializeLineRange,
+} from "@chenglou/pretext";
 
 export interface MeasuredHeaderProps {
   text: string;
@@ -10,17 +14,17 @@ export interface MeasuredHeaderProps {
   font?: string;
 }
 
-export default function MeasuredHeader({ 
-  text, 
-  className = "", 
-  maxWidth = 1200, 
-  font = "800 112px Plus Jakarta Sans"
+export default function MeasuredHeader({
+  text,
+  className = "",
+  maxWidth = 1200,
+  font = "800 112px Plus Jakarta Sans",
 }: MeasuredHeaderProps) {
   const [lines, setLines] = useState<{ text: string; width: number }[]>([]);
   const [isReady, setIsReady] = useState(false);
-  
+
   const [prepared, setPrepared] = useState<any>(null);
-  
+
   useEffect(() => {
     if (!text) return;
     try {
@@ -36,9 +40,9 @@ export default function MeasuredHeader({
     const lineData: { text: string; width: number }[] = [];
     walkLineRanges(prepared, maxWidth, (line) => {
       const materialized = materializeLineRange(prepared, line);
-      lineData.push({ 
+      lineData.push({
         text: materialized.text,
-        width: line.width
+        width: line.width,
       });
     });
 
@@ -48,10 +52,20 @@ export default function MeasuredHeader({
   }, [prepared, maxWidth, text]);
 
   return (
-    <div className={`relative ${className.split(' ').filter(c => !c.startsWith('text-') && !c.startsWith('leading-') && !c.startsWith('font-')).join(' ')}`}>
+    <div
+      className={`relative ${className
+        .split(" ")
+        .filter(
+          (c) =>
+            !c.startsWith("text-") &&
+            !c.startsWith("leading-") &&
+            !c.startsWith("font-"),
+        )
+        .join(" ")}`}
+    >
       {lines.map((line, i) => (
-        <div 
-          key={i} 
+        <div
+          key={i}
           className="relative group/line mb-2"
           style={{ width: `${line.width}px` }}
         >
@@ -60,12 +74,24 @@ export default function MeasuredHeader({
             MEAS_W // {Math.round(line.width)}PX
           </div>
 
-          <h2 className={`${className.split(' ').filter(c => c.startsWith('text-') || c.startsWith('leading-') || c.startsWith('font-')).join(' ')} transition-all duration-700 ease-out m-0 p-0 whitespace-nowrap`} 
-              style={{ 
-                opacity: isReady ? 1 : 0,
-                transform: isReady ? 'none' : 'translateY(20px) skewX(-10deg)',
-                transitionDelay: `${i * 100}ms`
-              }}>
+          <h2
+            className={`${className
+              .split(" ")
+              .filter(
+                (c) =>
+                  c.startsWith("text-") ||
+                  c.startsWith("leading-") ||
+                  c.startsWith("font-"),
+              )
+              .join(
+                " ",
+              )} transition-all duration-700 ease-out m-0 p-0 whitespace-nowrap`}
+            style={{
+              opacity: isReady ? 1 : 0,
+              transform: isReady ? "none" : "translateY(20px) skewX(-10deg)",
+              transitionDelay: `${i * 100}ms`,
+            }}
+          >
             {line.text}
           </h2>
 

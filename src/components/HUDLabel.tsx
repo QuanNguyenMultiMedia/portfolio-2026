@@ -6,7 +6,11 @@ export interface HUDLabelProps {
   showLine?: boolean;
 }
 
-export default function HUDLabel({ text, className = "", showLine = false }: HUDLabelProps) {
+export default function HUDLabel({
+  text,
+  className = "",
+  showLine = false,
+}: HUDLabelProps) {
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
       <span className="tech-label">{text}</span>

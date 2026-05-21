@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
-import { Renderer, Program, Mesh, Triangle } from 'ogl';
+import { useEffect, useRef } from "react";
+import { Renderer, Program, Mesh, Triangle } from "ogl";
 
 interface WaveGradientBarProps {
   colors: string[];
@@ -12,7 +12,11 @@ interface WaveGradientBarProps {
 const hexToRgb = (hex: string) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (!result) return [1, 1, 1];
-  return [parseInt(result[1], 16) / 255, parseInt(result[2], 16) / 255, parseInt(result[3], 16) / 255];
+  return [
+    parseInt(result[1], 16) / 255,
+    parseInt(result[2], 16) / 255,
+    parseInt(result[3], 16) / 255,
+  ];
 };
 
 const vertex = `#version 300 es
@@ -106,14 +110,19 @@ void main(){
 }
 `;
 
-export default function WaveGradientBar({ colors, topic, className = "" }: WaveGradientBarProps) {
+export default function WaveGradientBar({
+  colors,
+  topic,
+  className = "",
+}: WaveGradientBarProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Extract up to 3 colors for the grainient
-  const safeColors = colors && colors.length > 0 ? colors : ["#001219", "#005f73", "#0a9396"];
-  const color1 = safeColors[0] || '#FF9FFC';
-  const color2 = safeColors[1] || safeColors[0] || '#5227FF';
-  const color3 = safeColors[2] || safeColors[1] || safeColors[0] || '#B497CF';
+  const safeColors =
+    colors && colors.length > 0 ? colors : ["#001219", "#005f73", "#0a9396"];
+  const color1 = safeColors[0] || "#FF9FFC";
+  const color2 = safeColors[1] || safeColors[0] || "#5227FF";
+  const color3 = safeColors[2] || safeColors[1] || safeColors[0] || "#B497CF";
 
   // Grainient uniform parameters
   const timeSpeed = 0.25;
@@ -135,7 +144,7 @@ export default function WaveGradientBar({ colors, topic, className = "" }: WaveG
   const centerX = 0.0;
   const centerY = 0.0;
   const zoom = 0.9;
-  
+
   // Use refs for dynamic colors to avoid re-initializing the renderer
   const color1Ref = useRef(color1);
   const color2Ref = useRef(color2);
@@ -154,14 +163,14 @@ export default function WaveGradientBar({ colors, topic, className = "" }: WaveG
       webgl: 2,
       alpha: true,
       antialias: false,
-      dpr: Math.min(window.devicePixelRatio || 1, 2)
+      dpr: Math.min(window.devicePixelRatio || 1, 2),
     });
 
     const gl = renderer.gl;
     const canvas = gl.canvas;
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    canvas.style.display = 'block';
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    canvas.style.display = "block";
 
     const container = containerRef.current;
     container.appendChild(canvas);
@@ -193,12 +202,12 @@ export default function WaveGradientBar({ colors, topic, className = "" }: WaveG
         uZoom: { value: zoom },
         uColor1: { value: new Float32Array(hexToRgb(color1)) },
         uColor2: { value: new Float32Array(hexToRgb(color2)) },
-        uColor3: { value: new Float32Array(hexToRgb(color3)) }
-      }
+        uColor3: { value: new Float32Array(hexToRgb(color3)) },
+      },
     });
 
     const mesh = new Mesh(gl, { geometry, program });
-    
+
     // State for smooth color transitions
     const currentRgb1 = new Float32Array(hexToRgb(color1));
     const currentRgb2 = new Float32Array(hexToRgb(color2));
@@ -223,7 +232,7 @@ export default function WaveGradientBar({ colors, topic, className = "" }: WaveG
     const t0 = performance.now();
     const loop = (t: number) => {
       program.uniforms.iTime.value = (t - t0) * 0.001;
-      
+
       // Target colors from refs (updated outside the effect)
       const targetRgb1 = hexToRgb(color1Ref.current);
       const targetRgb2 = hexToRgb(color2Ref.current);
@@ -258,7 +267,9 @@ export default function WaveGradientBar({ colors, topic, className = "" }: WaveG
   }, []);
 
   return (
-    <div className={`overflow-hidden relative ${className || "w-6 md:w-8 h-full z-40"}`}>
+    <div
+      className={`overflow-hidden relative ${className || "w-6 md:w-8 h-full z-40"}`}
+    >
       <div ref={containerRef} className="absolute inset-0 w-full h-full" />
     </div>
   );

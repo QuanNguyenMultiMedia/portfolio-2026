@@ -10,15 +10,15 @@ interface SectionHeaderProps {
   className?: string;
 }
 
-export default function SectionHeader({ 
-  directory, 
-  title, 
+export default function SectionHeader({
+  directory,
+  title,
   subtitle,
-  className = "" 
+  className = "",
 }: SectionHeaderProps) {
   return (
     <header className={`mb-24 md:mb-32 ${className}`}>
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -26,8 +26,13 @@ export default function SectionHeader({
       >
         <HUDLabel text={directory} />
         <h1 className="text-6xl md:text-8xl font-display uppercase leading-none tracking-tighter">
-          {title} 
-          {subtitle && <><br /><span className="italic opacity-30">{subtitle}</span></>}
+          {title}
+          {subtitle && (
+            <>
+              <br />
+              <span className="italic opacity-30">{subtitle}</span>
+            </>
+          )}
         </h1>
       </motion.div>
     </header>
