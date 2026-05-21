@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
@@ -15,6 +16,48 @@ const navItems = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const navRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+  const [pillStyle, setPillStyle] = useState({
+    left: 0,
+    width: 0,
+    top: 0,
+    height: 0,
+    opacity: 0,
+  });
+
+  // Calculate local coordinates of the active link item relative to the navbar container
+  useEffect(() => {
+    const measure = () => {
+      if (!navRef.current) return;
+      const activeLink = navRef.current.querySelector(
+        '[data-active="true"]'
+      ) as HTMLElement;
+      if (activeLink) {
+        setPillStyle({
+          left: activeLink.offsetLeft,
+          width: activeLink.offsetWidth,
+          top: activeLink.offsetTop,
+          height: activeLink.offsetHeight,
+          opacity: 1,
+        });
+      } else {
+        setPillStyle((prev) => ({ ...prev, opacity: 0 }));
+      }
+    };
+
+    measure();
+    // After the initial layout computation, enable the smooth transition
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 50);
+
+    window.addEventListener("resize", measure);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", measure);
+    };
+  }, [pathname]);
 
   // Determine current directory and title for the HUD Notch
   let directory = "DIRECTORY_INDEX";
@@ -24,7 +67,7 @@ export default function Navbar() {
     title = "HOME";
   } else {
     const activeItem = navItems.find(
-      (item) => item.path !== "/" && pathname.startsWith(item.path),
+      (item) => item.path !== "/" && pathname.startsWith(item.path)
     );
     if (activeItem) {
       title = activeItem.name.toUpperCase();
@@ -57,7 +100,24 @@ export default function Navbar() {
       </motion.div>
 
       {/* Main Navigation Bar */}
-      <nav className="relative z-10 flex items-center gap-1 p-1 bg-background/95 backdrop-blur-2xl border border-primary/10 rounded-none shadow-[0_-8px_20px_-10px_rgba(0,0,0,0.15)]">
+      <nav
+        ref={navRef}
+        className="relative z-10 flex items-center gap-1 p-1 bg-background/95 backdrop-blur-2xl border border-primary/10 rounded-none shadow-[0_-8px_20px_-10px_rgba(0,0,0,0.15)]"
+      >
+        {/* Active Pill Highlighter */}
+        <div
+          className={`absolute bg-tech-blue -z-10 ${
+            mounted ? "transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]" : ""
+          }`}
+          style={{
+            left: `${pillStyle.left}px`,
+            width: `${pillStyle.width}px`,
+            top: `${pillStyle.top}px`,
+            height: `${pillStyle.height}px`,
+            opacity: pillStyle.opacity,
+          }}
+        />
+
         {navItems.map((item) => {
           const isActive =
             pathname === item.path ||
@@ -67,19 +127,13 @@ export default function Navbar() {
             <Link
               key={item.path}
               href={item.path}
-              className={`relative px-5 py-2 text-[10px] font-mono tracking-[0.2em] uppercase transition-colors ${
+              data-active={isActive}
+              className={`relative px-5 py-2 text-[10px] font-mono tracking-[0.2em] uppercase transition-colors duration-300 ${
                 isActive
                   ? "text-background"
                   : "text-foreground/60 hover:text-foreground"
               }`}
             >
-              {isActive && (
-                <motion.div
-                  layoutId="nav-pill"
-                  className="absolute inset-0 bg-tech-blue rounded-none -z-10"
-                  transition={{ type: "tween", ease: "circOut", duration: 0.3 }}
-                />
-              )}
               {item.name}
             </Link>
           );
