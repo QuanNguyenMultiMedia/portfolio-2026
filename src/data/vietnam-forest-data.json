@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Northern Highlands", "height": 120, "density": 0.8 },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[10, 10], [20, 10], [20, 20], [10, 20], [10, 10]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Central Coast", "height": 40, "density": 0.4 },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[25, 10], [35, 10], [35, 20], [25, 20], [25, 10]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Mekong Delta", "height": 15, "density": 0.9 },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[15, 25], [25, 25], [25, 35], [15, 35], [15, 25]]]
+      }
+    }
+  ]
+}
