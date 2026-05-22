@@ -188,6 +188,7 @@ export default function ProjectPage({
                 >
                   <img
                     src={screen.images?.[0]}
+                    referrerPolicy="no-referrer"
                     className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -203,6 +204,7 @@ export default function ProjectPage({
                   >
                     <img
                       src={screen.images?.[1]}
+                      referrerPolicy="no-referrer"
                       className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                     />
                   </motion.div>
@@ -215,6 +217,7 @@ export default function ProjectPage({
                   >
                     <img
                       src={screen.images?.[2]}
+                      referrerPolicy="no-referrer"
                       className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                     />
                   </motion.div>
@@ -234,6 +237,7 @@ export default function ProjectPage({
                 >
                   <img
                     src={screen.src}
+                    referrerPolicy="no-referrer"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms]"
                   />
                   <div className="absolute bottom-8 right-8 text-[8px] font-mono tracking-widest opacity-30 uppercase pointer-events-none">

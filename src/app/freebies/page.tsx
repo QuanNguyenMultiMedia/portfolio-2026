@@ -57,6 +57,7 @@ export default function FreebiesPage() {
                     src={item.image}
                     alt={item.title}
                     fill
+                    referrerPolicy="no-referrer"
                     className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out opacity-60 group-hover:opacity-100"
                   />
                 </motion.div>
@@ -96,6 +97,7 @@ export default function FreebiesPage() {
                     src={selectedItem.image}
                     alt={selectedItem.title}
                     fill
+                    referrerPolicy="no-referrer"
                     className="object-cover grayscale-0"
                     priority
                   />

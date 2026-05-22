@@ -55,6 +55,7 @@ export default function PostPage({
                 src={post.image}
                 alt={post.title}
                 fill
+                referrerPolicy="no-referrer"
                 className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
               />
             </div>

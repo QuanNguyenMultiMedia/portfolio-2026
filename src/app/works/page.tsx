@@ -430,6 +430,7 @@ export default function WorksPage() {
                   <img
                     src={getCoverImage(activeProject)}
                     alt={activeProject.title}
+                    referrerPolicy="no-referrer"
                     className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-transparent to-transparent pointer-events-none" />
