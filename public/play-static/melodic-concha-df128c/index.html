@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/SmoothScroller.min.js"></script>
+  <meta charset="utf-8">
+  <title>Migration and Income Scrollytelling</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f8; /* Lighter background */
+      color: #333;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    .main-title {
+      padding: 25px 20px 5px 20px; /* More top padding */
+      font-size: 1.6em; /* Slightly larger */
+      color: #2c3e50;
+      margin-bottom: 10px;
+      text-align: left;
+      font-weight: 300; /* Lighter font weight */
+    }
+
+    .content-wrapper {
+      display: flex;
+      flex-direction: row;
+      max-width: 1920px; /* Wider max for large screens */
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .left-column {
+      width: 60%;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      box-sizing: border-box;
+      background-color: #f4f6f8; /* Match body for seamless sticky */
+      z-index: 50; /* Keep above normal flow but below modals/tooltips */
+    }
+
+    .right-column {
+      width: 40%;
+      padding: 20px;
+      margin-top: 32%;
+      box-sizing: border-box;
+      /* overflow-y: auto; Remove if story-sections handles all scrolling */
+    }
+
+    .viz-container {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #ffffff;
+      border-radius: 12px; /* Softer radius */
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08); /* Softer shadow */
+      padding: 15px;
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 0;
+    }
+
+    #chart-area {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #chart-area svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      max-width: 100%;
+      max-height: calc(100vh - 200px); /* Adjusted max height */
+    }
+
+    .controls {
+      margin-top: 20px;
+      background-color: #ffffff;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      transition: opacity 0.3s ease-in-out;
+      text-align: center;
+    }
+
+    .credit {
+      margin-top: 20px;
+      background-color: #ffffff;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      transition: opacity 0.3s ease-in-out;
+      text-align: left;
+    }
+
+    .controls-disabled input, .controls-disabled label { cursor: not-allowed; }
+    .controls div { margin-bottom: 10px; }
+    .controls label { margin-right: 12px; font-size: 0.85em; color: #555;}
+    .controls input[type="radio"] { margin-right: 4px; vertical-align: middle;}
+
+    .slider-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 8px;
+    }
+    .slider { width: 240px; margin: 0 10px 0 0; }
+    #yearLabel { font-size: 0.9em; min-width: 40px; color: #333; font-weight: 500;}
+
+
+    /* Story text cards - normal scroll */
+    .right-column {
+        position: relative;
+    }
+    /* No more sticky wrapper for story cards */
+    .story-card-container {
+        width: 95%;
+        max-width: 500px;
+        margin: 0 auto 30px auto; /* Spacing between card groups if any, or bottom margin */
+    }
+
+    .story-card {
+      
+      border-radius: 10px;
+      padding: 20px 25px; /* More horizontal padding */
+      box-shadow: 0 5px 15px rgba(0,0,0,0.07);
+      width: 100%;
+      margin-bottom: 70vh; /* This creates space for the next section to trigger */
+      opacity: 0.6; /* Dim non-active cards slightly */
+     
+      transition: opacity 0.4s ease-in-out, border-left-color 0.4s ease-in-out, transform 0.3s ease-out;
+      box-sizing: border-box;
+    }
+    .story-card:last-child {
+        margin-bottom: 30vh; /* Less margin for the last card */
+    }
+
+    .story-card.active {
+      opacity: 1;
+      border-left-color: #2980b9; /* Highlight active card's border */
+      transform: translateY(-5px) scale(1.01); /* Slight lift for active card */
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    h2.card-title {
+      font-size: 1.35em;
+      color: #2c3e50;
+      margin-top: 0;
+      margin-bottom: 0.6em;
+      font-weight: 500;
+    }
+    p.card-text { font-size: 0.98em; margin-bottom: 0.8em; color: #444;}
+
+    .story-sections { position: relative; } /* Container for trigger points */
+    .story-section {
+        height: 1px; /* Triggers are just points, content is in cards */
+        /* margin-bottom: 80vh; /* This was for spacing when cards were fixed, now cards have margin */
+        /* border-top: 1px dashed #ddd; For visualizing trigger points */
+    }
+
+
+    .tooltip {
+      position: absolute;
+      background: rgba(40, 40, 40, 0.9);
+      color: white;
+      border: none;
+      padding: 10px 14px;
+      font-size: 0.9em;
+      pointer-events: none;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+      border-radius: 6px;
+      z-index: 1000;
+      opacity:0;
+    }
+
+    .annotation-container { /* NEW: Wrapper for positioning */
+      position: absolute;
+    }
+
+    .annotation {
+      font-size: 0.9em;
+      font-weight: 600;
+      text-anchor: middle;
+      fill: #2c3e50;
+      pointer-events: none;
+      paint-order: stroke;
+      stroke: rgba(255,255,255,0.7);
+      stroke-width: 3px;
+      stroke-linejoin: round;
+    }
+
+    .bubble {
+      stroke: #666;
+      stroke-width: 0.75px;
+      opacity: 0.65;
+    }
+    .bubble.highlighted { stroke-width: 2.5px; stroke: #e74c3c; opacity: 1; }
+    .bubble.persist-highlight { stroke-width: 3px; stroke: #d35400; opacity: 1; }
+    .bubble.dimmed { opacity: 0.1; stroke-width: 0.5px; }
+
+    .axis path, .axis line { stroke: #ccc; }
+    .axis text { fill: #666; font-size: 0.85em; }
+    .axis-label { fill: #444; font-size: 0.95em; font-weight: 500;}
+
+    .annotation {
+      font-size: 0.9em;
+      font-weight: 600; /* Bolder */
+      text-anchor: middle;
+      fill: #2c3e50; /* Darker fill */
+      pointer-events: none;
+      paint-order: stroke; /* Make stroke appear behind fill */
+      stroke: rgba(255,255,255,0.7); /* Halo effect */
+      stroke-width: 3px;
+      stroke-linejoin: round;
+    }
+
+    @media (max-width: 1200px) {
+        .left-column { width: 55%; }
+        .right-column { width: 45%; }
+        .main-title { font-size: 1.4em; }
+        h2.card-title { font-size: 1.2em; }
+        p.card-text { font-size: 0.92em; }
+    }
+
+    @media (max-width: 992px) {
+      .content-wrapper { flex-direction: column;  width: 100%; }
+      .left-column, .right-column { width: 100%; position: relative; height: auto; padding: 15px;}
+      .left-column {
+        height: vh; min-height: 500px; order: 1;
+        position: sticky; top:0; z-index: 100;
+      }
+      #chart-area svg { max-height: calc(100% - 100px); }
+      .right-column { order: 2; }
+      .story-card { margin-bottom: 40px; opacity: 1; /* All cards visible in flow */ transform: none !important;}
+      .story-card.active { border-left-color: #2980b9; /* Still highlight active */ }
+      .story-section { height: auto; min-height: 0; margin-bottom: 0; } /* Triggers are just part of flow now */
+      .main-title { font-size: 1.3em; }
+      .controls { margin-bottom: 20px; } /* Add bottom margin if it's last element before story */
+    }
+
+    @media (max-width: 767px) {
+      .content-wrapper { flex-direction: column;  width: 100%; }
+        .left-column { height: 65vh; min-height: 450px; padding:10px;}
+        #chart-area svg { max-height: calc(100% - 10px); }
+        .main-title { font-size: 1.25em; padding: 15px 10px 0 10px;}
+        .controls { padding: 10px; }
+        .controls label { font-size: 0.8em; margin-right: 8px;}
+        .slider-container { flex-direction: column; align-items: center; }
+        .slider { width: 90%; margin-bottom: 10px; }
+        .story-card { padding: 15px 20px; margin-bottom: 30px;}
+        h2.card-title { font-size: 1.15em; }
+        p.card-text { font-size: 0.9em; }
+        .annotation { font-size: 0.8em;}
+    }
+  </style>
+</head>
+<body>
+  <div class="content-wrapper">
+    <div class="left-column">
+      <h1 class="main-title">Tỉ suất di cư theo tỉnh và thu nhập bình quân một tháng của người lao động từ 2015 đến 2022</h1>
+      <div class="viz-container">
+        <div id="chart-area">
+          <svg></svg>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="credit"> Dữ liệu được thu thập từ Tổng cục Thống kê Việt Nam và được chuẩn bị lại bởi mình. Trang thông tin này được tạo ra với mục đích vọc Data Visualization và Scrollytelling. Biểu đồ được viết bằng D3.js và biến thành trang Scrollytelling với GSAP. Code được viết bằng Claude.ai, Gemini, và ChatGPT vào ngày 08/05/2025</div>
+        <div>
+        <h2>Kích cỡ bong bóng theo:</h2>
+          <label><input type="radio" name="sizeBy" value="immigration" checked> Tỉ suất nhập cư</label>
+          <label><input type="radio" name="sizeBy" value="emigration"> Tỉ suất xuất cư</label>
+        </div>
+        <h2>Năm dữ liệu:</h2>
+        <div class="slider-container">
+            
+          <input type="range" min="2010" max="2022" value="2010" class="slider" id="yearSlider">
+          <span id="yearLabel">2010</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-column">
+        <div class="story-card-container">
+            <div class="story-card" id="card-intro">
+              <h2 class="card-title">Sự tương quan giữa di cư và thu nhập tại Việt Nam là gì?</h2>
+              <p class="card-text">Khám phá mối tương quan giữa di cư và thu nhập qua các tỉnh từ 2010 đến 2022. Kích thước bong bóng thể hiện các tỉ suất khác nhau có thể chọn bên dưới. Cuộn để khám phá các xu hướng.</p>
+            </div>
+            <div class="story-card" id="card-highest-immigration">
+              <h2 class="card-title">Điểm Nóng Di Cư</h2>
+              <p class="card-text">Tỉnh nào thường xuyên thu hút nhiều cư dân mới nhất? Điểm dữ liệu này nêu bật điểm đến hàng đầu cho người nhập cư trong từng năm.</p>
+            </div>
+            <div class="story-card" id="card-highest-emigration">
+              <h2 class="card-title">Dòng Dân Số Xuất Cư</h2>
+              <p class="card-text">Ngược lại, tỉnh nào chứng kiến tỉ lệ người dân xuất cư cao nhất? Quan sát các nguồn xuất cư chính cho năm được chọn.</p>
+            </div>
+            <div class="story-card" id="card-highest-income">
+              <h2 class="card-title">Nam Châm Kinh Tế</h2>
+              <p class="card-text">Các tỉnh có lương trung bình hằng tháng cao cho người lao động có phải là các tỉnh có nhiều người nhập cư đến nhất?</p>
+            </div>
+            <div class="story-card" id="card-lowest-income">
+              <h2 class="card-title">Khu Vực Thu Nhập Thấp</h2>
+              <p class="card-text">Thu nhập trung bình hằng tháng thấp có liên quan đến tỉ lệ người dân xuất cư hay không? LƯU Ý: Không có dữ liệu từ năm 2011 đến năm 2015.</p>
+            </div>
+            <div class="story-card" id="card-net-migration">
+              <h2 class="card-title">Di Cư Thuần: Người Tăng & Người Giảm</h2>
+              <p class="card-text">Xét cả người đến và người đi, tỉnh nào cuối cùng đang tăng hoặc mất dân số? Dữ liệu cho năm được chọn.</p>
+            </div>
+            <div class="story-card" id="card-trends-over-time">
+              <h2 class="card-title">Một Thập Kỷ Thay Đổi</h2>
+              <p class="card-text">Theo dõi cách cảnh quan di cư và thu nhập đã phát triển qua từng năm, tiết lộ những chuyển dịch kinh tế xã hội rộng lớn hơn. Không có số liệu về lương tháng trung bình cho các năm từ 2011 đến 2015, nhưng việc kiểm tra xu hướng di cư trong các năm này vẫn có giá trị.</p>
+            </div>
+            <div class="story-card" id="card-conclusion">
+              <h2 class="card-title">Khám Phá Tự Do</h2>
+              <p class="card-text">Hãy sử dụng các bảng điều khiển để đi sâu hơn vào dữ liệu, và khám phá những động lực của các tỉnh mà bạn quan tâm.</p>
+            </div>
+          </div>
+      <div class="story-sections">
+        <section class="story-section" data-card="card-intro" id="intro"></section>
+        <section class="story-section" data-card="card-highest-immigration" id="highest-immigration"></section>
+        <section class="story-section" data-card="card-highest-emigration" id="highest-emigration"></section>
+        <section class="story-section" data-card="card-highest-income" id="highest-income"></section>
+        <section class="story-section" data-card="card-lowest-income" id="lowest-income"></section>
+        <section class="story-section" data-card="card-net-migration" id="net-migration"></section>
+        <section class="story-section" data-card="card-trends-over-time" id="trends-over-time"></section>
+        <section class="story-section" data-card="card-conclusion" id="conclusion"></section>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    const svgChartElement = document.querySelector("#chart-area svg");
+    const originalSvgWidth = 960;
+    const originalSvgHeight = 600;
+    svgChartElement.setAttribute("viewBox", `0 0 ${originalSvgWidth} ${originalSvgHeight}`);
+    svgChartElement.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+    const margin = {top: 80, right: 70, bottom: 70, left: 80}, // Increased margins
+          width = originalSvgWidth - margin.left - margin.right,
+          height = originalSvgHeight - margin.top - margin.bottom;
+
+    const svg = d3.select("#chart-area svg")
+                  .append("g")
+                  .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scaleLinear()
+      .domain([1000, 16000]) // Set the domain to 2,000,000 to 14,000,000
+      .range([0, width]);
+    
+    const y = d3.scaleLinear()
+      .domain([-40, 100]) // Set the domain to -40 to 100
+      .range([height, 0]);
+    const r = d3.scaleSqrt().range([5, 50]); // Increased max bubble size
+    const color = d3.scaleOrdinal(d3.schemeTableau10);
+
+    // Formatting functions
+    const formatIncomeValue = d => `${d3.format(",.0f")(d)},000 VND`; // For tooltips/annotations from data value like 8345
+    const formatIncomeAxis = d => `${d3.format(",.0f")(d)},000 VND`; // For axis ticks, assuming data like 8345 is 8345k
+    const formatMigrationValue = d => `${d3.format(".1f")(d)}%`; // For tooltips/annotations
+
+    const xAxisG = svg.append("g")
+      .attr("class", "x-axis axis")
+      .attr("transform", `translate(0,${height})`);
+
+    const yAxisG = svg.append("g")
+      .attr("class", "y-axis axis");
+
+    svg.append("text")
+      .attr("class", "axis-label")
+      .attr("x", width / 2)
+      .attr("y", height + margin.bottom - 25) // Adjusted position
+      .attr("text-anchor", "middle")
+      .text("Lương tháng trung bình (VND)");
+
+    svg.append("text")
+      .attr("class", "axis-label")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -height / 2)
+      .attr("y", -margin.left + 25) // Adjusted position
+      .attr("text-anchor", "middle")
+      .text("Tỉ suất di cư thuần (%)");
+
+    const tooltip = d3.select("body").append("div").attr("class", "tooltip");
+
+    let allData = {};
+    let currentSizeBy = "immigration";
+    let currentYear = 2010;
+    let currentSection = "intro";
+    let provincesList = [];
+    let isUserInteracting = false;
+
+    const annotationGroup = svg.append("g").attr("class", "annotations");
+    const controlsDiv = document.querySelector('.controls');
+    const yearSlider = document.getElementById("yearSlider");
+    const yearLabel = document.getElementById("yearLabel");
+    const radioButtons = document.querySelectorAll('input[name="sizeBy"]');
+
+    Promise.all([
+      d3.csv("income_processed.csv"),
+      d3.csv("migration_processed_immigration_2010only.csv"),
+      d3.csv("migration_processed_emigration_2010only.csv"),
+      d3.csv("migration_processed_migration_2010only.csv")
+    ]).then(function([incomeData, immigrationData, emigrationData, migrationNetData]) {
+      const years = Array.from({length: 2022 - 2010 + 1}, (_, i) => 2010 + i);
+      if (incomeData.length > 0) {
+          provincesList = Array.from(new Set(incomeData.map(d => d.Province))).filter(p => p).sort();
+      }
+      color.domain(provincesList);
+
+      years.forEach(yearStr => {
+        const year = +yearStr;
+        allData[year] = {};
+        provincesList.forEach(province => {
+          const iRow = incomeData.find(d => d.Province === province);
+          const imRow = immigrationData.find(d => d.Province === province);
+          const emRow = emigrationData.find(d => d.Province === province);
+          const nRow = migrationNetData.find(d => d.Province === province);
+          allData[year][province] = {
+            province: province,
+            income: iRow && iRow[year] ? +iRow[year] : 0, // Assume this is in 'thousands' (e.g. 8345 means 8,345,000)
+            immigration: imRow && imRow[year] ? +imRow[year] : 0, // Assume this is a rate for %
+            emigration: emRow && emRow[year] ? +emRow[year] : 0,  // Assume this is a rate for %
+            net: nRow && nRow[year] ? +nRow[year] : 0,            // Assume this is a rate for %
+          };
+        });
+      });
+      setupInitialBubbles(Object.values(allData[currentYear] || {}));
+      setupEventListeners();
+      setupScrollTriggers();
+      // Initial active card is handled by ScrollTrigger finding the first section
+    }).catch(error => console.error("Error loading data:", error));
+
+    function setupInitialBubbles(initialYearData) {
+        if (!initialYearData || initialYearData.length === 0) return;
+        // Assuming income data (e.g., 8345) is already in the unit that needs 'k' for axis (i.e. it represents thousands)
+       const x = d3.scaleLinear()
+         .domain([2000000, 14000000]) // Set the domain to 2,000,000 to 14,000,000
+         .range([0, width]);
+       
+       const y = d3.scaleLinear()
+         .domain([-40, 100]) // Set the domain to -40 to 100
+         .range([height, 0]);
+        const maxR = d3.max(initialYearData, d => d[currentSizeBy]);
+        r.domain([0, maxR > 0 ? maxR : 1]);
+
+        xAxisG.call(d3.axisBottom(x).ticks(5).tickFormat(formatIncomeAxis)); // Use 'k' for income axis
+        yAxisG.call(d3.axisLeft(y).ticks(5).tickFormat(d => `${d}%`)); // Add % to migration axis
+
+        svg.selectAll(".bubble")
+            .data(initialYearData, d => d.province)
+            .enter()
+            .append("circle")
+            .attr("class", "bubble")
+            .attr("id", d => `bubble-${d.province.replace(/\s+/g, '-').toLowerCase()}`)
+            .attr("cx", d => x(d.income))
+            .attr("cy", d => y(d.net))
+            .attr("r", 0)
+            .attr("fill", d => color(d.province))
+            .on("mouseover", onBubbleMouseover)
+            .on("mouseout", onBubbleMouseout);
+    }
+
+    function updateVisualization(yearToDisplay, sizeByMetric, sectionIdForContext, animate = true) {
+        currentYear = +yearToDisplay;
+        currentSizeBy = sizeByMetric;
+    
+        if (!allData[currentYear]) { svg.selectAll(".bubble").remove(); return; }
+        const yearData = Object.values(allData[currentYear]);
+        if (yearData.length === 0) { svg.selectAll(".bubble").remove(); return; }
+    
+        if (!isUserInteracting) {
+            yearSlider.value = currentYear;
+            yearLabel.textContent = currentYear;
+            radioButtons.forEach(rb => rb.checked = (rb.value === currentSizeBy));
+        }
+    
+  
+        y.domain(d3.extent(yearData, d => d.net)).nice();
+        const maxRValue = d3.max(yearData, d => d[currentSizeBy]);
+        r.domain([0, maxRValue > 0 ? maxRValue : 1]);
+
+        svg.selectAll(".zero-line").remove();
+        svg.append("line")
+            .attr("class", "zero-line")
+            .attr("x1", 0)
+            .attr("x2", width)
+            .attr("y1", y(0))
+            .attr("y2", y(0))
+            .attr("stroke", "red")
+            .attr("stroke-width", 1);
+    
+        const t = svg.transition().duration(animate ? 750 : 0);
+        xAxisG.transition(t).call(d3.axisBottom(x).ticks(5).tickFormat(formatIncomeAxis));
+        yAxisG.transition(t).call(d3.axisLeft(y).ticks(5).tickFormat(d => `${d}%`));
+    
+        let bubbles = svg.selectAll(".bubble")
+            .data(yearData, d => d.province);
+    
+        bubbles.exit().remove();
+    
+        const enterBubbles = bubbles.enter()
+            .append("circle")
+            .attr("class", "bubble")
+            .attr("id", d => `bubble-${d.province.replace(/\s+/g, '-').toLowerCase()}`)
+            .attr("fill", d => color(d.province))
+            .on("mouseover", onBubbleMouseover)
+            .on("mouseout", onBubbleMouseout);
+    
+            bubbles = enterBubbles.merge(bubbles)
+            .attr("cx", d => x(d.income))
+            .attr("cy", d => y(d.net))
+            .attr("r", d => {
+                const val = d[document.querySelector('input[name="sizeBy"]:checked').value];
+                return (typeof val === 'number' && !isNaN(val) && val >= 0) ? r(val) : 0;
+            });
+        applySectionSpecificUpdates(sectionIdForContext, yearData, animate); // sectionIdForContext is global
+    }
+
+    function onBubbleMouseover(event, d) {
+        if (!d) return;
+        let sizeByData = `${d[currentSizeBy]?.toFixed(1) ?? 'N/A'}%`; // Default to % for migration
+        if (currentSizeBy === 'income') { // Should not happen if sizeBy is only migration, but good check
+            sizeByData = formatIncomeValue(d.income);
+        }
+
+        tooltip.style("opacity", 0.95)
+            .html(`<strong>${d.province}</strong><br>
+                   Lương trung bình: ${formatIncomeValue(d.income)}<br>
+                   Tỉ suất xuất cư: ${formatMigrationValue(d.immigration)}<br>
+                   Tỉ suất nhập cư: ${formatMigrationValue(d.emigration)}<br>
+                   Tỉ suất di cư thuần: ${formatMigrationValue(d.net)}`)
+            .style("left", (event.pageX + 15) + "px")
+            .style("top", (event.pageY - 28) + "px");
+        d3.select(this).classed("highlighted", true);
+    }
+    function onBubbleMouseout() {
+        tooltip.style("opacity", 0);
+        if (!d3.select(this).classed('persist-highlight')) {
+             d3.select(this).classed("highlighted", false);
+        }
+    }
+
+    function applySectionSpecificUpdates(sectionId, yearData, animate = true) {
+    annotationGroup.selectAll("*").remove();
+    svg.selectAll(".bubble")
+        .classed("highlighted", false)
+        .classed("persist-highlight", false)
+        .classed("dimmed", false)
+        .interrupt()
+        .style("transform", "scale(1)");
+
+    let highlightProvinces = [];
+    if (!yearData || yearData.length === 0) return;
+
+    switch (sectionId) {
+        case "intro":
+            if (animate) {
+                svg.selectAll(".bubble")
+                    .attr("r", 0)
+                    .transition().duration(1000).delay((d,i) => i * 15) // Faster intro
+                    .attr("r", d => r(d[currentSizeBy]));
+                }
+                break;
+            case "highest-immigration":
+                const himData = [...yearData].sort((a, b) => b.immigration - a.immigration).slice(0, 4);
+                himData.forEach(d => {
+                  highlightProvinces.push(d.province);
+                });
+                break;
+            case "highest-emigration":
+                const hemData = [...yearData].sort((a, b) => b.emigration - a.emigration).slice(0, 4);
+                hemData.forEach(d => {
+                  highlightProvinces.push(d.province);
+                });
+                break;
+            case "highest-income":
+                const hincData = [...yearData].sort((a, b) => b.income - a.income).slice(0, 4);
+                hincData.forEach(d => {
+                  highlightProvinces.push(d.province);
+                });
+                break;
+            case "lowest-income":
+                const lincData = [...yearData].sort((a, b) => a.income - b.income).slice(0, 4);
+                lincData.forEach(d => {
+                  highlightProvinces.push(d.province);
+                });
+                break;
+            case "net-migration":
+                const hNetData = [...yearData].sort((a,b) => b.net - a.net)[0];
+                const lNetData = [...yearData].sort((a,b) => a.net - b.net)[0];
+                if (hNetData) {
+                     highlightProvinces.push(hNetData.province);
+                }
+                if (lNetData && lNetData.province !== hNetData?.province) {
+                     highlightProvinces.push(lNetData.province);
+                }
+                break;
+        }
+
+        svg.selectAll(".bubble").each(function(d) {
+            const bubble = d3.select(this);
+            if (highlightProvinces.includes(d.province)) {
+                bubble.classed("persist-highlight", true).classed("dimmed", false);
+                if (animate) gsap.to(this, { scale: 1.25, duration: 0.5, ease: "elastic.out(1, 0.4)", overwrite: true });
+            } else if (sectionId !== "intro" && sectionId !== "conclusion" && sectionId !== "trends-over-time" && highlightProvinces.length > 0) {
+                bubble.classed("dimmed", true);
+                if (animate) gsap.to(this, { scale: 1, duration: 0.3, overwrite: true });
+            } else {
+                 if (animate) gsap.to(this, { scale: 1, duration: 0.3, overwrite: true });
+            }
+        });
+    }
+
+    function setupEventListeners() {
+        yearSlider.addEventListener("input", function() {
+            isUserInteracting = true; // Flag that user is driving this change
+                if (autoYearInterval) { clearInterval(autoYearInterval); autoYearInterval = null; }
+                const newYear = this.value;
+                const activeSizeBy = document.querySelector('input[name="sizeBy"]:checked').value;
+                yearLabel.textContent = newYear;
+                updateVisualization(newYear, activeSizeBy, currentSection, true);
+                 // Animate user changes
+                // Add transition to updateVisualization
+                d3.selectAll(".bubble")
+                    .attr("cx", d => x(d.income))
+                    .attr("cy", d => y(d.net))
+                    .attr("r", d => {
+                        const val = d[document.querySelector('input[name="sizeBy"]:checked').value];
+                        return (typeof val === 'number' && !isNaN(val) && val >= 0) ? r(val) : 0;
+                    });
+        });
+        yearSlider.addEventListener("change", () => { isUserInteracting = false; }); // Reset on mouseup/change end
+        yearSlider.addEventListener("touchend", () => { isUserInteracting = false; });
+    
+        radioButtons.forEach(radio => {
+            radio.addEventListener("change", function() {
+                isUserInteracting = true;
+                if (autoYearInterval) { clearInterval(autoYearInterval); autoYearInterval = null; }
+                updateVisualization(parseInt(yearSlider.value), document.querySelector('input[name="sizeBy"]:checked').value, currentSection, true);
+                isUserInteracting = false; 
+                
+            });
+        });
+    }
+
+    let autoYearInterval = null;
+
+    function setupScrollTriggers() {
+        // Each card is now a trigger for itself essentially
+        document.querySelectorAll('.story-card').forEach((cardEl) => {
+            const sectionId = cardEl.id.replace("card-", ""); // intro, highest-immigration etc.
+
+            ScrollTrigger.create({
+                trigger: cardEl, // Trigger is the card itself
+                start: "top center+=20%", // When card top enters 20% below center
+                end: "bottom center-=20%",   // When card bottom leaves 20% above center
+                // markers: true, // For debugging
+                onToggle: self => {
+                    cardEl.classList.toggle('active', self.isActive);
+                },
+                onEnter: () => {
+                    currentSection = sectionId;
+                    handleSectionEnter(sectionId);
+                },
+                onEnterBack: () => {
+                    currentSection = sectionId;
+                    handleSectionEnter(sectionId);
+                },
+                onLeave: () => {
+                                   },
+                onLeaveBack: () => {
+                     if (sectionId === "trends-over-time" && autoYearInterval) {
+                        clearInterval(autoYearInterval); autoYearInterval = null;
+                    }
+                }
+            });
+        });
+    }
+
+   function handleSectionEnter(sectionId) {
+       isUserInteracting = false;
+       let yearForSection = parseInt(yearSlider.value);
+       let animate = true;
+   
+       if (sectionId !== "trends-over-time" && autoYearInterval) {
+           clearInterval(autoYearInterval); autoYearInterval = null;
+       }
+   
+       switch (sectionId) {
+           case "intro": yearForSection = 2010; break;
+           case "highest-immigration": break;
+           case "highest-emigration": break;
+           case "net-migration": break;
+           case "trends-over-time":
+               if (!autoYearInterval) {
+                   let autoYearCounter = 2010;
+                   const updateTrend = () => {
+                       if (currentSection !== "trends-over-time") {
+                          if(autoYearInterval) clearInterval(autoYearInterval); autoYearInterval = null; return;
+                       }
+                       updateVisualization(autoYearCounter, document.querySelector('input[name="sizeBy"]:checked').value, sectionId, true);
+                       autoYearCounter++;
+                       if (autoYearCounter > 2022) autoYearCounter = 2010;
+                   };
+                   updateTrend(); // Initial
+                   autoYearInterval = setInterval(updateTrend, 1200);
+               }
+               return;
+           case "conclusion":
+               animate = false; // Less animation as controls are active
+               break;
+       }
+       updateVisualization(yearForSection, document.querySelector('input[name="sizeBy"]:checked').value, sectionId, animate);
+   }
+  </script>
+   <script>
+    // Initialize SmoothScroller
+    SmoothScroller.create();
+  </script>
+</body>
+</html>

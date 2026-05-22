@@ -145,6 +145,7 @@ export const projects: Project[] = [
     colors: ["#065f46", "#059669", "#34d399"],
     description:
       "Implementing 3D extrusion logic based on GeoJSON project data for environmental tracking.",
+    coverImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Gustav_Klimt_-_Beech_Grove_I_-_Google_Art_Project.jpg/960px-Gustav_Klimt_-_Beech_Grove_I_-_Google_Art_Project.jpg",
     screens: [
       {
         type: "bento",

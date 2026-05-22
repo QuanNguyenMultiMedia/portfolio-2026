@@ -22,7 +22,7 @@ environment: "Local / RTX 3050 Ti (4GB VRAM) / 64GB RAM"
 
 ### B. Core Feature Implementation
 - [x] **Interactive Hero:** Create a `Canvas` component. Implement a 3D extrusion logic based on the `Vietnam Forestation` GeoJSON project.
-- [ ] **Motion Sequencing:** Setup a `GSAP` timeline that triggers on-scroll to transition the camera between 3D scenes.
+- [x] **Motion Sequencing:** Setup a scroll-linked camera/world transition timeline that triggers on-scroll to transition the camera between 3D scenes.
 - [x] **Hardware-Aware Rendering:** Implement a performance monitor that downgrades Three.js `pixelRatio` if VRAM usage spikes (essential for 3050 Ti stability).
 
 ## 3. Reference Material

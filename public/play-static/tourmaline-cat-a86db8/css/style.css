@@ -1,0 +1,1237 @@
+/* ROOT VARIABLES ================================================== */
+:root {
+    /* Typography */
+    --font-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --font-display: 'Dela Gothic One', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    
+    /* Base Font Sizes */
+    --font-size-base: 16px; /* Standard body copy on larger screens */
+    --font-size-sm: 0.875rem; /* 14px */
+    --font-size-xs: 0.75rem;  /* 12px */
+
+    /* Leading (Line Height) */
+    --leading-none: 1;
+    --leading-tight: 1.25;
+    --leading-snug: 1.375;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.625;
+    --leading-loose: 2;
+
+    /* Letter Spacing */
+    --tracking-tight: -0.025em;
+    --tracking-normal: 0;
+    --tracking-wide: 0.025em;
+
+    /* Color Palette (Inspired by Modern Journalistic/Tech Sites) */
+    --color-background: #0D0D0D;         /* Very dark, near black */
+    --color-surface: #1A1A1A;          /* Panels, cards, slightly lighter */
+    --color-surface-hover: #242424;     /* Hover for surfaces */
+    --color-border: #303030;           /* Subtle borders */
+    --color-border-strong: #4A4A4A;    /* Stronger borders/dividers */
+
+    --color-text-primary: #E0E0E0;     /* Primary text, off-white */
+    --color-text-secondary: #909090;   /* Secondary text, muted gray */
+    --color-text-headings: #FFFFFF;    /* Main headings, pure white */
+    --color-text-inverse: #0D0D0D;     /* Text on accent-bg */
+
+    --color-accent: #ff2600;           /* Vibrant Magenta */
+    --color-accent-hover: #b91c00;     /* Darker Magenta for hover */
+    --color-accent-light: #f87159;     /* Lighter shade of accent */
+
+    /* Map specific (can be same as accent or distinct) */
+    --color-map-point-default: var(--color-accent);
+    --color-map-point-hover: var(--color-accent-hover);
+    --color-map-point-active-bg: var(--color-accent);
+    --color-map-point-active-border: var(--color-text-headings);
+
+    /* Shadows (more subtle, layered) */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.26);
+    --shadow-md: 0 4px 8px rgba(0,0,0,0.3), 0 3px 6px rgba(0,0,0,0.23);
+    --shadow-lg: 0 10px 20px rgba(0,0,0,0.3), 0 6px 10px rgba(0,0,0,0.23);
+
+    /* Border Radius */
+    --border-radius-sm: 3px;
+    --border-radius-md: 5px;
+    --border-radius-lg: 8px;
+
+    /* Transitions */
+    --transition-short: all 0.15s ease-in-out;
+    --transition-base: all 0.25s ease-in-out;
+    --transition-long: all 0.4s ease-in-out;
+
+    /* Spacing */
+    --space-xs: 0.25rem; /* 4px */
+    --space-sm: 0.5rem;  /* 8px */
+    --space-md: 1rem;    /* 16px */
+    --space-lg: 1.5rem;  /* 24px */
+    --space-xl: 2rem;    /* 32px */
+    --space-xxl: 3rem;   /* 48px */
+}
+
+/* GENERAL RESETS & BASE STYLES ===================================== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: var(--font-size-base);
+    scroll-snap-type: y proximity;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth; /* For any non-JS scrolls */
+}
+
+body {
+    font-family: var(--font-primary);
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    line-height: var(--leading-relaxed);
+    min-height: 100vh;
+    
+    /* Hide scrollbars */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+}
+body::-webkit-scrollbar { 
+    display: none; /* Safari and Chrome */
+}
+
+/* TYPOGRAPHY ====================================================== */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    color: var(--color-text-headings);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-normal);
+    margin-bottom: var(--space-md);
+    font-weight: 500; /* Oswald is often better at mid-weights for display */
+    text-transform: uppercase;
+}
+
+h1 { font-size: 3rem; letter-spacing: 0.01em; margin: var(--space-xxl); } /* 48px */
+h2 { font-size: 2.25rem; } /* 36px */
+h3 { font-size: 1.75rem; } /* 28px */
+h4 { font-size: 1.25rem; } /* 20px */
+
+p {
+    margin-bottom: var(--space-lg);
+    max-width: 75ch; /* Improve readability */
+}
+
+a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: var(--transition-short);
+}
+a:hover {
+    color: var(--color-accent-hover);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.15em;
+}
+
+strong, b {
+    font-weight: 700; /* Inter bold */
+    color: var(--color-text-headings);
+}
+
+/* SCROLL SECTIONS ================================================= */
+.scroll-section {
+    height: 100vh;
+    width: 100vw;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden; 
+    box-sizing: border-box;
+    padding: var(--space-xl); 
+}
+
+/* SECTION 1: INTRO / HERO ========================================= */
+#section1 {
+    justify-content: center; /* Vertically center content */
+    text-align: center;
+    padding: var(--space-xl) var(--space-lg);
+}
+
+#background-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1; /* Behind content */
+    transform: translateX(-50%) translateY(-50%);
+    object-fit: cover; /* Changed from background-size */
+    filter: brightness(0.3) contrast(1.1); /* Darker, slightly more contrast */
+}
+
+.section1-title-container { /* Remove absolute positioning, let flexbox handle */
+    position: static;
+    text-align: center;
+    margin-bottom: var(--space-lg);
+}
+
+.section1-title {
+    font-size: clamp(3rem, 8vw, 6.5rem); /* Responsive font size */
+    font-weight: 700; /* Oswald Bold */
+    color: var(--color-text-headings);
+    margin: 0;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+    letter-spacing: 0.02em;
+    line-height: var(--leading-tight);
+    max-width: 1600px;
+}
+
+.section1-subtitle-container { /* Remove absolute positioning */
+    position: static;
+}
+
+.section1-subtitle {
+    font-family: var(--font-primary);
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    color: var(--color-text-primary);
+    max-width: 60ch;
+    margin: 0 auto;
+    line-height: var(--leading-relaxed);
+    font-weight: 300; /* Lighter Inter */
+    text-shadow: 0 1px 5px rgba(0,0,0,0.5);
+}
+
+.scroll-down-suggestion { 
+    position: absolute;
+    bottom: var(--space-xl);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: var(--font-size-sm);
+    color: rgba(224, 224, 224, 0.6); /* Lighter than text-secondary */
+    text-align: center;
+}
+.scroll-down-suggestion span {
+    display: block;
+    margin-top: var(--space-xs);
+    font-size: 1.5rem; /* Larger arrow */
+}
+
+
+/* SCROLL ARROW NAVIGATION ========================================= */
+.scroll-arrow-nav {
+    position: fixed;
+    right: var(--space-lg);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1001; 
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.scroll-arrow-btn {
+    background-color: rgba(30, 30, 30, 0.6); /* Darker, semi-transparent */
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+    width: 44px; /* Slightly smaller */
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem; /* Icon size */
+    cursor: pointer;
+    transition: var(--transition-base);
+    box-shadow: none; /* Remove default shadow, rely on bg/border */
+    backdrop-filter: blur(5px); /* Frosted glass effect */
+}
+.scroll-arrow-btn:hover {
+    background-color: var(--color-accent);
+    color: var(--color-text-inverse);
+    border-color: var(--color-accent);
+    transform:  scale(1.1); /* Keep Y transform from parent */
+}
+.scroll-arrow-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background-color: rgba(30, 30, 30, 0.4);
+    color: var(--color-text-secondary);
+    border-color: var(--color-border);
+}
+.scroll-arrow-btn.disabled:hover {
+    transform:  scale(1); 
+    background-color: rgba(30, 30, 30, 0.4);
+    color: var(--color-text-secondary);
+}
+
+
+/* SECTION 2: MAP ================================================== */
+#section2 {
+    padding: 0; 
+    background-color: var(--color-background); 
+}
+.section2-fixed-title {
+    position: absolute; /* Positioned relative to #section2 */
+    left: var(--space-xl); /* Distance from the left edge of the viewport */
+    top: var(--space-xl); /* Vertically center */
+    
+    z-index: 1; /* Ensure it's above the map but below modals/popups if any overlap */
+  
+    transform-origin: center center;
+    padding: var(--space-md);
+    background-color: rgba(var(--color-background-rgb, 17, 17, 17), 0.6); /* Use your dark bg with some transparency */
+                                                                          /* Or for light theme: rgba(var(--color-background-rgb, 255,255,255),0.6); */
+    color: var(--color-text-headings); /* Or var(--color-accent) for more pop */
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(8px); /* Glassmorphism touch */
+    -webkit-backdrop-filter: blur(8px);
+    max-width: 400px; /* Prevent it from being too tall */
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+}
+
+.section2-fixed-title h2 {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 4.5rem); /* Responsive font size */
+    color: inherit; /* Inherit from parent or set explicitly e.g. var(--color-accent) */
+    margin: 0; /* Remove default heading margin */
+    padding: 0;
+    line-height: 1.5; /* Adjust for vertical text */
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    /* No rotation needed with writing-mode for this effect */
+}
+
+
+/* Adjustments for smaller screens if needed */
+@media (max-width: 768px) {
+    .section2-fixed-title {
+        left: var(--space-lg);
+        padding: var(--space-sm);
+        /* You might want to hide it or make it horizontal on very small screens */
+        /* display: none; */ 
+    }
+    .section2-fixed-title h2 {
+        font-size: clamp(1.2rem, 3vw, 2rem);
+    }
+}
+
+@media (max-width: 480px) {
+    /* Example: Hide on very small screens or change to horizontal if desired */
+    /* .section2-fixed-title {
+        writing-mode: horizontal-tb;
+        text-orientation: mixed;
+        transform: none;
+        top: var(--space-lg);
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - (2 * var(--space-lg)));
+        text-align: center;
+        max-height: none;
+    }
+    .section2-fixed-title h2 {
+        font-size: 1.5rem;
+    } */
+}
+#map-viewport.main-map-area {
+    width: 100%; 
+    height: 100vh; 
+    max-width: none; 
+    max-height: none; 
+    border-radius: 0; 
+    border: none; 
+    box-shadow: none; 
+    margin:0; 
+}
+.map-subtitle-box {
+    position: absolute;
+    bottom: var(--space-xl);
+    right: var(--space-xl);
+    background-color: rgba(13, 13, 13, 0.85); /* Darker, more opaque */
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    max-width: 320px;
+    z-index: 100; 
+    backdrop-filter: blur(8px);
+}
+.map-subtitle-box h4 {
+    font-family: var(--font-display);
+    color: var(--color-accent);
+    margin: 0 0 var(--space-sm) 0;
+    font-size: 1rem; /* Slightly smaller for subtitle box */
+    font-weight: 500;
+    text-transform: uppercase;
+}
+.map-subtitle-box p {
+    font-size: var(--font-size-sm);
+    line-height: var(--leading-snug);
+    margin-bottom: 0;
+}
+
+
+/* MAP POINTS & ANNOTATIONS ======================================== */
+.map-point {
+    position: absolute;
+    width: 16px; /* Slightly smaller */
+    height: 16px;
+    background-color: var(--color-map-point-default);
+    opacity: 0.9;
+    border: 2px solid var(--color-background); /* Border contrasts with map */
+    border-radius: 50%;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.2), var(--shadow-sm); /* Outer glow effect */
+    transition: var(--transition-base);
+    z-index: 10;
+}
+.map-point:hover {
+    background-color: var(--color-map-point-hover);
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.3);
+    box-shadow: 0 0 0 4px rgba(var(--color-accent-rgb), 0.3), var(--shadow-md); /* Pulsing hover effect */
+}
+.map-point.active {
+    background-color: var(--color-map-point-active-bg);
+    border-color: var(--color-map-point-active-border);
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+}
+
+/* Annotation Box (Modal) */
+.themed-modal.annotation-popup { /* Applies to #annotation-box */
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-lg);
+    min-width: 320px !important; 
+    max-width: 480px !important; 
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(3px); /* If it's fixed and over content */
+}
+.themed-modal.annotation-popup.visible { 
+    /* Existing JS handles visibility and transform, ensure CSS doesn't conflict negatively */
+}
+
+.modal-header {
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.modal-title { /* Used by annotation box and side panel */
+    font-family: var(--font-display);
+    color: var(--color-accent);
+    font-size: 1.25rem; /* 20px */
+    font-weight: 500;
+    margin: 0;
+    text-transform: uppercase;
+}
+.modal-body {
+    padding: var(--space-lg);
+    line-height: var(--leading-relaxed);
+    font-size: var(--font-size-base);
+    color: var(--color-text-secondary);
+}
+.modal-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--border-radius-md);
+    margin-bottom: var(--space-md);
+    border: 1px solid var(--color-border);
+    display: block;
+}
+.modal-body p {
+    margin-bottom: var(--space-md);
+    font-size: var(--font-size-sm); /* Smaller text for details in modal */
+}
+.modal-footer {
+    padding: var(--space-md) var(--space-lg);
+    border-top: 1px solid var(--color-border);
+    text-align: right;
+}
+
+#connecting-line { 
+    stroke: var(--color-accent); /* Make lines more prominent */
+    stroke-opacity: 0.7;
+}
+
+/* SECTION 3: CHART & FILTERS ===================================== */
+#section3 {
+    justify-content: flex-start; 
+    padding: var(--space-xl) 0; /* Full width for page-wrapper */
+    background-color: var(--color-background);
+    overflow-y: auto; /* Allow this section to scroll its content if page-wrapper needs */
+}
+.page-wrapper { /* Container for Section 3 content */
+    width: 100%;
+    max-width: 1600px; /* Wider for large journalistic layouts */
+    padding: 0 var(--space-xl); 
+    box-sizing: border-box;
+    height: auto; 
+    margin: 0 auto; /* Center it */
+    /* overflow-y: auto; From original, might be redundant if #section3 handles it */
+    /* height: calc(100vh - 40px); */ /* Remove fixed height, let content dictate */
+}
+
+#main-title { /* Title for Section 3 */
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    margin: var(--space-xl) 0 var(--space-xxl) 0;
+    text-align: center;
+    color: var(--color-text-headings);
+    text-transform: uppercase;
+}
+
+/* Controls Panel */
+#controls-panel { 
+    background-color: transparent; /* Make it blend more, or use var(--color-surface) if distinct panel desired */
+    padding: 0; /* Remove panel padding, rely on grid gaps and control-group padding */
+    border-radius: 0;
+    margin-bottom: var(--space-xxl);
+    box-shadow: none;
+    border: none; 
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-xl);
+    width: 100%; 
+}
+
+.control-group { 
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    /* background-color: var(--color-surface); /* Optional: if each group needs a card */
+    /* padding: var(--space-lg); */
+    /* border-radius: var(--border-radius-md); */
+    /* border: 1px solid var(--color-border); */
+}
+.control-group h4 { /* Filter group titles */
+    font-family: var(--font-display);
+    font-size: 0.875rem; /* 14px */
+    color: var(--color-text-secondary); /* More subtle */
+    margin: 0 0 var(--space-xs) 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em; /* Wider spacing for uppercase */
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-sm);
+    font-weight: 400;
+}
+
+.input-label,
+.control-group label { 
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    display: block;
+    margin-bottom: var(--space-xs);
+    font-weight: 400; /* Regular Inter */
+}
+.control-group label input[type="checkbox"] { /* Specific to checkbox labels */
+    margin-right: var(--space-sm);
+    accent-color: var(--color-accent); /* Modern browsers */
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+.control-group label:hover input[type="checkbox"] {
+    /* Add slight visual cue if desired */
+}
+
+
+/* Themed Inputs, Selects, Textareas */
+.themed-input,
+.themed-select,
+.themed-textarea,
+.control-group input[type="number"], 
+.control-group input[type="text"],   
+.control-group select {             
+    width: 100%;
+    padding: var(--space-sm) var(--space-md); /* 8px 16px */
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-sm);
+    box-sizing: border-box;
+    font-family: var(--font-primary);
+    transition: var(--transition-short);
+}
+.themed-textarea { 
+    font-family: 'SF Mono', 'Consolas', 'Menlo', monospace; /* Monospace for code/data */
+    min-height: 100px;
+}
+
+.themed-input:focus,
+.themed-select:focus,
+.themed-textarea:focus,
+.control-group input[type="number"]:focus,
+.control-group input[type="text"]:focus,
+.control-group select:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px rgba(var(--color-accent-rgb, 255,0,122),0.3); /* Ensure --color-accent-rgb is defined if used or use direct rgba */
+    background-color: #222; /* Slightly lighten on focus */
+}
+/* For placeholder text */
+::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
+
+/* Range Sliders */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px; /* Slimmer track */
+    background: var(--color-border);
+    outline: none;
+    border-radius: 3px; /* Rounded track */
+    margin-top: var(--space-xs);
+    cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px; /* Larger thumb */
+    height: 18px;
+    background: var(--color-accent);
+    cursor: pointer;
+    border-radius: 50%;
+    border: 3px solid var(--color-surface); /* Thumb border matches surface, makes it pop */
+    box-shadow: var(--shadow-sm);
+}
+input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: var(--color-accent);
+    cursor: pointer;
+    border-radius: 50%;
+    border: 3px solid var(--color-surface);
+    box-shadow: var(--shadow-sm);
+}
+.year-slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    margin-top: var(--space-xs);
+}
+
+/* Subtype Filter Checkbox List */
+.subtype-filter-container {
+    max-height: 180px; /* More space */
+    overflow-y: auto;
+    padding: var(--space-sm); /* Internal padding */
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-surface); /* Distinct background */
+}
+.subtype-filter-container label { /* Individual checkbox item */
+    display: flex; /* Align checkbox and text */
+    align-items: center;
+    margin-bottom: var(--space-sm);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--border-radius-sm);
+    transition: background-color var(--transition-short);
+}
+.subtype-filter-container label:hover {
+    background-color: var(--color-surface-hover);
+}
+.subtype-filter-container label:last-child {
+    margin-bottom: 0;
+}
+
+/* Reset Filters Button */
+#reset-filters-btn { 
+    padding: var(--space-sm) var(--space-lg);
+    background-color: var(--color-accent);
+    color: var(--color-text-inverse);
+    border: none;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    font-family: var(--font-primary); /* Changed from display */
+    font-weight: 500; /* Semibold */
+    font-size: var(--font-size-sm);
+    transition: var(--transition-base);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    grid-column: 1 / -1; /* Span full width */
+    justify-self: start; /* Align to start of grid area */
+    margin-top: var(--space-md);
+}
+#reset-filters-btn:hover {
+    background-color: var(--color-accent-hover);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Chart Area */
+#chart-container {
+    width: 100%; 
+    background-color: transparent; /* Blend with page, or var(--color-surface) */
+    border-radius: 0; 
+    box-shadow: none;
+    padding: var(--space-xl) 0; /* Padding around SVG */
+    margin-top: 0;
+    position: relative;
+    border: none;
+    box-sizing: border-box;
+}
+#no-data-message {
+    text-align: center;
+    font-size: 1.125rem; /* 18px */
+    color: var(--color-text-secondary);
+    padding: var(--space-xxl) 0;
+    font-style: italic;
+}
+#loading-message {
+    font-family: var(--font-display);
+    font-size: 1.5rem; /* 24px */
+    color: var(--color-text-secondary); /* Muted */
+    margin-top: var(--space-xxl);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* D3 Chart SVG Elements (General Styling) */
+svg { 
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+.axis-label { /* X-axis title, Y-axis title (if any) */
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xs); /* Smaller */
+    fill: var(--color-text-secondary);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.075em; /* Wider */
+}
+.tick text {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xs);
+    fill: var(--color-text-secondary);
+}
+.tick line {
+    stroke: var(--color-border);
+    stroke-opacity: 0.5; /* More subtle */
+}
+.domain { /* Axis lines */
+    stroke: var(--color-border-strong); /* Stronger */
+}
+.event-circle { 
+    stroke: rgba(0,0,0,0.3); /* Darker stroke for contrast on light fills */
+    stroke-opacity: 1; 
+    stroke-width: 0.5px; 
+    transition: r 0.2s ease-out, opacity 0.2s ease-out, fill 0.2s ease-out, transform 0.2s ease-out; 
+}
+/* Hover/active states for circles are handled by JS (GSAP), but base opacity is in config.appearance */
+
+.y-axis-subtype-label {
+    font-family: var(--font-primary);
+    font-size: 0.7rem; /* Even smaller for dense Y-axis */
+    fill: var(--color-text-secondary);
+    text-anchor: end;
+    alignment-baseline: middle;
+    font-weight: 400;
+}
+.y-axis-subtype-line {
+    stroke: var(--color-border);
+    stroke-dasharray: "3,3"; /* Different dash */
+    stroke-opacity: 0.3; /* More subtle */
+}
+
+/* Legend */
+#legend { 
+    margin-top: var(--space-xl);
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-md); /* More gap between items */
+    justify-content: center;
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    padding: var(--space-xs) var(--space-sm);
+    background-color: transparent; /* Blend in */
+    border: 1px solid transparent; /* No border by default */
+    border-radius: var(--border-radius-sm);
+    transition: var(--transition-short);
+}
+.legend-item:hover {
+    background-color: var(--color-surface); 
+    border-color: var(--color-border);
+    color: var(--color-text-primary);
+}
+.legend-color-box {
+    width: 10px; /* Smaller color box */
+    height: 10px;
+    margin-right: var(--space-sm);
+    border-radius: 2px; /* Slightly rounded square */
+    border: 1px solid rgba(0,0,0,0.2); /* Subtle border on color box */
+}
+
+/* Tooltip (Chart) */
+.tooltip { 
+    position: absolute;
+    background-color: #000; /* Pure black for contrast */
+    color: var(--color-text-primary);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-sm);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out; /* Faster transition */
+    white-space: normal;
+    min-width: 200px; /* Wider */
+    max-width: 300px;
+    border: 1px solid var(--color-accent); /* Accent border */
+    box-shadow: var(--shadow-lg); /* Stronger shadow */
+    transform: translate(15px, -50%); /* Default from JS config */
+    z-index: 9999;
+}
+.tooltip strong { /* Event Name */
+    color: var(--color-accent);
+    font-weight: 700; /* Inter Bold */
+    display: block;
+    margin-bottom: var(--space-xs);
+    font-size: 0.9rem; /* Larger event name */
+    line-height: var(--leading-tight);
+}
+.tooltip span { /* Other details */
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-snug);
+    display: block; /* Each on new line */
+    margin-bottom: 2px;
+}
+
+/* SIDE PANEL (EVENT DETAILS) ====================================== */
+#side-panel { 
+    position: fixed;
+    top: 0;
+    right: 0; /* JS animates 'right' from off-screen to 0 */
+    height: 100%;
+    background-color: #0A0A0A; /* Slightly different from main bg for layering */
+    box-shadow: var(--shadow-lg); /* Keep strong shadow */
+    padding: var(--space-xl) var(--space-xxl); /* More padding */
+    box-sizing: border-box;
+    overflow-y: auto;
+    z-index: 10000; 
+    font-size: var(--font-size-base); /* Base size for panel content */
+    border-left: 2px solid var(--color-accent); /* Accent border */
+    color: var(--color-text-primary);
+    /* Width is set by JS (config.ui.sidePanel.width) */
+}
+
+#side-panel h3 { /* Event Name in Side Panel */
+    font-family: var(--font-display);
+    margin-top: 0;
+    margin-bottom: var(--space-lg);
+    color: var(--color-accent);
+    border-bottom: 1px solid var(--color-border-strong);
+    padding-bottom: var(--space-md);
+    font-size: 1.5rem; /* 24px */
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+#side-panel p {
+    margin: 0 0 var(--space-md) 0;
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary); /* Muted for details */
+    font-size: var(--font-size-sm);
+}
+#side-panel p strong { /* Labels like "Ngày bắt đầu:" */
+    color: var(--color-text-primary); /* More prominent labels */
+    font-weight: 500; /* Inter Medium */
+    margin-right: var(--space-xs);
+}
+#side-panel hr {
+    border: 0;
+    border-top: 1px solid var(--color-border);
+    margin: var(--space-lg) 0;
+}
+
+#close-panel-btn { 
+    position: absolute;
+    top: var(--space-lg); /* Consistent spacing */
+    right: var(--space-lg);
+    background: transparent;
+    color: var(--color-text-secondary);
+    border: none;
+    font-size: 1.75rem; /* Larger close icon */
+    padding: var(--space-xs); /* Click area */
+    width: auto; height: auto; /* Let font size dictate */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    line-height: var(--leading-none);
+    transition: color var(--transition-short), transform var(--transition-base);
+}
+#close-panel-btn:hover {
+    color: var(--color-accent);
+    transform: rotate(90deg) scale(1.1); /* Rotate effect */
+}
+
+/* SECTION 4: CONCLUSION =========================================== */
+#section4 {
+    justify-content: center;
+    align-items: left;
+    text-align: left; /* More article-like */
+    background-color: var(--color-background); /* Darker background if desired */
+    padding: var(--space-xxl) var(--space-xl);
+}
+.conclusion-content {
+    text-align: left;
+    max-width: 1000px; /* Wider for readability */
+}
+.conclusion-content h2 { /* "HIỂU VỀ QUÁ KHỨ..." */
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem); /* Responsive */
+    color: var(--color-text-headings);
+    margin-bottom: var(--space-lg);
+    font-weight: 700; /* Bold Oswald */
+    line-height: var(--leading-tight);
+}
+.conclusion-content p {
+    font-size: 1.125rem; /* 18px for more impactful prose */
+    line-height: var(--leading-loose); /* More spacing for readability */
+    margin-bottom: var(--space-xl);
+    color: var(--color-text-primary); /* Primary text for readability */
+}
+
+/* Credits Box */
+.credits-box {
+    background-color: var(--color-surface);
+    padding: var(--space-lg) var(--space-xl);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--color-border);
+    margin-top: var(--space-xxl);
+}
+.credits-box h3 { /* "Trích nguồn & lời cuối" */
+    font-family: var(--font-display);
+    color: var(--color-accent);
+    margin: 0 0 var(--space-lg) 0;
+    font-size: 1.25rem; /* 20px */
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border-bottom: 1px solid var(--color-border-strong);
+    padding-bottom: var(--space-md);
+}
+.credits-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: var(--font-size-sm);
+}
+.credits-box li {
+    margin-bottom: var(--space-md);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-normal);
+}
+.credits-box a { /* Links in credits */
+    color: var(--color-accent-light); /* Lighter accent for links in muted text */
+    font-weight: 500; /* Slightly bolder */
+}
+.credits-box a:hover {
+    color: var(--color-accent);
+    text-decoration-thickness: 1.5px;
+}
+
+/* UTILITY & THEMED ELEMENTS ======================================= */
+/* General Themed Panel (if used beyond specific IDs) */
+.themed-panel {
+    background-color: var(--color-surface);
+    padding: var(--space-lg) var(--space-xl);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--color-border);
+}
+.panel-title { /* General purpose panel title */
+    font-family: var(--font-display);
+    font-size: 1.125rem; /* 18px */
+    color: var(--color-accent);
+    margin: 0 0 var(--space-lg) 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--color-border-strong);
+    padding-bottom: var(--space-md);
+    font-weight: 500;
+}
+
+/* Buttons (General, if new buttons are added or old ones are generalized) */
+.button { 
+    padding: var(--space-sm) var(--space-lg);
+    border: none;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    font-family: var(--font-primary);
+    font-weight: 600; /* Semibold */
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: var(--transition-base);
+    text-align: center;
+    display: inline-block; /* For proper padding and margin */
+}
+.button-primary {
+    background-color: var(--color-accent);
+    color: var(--color-text-inverse);
+}
+.button-primary:hover {
+    background-color: var(--color-accent-hover);
+    box-shadow: var(--shadow-sm);
+}
+.button-secondary {
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border-strong);
+}
+.button-secondary:hover {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}
+.button-close { /* Used in modals */
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-size: 1.75rem; 
+    padding: 0; /* Remove padding, rely on icon size */
+    line-height: var(--leading-none);
+    width: 32px; /* Explicit size for click area */
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+.button-close:hover {
+    color: var(--color-accent);
+    background-color: rgba(var(--color-accent-rgb, 255,0,122), 0.1); /* Faint bg on hover */
+}
+
+.themed-link { /* General themed link if needed beyond standard <a> */
+    font-size: var(--font-size-sm);
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 500;
+}
+.themed-link:hover {
+    text-decoration: underline;
+    color: var(--color-accent-hover);
+}
+.help-text {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    margin-top: var(--space-xs);
+    font-style: italic;
+}
+
+/* ADD THESE TO YOUR EXISTING style.css */
+
+/* Initial states for GSAP animations */
+ /* Prepare for char splitting if structure changes */
+.section1-subtitle,
+.scroll-down-suggestion,
+.map-subtitle-box,
+#main-title,
+#controls-panel .control-group,
+#chart-container,
+#section4 .conclusion-content h2,
+#section4 .conclusion-content p,
+#section4 .credits-box {
+    opacity: 0; /* Most elements start invisible */
+}
+
+/* Specific initial transforms if not handled by a generic class */
+.section1-subtitle,
+.map-subtitle-box,
+#main-title,
+#controls-panel .control-group,
+#chart-container,
+#section4 .conclusion-content h2,
+#section4 .conclusion-content p,
+#section4 .credits-box {
+    transform: translateY(40px); /* Start slightly down */
+}
+
+/* For character animation setup */
+.g-word {
+    display: inline-block;
+    margin-right: 0.2em; /* Adjust spacing between words */
+    overflow: hidden; /* Clip characters if they animate from outside bounds */
+}
+.g-char {
+    display: inline-block;
+    position: relative; /* For individual char transforms */
+    opacity: 0; /* Initial state set by GSAP fromTo */
+    /* transform: translateY(100%); /* Example initial state, also set by GSAP */
+}
+
+
+/* Decorative Background Lines for Section 1 */
+.decorative-bg-lines {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    overflow: hidden;
+    z-index: 0; /* Behind video text, but could be above video filter depending on desired effect */
+    pointer-events: none;
+}
+.decorative-bg-lines svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+}
+.decorative-bg-lines svg line {
+    stroke: rgba(var(--color-accent-rgb, 255,0,122), 0.15); /* Use your --color-accent in rgba */
+    stroke-width: 1px;
+    /* stroke-linecap: round; */ /* Optional */
+}
+/* Ensure --color-accent-rgb is defined in your :root if you use it above, e.g. */
+/* :root { --color-accent-rgb: 255,0,122; } (for magenta #FF007A) */
+
+
+/* Ensure the video text is above the decorative lines if z-index is adjusted */
+#section1 .section1-title-container,
+#section1 .section1-subtitle-container {
+    position: relative; /* To allow z-index stacking if needed */
+    z-index: 1;
+}
+
+/* Tweak for scroll arrow nav if backdrop-filter becomes too much with new animations */
+.scroll-arrow-btn {
+    /* backdrop-filter: blur(3px); /* Slightly less blur if performance is an issue */
+}
+
+/* ADD THIS TO YOUR EXISTING style.css */
+
+/* Initial state for map points before GSAP animation */
+.g-map-point {
+    opacity: 0;
+    /* The transform for centering (translate(-50%, -50%)) is on the .map-point class. */
+    /* GSAP will animate scale from an initial value (e.g., 0.3 in the 'fromTo' tween). */
+    /* No specific scale needed here if GSAP's 'fromTo' handles it. */
+}
+
+/* Ensure the base .map-point rule still has its positioning transform */
+.map-point {
+    position: absolute;
+    width: 40px; /* Or your chosen size */
+    height: 40px; /* Or your chosen size */
+    background-color: var(--color-map-point-default);
+    /* opacity: 0.9; /* GSAP will now control opacity during intro */
+    border: 8px solid var(--color-background); 
+    border-radius: 50%;
+    cursor: pointer;
+    transform: translate(-50%, -50%); /* Crucial for centering the point */
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.2), var(--shadow-sm);
+    /* Transitions for hover should ideally not interfere with GSAP intro.
+       GSAP usually overrides, but be mindful. */
+    transition: background-color 0.3s ease, opacity 0.2s ease; /* Removed transform from CSS transition */
+    z-index: 10;
+}
+
+/* RESPONSIVE ADJUSTMENTS =========================================== */
+@media (max-width: 992px) { /* Tablet */
+    :root { --font-size-base: 15px; }
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 2rem; }
+    h3 { font-size: 1.5rem; }
+    .section1-title { font-size: clamp(2.5rem, 7vw, 5rem); }
+    .section1-subtitle { font-size: clamp(0.9rem, 2vw, 1.25rem); }
+    #main-title { font-size: clamp(1.8rem, 4vw, 2.8rem); }
+    .page-wrapper { padding: 0 var(--space-lg); }
+    #controls-panel { gap: var(--space-lg); }
+    .conclusion-content p { font-size: 1rem; } /* 16px */
+}
+
+@media (max-width: 768px) { /* Mobile Landscape / Large Phone */
+    :root { --font-size-base: 14px; }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.375rem; }
+    .scroll-section { padding: var(--space-lg); }
+    #section2 { padding: 0; } 
+    .section1-title { font-size: clamp(2rem, 10vw, 4rem); }
+    .section1-subtitle { font-size: clamp(0.875rem, 3vw, 1.1rem); max-width: 90%; }
+    .map-subtitle-box { bottom: var(--space-lg); right: var(--space-lg); padding: var(--space-sm) var(--space-md); font-size: var(--font-size-xs); max-width: 280px;}
+    
+    .page-wrapper { padding: 0 var(--space-md); }
+    #main-title { font-size: clamp(1.5rem, 6vw, 2.2rem); margin-bottom: var(--space-xl); }
+    #controls-panel { grid-template-columns: 1fr; gap: var(--space-lg); } /* Single column */
+    #chart-container { padding: var(--space-lg) 0; }
+    
+    #side-panel { width: 300px !important; padding: var(--space-lg); } /* Adjust JS config if this width is too different */
+    #side-panel h3 { font-size: 1.25rem; }
+    #side-panel p { font-size: var(--font-size-xs); }
+    
+    .conclusion-content h2 { font-size: clamp(1.5rem, 5vw, 2.2rem); }
+    .conclusion-content p { font-size: 0.9375rem; } /* 15px */
+    
+    .scroll-arrow-nav { right: var(--space-md); gap: var(--space-sm);}
+    .scroll-arrow-btn { width: 40px; height: 40px; font-size: 1.3rem;}
+
+    /* Annotation Box Mobile (already quite good, minor tweaks if any) */
+    div[id^="annotation-box-"].themed-modal.annotation-popup.visible {
+        /* Your existing mobile styles for annotation box are generally good.
+           This new theme might require slight color/font adjustments if they don't inherit. */
+    }
+}
+
+@media (max-width: 480px) { /* Small Phone Portrait */
+    :root { --font-size-base: 13px; }
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.5rem; }
+    .section1-title { font-size: clamp(1.8rem, 12vw, 3rem); }
+    .section1-subtitle { font-size: clamp(0.8rem, 3.5vw, 1rem); }
+    .map-subtitle-box { bottom: var(--space-md); right: var(--space-md); padding: var(--space-xs) var(--space-sm); font-size: 0.7rem; max-width: calc(100% - (2 * var(--space-md))); }
+
+    #main-title { font-size: clamp(1.3rem, 7vw, 1.8rem); }
+    #side-panel { display: none; } /* As per original, good for small screens */
+    .tooltip { padding: var(--space-xs) var(--space-sm); font-size: var(--font-size-xs); min-width: 160px; }
+    .tooltip strong { font-size: 0.8rem; }
+    
+    .control-group h4 { font-size: 0.8rem; } 
+    .panel-title { font-size: 1rem; margin-bottom: var(--space-md); }
+    .themed-panel, #controls-panel { padding: var(--space-md); } 
+    .modal-body { padding: var(--space-md); }
+    .button, #reset-filters-btn { font-size: var(--font-size-xs); padding: var(--space-sm) var(--space-md); }
+    .control-group label, .control-group input, .control-group select, 
+    .input-label, .themed-input, .themed-select, .themed-textarea 
+    { font-size: var(--font-size-xs); }
+
+    .conclusion-content h2 { font-size: clamp(1.3rem, 6vw, 1.8rem); }
+    .conclusion-content p { font-size: 0.875rem; } /* 14px */
+
+    .scroll-arrow-nav { right: var(--space-sm); }
+    .scroll-arrow-btn { width: 36px; height: 36px; font-size: 1.2rem;}
+}

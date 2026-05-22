@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vietnam Forest Coverage Scrollytelling</title>
+
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <script src="https://unpkg.com/scrollama"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollSmoother.min.js"></script>
+
+
+  <style>
+    html, body {
+        scroll-behavior: smooth;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    @media (max-width: 600px) {
+  body {
+    font-size: 10px;
+  }
+}
+
+    #map {
+      position: fixed;
+      top: 0; left: 0; bottom: 0; right: 0;
+      z-index: 1;
+    }
+
+    #scrolly {
+      position: relative;
+      z-index: 10;
+      width: 35%;
+      margin-left: 60%;
+      padding-top: 100vh;
+    }
+
+    .step {
+      margin: 0 0 60vh 0;
+      padding: 2em;
+      background: rgba(255, 255, 255, 0.95);
+      border-left: 6px solid #2E7D32;
+      font-size: 1.15em;
+      line-height: 1.6;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      border-radius: 4px;
+    }
+
+    .step:first-child {
+      font-size: 2.5em;
+      font-weight: 700;
+      border-left: none;
+      background: none;
+      color: white;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+      padding: 0;
+      margin-top: -80vh;
+    }
+
+    .step[data-step="intro"] {
+    margin-bottom: 80vh; /* tweak this value as needed */
+    }
+
+
+    .step:last-child {
+      font-size: 2em;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.95);
+      border-left: 6px solid #2E7D32;
+      text-align: center;
+    }
+
+    .scroll-hint {
+      position: fixed;
+      bottom: 5%;
+      right: 5%;
+      color: white;
+      font-size: 1.2em;
+      background: rgba(0,0,0,0.4);
+      padding: 1em;
+      border-radius: 4px;
+      z-index: 10;
+      pointer-events: none;
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    .mapboxgl-popup {
+      max-width: 300px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .mapboxgl-popup-content {
+      background: #2E7D32;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 1em;
+      font-weight: 500;
+    }
+
+    .mapboxgl-popup-tip {
+      border-top-color: #2E7D32;
+    }
+    .credits {
+    position: fixed;
+    top: 1em;
+    left: 1em;
+    background: rgba(255, 255, 255, 0.85);
+    padding: 0.75em 1em;
+    border-radius: 4px;
+    font-size: 0.85em;
+    z-index: 20;
+    max-width: 250px;
+    line-height: 1.4;
+    }
+
+    .credits a {
+    color: #2E7D32;
+    text-decoration: none;
+    font-weight: 500;
+    }
+
+  </style>
+</head>
+<body>
+   
+  <div id="map"></div>
+  
+  <div class="scroll-hint">Cuộn ở phía này nhé!</div>
+  <div id="scrolly">
+    <div class="step" data-step="intro">
+        Tình hình diện tích rừng tại Việt Nam theo tỉnh năm 2022.
+      </div>
+      
+      <div class="step" data-step="most_cover">
+        Bắc Kạn có tỉ lệ che phủ rừng cao nhất trong các tỉnh – hơn 73%. Địa hình chủ yếu là đồi núi hiểm trở nên ít bị khai thác, cùng với nỗ lực bảo vệ rừng tự nhiên giúp tỉnh này duy trì mật độ rừng cao. 
+        <a href="https://backan.gov.vn/pages/bac-kan-dan-dau-ca-nuoc-ve-ty-le-che-phu-rung-6a62.aspx?utm_source=chatgpt.com" target="_blank">Nguồn</a>
+      </div>
+      
+      <div class="step" data-step="least_cover">
+        Đồng bằng Sông Cửu Long là khu vực có tỉ lệ che phủ rừng thấp nhất – chỉ khoảng 5,4%. Đây là vùng đất canh tác nông nghiệp và nuôi trồng thủy sản, nên ít còn diện tích rừng tự nhiên. 
+        <a href="https://baovemoitruong.org.vn/cong-bo-hien-trang-rung-toan-quoc-nam-2023-ty-le-che-phu-rung-toan-quoc-dat-4202/?utm_source=chatgpt.com" target="_blank">Nguồn</a>
+      </div>
+      
+      <div class="step" data-step="most_planted">
+        Lạng Sơn là tỉnh có diện tích rừng trồng cao nhất. Nhờ các chương trình trồng rừng bền vững và sự tham gia tích cực của người dân, Lạng Sơn đang đẩy mạnh phát triển kinh tế rừng. 
+        <a href="https://baotainguyenmoitruong.vn/lang-son-quan-ly-bao-ve-tai-nguyen-rung-tao-sinh-ke-ben-vung-374673.html?utm_source=chatgpt.com" target="_blank">Nguồn</a>
+      </div>
+      
+      <div class="step" data-step="most_natural">
+        Nghệ An là tỉnh có diện tích rừng tự nhiên cao nhất. Nhờ khoanh nuôi, bảo vệ nghiêm ngặt và vị trí giáp biên giới, rừng nơi đây vẫn còn giữ được độ nguyên sinh đáng kể. 
+        <a href="https://www.nghean.gov.vn/tin-noi-bat-danh-cho-nguoi-dan/nghe-an-tan-dung-co-hoi-day-nhanh-phat-trien-kinh-te-rung-535687?utm_source=chatgpt.com" target="_blank">Nguồn</a>
+      </div>
+      
+      <div class="step" data-step="summary">
+        Tỉ lệ che phủ rừng tại Việt Nam vào năm 2022 là 42,02%, với tổng diện tích rừng là 14.790.075 ha, trong đó 10.134.082 ha là rừng tự nhiên.
+        <a href="https://baovemoitruong.org.vn/cong-bo-hien-trang-rung-toan-quoc-nam-2023-ty-le-che-phu-rung-toan-quoc-dat-4202/?utm_source=chatgpt.com" target="_blank">Nguồn</a>
+      </div>
+      
+    <div class="step" data-step="reset">Cuộn để bắt đầu lại.</div>
+  </div>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoicXVhbm5ndXllbmhlcmUiLCJhIjoiY21hZGR4YmttMGU4ajJ1cTFqY3hndmpvMiJ9.b4e71_t7Bg7da8uoRMkz_w';
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/quannguyenhere/cmadrivht00qw01s5erh1g9n2',
+      center: [105.8, 16.5],
+      zoom: 4.5,
+      pitch: 45,
+      bearing: 0
+    });
+
+    map.on('load', () => {
+    // Hover style effect
+    map.addLayer({
+        id: 'province-highlight',
+        type: 'line',
+        source: 'composite',
+        'source-layer': '3D-extrusions', // replace with your actual source layer
+        paint: {
+        'line-color': '#ffffff',
+        'line-width': 2
+        },
+        filter: ['==', 'Forestation_Name_VI', '']
+    });
+
+    let popup = new mapboxgl.Popup({ closeButton: false, closeOnClick: false });
+
+    map.on('mousemove', (e) => {
+        const features = map.queryRenderedFeatures(e.point, {
+        layers: ['3D-extrusions'] // replace with actual layer ID
+        });
+
+        if (features.length) {
+        const f = features[0];
+        map.setFilter('province-highlight', ['==', 'forestation_Name_VI', f.properties.forestation_Name_VI]);
+
+        const name = f.properties.forestation_Name_VI;
+        const natural = f.properties.forestation_Natural_Forest_Area;
+        const planted = f.properties.forestation_Planted_Forest_Area;
+        const total = f.properties.forestation_Total_Forest_Area;
+
+        popup.setLngLat(e.lngLat).setHTML(`
+            <div>
+            <strong>Tỉnh/Thành phố:</strong> ${name}<br/>
+            <strong>Diện tích rừng tự nhiên:</strong> ${natural} ha<br/>
+            <strong>Diện tích rừng nhân tạo:</strong> ${planted} ha<br/>
+            <strong>Tổng diện tích rừng:</strong> ${total} ha
+            </div>
+        `).addTo(map);
+        } else {
+        map.setFilter('province-highlight', ['==', 'forestation_Name_VI', '']);
+        popup.remove();
+        }
+    });
+    });
+
+
+    const locations = {
+      most_cover: { center: [105.811226, 22.570075], zoom: 7.83, pitch: 33.50, bearing: 11.20, description: "Bắc Kạn: Tỉ lệ che phủ rừng cao nhất" },
+      least_cover: { center: [105.464157, 9.887957], zoom: 8, pitch: 45, description: "Đồng bằng Sông Cửu Long: Khu vực có tỉ lệ che phủ rừng thấp nhất." },
+      most_planted: { center: [106.750393, 22.023894], zoom: 8.49, pitch: 42.50, bearing: 60.00, description: "Lạng Sơn: Diện tích rừng trồng cao nhất" },
+      most_natural: { center: [104.907392, 19.196741], zoom: 7.92, pitch: 28, bearing: 17.60, description: "Nghệ An: Diện tích rừng tự nhiên cao nhất" },
+      summary: { center: [105.8, 16.5], zoom: 5, pitch: 30 },
+      intro: { center: [105.8, 16.5], zoom: 4.5, pitch: 0 },
+      reset: { center: [105.8, 16.5], zoom: 4.5, pitch: 0 }
+    };
+
+    const scroller = scrollama();
+
+    scroller
+      .setup({
+        step: ".step",
+        offset: 0.6,
+        debug: false
+      })
+      .onStepEnter(response => {
+        const step = response.element.dataset.step;
+        const loc = locations[step];
+        if (!loc) return;
+
+        map.flyTo({
+          center: loc.center,
+          zoom: loc.zoom,
+          pitch: loc.pitch,
+          bearing: 0,
+          essential: true
+        });
+
+        document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
+
+        if (loc.description && step !== 'summary') {
+          new mapboxgl.Popup()
+            .setLngLat(loc.center)
+            .setHTML(`<b>${loc.description}</b>`)
+            .addTo(map);
+        }
+
+        // Infinite scroll behavior
+        if (step === 'reset') {
+          setTimeout(() => {
+            document.querySelector('.step[data-step="intro"]').scrollIntoView({ behavior: 'smooth' });
+          }, 1500);
+        }
+      });
+
+    window.addEventListener('resize', scroller.resize);
+  </script>
+
+  <div class="credits">
+    Created as a demo. Forestation data retrieved from 
+    <a href="https://thuvienphapluat.vn/chinh-sach-phap-luat-moi/vn/ho-tro-phap-luat/chinh-sach-moi/49912/tong-hop-dien-tich-rung-63-tinh-thanh-tren-ca-nuoc-trong-nam-2022" target="_blank">Thư Viện Pháp Luật</a>. 
+    Map data retrieved from Quỳnh Vương’s 
+    <a href="https://observablehq.com/@quynhvng/vietnam-map" target="_blank">Observable Notebook</a>.
+    Data was cleaned and joined in QGIS by me. Code for the site was generated in ChatGPT on 07/05/2025.
+  </div>
+
+  <script>
+    window.addEventListener("load", () => {
+      gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+  
+      ScrollSmoother.create({
+        wrapper: "#smooth-wrapper",
+        content: "#smooth-content",
+        smooth: 1.2,
+        effects: true
+      });
+    });
+  </script>
+  
+</body>
+</html>

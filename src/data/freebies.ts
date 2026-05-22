@@ -38,7 +38,7 @@ export const freebies: FreebieItem[] = [
       "A collection of 5 photorealistic device mockups with a focus on negative space and architectural lighting.",
     category: "MOCKUPS",
     image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/The_Nightwatch_by_Rembrandt_-_Rijksmuseum.jpg/960px-The_Nightwatch_by_Rembrandt_-_Rijksmuseum.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/The_Nightwatch_by_Rembrandt_-_Rijksmuseum.jpg/960px-The_Nightwatch_by_Rembrandt_-_Rijksmuseum.jpg",
     downloadUrl: "#",
     colors: ["#ee9b00", "#ca6702", "#bb3e03"],
   },
@@ -49,7 +49,7 @@ export const freebies: FreebieItem[] = [
       "After Effects presets for creating the signature 'tech-luxe' animation feel. Focuses on elastic eases and mechanical precision.",
     category: "MOTION",
     image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Ultima_Cena_-_Da_Vinci_5.jpg/960px-Ultima_Cena_-_Da_Vinci_5.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/%C3%9Altima_Cena_-_Da_Vinci_5.jpg/960px-%C3%9Altima_Cena_-_Da_Vinci_5.jpg",
     downloadUrl: "#",
     colors: ["#ae2012", "#9b2226", "#001219"],
   },
