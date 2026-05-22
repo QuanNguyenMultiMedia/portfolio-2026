@@ -7,6 +7,8 @@ import {
   useTransform,
   useMotionValueEvent,
   useMotionTemplate,
+  useMotionValue,
+  useSpring,
 } from "framer-motion";
 import Image from "next/image";
 
@@ -21,6 +23,24 @@ export default function Home() {
   const [activeFrame, setActiveFrame] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
+  // ==========================================
+  // VIEWPORT CURSOR PARALLAX
+  // ==========================================
+  // Mouse coordinates normalized from -0.5 (left/top) to 0.5 (right/bottom)
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Soft spring dynamics for a high-end architectural "drift" lag
+  const smoothMouseX = useSpring(mouseX, { damping: 30, stiffness: 80, mass: 1 });
+  const smoothMouseY = useSpring(mouseY, { damping: 30, stiffness: 80, mass: 1 });
+
+  // Map mouse offsets to tilt and translate transforms
+  // Rotate around Y-axis (pan left/right) and X-axis (tilt up/down)
+  const rotateX = useTransform(smoothMouseY, [-0.5, 0.5], [6, -6]);
+  const rotateY = useTransform(smoothMouseX, [-0.5, 0.5], [-6, 6]);
+  const translateX = useTransform(smoothMouseX, [-0.5, 0.5], [-60, 60]);
+  const translateY = useTransform(smoothMouseY, [-0.5, 0.5], [-60, 60]);
+
   // Client-side detection of screen size to handle responsive 3D coordinates
   useEffect(() => {
     const checkMobile = () => {
@@ -30,6 +50,41 @@ export default function Home() {
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
+
+  // Track cursor movement on window to update parallax values
+  useEffect(() => {
+    if (isMobile) {
+      // Reset values on mobile to avoid layout offsets
+      mouseX.set(0);
+      mouseY.set(0);
+      return;
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const { clientX, clientY } = e;
+      const { innerWidth, innerHeight } = window;
+      
+      const xOffset = (clientX / innerWidth) - 0.5;
+      const yOffset = (clientY / innerHeight) - 0.5;
+      
+      mouseX.set(xOffset);
+      mouseY.set(yOffset);
+    };
+
+    const handleMouseLeave = () => {
+      // Gently return to center when mouse leaves the viewport
+      mouseX.set(0);
+      mouseY.set(0);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseleave", handleMouseLeave);
+    
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, [isMobile, mouseX, mouseY]);
 
   // Track scroll progress across the 500vh page height
   const { scrollYProgress } = useScroll({
@@ -57,7 +112,9 @@ export default function Home() {
   // ==========================================
   // The world translates along the Z-axis from 0px (at start) to 8000px (at end)
   const zWorld = useTransform(scrollYProgress, [0, 1], [0, 6000]);
-  const transformWorld = useMotionTemplate`translate3d(0px, 0px, ${zWorld}px)`;
+
+  // Combine into single dynamic transform template
+  const transformWorld = useMotionTemplate`translate3d(${translateX}px, ${translateY}px, ${zWorld}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
 
   // ==========================================
   // INDIVIDUAL FRAME OPACITY & BLUR CURVES (BASED ON Z-DISTANCE)
