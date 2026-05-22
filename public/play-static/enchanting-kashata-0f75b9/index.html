@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sugar Content Visualization</title>
+    <meta name="description" content="Interactive visualization showing how much sugar is in various foods and drinks">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧪</text></svg>">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/js/loaders/GLTFLoader.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Space Grotesk', sans-serif;
+            color: #ffffff;
+        }
+
+        body {
+            background-color: #0d0d0d;
+            overflow: hidden;
+            /* cursor: default; */ /* Managed by JS for draggable objects */
+            min-height: 100vh;
+        }
+
+        .radio-wave-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1; 
+            overflow: hidden; 
+        }
+
+        .radio-wave-background .wave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50px; 
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(0, 255, 170, 0.1); 
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            animation: pulseWave 4s infinite ease-out;
+        }
+
+        .radio-wave-background .wave:nth-child(2) {
+            animation-delay: 1s;
+            background-color: rgba(0, 163, 255, 0.08); 
+        }
+
+        .radio-wave-background .wave:nth-child(3) {
+            animation-delay: 2s;
+            background-color: rgba(0, 220, 150, 0.06);
+        }
+         .radio-wave-background .wave:nth-child(4) {
+            animation-delay: 3s;
+            background-color: rgba(0, 180, 255, 0.05);
+        }
+
+
+        @keyframes pulseWave {
+            0% {
+                transform: translate(-50%, -50%) scale(0.1);
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 0.2;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(25); 
+                opacity: 0;
+            }
+        }
+
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2; 
+        }
+
+        .ui-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1.5rem; 
+            z-index: 5; 
+            pointer-events: none; 
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; 
+            width: 100%;
+            padding-bottom: 0.5rem; 
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column; 
+            align-items: flex-start; 
+        }
+
+        .title { 
+            font-size: 1.2rem; 
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            background-color: rgba(13, 13, 13, 0.8);
+            padding: 0.7rem 1.2rem; 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.25rem;
+            backdrop-filter: blur(10px);
+            margin-bottom: 0.75rem; 
+        }
+
+        .counter_wrapper {
+            display:flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        .disclaimer {
+            font-size: 0.9rem; 
+            font-weight: 500;
+            background-color: rgba(13, 13, 13, 0.8);
+            padding: 0.7rem 1.2rem; 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.25rem;
+            backdrop-filter: blur(10px);
+            max-width: 30vw;
+        }
+
+        .disclaimer_small {
+            font-size: 0.9rem; 
+            font-weight: 500;
+            background-color: rgba(13, 13, 13, 0.8);
+            padding: 0.7rem 1.2rem; 
+            margin-top: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.25rem;
+            backdrop-filter: blur(10px);
+            max-width: 90vw;
+        }
+        
+        .main-item-display-text { 
+            font-size: 2.8rem; 
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            text-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
+            background: linear-gradient(180deg, rgba(20, 20, 20, 0.65) 0%, rgba(15, 15, 15, 0.45) 100%);
+            padding: 1rem 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.35rem;
+            backdrop-filter: blur(8px);
+            display: inline-block; 
+            max-width: 100%; 
+            text-align: left; 
+            opacity: 0; 
+            transition: opacity 0.4s ease-in-out; 
+        }
+        .main-item-display-text.active {
+            opacity: 1;
+        }
+
+
+        .counter { 
+            font-size: 0.9rem; 
+            font-weight: 500;
+            background-color: rgba(13, 13, 13, 0.8);
+            padding: 0.7rem 1.2rem; 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.25rem;
+            backdrop-filter: blur(10px);
+            white-space: nowrap; 
+        }
+        
+        .footer-area {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; 
+        }
+
+        .info-panel { 
+            position: relative; 
+            width: 30%; 
+            max-width: 450px;
+            background: linear-gradient(180deg, rgba(18, 18, 18, 0.85) 0%, rgba(25, 25, 25, 0.85) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 0.5rem;
+            padding: 1.2rem; 
+            margin-bottom: 1rem; 
+            opacity: 0;
+            transform: translateY(15px); 
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+            backdrop-filter: blur(10px);
+            pointer-events: auto; 
+        }
+        .info-panel.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .info-title { 
+            font-size: 1.3rem; 
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.6rem;
+            letter-spacing: 0.02em;
+        }
+        .info-content { 
+            font-size: 0.9rem; 
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+
+        .current-item-info-text { 
+            position: relative; 
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.85);
+            background-color: rgba(13, 13, 13, 0.75);
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.35rem;
+            backdrop-filter: blur(8px);
+            margin-bottom: 1rem; 
+            width: 30%; 
+            max-width: 450px; 
+            text-align: left; 
+            opacity: 0; 
+            transition: opacity 0.4s ease-in-out; 
+            pointer-events: auto; 
+        }
+        .current-item-info-text.active {
+            opacity: 1;
+        }
+
+
+        .footer { 
+            display: flex;
+            justify-content: space-between; 
+            width: 100%;
+            max-width: 600px; 
+            align-self: center; 
+        }
+
+        .button {
+            pointer-events: auto; 
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.25rem;
+            padding: 0.7rem 1.3rem; 
+            font-size: 0.9rem; 
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+            flex-grow: 1; 
+            margin: 0 0.3rem; 
+            text-align: center;
+        }
+        .button:first-child { margin-left: 0; }
+        .button:last-child { margin-right: 0; }
+        .button:hover {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.1) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .button:active { transform: translateY(2px); }
+        .button.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+
+        .progress-bar {
+            width: 100%; height: 6px; background-color: rgba(255, 255, 255, 0.1);
+            margin-top: 1rem; border-radius: 3px; overflow: hidden;
+        }
+        .progress {
+            height: 100%; width: 0; background: linear-gradient(90deg, #00FFAA 0%, #00A3FF 100%);
+            transition: width 0.5s ease; border-radius: 3px;
+        }
+
+        .grid-overlay, .scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        .grid-overlay {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: 3; 
+        }
+        .scanlines {
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
+            z-index: 4; 
+        }
+        .info-boxes { display: none !important; } 
+
+        #main-item-display.health-message-style { 
+            background: linear-gradient(180deg, rgba(0, 255, 170, 0.15) 0%, rgba(0, 163, 255, 0.1) 100%);
+            border: 1px solid rgba(0, 255, 170, 0.25);
+            color: #e6fff9; 
+        }
+
+        @media (min-width: 901px) { 
+            .disclaimer_small { display: none; }
+        }
+   
+
+
+        /* Responsive adjustments */
+        @media (max-width: 900px) { 
+            .disclaimer_small { display: none; }
+            .current-item-info-text, .info-panel {
+                width: 45%; 
+            }
+            .main-item-display-text {
+                font-size: 2.4rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .disclaimer_small { display: none; }
+            .ui-container { padding: 1rem; }
+            .title { font-size: 1rem; padding: 0.6rem 1rem; margin-bottom: 0.5rem; }
+            .main-item-display-text { font-size: 1.8rem; padding: 0.8rem 1.2rem; }
+            .counter { font-size: 0.8rem; padding: 0.6rem 1rem; }
+            
+            .current-item-info-text, .info-panel {
+                font-size: 0.85rem; padding: 0.8rem;
+                width: 90%; 
+                max-width: 95%; 
+                margin-bottom: 0.8rem;
+            }
+            .footer { max-width: 100%; }
+            .button { padding: 0.6rem 0.5rem; font-size: 0.75rem; letter-spacing: 0.03em; margin: 0 0.2rem; }
+            
+            .info-title { font-size: 1.1rem; }
+             .info-panel { 
+                max-height: 30vh; 
+                overflow-y: auto; 
+            }
+        }
+
+         @media (max-width: 480px) {
+            .title { font-size: 0.9rem; }
+            .main-item-display-text { font-size: 1.5rem; padding: 0.6rem 1rem; }
+
+            .header { flex-direction: column; align-items: center; }
+            .header-left { align-items: center; margin-bottom: 0.5rem; width: 100%; }
+            .title, .main-item-display-text { text-align: center; max-width: 90%;} 
+      
+            .counter_wrapper {display: none !important;}
+            .disclaimer {display: none !important;}
+            .disclaimer_small { display: block; }
+            
+            .current-item-info-text, .info-panel {
+                font-size: 0.8rem; line-height: 1.4; width: 95%; 
+            }
+            .footer-area { align-items: center; } 
+            .button { font-size: 0.65rem; padding: 0.5rem; }
+         }
+    </style>
+</head>
+<body>
+    <div class="radio-wave-background">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+
+    <div id="canvas-container"></div>
+    
+    <div class="grid-overlay"></div>
+    <div class.scanlines"></div>
+    
+    <div class="ui-container">
+        <div class="header">
+            <div class="header-left">
+                <div class="title">Máy phân tích đường</div>
+                               
+                <div id="main-item-display" class="main-item-display-text"></div> 
+            </div class="counter_wrapper">
+            <div class="counter">Sẵn sàng</div>
+            <div class="disclaimer"> Câu chuyện dữ liệu được thực hiện bởi Nguyễn Minh Quân như một dự án cá nhân. Các thông tin về đường trong thực phẩm được tạo bởi Gemini. Luôn luôn kiểm chứng những điều bạn đọc thấy trên mạng. <br> Trang web được thực hiện bằng Three.Js, GSAP, và phần lớn code được viết bởi Gemini vào ngày 09/05/2025. Các mô hình 3D được chuẩn bị bởi mình bằng Blender dựa trên tài nguyên Blenderkit và xuất ra dưới dạng gltf.  </div>
+            <div class="disclaimer_small"> Tạo ra bởi Minh Quân. Thông tin giả sử do AI cung cấp. Luôn kiểm chứng. <br> Three.Js, GSAP, Blender -> .gltf và phần lớn code được viết bởi Gemini vào ngày 09/05/2025. </div> 
+        </div>
+        
+        <div class="footer-area">
+            <div class="info-panel" id="info-panel"> 
+                <div class="info-title">PHÂN TÍCH ĐƯỜNG</div>
+                <div class="info-content">
+                    <p id="sugar-content-analysis-text">Đang kiểm tra lượng đường...</p> 
+                    <div class="progress-bar">
+                        <div class="progress" id="sugar-progress"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="current-item-info" class="current-item-info-text"></div> 
+            <div class="footer"> 
+                <div class="button" id="prev-btn">TRƯỚC</div>
+                <div class="button" id="analyze-btn">PHÂN TÍCH</div>
+                <div class="button" id="next-btn">SAU</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Configuration
+        const MIN_CAMERA_DISTANCE = 4.5; 
+        const CAMERA_PADDING_FACTOR = 1.5; 
+
+        // Force Field & Physics Parameters
+        const centerOfForce = new THREE.Vector3(0, 0, 0);
+        const forceStrength = 0.0012; 
+        const turbulenceStrength = 0.004;
+        const foodItemMaxVelocity = 0.035;
+        const sugarCubeMaxVelocity = 0.07;
+        const dampingFactor = 0.965; // Slightly less damping for more movement
+        const sugarCubeInitialSpeed = 0.20;
+        const sugarCubeRadius = 0.11; 
+        const sugarCubeMass = 0.1;
+        const foodItemBaseMass = 1;
+        const collisionRestitution = 0.25; // Bounciness
+        const maxSceneDistance = 5; // Soft boundary to pull things back
+        const maxSceneDistanceSq = maxSceneDistance * maxSceneDistance;
+
+        // ---- START NEW Z-AXIS CONTROL PARAMETERS ----
+        const TARGET_Z_PLANE = 0.0;      // The Z-coordinate objects will be pulled towards.
+        const MAX_Z_DELTA = 0.25;        // Maximum allowed Z deviation from TARGET_Z_PLANE.
+        const Z_PULL_STRENGTH = 0.1;     // How strongly objects are pulled towards TARGET_Z_PLANE.
+        const Z_VELOCITY_DAMPING = 0.85; // Damping specifically for Z-axis velocity to prevent oscillations.
+        // ---- END NEW Z-AXIS CONTROL PARAMETERS ----
+
+
+        // Three.js Setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 0.5;
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000, 0); 
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+        const canvasEl = renderer.domElement;
+
+   
+
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.0); 
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 5.3); 
+        directionalLight.position.set(3.5, 4.5, 5.5); 
+        scene.add(directionalLight);
+        const pointLight = new THREE.PointLight(0xffffff, 0.9, 160); 
+        pointLight.position.set(-3.5, -2.5, 4.5);
+        scene.add(pointLight);
+        
+        const foodData = [
+            {
+                name: "Giới thiệu", // Translated "Introduction"
+                displayText: "LƯỢNG ĐƯỜNG<br>TRONG THỰC PHẨM CỦA BẠN LÀ BAO NHIÊU?", // Translated "HOW MUCH SUGAR<br>IS IN YOUR FOOD?"
+                sugarContent: 0, sugarGrams: 0, modelType: "imagePlane", color: 0x00A3FF, boundingRadius: 1.0,
+                info: "Chào mừng! Công cụ này giúp bạn hình dung lượng đường xấp xỉ trong vài loại thực phẩm thường thấy. Sử dụng nút hoặc vuốt để xem. Lượng đường được biểu thị bằng các khối lập phương riêng lẻ, mỗi khối tương đương khoảng 1 gam." // Translated info text
+            },
+            {
+                name: "Thanh kẹo", // Translated "Candy Bar"
+                displayText: "MỘT THANH KẸO", // Translated "A CANDY BAR"
+                sugarContent: 56, sugarGrams: 28, modelType: "gltf", modelPath: "candy.gltf", boundingRadius: 0.9,
+                info: "Một thanh sô cô la 50g điển hình có thể chứa khoảng 28 gam đường. Tức là khoảng 7 muỗng cà phê! Bạn sẽ thấy 28 khối đường ở đây." // Translated info text
+            },
+            {
+                name: "Cam", // Translated "Orange"
+                displayText: "MỘT QUẢ CAM", // Translated "AN ORANGE"
+                sugarContent: 7, sugarGrams: 9, modelType: "gltf", modelPath: "orange.gltf", boundingRadius: 1.0,
+                info: "Một quả cam cỡ trung bình (khoảng 130g) chứa khoảng 9 gam đường tự nhiên, cùng với chất xơ và vitamin có lợi. Dĩ nhiên nước cam người ta pha có thêm đường nha bạn ơi!" // Translated info text
+            },
+            {
+                name: "Cà phê đá ", // Translated "Vietnamese Coffee"
+                displayText: "CÀ PHÊ ĐÁ", // Translated "VIETNAMESE<br>SUGARED COFFEE"
+                sugarContent: 10, sugarGrams: 5, modelType: "gltf", modelPath: "coffeecup.gltf", boundingRadius: 0.8,
+                info: "Một ly cà phê đá Việt Nam thông thường (khoảng 200ml) có thể chứa khoảng 5 gam đường - trong trường hợp bạn uống ít ngọt!" // Translated info text
+            },
+            {
+                name: "Trà sữa trân châu", // Translated "Bubble Tea"
+                displayText: "MỘT LY TRÀ SỮA<br>TRÂN CHÂU", // Translated "A BUBBLE TEA"
+                sugarContent: 7, sugarGrams: 35, modelType: "gltf", modelPath: "milktea.gltf", boundingRadius: 0.8,
+                info: "Một ly trà sữa trân châu 500ml tiêu chuẩn có thể chứa khoảng 35 gam đường, tùy thuộc vào topping và mức độ ngọt. Hãy quan sát 35 khối đường." // Translated info text
+            },
+            {
+                name: "Nước tăng lực", // Translated "Energy Drink"
+                displayText: "NƯỚC TĂNG LỰC", // Translated "ENERGY DRINK"
+                sugarContent: 19, sugarGrams: 62, modelType: "gltf", modelPath: "energy drink.gltf", boundingRadius: 0.8,
+                info: "Một chai nước tăng lực 330ml thường chứa khoảng 62 gam đường. Được hình dung bằng 62 khối đường." // Translated info text
+            },
+            {
+                name: "Lon nước ngọt", // Translated "Soda Can"
+                displayText: "LON NƯỚC NGỌT", // Translated "SODA CAN"
+                sugarContent: 10.6, sugarGrams: 35, modelType: "gltf", modelPath: "cokecan.gltf", boundingRadius: 0.8, // Adjust boundingRadius if needed
+                info: "Một lon cola 330ml thường chứa khoảng 35 gam đường, tương đương khoảng 9 muỗng cà phê. Hãy xem 35 khối đường." // Translated info text
+            },
+            {
+                name: "Lời kết", // Translated "Final Thoughts"
+                displayText: "HÃY CHỌN LỰA THÔNG MINH.<br>ƯU TIÊN SỨC KHỎE CỦA BẠN.", // Translated "MAKE INFORMED CHOICES.<br>PRIORITIZE YOUR HEALTH."
+                sugarContent: 0, sugarGrams: 0, modelType: "heart", color: 0x00DDAA, boundingRadius: 0.8,
+                info: "WHO khuyến nghị người lớn và trẻ em giảm lượng đường tự do hàng ngày xuống dưới 10% tổng năng lượng tiêu thụ (khoảng 50g). Việc giảm thêm xuống dưới 5% (khoảng 25g hoặc 6 muỗng cà phê mỗi ngày) sẽ mang lại lợi ích sức khỏe bổ sung. Hãy chú ý đến số gam đường trong chế độ ăn uống của bạn." // Translated info text
+            }
+        ];
+        const foodModels = [];
+        const sugarModels = []; 
+
+        const sugarMaterial = new THREE.MeshPhongMaterial({ 
+            color: 0xFFFFFF, 
+            transparent: true, 
+            opacity: 0.95, 
+            emissive: 0x33ffee, 
+            emissiveIntensity: 1, 
+            shininess: 100 
+        });
+        const sugarCubeGeometry = new THREE.BoxGeometry(0.25, 0.25, 0.25); 
+
+        const loader = new THREE.GLTFLoader();
+
+        foodData.forEach((item, index) => {
+            let foodModel;
+            const modelScale = 1; // Adjust scale as needed for your GLTF
+
+            if (item.modelType === "gltf") {
+                scene.remove(foodModel);
+                // Load GLTF model
+                loader.load(item.modelPath, function (gltf) {
+                const wrapper = new THREE.Group(); // Acts as the physics container
+                const model = gltf.scene;
+                
+                
+
+                model.traverse((child) => {
+                if (child.isMesh && child.material) {
+                    const materials = Array.isArray(child.material) ? child.material : [child.material];
+                    materials.forEach((mat) => {
+                        if (mat.alphaMap || mat.transparent || mat.opacity < 1.0) {
+                            mat.transparent = true;
+                            mat.depthWrite = false;
+         
+                        }
+                    });
+                }
+            });
+
+
+                wrapper.add(model);
+                scene.remove(foodModel);
+                wrapper.scale.set(1, 1, 1); // Apply scaling here if needed
+
+                wrapper.userData.velocity = new THREE.Vector3();
+                wrapper.userData.mass = foodItemBaseMass * (item.boundingRadius || 1.0);
+                wrapper.userData.radius = item.boundingRadius || 1.0;
+                wrapper.userData.lastPosition = new THREE.Vector3();
+                wrapper.userData.isDraggable = true;
+
+                scene.add(wrapper);
+                foodModels.splice(index, 1, wrapper);
+                wrapper.visible = (index === currentSlide);
+
+                updateCameraPosition();
+            });
+
+                // Create a temporary placeholder mesh while loading
+                const placeholderGeometry = new THREE.BoxGeometry(1, 1, 1); // Or any placeholder
+                const placeholderMaterial = new THREE.MeshBasicMaterial({ color: 0x555555, transparent: true, opacity: 0 });
+                foodModel = new THREE.Mesh(placeholderGeometry, placeholderMaterial);
+                foodModel.visible = false; // Keep placeholder invisible
+                scene.add(foodModel);
+                foodModels.push(foodModel); // Add placeholder to maintain index alignment
+                // The loaded GLTF scene will replace this placeholder in the array and scene
+                console.log(`Placeholder created for GLTF model for ${item.name}`);
+
+
+            }  else if (item.modelType === "imagePlane") { // Add this condition for your image plane
+                const textureLoader = new THREE.TextureLoader();
+                const planeGeometry = new THREE.PlaneGeometry(6, 6); // Adjust size as needed
+                const mainMaterial = new THREE.MeshBasicMaterial({ // Use MeshBasicMaterial or MeshPhongMaterial
+                    map: textureLoader.load('/still-life-xilitol-sweetener.png'),
+                    transparent: true, // Needed if your PNG has transparency
+                    side: THREE.DoubleSide // Display on both sides
+                });
+                foodModel = new THREE.Mesh(planeGeometry, mainMaterial);
+                foodModel.visible = false; // Initially hide
+                foodModel.userData.velocity = new THREE.Vector3();
+                foodModel.userData.mass = foodItemBaseMass * (item.boundingRadius || 1.0); // Adjust mass if needed
+                foodModel.userData.radius = item.boundingRadius || 1.0; // Adjust radius if needed
+                foodModel.userData.lastPosition = new THREE.Vector3();
+                foodModel.userData.isDraggable = true; // Make it draggable if desired
+                scene.add(foodModel);
+                foodModels.push(foodModel); // Add to your foodModels array
+            }else {
+                // Existing logic for sphere, box, cylinder, heart
+                let geometry;
+                const mainMaterial = new THREE.MeshPhongMaterial({
+                    color: item.color,
+                    transparent: false,
+                    opacity: 1,
+                    shininess: 70,
+                    specular: 0x222222
+                });
+
+                if (item.modelType === "sphere") geometry = new THREE.SphereGeometry(1 * modelScale, 32, 24);
+                else if (item.modelType === "box") geometry = new THREE.BoxGeometry(1.8 * modelScale, 0.8 * modelScale, 0.3 * modelScale);
+                else if (item.modelType === "cylinder") geometry = new THREE.CylinderGeometry(0.6 * modelScale, 0.6 * modelScale, 1.5 * modelScale, 32);
+                else if (item.modelType === "heart") {
+                    const heartShape = new THREE.Shape();
+                    const s = 0.8 * modelScale;
+                    heartShape.moveTo(0, s * 0.5);
+                    heartShape.bezierCurveTo(0, s * 0.9, -s * 0.7, s * 1.2, -s, s * 0.5);
+                    heartShape.bezierCurveTo(-s * 1.3, -s * 0.1, -s * 0.7, -s * 0.8, 0, -s * 1.2);
+                    heartShape.bezierCurveTo(s * 0.7, -s * 0.8, s * 1.3, -s * 0.1, s, s * 0.5);
+                    heartShape.bezierCurveTo(s * 0.7, s * 1.2, 0, s * 0.9, 0, s * 0.5);
+                    const extrudeSettings = { depth: 0.4 * modelScale, bevelEnabled: true, bevelSegments: 2, steps: 1, bevelSize: 0.05 * modelScale, bevelThickness: 0.05 * modelScale };
+                    geometry = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
+                    geometry.center();
+                } else geometry = new THREE.SphereGeometry(1 * modelScale, 32, 24);
+
+
+                foodModel = new THREE.Mesh(geometry, mainMaterial);
+                foodModel.visible = false;
+                foodModel.userData.velocity = new THREE.Vector3();
+                foodModel.userData.mass = foodItemBaseMass * (item.boundingRadius || 1.0);
+                foodModel.userData.radius = item.boundingRadius || 1.0;
+                foodModel.userData.lastPosition = new THREE.Vector3();
+                foodModel.userData.isDraggable = true;
+                scene.add(foodModel);
+                foodModels.push(foodModel);
+            }
+
+
+            const sugarCubesGroup = new THREE.Group();
+            if (item.sugarGrams > 0) {
+                for (let i = 0; i < item.sugarGrams; i++) {
+                    const sugarCube = new THREE.Mesh(sugarCubeGeometry, sugarMaterial.clone());
+                    sugarCube.userData.velocity = new THREE.Vector3();
+                    sugarCube.userData.mass = sugarCubeMass;
+                    sugarCube.userData.radius = sugarCubeRadius;
+                    sugarCube.userData.lastPosition = new THREE.Vector3();
+                    sugarCube.userData.isDraggable = true;
+                    sugarCubesGroup.add(sugarCube);
+                }
+            }
+            sugarCubesGroup.visible = false;
+            scene.add(sugarCubesGroup);
+            sugarModels.push(sugarCubesGroup);
+        });
+        
+        let currentSlide = 0;
+        
+        function applyPhysics(object, maxVel, isFoodItem = false) {
+            if (draggableHandler && draggableHandler.draggedObject === object) return; // Don't apply physics if being dragged
+
+            object.userData.lastPosition.copy(object.position); // Store last position for collision
+
+            const directionToCenter = centerOfForce.clone().sub(object.position);
+            let distToCenterSq = object.position.lengthSq();
+            
+            let effectiveForceStrength = forceStrength;
+            if (distToCenterSq > 4.0) { // Stronger pull if far (dist > 2)
+                effectiveForceStrength *= (Math.sqrt(distToCenterSq) / 1.5);
+            } else if (distToCenterSq < 0.25 && !isFoodItem) { // Weaker for sugar cubes very close to center (dist < 0.5)
+                effectiveForceStrength *= 0.05;
+            } else if (isFoodItem && distToCenterSq < 0.01) { // Food item very central
+                object.userData.velocity.multiplyScalar(0.7); // Extra damping at center
+            }
+            if (distToCenterSq > maxSceneDistanceSq) {
+                object.userData.velocity.addScaledVector(directionToCenter.normalize(), 0.01); // Extra nudge back
+            }
+
+            const force = directionToCenter.normalize().multiplyScalar(effectiveForceStrength * (1 + Math.random() * 0.25));
+            object.userData.velocity.addScaledVector(force, 1 / object.userData.mass); 
+
+            const turbulence = new THREE.Vector3(
+                (Math.random() - 0.5) * turbulenceStrength,
+                (Math.random() - 0.5) * turbulenceStrength,
+                (Math.random() - 0.5) * turbulenceStrength // Original turbulence includes Z
+            );
+            object.userData.velocity.addScaledVector(turbulence, 1 / object.userData.mass); 
+
+            // ---- START NEW Z-AXIS CONTROL ----
+            // Force to pull object towards the TARGET_Z_PLANE
+            const z_diff = object.position.z - TARGET_Z_PLANE;
+            object.userData.velocity.z -= z_diff * Z_PULL_STRENGTH;
+
+            // Apply specific damping to Z-axis velocity to stabilize it around the target plane
+            object.userData.velocity.z *= Z_VELOCITY_DAMPING;
+            // ---- END NEW Z-AXIS CONTROL ----
+
+            object.userData.velocity.multiplyScalar(dampingFactor); // General damping for overall velocity
+
+            if (object.userData.velocity.lengthSq() > maxVel * maxVel) {
+                object.userData.velocity.normalize().multiplyScalar(maxVel);
+            }
+            object.position.add(object.userData.velocity);
+
+            // ---- START CLAMPING Z POSITION ----
+            // After position is updated, clamp it to within MAX_Z_DELTA of TARGET_Z_PLANE
+            object.position.z = Math.max(TARGET_Z_PLANE - MAX_Z_DELTA, Math.min(TARGET_Z_PLANE + MAX_Z_DELTA, object.position.z));
+            
+            // If an object hits the Z clamp boundary, its Z velocity should be significantly reduced to prevent "sticking" or jitter
+            if (object.position.z === (TARGET_Z_PLANE - MAX_Z_DELTA) && object.userData.velocity.z < 0) {
+                object.userData.velocity.z *= 0.1; 
+            }
+            if (object.position.z === (TARGET_Z_PLANE + MAX_Z_DELTA) && object.userData.velocity.z > 0) {
+                object.userData.velocity.z *= 0.1; 
+            }
+            // ---- END CLAMPING Z POSITION ----
+        }
+
+        function handleCollision(obj1, obj2) {
+            if (!obj1 || !obj2) return;
+
+            obj1.updateMatrixWorld(true);
+            obj2.updateMatrixWorld(true);
+
+            const box1 = new THREE.Box3().setFromObject(obj1);
+            const box2 = new THREE.Box3().setFromObject(obj2);
+
+            if (!box1.isEmpty() && !box2.isEmpty() && box1.intersectsBox(box2)) {
+                const overlapBox = new THREE.Box3().copy(box1).intersect(box2);
+                const overlapSize = new THREE.Vector3();
+                overlapBox.getSize(overlapSize);
+
+                let minOverlap = Infinity;
+                const collisionAxis = new THREE.Vector3();
+
+                if (overlapSize.x < minOverlap) { minOverlap = overlapSize.x; collisionAxis.set(1, 0, 0); }
+                if (overlapSize.y < minOverlap) { minOverlap = overlapSize.y; collisionAxis.set(0, 1, 0); }
+                if (overlapSize.z < minOverlap) { minOverlap = overlapSize.z; collisionAxis.set(0, 0, 1); }
+
+                const center1 = new THREE.Vector3();
+                const center2 = new THREE.Vector3();
+                box1.getCenter(center1);
+                box2.getCenter(center2);
+                const centerDiff = center2.clone().sub(center1);
+                if (collisionAxis.dot(centerDiff) < 0) collisionAxis.negate();
+
+                const separationVector = collisionAxis.clone().multiplyScalar(minOverlap);
+                const totalMass = obj1.userData.mass + obj2.userData.mass;
+                if (totalMass > 0) {
+                    obj1.position.sub(separationVector.clone().multiplyScalar(obj2.userData.mass / totalMass));
+                    obj2.position.add(separationVector.clone().multiplyScalar(obj1.userData.mass / totalMass));
+                }
+
+                const rv = obj2.userData.velocity.clone().sub(obj1.userData.velocity);
+                const velAlongNormal = rv.dot(collisionAxis);
+                if (velAlongNormal > 0) return;
+
+                const j = -(1 + collisionRestitution) * velAlongNormal;
+                const impulseMag = j / (1 / obj1.userData.mass + 1 / obj2.userData.mass);
+                const impulse = collisionAxis.clone().multiplyScalar(impulseMag);
+
+                obj1.userData.velocity.sub(impulse.clone().divideScalar(obj1.userData.mass));
+                obj2.userData.velocity.add(impulse.clone().divideScalar(obj2.userData.mass));
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            // const dt = 0.016; 
+
+            const currentFoodItemData = foodData[currentSlide];
+            const currentFoodModel = foodModels[currentSlide];
+
+            if (currentFoodModel && currentFoodModel.visible) {
+                applyPhysics(currentFoodModel, foodItemMaxVelocity, true);
+                if (currentFoodItemData.modelType !== 'heart') {
+                    if (!(draggableHandler && draggableHandler.draggedObject === currentFoodModel)){ 
+                        currentFoodModel.rotation.x += 0.0012 * (1 + Math.sin(Date.now()*0.0005));
+                        currentFoodModel.rotation.y += 0.0018 * (1 + Math.cos(Date.now()*0.0005));
+                    }
+                } else { 
+                     if (!(draggableHandler && draggableHandler.draggedObject === currentFoodModel)){
+                        currentFoodModel.rotation.x = Math.PI * 0.1 + Math.sin(Date.now() * 0.0007) * 0.1;
+                        currentFoodModel.rotation.y += 0.005;
+                     }
+                }
+            }
+            
+            const sugarCubesGroup = sugarModels[currentSlide];
+            if (sugarCubesGroup && sugarCubesGroup.visible) {
+                sugarCubesGroup.children.forEach(cube => {
+                    applyPhysics(cube, sugarCubeMaxVelocity);
+                });
+
+                for (let i = 0; i < sugarCubesGroup.children.length; i++) {
+                    const cubeA = sugarCubesGroup.children[i];
+                    for (let j = i + 1; j < sugarCubesGroup.children.length; j++) {
+                        const cubeB = sugarCubesGroup.children[j];
+                        handleCollision(cubeA, cubeB);
+                    }
+                    if (currentFoodModel && currentFoodModel.visible) {
+                        handleCollision(cubeA, currentFoodModel);
+                    }
+                }
+            }
+            if (draggableHandler) draggableHandler.update(); 
+            renderer.render(scene, camera);
+        }
+
+        class DraggableObjectsHandler {
+            constructor(camera, domElement, sceneObjectsGetter) {
+                this.camera = camera;
+                this.domElement = domElement;
+                this.sceneObjectsGetter = sceneObjectsGetter; 
+                this.raycaster = new THREE.Raycaster();
+                this.mouse = new THREE.Vector2();
+                this.dragPlane = new THREE.Plane();
+                this.dragOffset = new THREE.Vector3();
+                this.intersectionPoint = new THREE.Vector3();
+                this.draggedObject = null;
+                this.isDragging = false;
+                this.lastMousePosition = new THREE.Vector2(); 
+
+                this.domElement.addEventListener('mousedown', this.onMouseDown.bind(this), false);
+                this.domElement.addEventListener('mousemove', this.onMouseMove.bind(this), false);
+                this.domElement.addEventListener('mouseup', this.onMouseUp.bind(this), false);
+                this.domElement.addEventListener('mouseout', this.onMouseUp.bind(this), false); 
+
+                this.domElement.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+                this.domElement.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+                this.domElement.addEventListener('touchend', this.onTouchEnd.bind(this), false);
+            }
+
+            updateMouseCoordinates(event) {
+                const rect = this.domElement.getBoundingClientRect();
+                this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+                this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            }
+             updateTouchCoordinates(event) {
+                const rect = this.domElement.getBoundingClientRect();
+                this.mouse.x = ((event.touches[0].clientX - rect.left) / rect.width) * 2 - 1;
+                this.mouse.y = -((event.touches[0].clientY - rect.top) / rect.height) * 2 + 1;
+            }
+
+
+            onMouseDown(event) {
+                this.updateMouseCoordinates(event);
+                this.raycaster.setFromCamera(this.mouse, this.camera);
+                const intersects = this.raycaster.intersectObjects(this.sceneObjectsGetter(), true);
+
+                if (intersects.length > 0) {
+                    let intersectedObj = intersects[0].object;
+                    while (intersectedObj && (!intersectedObj.userData || !intersectedObj.userData.isDraggable)) {
+                        if (!intersectedObj.parent) break;
+                        intersectedObj = intersectedObj.parent;
+                    }
+
+                    if (intersectedObj && intersectedObj.userData && intersectedObj.userData.isDraggable) {
+                        this.isDragging = true;
+                        this.draggedObject = intersectedObj;
+                        this.domElement.style.cursor = 'grabbing';
+
+                        this.dragPlane.setFromNormalAndCoplanarPoint(
+                            this.camera.getWorldDirection(this.dragPlane.normal),
+                            this.draggedObject.position
+                        );
+                        if (this.raycaster.ray.intersectPlane(this.dragPlane, this.intersectionPoint)) {
+                            this.dragOffset.copy(this.intersectionPoint).sub(this.draggedObject.position);
+                        }
+                        this.lastMousePosition.set(event.clientX, event.clientY);
+                        if (this.draggedObject.userData && this.draggedObject.userData.velocity) {
+                             this.draggedObject.userData.velocity.set(0,0,0); 
+                        }
+                    }
+                }
+            }
+
+            onMouseMove(event) {
+                this.updateMouseCoordinates(event);
+                if (this.isDragging && this.draggedObject) {
+                    this.raycaster.setFromCamera(this.mouse, this.camera);
+                    if (this.raycaster.ray.intersectPlane(this.dragPlane, this.intersectionPoint)) {
+                        this.draggedObject.position.copy(this.intersectionPoint.sub(this.dragOffset));
+                    }
+                    this.lastMousePosition.set(event.clientX, event.clientY);
+                } else { 
+                    this.raycaster.setFromCamera(this.mouse, this.camera);
+                    const intersects = this.raycaster.intersectObjects(this.sceneObjectsGetter(), true);
+                    let onDraggable = false;
+                     if (intersects.length > 0) {
+                        let hoveredObj = intersects[0].object;
+                        while (hoveredObj && (!hoveredObj.userData || !hoveredObj.userData.isDraggable)) {
+                           if (!hoveredObj.parent) break;
+                           hoveredObj = hoveredObj.parent;
+                        }
+                        if (hoveredObj && hoveredObj.userData && hoveredObj.userData.isDraggable) {
+                            onDraggable = true;
+                        }
+                    }
+                    this.domElement.style.cursor = onDraggable ? 'grab' : 'default';
+                }
+            }
+
+            onMouseUp(event) {
+                if (this.isDragging && this.draggedObject) {
+                     if (this.draggedObject.userData && this.draggedObject.userData.velocity) {
+                        const dx = event.clientX - this.lastMousePosition.x;
+                        const dy = event.clientY - this.lastMousePosition.y;
+                        this.draggedObject.userData.velocity.x = dx * 0.001;
+                        this.draggedObject.userData.velocity.y = -dy * 0.001; 
+                        // Z velocity upon release will be handled by the applyPhysics Z-control.
+                     }
+                }
+                this.isDragging = false;
+                this.draggedObject = null;
+                this.domElement.style.cursor = 'default';
+                
+            }
+            
+            onTouchStart(event) {
+                if (event.touches.length === 1) {
+                    this.updateTouchCoordinates(event);
+                    const pseudoMouseEvent = { clientX: event.touches[0].clientX, clientY: event.touches[0].clientY };
+                    this.onMouseDown(pseudoMouseEvent); 
+                }
+            }
+            onTouchMove(event) {
+                if (event.touches.length === 1 && this.isDragging) {
+                    this.updateTouchCoordinates(event);
+                    const pseudoMouseEvent = { clientX: event.touches[0].clientX, clientY: event.touches[0].clientY };
+                    this.onMouseMove(pseudoMouseEvent);
+                }
+            }
+            onTouchEnd(event) {
+                 const pseudoMouseEvent = { clientX: this.lastMousePosition.x, clientY: this.lastMousePosition.y }; 
+                this.onMouseUp(pseudoMouseEvent);
+            }
+
+
+            update() { 
+                if (!this.isDragging) {
+                    // Simulate a mouse move event for hover effects if the mouse data is available.
+                    // This ensures hover states are updated even if the mouse isn't actively moving.
+                    // Requires a mechanism to know the current mouse position without an actual event,
+                    // which `lastMousePosition` provides.
+                    const pseudoMouseEvent = {clientX: this.lastMousePosition.x, clientY: this.lastMousePosition.y};
+                    // Update mouse coordinates internally before checking for hover
+                    const rect = this.domElement.getBoundingClientRect();
+                    this.mouse.x = ((pseudoMouseEvent.clientX - rect.left) / rect.width) * 2 - 1;
+                    this.mouse.y = -((pseudoMouseEvent.clientY - rect.top) / rect.height) * 2 + 1;
+                    
+                    this.raycaster.setFromCamera(this.mouse, this.camera);
+                    const intersects = this.raycaster.intersectObjects(this.sceneObjectsGetter(), true);
+                    let onDraggable = false;
+                     if (intersects.length > 0) {
+                        let hoveredObj = intersects[0].object;
+                        while (hoveredObj && (!hoveredObj.userData || !hoveredObj.userData.isDraggable)) {
+                           if (!hoveredObj.parent) break;
+                           hoveredObj = hoveredObj.parent;
+                        }
+                        if (hoveredObj && hoveredObj.userData && hoveredObj.userData.isDraggable) {
+                            onDraggable = true;
+                        }
+                    }
+                    this.domElement.style.cursor = onDraggable ? 'grab' : 'default';
+                }
+            }
+        }
+        
+        let draggableHandler; 
+
+        function getDraggableSceneObjects() {
+            const list = [];
+            if (foodModels[currentSlide] && foodModels[currentSlide].visible) {
+                list.push(foodModels[currentSlide]);
+            }
+            if (sugarModels[currentSlide] && sugarModels[currentSlide].visible) {
+                sugarModels[currentSlide].children.forEach(cube => list.push(cube));
+            }
+            return list;
+        }
+        
+
+        function updateCameraPosition() {
+            if (!camera) return; 
+
+            const combinedBox = new THREE.Box3(); 
+            let objectsToFrameExist = false;
+
+            const addObjectToCombinedBox = (object) => {
+                if (object && object.visible) {
+                    object.updateMatrixWorld(true); 
+                    const tempBox = new THREE.Box3(); 
+                    tempBox.setFromObject(object); 
+                    if (!tempBox.isEmpty()) {
+                        combinedBox.union(tempBox);
+                        objectsToFrameExist = true;
+                    }
+                }
+            };
+            
+            if (foodModels[currentSlide] && foodModels[currentSlide].visible) {
+                addObjectToCombinedBox(foodModels[currentSlide]);
+            }
+
+            const sugarCubesGroup = sugarModels[currentSlide];
+            if (sugarCubesGroup && sugarCubesGroup.visible && sugarCubesGroup.children.length > 0) {
+                 addObjectToCombinedBox(sugarCubesGroup); 
+            }
+
+            if (!objectsToFrameExist || combinedBox.isEmpty()) {
+                // Default camera position if no objects are visible or box is empty
+                const targetCameraPosition = new THREE.Vector3(0,0,7);
+                gsap.to(camera.position, {
+                    x: targetCameraPosition.x,
+                    y: targetCameraPosition.y,
+                    z: targetCameraPosition.z,
+                    duration: 0.7,
+                    ease: "power2.out",
+                    onUpdate: () => { camera.lookAt(scene.position); }
+                });
+                return;
+            }
+
+            const boundingBoxSize = new THREE.Vector3();
+            combinedBox.getSize(boundingBoxSize); 
+
+            const boundingBoxCenter = new THREE.Vector3();
+            combinedBox.getCenter(boundingBoxCenter); 
+
+            let effectiveCameraDistance;
+
+            if (boundingBoxSize.lengthSq() > 0.001) { 
+                const fovInRadians = THREE.MathUtils.degToRad(camera.fov);
+                const aspect = camera.aspect;
+                const distForHeight = boundingBoxSize.y / 2 / Math.tan(fovInRadians / 2);
+                const distForWidth = boundingBoxSize.x / 2 / Math.tan(fovInRadians / 2 * aspect) ; 
+                effectiveCameraDistance = Math.max(distForHeight, distForWidth, MIN_CAMERA_DISTANCE); 
+            } else {
+                effectiveCameraDistance = MIN_CAMERA_DISTANCE; 
+            }
+            
+            effectiveCameraDistance *= CAMERA_PADDING_FACTOR; 
+
+            // Target camera to look at the center of the bounding box, offset by the calculated Z distance
+            // The X and Y of the camera target should align with the boundingBoxCenter for a direct view.
+            const targetCameraPosition = new THREE.Vector3(
+                boundingBoxCenter.x,
+                boundingBoxCenter.y,
+                boundingBoxCenter.z + effectiveCameraDistance // Camera is behind the objects relative to their center Z
+            );
+            
+            // Also target the lookAt to the center of the bounding box
+            const targetLookAt = boundingBoxCenter.clone();
+            
+            if (!camera.position.equals(targetCameraPosition)) {
+                 gsap.to(camera.position, {
+                    x: targetCameraPosition.x,
+                    y: targetCameraPosition.y,
+                    z: targetCameraPosition.z,
+                    duration: 0.7,
+                    ease: "power2.out",
+                    onUpdate: () => { 
+                        if (!draggableHandler || !draggableHandler.isDragging) {
+                            camera.lookAt(targetLookAt); 
+                        }
+                    } 
+                });
+            }
+            // If not animating position but lookAt needs to change (e.g. objects moved without camera moving)
+            // Ensure lookAt is also animated or set if not dragging
+            if (!draggableHandler || !draggableHandler.isDragging) {
+                // Simple direct lookAt if not also animating position, or use GSAP for smoother lookAt transition
+                // For simplicity here, if camera position isn't moving much but lookAt target changed, update lookAt.
+                 // Check if current lookAt needs update
+                let tempLookAt = new THREE.Vector3();
+                camera.getWorldDirection(tempLookAt).multiplyScalar(10).add(camera.position); // Approx current look at point
+                if (tempLookAt.distanceToSquared(targetLookAt) > 0.01) { // If lookAt significantly different
+                     // camera.lookAt(targetLookAt); // Direct, or could be animated
+                     // GSAP for lookAt is more complex as it's not a direct property like position.
+                     // Often handled by having camera target an invisible object that is moved, and camera always looks at it.
+                     // For this setup, direct lookAt on update is usually fine if position is also tweening.
+                }
+            }
+        }
+
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            updateCameraPosition(); 
+        });
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const swipeThreshold = 50; 
+        document.addEventListener('touchstart', (e) => {
+             if (draggableHandler && draggableHandler.isDragging) return; 
+            if (e.target.closest('.button, .info-panel')) return; 
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true }); 
+        document.addEventListener('touchend', (e) => {
+             if (draggableHandler && draggableHandler.isDragging) return;
+            if (e.target.closest('.button, .info-panel')) return;
+            if (touchStartX === 0) return; 
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        function handleSwipe() {
+            if (touchEndX < touchStartX - swipeThreshold) { 
+                if (currentSlide < foodData.length - 1) { currentSlide++; updateSlide(); }
+            } else if (touchEndX > touchStartX + swipeThreshold) { 
+                if (currentSlide > 0) { currentSlide--; updateSlide(); }
+            }
+            touchStartX = 0; touchEndX = 0;
+        }
+        
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const infoPanelEl = document.getElementById('info-panel'); 
+        const sugarContentAnalysisTextEl = document.getElementById('sugar-content-analysis-text'); 
+        const sugarProgress = document.getElementById('sugar-progress');
+        const counterEl = document.querySelector('.counter');
+        const currentItemInfoEl = document.getElementById('current-item-info'); 
+        const mainItemDisplayEl = document.getElementById('main-item-display'); 
+        
+        let analyzed = false;
+        
+        function updateSlide() {
+            const currentFoodItemData = foodData[currentSlide];
+
+            mainItemDisplayEl.classList.remove('active');
+            currentItemInfoEl.classList.remove('active'); 
+            infoPanelEl.classList.remove('active'); 
+
+            setTimeout(() => { 
+                mainItemDisplayEl.innerHTML = currentFoodItemData.displayText; 
+                mainItemDisplayEl.classList.add('active');
+
+                if (currentSlide === foodData.length - 1) {
+                    mainItemDisplayEl.classList.add('health-message-style');
+                } else {
+                    mainItemDisplayEl.classList.remove('health-message-style');
+                }
+
+                if (currentFoodItemData.info) {
+                    currentItemInfoEl.textContent = currentFoodItemData.info;
+                    currentItemInfoEl.style.display = 'block'; 
+                     setTimeout(() => currentItemInfoEl.classList.add('active'), 50); 
+                } else {
+                    currentItemInfoEl.style.display = 'none';
+                    currentItemInfoEl.classList.remove('active');
+                }
+            }, 200); 
+
+            foodModels.forEach((model, index) => {
+                model.visible = (index === currentSlide);
+                if (index === currentSlide) {
+                    // Initialize position respecting the TARGET_Z_PLANE for consistency
+                    model.position.set(
+                        (Math.random() - 0.5) * 0.1, // Slight random X
+                        (Math.random() - 0.5) * 0.1, // Slight random Y
+                        TARGET_Z_PLANE + (Math.random() - 0.5) * 0.05 // Start near the target Z plane
+                    );
+                    model.userData.velocity.set(0,0,0); 
+                    model.rotation.set(0, Math.random() * Math.PI * 0.1, 0); 
+                }
+            });
+            sugarModels.forEach(group => {
+                group.visible = false; 
+                group.children.forEach(cube => { 
+                    cube.userData.velocity.set(0,0,0);
+                    cube.position.set(1000,1000,1000); 
+                });
+            }); 
+            
+            analyzed = false; 
+            gsap.to(sugarProgress, { width: "0%", duration: 0.1 }); 
+            if (draggableHandler) draggableHandler.draggedObject = null; 
+
+
+            updateCameraPosition(); 
+            
+            if (currentSlide === 0) {
+                counterEl.textContent = "SẴN SÀNG";
+                analyzeBtn.classList.add('disabled'); 
+            } else if (currentSlide === foodData.length - 1) {
+                counterEl.textContent = "CHÚC BẠN SỨC KHỎE!";
+                analyzeBtn.classList.add('disabled'); 
+            } else {
+                counterEl.textContent = `TRANG ${currentSlide} TRÊN ${foodData.length - 2}`; 
+                analyzeBtn.classList.remove('disabled'); 
+                 if (currentFoodItemData.sugarGrams === 0) { 
+                    analyzeBtn.classList.add('disabled');
+                }
+            }
+
+            prevBtn.classList.toggle('disabled', currentSlide === 0);
+            nextBtn.classList.toggle('disabled', currentSlide === foodData.length - 1);
+        }
+        
+        prevBtn.addEventListener('click', () => {
+            if (currentSlide > 0) { currentSlide--; updateSlide(); }
+        });
+        nextBtn.addEventListener('click', () => {
+            if (currentSlide < foodData.length - 1) { currentSlide++; updateSlide(); }
+        });
+
+        analyzeBtn.addEventListener('click', () => {
+            if (currentSlide === 0 || currentSlide === foodData.length - 1 || analyzed || foodData[currentSlide].sugarGrams === 0) return;
+            
+            analyzed = true; 
+            analyzeBtn.classList.add('disabled'); 
+            infoPanelEl.classList.add('active'); 
+            
+            const currentFoodItem = foodData[currentSlide];
+            document.querySelector('#info-panel .info-title').textContent = `${currentFoodItem.name} - kết quả phân tích`;
+            sugarContentAnalysisTextEl.textContent = `Chứa khoảng. ${currentFoodItem.sugarGrams}g đường (${currentFoodItem.sugarContent}% trên tổng khối lượng thường thấy).`;
+            
+            gsap.to(sugarProgress, { width: `${currentFoodItem.sugarContent}%`, duration: 1.5, ease: "power2.inOut" });
+            
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    
+                }
+            });
+
+            const foodModel = foodModels[currentSlide];
+             if (foodModel && foodModel.userData.velocity) { 
+                const nudgeStrength = 0.05 + Math.random() * 0.05;
+                // Nudge primarily in X/Y, less in Z initially, Z will be controlled by applyPhysics
+                foodModel.userData.velocity.add(
+                    new THREE.Vector3(
+                        (Math.random() - 0.5) * nudgeStrength, 
+                        (Math.random() - 0.5) * nudgeStrength, 
+                        (Math.random() - 0.5) * nudgeStrength * 0.2 // Smaller initial Z nudge
+                    ).divideScalar(foodModel.userData.mass)
+                );
+            }
+
+            const sugarCubesGroup = sugarModels[currentSlide];
+            if (sugarCubesGroup && currentFoodItem.sugarGrams > 0) {
+                sugarCubesGroup.visible = true;
+                const basePosition = foodModels[currentSlide] ? foodModels[currentSlide].position.clone() : new THREE.Vector3(0,0,TARGET_Z_PLANE);
+                
+                sugarCubesGroup.children.forEach((cube, index) => {
+                    const angle = Math.random() * Math.PI * 2; 
+                    const yAngle = (Math.random() - 0.5) * Math.PI; 
+                    const radius = 0.1 + Math.random() * 0.2; 
+                    
+                    // Initialize sugar cubes closer to the TARGET_Z_PLANE
+                    cube.position.set(
+                        basePosition.x + Math.cos(angle) * Math.cos(yAngle) * radius,
+                        basePosition.y + Math.sin(yAngle) * radius + (Math.random()-0.5) * 0.1,
+                        basePosition.z + Math.sin(angle) * Math.cos(yAngle) * radius * 0.5 // Reduce initial Z spread
+                    );
+                     // Ensure cube starts within or very near the MAX_Z_DELTA from TARGET_Z_PLANE
+                    cube.position.z = Math.max(TARGET_Z_PLANE - MAX_Z_DELTA*0.5, Math.min(TARGET_Z_PLANE + MAX_Z_DELTA*0.5, cube.position.z));
+
+
+                    cube.scale.set(0.01, 0.01, 0.01); 
+                    
+                    const randomDirection = new THREE.Vector3(
+                        (Math.random() - 0.5), 
+                        (Math.random() - 0.5), 
+                        (Math.random() - 0.5) * 0.3 // Reduce initial Z velocity component
+                    ).normalize();
+                    cube.userData.velocity.copy(randomDirection).multiplyScalar(sugarCubeInitialSpeed * (1.0 + Math.random() * 0.7) );
+
+                    tl.to(cube.scale, {
+                        x: 1, y: 1, z: 1,
+                        duration: 0.9 + Math.random() * 0.5, 
+                        ease: "elastic.out(1, 0.55)",
+                        delay: index * 0.01
+                    }, 0.05); 
+                });
+            }
+            updateCameraPosition(); 
+
+            try { 
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator(); const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode); gainNode.connect(audioContext.destination);
+                oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(280, audioContext.currentTime); 
+                gainNode.gain.setValueAtTime(0.08, audioContext.currentTime); 
+                oscillator.frequency.exponentialRampToValueAtTime(140, audioContext.currentTime + 0.25);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.25);
+                oscillator.start(); oscillator.stop(audioContext.currentTime + 0.3);
+            } catch (e) { console.warn("Web Audio API sound effect failed.", e); }
+        });
+        
+        draggableHandler = new DraggableObjectsHandler(camera, renderer.domElement, getDraggableSceneObjects);
+        
+        updateSlide(); 
+        animate(); 
+    </script>
+</body>
+</html>

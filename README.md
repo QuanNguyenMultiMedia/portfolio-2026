@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Quan Nguyen — Portfolio 2026
 
-## Getting Started
+A premium, hardware-accelerated 3D scroll-based portfolio and creative sandbox built following a **Tech-Luxe Editorial** design system. The system integrates cinematic architectural minimalism with precise technical details, monospace telemetry, and high-performance WebGL/CSS 3D perspective animations.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🛠️ Stack & Technologies
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Framework:** Next.js (App Router, Turbopack, React Server Components)
+- **Styling:** Tailwind CSS, custom CSS Grid systems, premium fonts (Plus Jakarta Sans, JetBrains Mono, Inter)
+- **Animations:** Framer Motion (for physics-based scroll triggers, dynamic templates, 3D translations, and page transitions)
+- **3D & WebGL:** CSS 3D Transforms (`preserve-3d`, dynamic camera perspective mapping) and Three.js / React Three Fiber for WebGL experiences
+- **Layout & Routing:** Lenis Smooth Scroll, Page Wrapper isolation, hydration-safe Portal overlays
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 💎 Design System: "Tech-Luxe Editorial"
 
-## Learn More
+The design system marries warm, luxury architectural layouts (as seen in high-end print design) with precise technical HUD telemetry:
+- **Palette:** Deep charcoal text (`#111111`) over neutral off-white background (`#F5F5F5`), accented sparingly with Tech Blue (`#0029FF`).
+- **Typography:** Architectural headlines in **Plus Jakarta Sans**, clean metadata in **JetBrains Mono** with wide letter spacing, and readable content in **Inter**.
+- **Geometries:** Razor-sharp 0px borders, precision coordinate markings, crosshair viewfinders, and thin hairline boundaries.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎥 Core Features & Engineering Highlights
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 1. True 3D Scroll Storytelling (Homepage)
+- **Unified 3D Coordinate Space:** All home page slides exist in a single Z-axis depth volume (up to `-6300px` deep). As the user scrolls, the parent coordinate space translates forward, simulating a continuous fly-through camera movement.
+- **Cinematic Depth-of-Field:** Multi-layered scroll-linked blur (`filter: blur(...)`) and opacity hooks simulate a real camera lens focusing on elements as they enter the focus plane, and blurring/fading out as they zoom past the screen.
+- **Responsive 3D Projections:** Dynamic scaling adjustments detect mobile (`<768px`) layout width, shifting 3D elements into clean vertical sequences while maintaining standard grid distribution on desktop.
 
-## Deploy on Vercel
+### 2. Camera Lens Distortion
+- **Dynamic 3D Perspective Warp (Focal Length Distortion):** The viewport container dynamically adjusts its CSS 3D `perspective` from `1400px` down to `950px` (or `1200px` to `850px` on mobile) on scroll. This replicates a physical wide-angle lens, stretching elements toward the screen edges.
+- **Cinematic Lens Vignette & Focus Blur:** A full-screen fixed overlay combined with a sharp radial gradient mask (`radial-gradient(circle at center, transparent 45%, black 100%)`) ensures the center region remains perfectly legible, while applying a dynamic edge blur (`0px` to `6px`) and a dark vignette (`0` to `0.35` opacity) toward the corners on scroll.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 3. Portal-Based Detail Panel Isolation
+- **Container Isolation:** In the Freebies archive page, detail overlays use a custom, hydration-safe `<Portal>` component to render directly under `document.body`. This breaks the overlays out of parent containers containing `will-change: transform` or Lenis scroll intercepts, ensuring popovers lock strictly to the viewport height.
+- **Pixel-Perfect Logo Masking:** Duplicate logos inside detail panel masks align pixel-for-pixel with the global layout header by falling back to identical layout coordinates and avoiding animation-induced coordinate offsets.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🚀 Getting Started
+
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Run the local development server:**
+   ```bash
+   npm run dev
+   ```
+
+3. **Build the production bundle:**
+   ```bash
+   npm run build
+   ```

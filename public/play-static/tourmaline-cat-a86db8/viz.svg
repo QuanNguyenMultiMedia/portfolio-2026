@@ -1,0 +1,1711 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1669.1 1230">
+  <!-- Generator: Adobe Illustrator 29.3.1, SVG Export Plug-In . SVG Version: 2.1.0 Build 151)  -->
+  <defs>
+    <style>
+      .st0 {
+        stroke: #000;
+      }
+
+      .st0, .st1, .st2 {
+        fill: none;
+      }
+
+      .st3 {
+        fill: #bee5a0;
+      }
+
+      .st4 {
+        fill: #5e4fa2;
+      }
+
+      .st5 {
+        fill: #fff;
+      }
+
+      .st1 {
+        stroke: #ccc;
+      }
+
+      .st6 {
+        fill: #e85e49;
+      }
+
+      .st2 {
+        stroke: #fff;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 2px;
+      }
+
+      .st2, .st7, .st8, .st9, .st10, .st11, .st12 {
+        isolation: isolate;
+      }
+
+      .st2, .st11, .st12 {
+        font-size: 10px;
+      }
+
+      .st2, .st12 {
+        font-family: Arial-ItalicMT, Arial;
+        font-style: italic;
+      }
+
+      .st13 {
+        fill: #fdbe70;
+      }
+
+      .st14 {
+        fill: #fbf8b0;
+      }
+
+      .st8 {
+        opacity: 0;
+      }
+
+      .st9 {
+        fill: #7b7b7b;
+      }
+
+      .st9, .st10 {
+        font-family: Arial-BoldMT, Arial;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .st15 {
+        fill: #9e0142;
+      }
+
+      .st11 {
+        font-family: ArialMT, Arial;
+      }
+
+      .st16 {
+        fill: #56adae;
+      }
+    </style>
+  </defs>
+  <rect id="background" class="st5" x="247.1" y="128" width="1200" height="1000"/>
+  <g id="viz">
+    <g id="axis">
+      <g>
+        <path class="st0" d="M297.6,1084v-5.5h900v5.5"/>
+        <g>
+          <line class="st0" x1="297.6" y1="1078" x2="297.6" y2="1084"/>
+          <text class="st11" transform="translate(286.5 1094.1)"><tspan x="0" y="0">1950</tspan></text>
+        </g>
+        <g>
+          <line class="st0" x1="417.6" y1="1078" x2="417.6" y2="1084"/>
+          <text class="st11" transform="translate(406.4 1094.1)"><tspan x="0" y="0">1960</tspan></text>
+        </g>
+        <g>
+          <line class="st0" x1="537.6" y1="1078" x2="537.6" y2="1084"/>
+          <text class="st11" transform="translate(526.5 1094.1)"><tspan x="0" y="0">1970</tspan></text>
+        </g>
+        <g>
+          <line class="st0" x1="657.6" y1="1078" x2="657.6" y2="1084"/>
+          <text class="st11" transform="translate(646.4 1094.1)"><tspan x="0" y="0">1980</tspan></text>
+        </g>
+        <g>
+          <line class="st0" x1="777.6" y1="1078" x2="777.6" y2="1084"/>
+          <text class="st11" transform="translate(766.5 1094.1)"><tspan x="0" y="0">1990</tspan></text>
+        </g>
+        <g>
+          <line class="st0" x1="897.6" y1="1078" x2="897.6" y2="1084"/>
+          <text class="st11" transform="translate(886.4 1094.1)"><tspan x="0" y="0">2000</tspan></text>
+        </g>
+        <g>
+          <line class="st0" x1="1017.6" y1="1078" x2="1017.6" y2="1084"/>
+          <text class="st11" transform="translate(1006.5 1094.1)"><tspan x="0" y="0">2010</tspan></text>
+        </g>
+        <g>
+          <line class="st0" x1="1137.6" y1="1078" x2="1137.6" y2="1084"/>
+          <text class="st11" transform="translate(1126.4 1094.1)"><tspan x="0" y="0">2020</tspan></text>
+        </g>
+        <text class="st9" transform="translate(1141.3 1073)"><tspan x="0" y="0">Start Year</tspan></text>
+      </g>
+      <g>
+        <path class="st0" d="M297.6,139.5v939"/>
+        <g>
+          <line class="st1" x1="297.1" y1="163.5" x2="1197.1" y2="163.5"/>
+          <text class="st11" transform="translate(202.9 166.7)"><tspan x="0" y="0">Infestation (General)</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="190.5" x2="1197.1" y2="190.5"/>
+          <text class="st11" transform="translate(258.5 193.7)"><tspan x="0" y="0">Drought</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="217.5" x2="1197.1" y2="217.5"/>
+          <text class="st11" transform="translate(249.1 220.7)"><tspan x="0" y="0">Forest fire</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="244.5" x2="1197.1" y2="244.5"/>
+          <text class="st11" transform="translate(239.6 247.7)"><tspan x="0" y="0">Storm surge</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="271.5" x2="1197.1" y2="271.5"/>
+          <text class="st11" transform="translate(207.4 274.7)"><tspan x="0" y="0">Extra-tropical storm</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="298.5" x2="1197.1" y2="298.5"/>
+          <text class="st11" transform="translate(276.9 301.7)"><tspan x="0" y="0">Hail</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="325.5" x2="1197.1" y2="325.5"/>
+          <text class="st11" transform="translate(169 328.7)"><tspan x="0" y="0">Infectious disease (General)</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="352.5" x2="1197.1" y2="352.5"/>
+          <text class="st11" transform="translate(226.8 355.7)"><tspan x="0" y="0">Fire (Industrial)</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="379.5" x2="1197.1" y2="379.5"/>
+          <text class="st11" transform="translate(183.5 382.7)"><tspan x="0" y="0">Lightning/Thunderstorms</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="406.5" x2="1197.1" y2="406.5"/>
+          <text class="st11" transform="translate(254.1 409.7)"><tspan x="0" y="0">Mudslide</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="433.5" x2="1197.1" y2="433.5"/>
+          <text class="st11" transform="translate(276.9 436.7)"><tspan x="0" y="0">Rail</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="460.5" x2="1197.1" y2="460.5"/>
+          <text class="st11" transform="translate(182.4 463.7)"><tspan x="0" y="0">Collapse (Miscellaneous)</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="487.5" x2="1197.1" y2="487.5"/>
+          <text class="st11" transform="translate(145.7 490.7)"><tspan x="0" y="0">Miscellaneous accident (General)</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="514.5" x2="1197.1" y2="514.5"/>
+          <text class="st11" transform="translate(177.9 517.7)"><tspan x="0" y="0">Explosion (Miscellaneous)</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="541.5" x2="1197.1" y2="541.5"/>
+          <text class="st11" transform="translate(257.9 544.7)"><tspan x="0" y="0">Tornado</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="568.5" x2="1197.1" y2="568.5"/>
+          <text class="st11" transform="translate(224 571.7)"><tspan x="0" y="0">Severe weather</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="595.5" x2="1197.1" y2="595.5"/>
+          <text class="st11" transform="translate(226.3 598.7)"><tspan x="0" y="0">Landslide (wet)</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="622.5" x2="1197.1" y2="622.5"/>
+          <text class="st11" transform="translate(200.7 625.7)"><tspan x="0" y="0">Explosion (Industrial)</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="649.5" x2="1197.1" y2="649.5"/>
+          <text class="st11" transform="translate(204.1 652.7)"><tspan x="0" y="0">Fire (Miscellaneous)</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="676.5" x2="1197.1" y2="676.5"/>
+          <text class="st11" transform="translate(250.2 679.7)"><tspan x="0" y="0">Poisoning</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="703.5" x2="1197.1" y2="703.5"/>
+          <text class="st11" transform="translate(218.5 706.7)"><tspan x="0" y="0">Parasitic disease</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="730.5" x2="1197.1" y2="730.5"/>
+          <text class="st11" transform="translate(222.6 733.7)"><tspan x="0" y="0">Avalanche (wet)</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="757.5" x2="1197.1" y2="757.5"/>
+          <text class="st11" transform="translate(281.9 760.7)"><tspan x="0" y="0">Air</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="784.5" x2="1197.1" y2="784.5"/>
+          <text class="st11" transform="translate(222.4 787.7)"><tspan x="0" y="0">Storm (General)</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="811.5" x2="1197.1" y2="811.5"/>
+          <text class="st11" transform="translate(237 814.7)"><tspan x="0" y="0">Viral disease</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="838.5" x2="1197.1" y2="838.5"/>
+          <text class="st11" transform="translate(205.2 841.7)"><tspan x="0" y="0">Collapse (Industrial)</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="865.5" x2="1197.1" y2="865.5"/>
+          <text class="st11" transform="translate(270.2 868.7)"><tspan x="0" y="0">Road</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="892.5" x2="1197.1" y2="892.5"/>
+          <text class="st11" transform="translate(245.2 895.7)"><tspan x="0" y="0">Flash flood</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="919.5" x2="1197.1" y2="919.5"/>
+          <text class="st11" transform="translate(217.9 922.7)"><tspan x="0" y="0">Bacterial disease</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="946.5" x2="1197.1" y2="946.5"/>
+          <text class="st11" transform="translate(267.8 949.7)"><tspan x="0" y="0">Water</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="973.5" x2="1197.1" y2="973.5"/>
+          <text class="st11" transform="translate(235.7 976.7)"><tspan x="0" y="0">Coastal flood</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="1000.5" x2="1197.1" y2="1000.5"/>
+          <text class="st11" transform="translate(224.1 1003.7)"><tspan x="0" y="0">Flood (General)</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="1027.5" x2="1197.1" y2="1027.5"/>
+          <text class="st11" transform="translate(232.9 1030.7)"><tspan x="0" y="0">Riverine flood</tspan></text>
+        </g>
+        <g>
+          <line class="st1" x1="297.1" y1="1054.5" x2="1197.1" y2="1054.5"/>
+          <text class="st11" transform="translate(222.2 1057.7)"><tspan x="0" y="0">Tropical cyclone</tspan></text>
+        </g>
+        <text class="st9" transform="translate(301.1 149.3)"><tspan x="0" y="0">Disaster Subtype</tspan></text>
+      </g>
+    </g>
+    <g id="visualization">
+      <g id="Infestation__x28_General_x29_">
+        <g id="circles">
+          <rect class="st15" x="633.1" y="163.5"/>
+        </g>
+      </g>
+      <g id="Drought">
+        <g id="circles1" data-name="circles">
+          <rect class="st6" x="741.1" y="190.5"/>
+          <rect class="st6" x="861.1" y="190.5"/>
+          <rect class="st6" x="885.1" y="190.5"/>
+          <rect class="st6" x="921.1" y="190.5"/>
+          <rect class="st6" x="957.1" y="190.5"/>
+          <rect class="st6" x="1077.1" y="190.5"/>
+          <rect class="st6" x="1125.1" y="190.5"/>
+        </g>
+      </g>
+      <g id="Forest_fire">
+        <g id="circles2" data-name="circles">
+          <rect class="st6" x="921.1" y="217.5"/>
+        </g>
+      </g>
+      <g id="Storm_surge">
+        <g id="circles3" data-name="circles">
+          <circle id="Tropical_cyclone__x27_Noru_x27___x28_Karding_x29_" class="st3" cx="1161.1" cy="244.5" r="3.6"/>
+        </g>
+        <g id="labels3" data-name="labels">
+          <g id="Tropical_cyclone__x27_Noru_x27___x28_Karding_x29_1" data-name="Tropical_cyclone__x27_Noru_x27___x28_Karding_x29_">
+            <g class="st7">
+              <text class="st12" transform="translate(1089.2 244.5)"><tspan x="0" y="0">Tropical cyclone &apos;Noru&apos; (Karding)</tspan></text>
+              <text class="st2" transform="translate(1089.2 244.5)"><tspan x="0" y="0">Tropical cyclone &apos;Noru&apos; (Karding)</tspan></text>
+            </g>
+          </g>
+        </g>
+      </g>
+      <g id="Extra-tropical_storm">
+        <g id="circles4" data-name="circles">
+          <circle class="st3" cx="1137.1" cy="271.5" r="3.8"/>
+        </g>
+      </g>
+      <g id="Hail">
+        <g id="circles5" data-name="circles">
+          <circle class="st3" cx="813.1" cy="298.5" r="3.7"/>
+          <circle class="st3" cx="969.1" cy="298.5" r="4"/>
+        </g>
+      </g>
+      <g id="Infectious_disease__x28_General_x29_">
+        <g id="circles6" data-name="circles">
+          <circle id="Acute_Neurological_Syndrome" class="st15" cx="957.1" cy="325.5" r="4.1"/>
+        </g>
+        <g id="labels6" data-name="labels">
+          <g id="Acute_Neurological_Syndrome1" data-name="Acute_Neurological_Syndrome">
+            <g class="st7">
+              <text class="st12" transform="translate(890.9 325.5)"><tspan x="0" y="0">Acute Neurological Syndrome</tspan></text>
+              <text class="st2" transform="translate(890.9 325.5)"><tspan x="0" y="0">Acute Neurological Syndrome</tspan></text>
+            </g>
+          </g>
+        </g>
+      </g>
+      <g id="Fire__x28_Industrial_x29_">
+        <g id="circles7" data-name="circles">
+          <circle id="Ammunition_factory" class="st14" cx="933.1" cy="352.5" r="3.5"/>
+          <circle id="Shoes_factory" class="st14" cx="1029.1" cy="352.5" r="4.1"/>
+        </g>
+        <g id="labels7" data-name="labels">
+          <g id="Ammunition_factory1" data-name="Ammunition_factory">
+            <g class="st7">
+              <text class="st12" transform="translate(890.3 352.5)"><tspan x="0" y="0">Ammunition factory</tspan></text>
+              <text class="st2" transform="translate(890.3 352.5)"><tspan x="0" y="0">Ammunition factory</tspan></text>
+            </g>
+          </g>
+          <g id="Shoes_factory1" data-name="Shoes_factory">
+            <g class="st7">
+              <text class="st12" transform="translate(998.5 352.5)"><tspan x="0" y="0">Shoes factory</tspan></text>
+              <text class="st2" transform="translate(998.5 352.5)"><tspan x="0" y="0">Shoes factory</tspan></text>
+            </g>
+          </g>
+        </g>
+      </g>
+      <g id="Lightning_x2F_Thunderstorms">
+        <g id="circles8" data-name="circles">
+          <rect class="st3" x="921.1" y="379.5"/>
+          <circle class="st3" cx="1029.1" cy="379.5" r="4.1"/>
+          <circle class="st3" cx="1137.1" cy="379.5" r="3.7"/>
+        </g>
+      </g>
+      <g id="Mudslide">
+        <g id="circles9" data-name="circles">
+          <circle class="st13" cx="825.1" cy="406.5" r="4.2"/>
+        </g>
+      </g>
+      <g id="Rail">
+        <g id="circles10" data-name="circles">
+          <circle id="Express_S1" class="st4" cx="933.1" cy="433.5" r="4.1"/>
+          <circle class="st4" cx="957.1" cy="433.5" r="4"/>
+        </g>
+        <g id="labels10" data-name="labels">
+          <g id="Express_S11" data-name="Express_S1">
+            <g class="st7">
+              <text class="st12" transform="translate(907.5 433.5)"><tspan x="0" y="0">Express S1</tspan></text>
+              <text class="st2" transform="translate(907.5 433.5)"><tspan x="0" y="0">Express S1</tspan></text>
+            </g>
+          </g>
+        </g>
+      </g>
+      <g id="Collapse__x28_Miscellaneous_x29_">
+        <g id="circles11" data-name="circles">
+          <circle class="st16" cx="765.1" cy="460.5" r="4.4"/>
+        </g>
+      </g>
+      <g id="Miscellaneous_accident__x28_General_x29_">
+        <g id="circles12" data-name="circles">
+          <circle class="st16" cx="813.1" cy="487.5" r="4.3"/>
+          <circle id="Intoxication" class="st16" cx="1161.1" cy="487.5" r="4"/>
+        </g>
+        <g id="labels12" data-name="labels">
+          <g id="Intoxication1" data-name="Intoxication">
+            <g class="st7">
+              <text class="st12" transform="translate(1135.8 487.5)"><tspan x="0" y="0">Intoxication</tspan></text>
+              <text class="st2" transform="translate(1135.8 487.5)"><tspan x="0" y="0">Intoxication</tspan></text>
+            </g>
+          </g>
+        </g>
+      </g>
+      <g id="Explosion__x28_Miscellaneous_x29_">
+        <g id="circles13" data-name="circles">
+          <rect id="Army_base" class="st16" x="909.1" y="514.5"/>
+          <circle id="Bus" class="st16" cx="933.1" cy="514.5" r="4.5"/>
+          <circle id="House" class="st16" cx="1053.1" cy="514.5" r="3.9"/>
+        </g>
+        <g id="labels13" data-name="labels">
+          <g id="Army_base1" data-name="Army_base">
+            <g class="st8">
+              <text class="st12" transform="translate(885.2 514.5)"><tspan x="0" y="0">Army base</tspan></text>
+              <text class="st2" transform="translate(885.2 514.5)"><tspan x="0" y="0">Army base</tspan></text>
+            </g>
+          </g>
+          <g id="Bus1" data-name="Bus">
+            <g class="st7">
+              <text class="st12" transform="translate(924.5 514.5)"><tspan x="0" y="0">Bus</tspan></text>
+              <text class="st2" transform="translate(924.5 514.5)"><tspan x="0" y="0">Bus</tspan></text>
+            </g>
+          </g>
+          <g id="House1" data-name="House">
+            <g class="st7">
+              <text class="st12" transform="translate(1038.6 514.5)"><tspan x="0" y="0">House</tspan></text>
+              <text class="st2" transform="translate(1038.6 514.5)"><tspan x="0" y="0">House</tspan></text>
+            </g>
+          </g>
+        </g>
+      </g>
+      <g id="Tornado">
+        <g id="circles14" data-name="circles">
+          <circle class="st3" cx="873.1" cy="541.5" r="4.6"/>
+          <circle class="st3" cx="885.1" cy="541.5" r="3.9"/>
+          <rect class="st3" x="897.1" y="541.5"/>
+        </g>
+      </g>
+      <g id="Severe_weather">
+        <g id="circles15" data-name="circles">
+          <circle class="st3" cx="693.1" cy="568.5" r="5.1"/>
+          <rect class="st3" x="1149.1" y="568.5"/>
+          <circle class="st3" cx="1173.1" cy="568.5" r="3.8"/>
+        </g>
+      </g>
+      <g id="Landslide__x28_wet_x29_">
+        <g id="circles16" data-name="circles">
+          <circle class="st13" cx="894.1" cy="600.3" r="4.5"/>
+          <circle class="st13" cx="899.9" cy="590.9" r="4.6"/>
+          <circle class="st13" cx="945.1" cy="595.5" r="4.3"/>
+          <circle class="st13" cx="1005.1" cy="595.5" r="4"/>
+        </g>
+      </g>
+      <g id="Explosion__x28_Industrial_x29_">
+        <g id="circles17" data-name="circles">
+          <circle id="Oil_pipeline" class="st14" cx="813.1" cy="622.5" r="4.7"/>
+          <circle id="Coal_mine" class="st14" cx="890" cy="620.9" r="4.1"/>
+          <circle id="Coal_mine1" data-name="Coal_mine" class="st14" cx="880.2" cy="624.1" r="4.2"/>
+          <circle id="Bamboo_and_rattan_factory" class="st14" cx="933.1" cy="622.5" r="4"/>
+          <circle id="Military_Firework_factory" class="st14" cx="1053.1" cy="622.5" r="4.3"/>
+        </g>
+        <g id="labels17" data-name="labels">
+          <g id="Oil_pipeline1" data-name="Oil_pipeline">
+            <g class="st7">
+              <text class="st12" transform="translate(788.4 622.5)"><tspan x="0" y="0">Oil pipeline</tspan></text>
+              <text class="st2" transform="translate(788.4 622.5)"><tspan x="0" y="0">Oil pipeline</tspan></text>
+            </g>
+          </g>
+          <g id="Coal_mine2" data-name="Coal_mine">
+            <g class="st8">
+              <text class="st12" transform="translate(867.5 620.9)"><tspan x="0" y="0">Coal mine</tspan></text>
+              <text class="st2" transform="translate(867.5 620.9)"><tspan x="0" y="0">Coal mine</tspan></text>
+            </g>
+          </g>
+          <g id="Coal_mine3" data-name="Coal_mine">
+            <g class="st7">
+              <text class="st12" transform="translate(857.7 624.1)"><tspan x="0" y="0">Coal mine</tspan></text>
+              <text class="st2" transform="translate(857.7 624.1)"><tspan x="0" y="0">Coal mine</tspan></text>
+            </g>
+          </g>
+          <g id="Bamboo_and_rattan_factory1" data-name="Bamboo_and_rattan_factory">
+            <g class="st8">
+              <text class="st12" transform="translate(874.1 622.5)"><tspan x="0" y="0">Bamboo and rattan factory</tspan></text>
+              <text class="st2" transform="translate(874.1 622.5)"><tspan x="0" y="0">Bamboo and rattan factory</tspan></text>
+            </g>
+          </g>
+          <g id="Military_Firework_factory1" data-name="Military_Firework_factory">
+            <g class="st7">
+              <text class="st12" transform="translate(1000.3 622.5)"><tspan x="0" y="0">Military Firework factory</tspan></text>
+              <text class="st2" transform="translate(1000.3 622.5)"><tspan x="0" y="0">Military Firework factory</tspan></text>
+            </g>
+          </g>
+        </g>
+      </g>
+      <g id="Fire__x28_Miscellaneous_x29_">
+        <g id="circles18" data-name="circles">
+          <circle class="st16" cx="501.1" cy="649.5" r="3.7"/>
+          <circle id="Centre_d_x27_affaires_international" class="st16" cx="921.1" cy="649.5" r="4.9"/>
+          <circle id="Karaoke_bar" class="st16" cx="1089.1" cy="649.5" r="4"/>
+          <circle id="Building__x27_Carina_Plaza_x27_" class="st16" cx="1113.1" cy="649.5" r="4"/>
+          <circle id="Karaoké_bar__x22_An_Phu_x22_" class="st16" cx="1161.1" cy="649.5" r="4.5"/>
+          <circle id="Building" class="st16" cx="1173.1" cy="649.5" r="4.8"/>
+        </g>
+        <g id="labels18" data-name="labels">
+          <g id="Centre_d_x27_affaires_international1" data-name="Centre_d_x27_affaires_international">
+            <g class="st7">
+              <text class="st12" transform="translate(855.9 649.5)"><tspan x="0" y="0">Centre d&apos;affaires international</tspan></text>
+              <text class="st2" transform="translate(855.9 649.5)"><tspan x="0" y="0">Centre d&apos;affaires international</tspan></text>
+            </g>
+          </g>
+          <g id="Karaoke_bar1" data-name="Karaoke_bar">
+            <g class="st7">
+              <text class="st12" transform="translate(1061.8 649.5)"><tspan x="0" y="0">Karaoke bar</tspan></text>
+              <text class="st2" transform="translate(1061.8 649.5)"><tspan x="0" y="0">Karaoke bar</tspan></text>
+            </g>
+          </g>
+          <g id="Building__x27_Carina_Plaza_x27_1" data-name="Building__x27_Carina_Plaza_x27_">
+            <g class="st8">
+              <text class="st12" transform="translate(1063.4 649.5)"><tspan x="0" y="0">Building &apos;Carina Plaza&apos;</tspan></text>
+              <text class="st2" transform="translate(1063.4 649.5)"><tspan x="0" y="0">Building &apos;Carina Plaza&apos;</tspan></text>
+            </g>
+          </g>
+          <g id="Karaoké_bar__x22_An_Phu_x22_1" data-name="Karaoké_bar__x22_An_Phu_x22_">
+            <g class="st8">
+              <text class="st12" transform="translate(1112.5 649.5)"><tspan x="0" y="0">Karaoké bar &quot;An Phu&quot;</tspan></text>
+              <text class="st2" transform="translate(1112.5 649.5)"><tspan x="0" y="0">Karaoké bar &quot;An Phu&quot;</tspan></text>
+            </g>
+          </g>
+          <g id="Building1" data-name="Building">
+            <g class="st7">
+              <text class="st12" transform="translate(1155.3 649.5)"><tspan x="0" y="0">Building</tspan></text>
+              <text class="st2" transform="translate(1155.3 649.5)"><tspan x="0" y="0">Building</tspan></text>
+            </g>
+          </g>
+        </g>
+      </g>
+      <g id="Poisoning">
+        <g id="circles19" data-name="circles">
+          <circle id="Warfarin" class="st14" cx="669.1" cy="676.5" r="6"/>
+          <rect id="Food_poisoning" class="st14" x="945.1" y="676.5"/>
+        </g>
+        <g id="labels19" data-name="labels">
+          <g id="Warfarin1" data-name="Warfarin">
+            <g class="st7">
+              <text class="st12" transform="translate(650.3 676.5)"><tspan x="0" y="0">Warfarin</tspan></text>
+              <text class="st2" transform="translate(650.3 676.5)"><tspan x="0" y="0">Warfarin</tspan></text>
+            </g>
+          </g>
+          <g id="Food_poisoning1" data-name="Food_poisoning">
+            <g class="st7">
+              <text class="st12" transform="translate(910.9 676.5)"><tspan x="0" y="0">Food poisoning</tspan></text>
+              <text class="st2" transform="translate(910.9 676.5)"><tspan x="0" y="0">Food poisoning</tspan></text>
+            </g>
+          </g>
+        </g>
+      </g>
+      <g id="Parasitic_disease">
+        <g id="circles20" data-name="circles">
+          <circle class="st15" cx="777.1" cy="703.5" r="6.2"/>
+        </g>
+      </g>
+      <g id="Avalanche__x28_wet_x29_">
+        <g id="circles21" data-name="circles">
+          <circle class="st13" cx="801.1" cy="730.5" r="6.2"/>
+        </g>
+      </g>
+      <g id="Air">
+        <g id="circles22" data-name="circles">
+          <circle class="st4" cx="597.1" cy="757.5" r="6"/>
+          <circle class="st4" cx="765.1" cy="757.5" r="4.2"/>
+          <circle id="Yakovlev" class="st4" cx="801.1" cy="757.5" r="4.4"/>
+          <circle id="Helicopter_Mi-17" class="st4" cx="909.1" cy="757.5" r="4.1"/>
+          <circle id="Helicopter" class="st4" cx="957.1" cy="757.5" r="4.1"/>
+          <circle id="Helicopter1" data-name="Helicopter" class="st4" cx="1065.1" cy="757.5" r="4.1"/>
+        </g>
+        <g id="labels22" data-name="labels">
+          <g id="Yakovlev1" data-name="Yakovlev">
+            <g class="st7">
+              <text class="st12" transform="translate(781.1 757.5)"><tspan x="0" y="0">Yakovlev</tspan></text>
+              <text class="st2" transform="translate(781.1 757.5)"><tspan x="0" y="0">Yakovlev</tspan></text>
+            </g>
+          </g>
+          <g id="Helicopter_Mi-171" data-name="Helicopter_Mi-17">
+            <g class="st7">
+              <text class="st12" transform="translate(872.7 757.5)"><tspan x="0" y="0">Helicopter Mi-17</tspan></text>
+              <text class="st2" transform="translate(872.7 757.5)"><tspan x="0" y="0">Helicopter Mi-17</tspan></text>
+            </g>
+          </g>
+          <g id="Helicopter2" data-name="Helicopter">
+            <g class="st8">
+              <text class="st12" transform="translate(934.6 757.5)"><tspan x="0" y="0">Helicopter</tspan></text>
+              <text class="st2" transform="translate(934.6 757.5)"><tspan x="0" y="0">Helicopter</tspan></text>
+            </g>
+          </g>
+          <g id="Helicopter3" data-name="Helicopter">
+            <g class="st7">
+              <text class="st12" transform="translate(1042.6 757.5)"><tspan x="0" y="0">Helicopter</tspan></text>
+              <text class="st2" transform="translate(1042.6 757.5)"><tspan x="0" y="0">Helicopter</tspan></text>
+            </g>
+          </g>
+        </g>
+      </g>
+      <g id="Storm__x28_General_x29_">
+        <g id="circles23" data-name="circles">
+          <circle class="st3" cx="741.1" cy="784.5" r="4.3"/>
+          <circle class="st3" cx="791.1" cy="781.4" r="6.6"/>
+          <circle class="st3" cx="784.3" cy="791.9" r="3.9"/>
+          <circle class="st3" cx="897.1" cy="784.5" r="3.7"/>
+          <rect class="st3" x="897.1" y="784.5"/>
+          <rect class="st3" x="897.1" y="784.5"/>
+          <rect class="st3" x="897.1" y="784.5"/>
+          <circle class="st3" cx="957.1" cy="784.5" r="4"/>
+          <circle class="st3" cx="969.1" cy="784.5" r="3.5"/>
+          <circle id="Typhoon_Carina__x28_Nida_x29_" class="st3" cx="1089.1" cy="784.5" r="4.3"/>
+          <circle class="st3" cx="1161.1" cy="784.5" r="3.9"/>
+        </g>
+        <g id="labels23" data-name="labels">
+          <g id="Typhoon_Carina__x28_Nida_x29_1" data-name="Typhoon_Carina__x28_Nida_x29_">
+            <g class="st7">
+              <text class="st12" transform="translate(1038.9 784.5)"><tspan x="0" y="0">Typhoon Carina (Nida)</tspan></text>
+              <text class="st2" transform="translate(1038.9 784.5)"><tspan x="0" y="0">Typhoon Carina (Nida)</tspan></text>
+            </g>
+          </g>
+        </g>
+      </g>
+      <g id="Viral_disease">
+        <g id="circles24" data-name="circles">
+          <circle id="Dengue_haemorrhagic_fever" class="st15" cx="849.1" cy="811.5" r="4.7"/>
+          <circle id="Dengue" class="st15" cx="865.1" cy="813.7" r="4.2"/>
+          <circle id="Dengue_fever" class="st15" cx="877.2" cy="810.4" r="6.3"/>
+          <circle id="Acute_respiratory_syndrome__x28_SARS_x29_" class="st15" cx="932.8" cy="806.3" r="3.8"/>
+          <circle id="Infuenza__x28_H5N1_x29_" class="st15" cx="933.3" cy="816.1" r="4.1"/>
+          <circle id="Dengue1" data-name="Dengue" class="st15" cx="981.1" cy="811.5" r="4.4"/>
+          <circle id="Dengue2" data-name="Dengue" class="st15" cx="1089.1" cy="811.5" r="4.4"/>
+        </g>
+        <g id="labels24" data-name="labels">
+          <g id="Dengue_haemorrhagic_fever1" data-name="Dengue_haemorrhagic_fever">
+            <g class="st8">
+              <text class="st12" transform="translate(787.1 811.5)"><tspan x="0" y="0">Dengue haemorrhagic fever</tspan></text>
+              <text class="st2" transform="translate(787.1 811.5)"><tspan x="0" y="0">Dengue haemorrhagic fever</tspan></text>
+            </g>
+          </g>
+          <g id="Dengue3" data-name="Dengue">
+            <g class="st8">
+              <text class="st12" transform="translate(847.6 813.7)"><tspan x="0" y="0">Dengue</tspan></text>
+              <text class="st2" transform="translate(847.6 813.7)"><tspan x="0" y="0">Dengue</tspan></text>
+            </g>
+          </g>
+          <g id="Dengue_fever1" data-name="Dengue_fever">
+            <g class="st7">
+              <text class="st12" transform="translate(847.1 810.4)"><tspan x="0" y="0">Dengue fever</tspan></text>
+              <text class="st2" transform="translate(847.1 810.4)"><tspan x="0" y="0">Dengue fever</tspan></text>
+            </g>
+          </g>
+          <g id="Acute_respiratory_syndrome__x28_SARS_x29_1" data-name="Acute_respiratory_syndrome__x28_SARS_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(853.3 806.3)"><tspan x="0" y="0">Acute respiratory syndrome (SARS)</tspan></text>
+              <text class="st2" transform="translate(853.3 806.3)"><tspan x="0" y="0">Acute respiratory syndrome (SARS)</tspan></text>
+            </g>
+          </g>
+          <g id="Infuenza__x28_H5N1_x29_1" data-name="Infuenza__x28_H5N1_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(896.7 816.1)"><tspan x="0" y="0">Infuenza (H5N1)</tspan></text>
+              <text class="st2" transform="translate(896.7 816.1)"><tspan x="0" y="0">Infuenza (H5N1)</tspan></text>
+            </g>
+          </g>
+          <g id="Dengue4" data-name="Dengue">
+            <g class="st7">
+              <text class="st12" transform="translate(963.6 811.5)"><tspan x="0" y="0">Dengue</tspan></text>
+              <text class="st2" transform="translate(963.6 811.5)"><tspan x="0" y="0">Dengue</tspan></text>
+            </g>
+          </g>
+          <g id="Dengue5" data-name="Dengue">
+            <g class="st7">
+              <text class="st12" transform="translate(1071.5 811.5)"><tspan x="0" y="0">Dengue</tspan></text>
+              <text class="st2" transform="translate(1071.5 811.5)"><tspan x="0" y="0">Dengue</tspan></text>
+            </g>
+          </g>
+        </g>
+      </g>
+      <g id="Collapse__x28_Industrial_x29_">
+        <g id="circles25" data-name="circles">
+          <circle id="Mine" class="st14" cx="789.1" cy="838.5" r="6.9"/>
+          <circle id="Gold_mine" class="st14" cx="861.1" cy="838.5" r="4.4"/>
+          <circle id="Gold_Mine" class="st14" cx="873.1" cy="838.5" r="4.3"/>
+          <circle id="Bridge_in_construction" class="st14" cx="985.3" cy="840.7" r="4.9"/>
+          <circle class="st14" cx="975.5" cy="835.6" r="4.2"/>
+          <circle id="Quarry_stone" class="st14" cx="1029.1" cy="838.5" r="4.2"/>
+        </g>
+        <g id="labels25" data-name="labels">
+          <g id="Mine1" data-name="Mine">
+            <g class="st7">
+              <text class="st12" transform="translate(778.2 838.5)"><tspan x="0" y="0">Mine</tspan></text>
+              <text class="st2" transform="translate(778.2 838.5)"><tspan x="0" y="0">Mine</tspan></text>
+            </g>
+          </g>
+          <g id="Gold_mine1" data-name="Gold_mine">
+            <g class="st7">
+              <text class="st12" transform="translate(838.3 838.5)"><tspan x="0" y="0">Gold mine</tspan></text>
+              <text class="st2" transform="translate(838.3 838.5)"><tspan x="0" y="0">Gold mine</tspan></text>
+            </g>
+          </g>
+          <g id="Gold_Mine1" data-name="Gold_Mine">
+            <g class="st8">
+              <text class="st12" transform="translate(850.3 838.5)"><tspan x="0" y="0">Gold Mine</tspan></text>
+              <text class="st2" transform="translate(850.3 838.5)"><tspan x="0" y="0">Gold Mine</tspan></text>
+            </g>
+          </g>
+          <g id="Bridge_in_construction1" data-name="Bridge_in_construction">
+            <g class="st7">
+              <text class="st12" transform="translate(937.2 840.7)"><tspan x="0" y="0">Bridge in construction</tspan></text>
+              <text class="st2" transform="translate(937.2 840.7)"><tspan x="0" y="0">Bridge in construction</tspan></text>
+            </g>
+          </g>
+          <g id="Quarry_stone1" data-name="Quarry_stone">
+            <g class="st8">
+              <text class="st12" transform="translate(1000.2 838.5)"><tspan x="0" y="0">Quarry stone</tspan></text>
+              <text class="st2" transform="translate(1000.2 838.5)"><tspan x="0" y="0">Quarry stone</tspan></text>
+            </g>
+          </g>
+        </g>
+      </g>
+      <g id="Road">
+        <g id="circles26" data-name="circles">
+          <circle class="st4" cx="765.1" cy="865.5" r="4.6"/>
+          <circle class="st4" cx="813.1" cy="865.5" r="4.6"/>
+          <circle class="st4" cx="837.1" cy="865.5" r="4.3"/>
+          <circle class="st4" cx="859.1" cy="865.4" r="4.5"/>
+          <circle class="st4" cx="870.3" cy="865.9" r="4.7"/>
+          <circle class="st4" cx="890.3" cy="858.8" r="4"/>
+          <circle class="st4" cx="879.1" cy="872.2" r="4.1"/>
+          <circle class="st4" cx="888.4" cy="868.5" r="4"/>
+          <circle class="st4" cx="880.6" cy="862" r="4.3"/>
+          <circle class="st4" cx="898.8" cy="865.4" r="4.8"/>
+          <circle class="st4" cx="908.4" cy="870.6" r="4.1"/>
+          <circle class="st4" cx="908.5" cy="860.5" r="4"/>
+          <circle class="st4" cx="917.1" cy="865.5" r="3.9"/>
+          <circle class="st4" cx="957.1" cy="870.2" r="4.5"/>
+          <circle class="st4" cx="957" cy="859.8" r="4"/>
+          <circle class="st4" cx="981.1" cy="865.5" r="4"/>
+          <circle class="st4" cx="993.1" cy="865.5" r="4"/>
+          <circle class="st4" cx="1005.1" cy="865.5" r="3.9"/>
+          <circle class="st4" cx="1041.1" cy="865.5" r="4.5"/>
+          <circle class="st4" cx="1137.1" cy="865.5" r="4"/>
+        </g>
+      </g>
+      <g id="Flash_flood">
+        <g id="circles27" data-name="circles">
+          <circle class="st13" cx="813.1" cy="892.5" r="4.9"/>
+          <circle class="st13" cx="885.1" cy="892.5" r="4.6"/>
+          <circle class="st13" cx="909.1" cy="892.5" r="4.2"/>
+          <circle class="st13" cx="945.1" cy="892.5" r="4.8"/>
+          <circle class="st13" cx="957" cy="892.6" r="5"/>
+          <circle class="st13" cx="966.6" cy="888" r="3.7"/>
+          <circle class="st13" cx="971.5" cy="896.4" r="4"/>
+          <circle class="st13" cx="996.7" cy="888" r="3.7"/>
+          <circle class="st13" cx="990.3" cy="895.9" r="4.4"/>
+          <circle class="st13" cx="1017.1" cy="892.5" r="5.2"/>
+          <circle class="st13" cx="1077.1" cy="892.5" r="4.5"/>
+          <circle class="st13" cx="1101.1" cy="892.5" r="4.6"/>
+          <circle class="st13" cx="1115.3" cy="896.8" r="4.5"/>
+          <circle class="st13" cx="1110.4" cy="887.5" r="4.1"/>
+          <circle class="st13" cx="1125.2" cy="892.5" r="4.4"/>
+          <circle class="st13" cx="1137.1" cy="892.5" r="3.8"/>
+          <circle class="st13" cx="1149.1" cy="892.5" r="3.7"/>
+        </g>
+      </g>
+      <g id="Bacterial_disease">
+        <g id="circles28" data-name="circles">
+          <circle id="Cholera" class="st15" cx="465.1" cy="919.5" r="8.3"/>
+        </g>
+        <g id="labels28" data-name="labels">
+          <g id="Cholera1" data-name="Cholera">
+            <g class="st7">
+              <text class="st12" transform="translate(447.6 919.5)"><tspan x="0" y="0">Cholera</tspan></text>
+              <text class="st2" transform="translate(447.6 919.5)"><tspan x="0" y="0">Cholera</tspan></text>
+            </g>
+          </g>
+        </g>
+      </g>
+      <g id="Water">
+        <g id="circles29" data-name="circles">
+          <circle class="st4" cx="752.9" cy="946.5" r="4.7"/>
+          <circle class="st4" cx="765.2" cy="946.5" r="5.6"/>
+          <circle id="Automoteur__x22_Hai_Au_2_x22_" class="st4" cx="789.1" cy="946.5" r="4.4"/>
+          <circle class="st4" cx="801.1" cy="946.5" r="4.4"/>
+          <circle id="_Bac__x22_Ngoc_Thanh_Ii_x22_" class="st4" cx="837.1" cy="946.5" r="4.3"/>
+          <circle class="st4" cx="849.1" cy="946.5" r="4.4"/>
+          <circle class="st4" cx="861.1" cy="946.5" r="4.3"/>
+          <circle class="st4" cx="909.1" cy="946.5" r="4.1"/>
+          <circle class="st4" cx="945.1" cy="946.5" r="4.7"/>
+          <circle id="Boats" class="st4" cx="957.1" cy="946.5" r="4.3"/>
+          <circle class="st4" cx="969.1" cy="946.5" r="4.2"/>
+          <circle id="Tanker" class="st4" cx="993.1" cy="946.5" r="4.1"/>
+          <circle class="st4" cx="1005.1" cy="946.5" r="4.7"/>
+          <circle class="st4" cx="1016.8" cy="951" r="4.8"/>
+          <circle id="Cargo__x22_Van_Don-2_x22_" class="st4" cx="1016" cy="940.3" r="4"/>
+          <circle class="st4" cx="1025.2" cy="944.3" r="4"/>
+          <circle class="st4" cx="1034.3" cy="948.7" r="4.1"/>
+          <circle id="Bulk_carrier" class="st4" cx="1077.1" cy="946.5" r="4.2"/>
+          <circle class="st4" cx="1161.1" cy="946.5" r="4.1"/>
+        </g>
+        <g id="labels29" data-name="labels">
+          <g id="Automoteur__x22_Hai_Au_2_x22_1" data-name="Automoteur__x22_Hai_Au_2_x22_">
+            <g class="st7">
+              <text class="st12" transform="translate(739.3 946.5)"><tspan x="0" y="0">Automoteur &quot;Hai Au 2&quot;</tspan></text>
+              <text class="st2" transform="translate(739.3 946.5)"><tspan x="0" y="0">Automoteur &quot;Hai Au 2&quot;</tspan></text>
+            </g>
+          </g>
+          <g id="_Bac__x22_Ngoc_Thanh_Ii_x22_1" data-name="_Bac__x22_Ngoc_Thanh_Ii_x22_">
+            <g class="st8">
+              <text class="st12" transform="translate(792.4 946.5)"><tspan x="0" y="0">Bac &quot;Ngoc Thanh Ii&quot;</tspan></text>
+              <text class="st2" transform="translate(792.4 946.5)"><tspan x="0" y="0">Bac &quot;Ngoc Thanh Ii&quot;</tspan></text>
+            </g>
+          </g>
+          <g id="Boats1" data-name="Boats">
+            <g class="st7">
+              <text class="st12" transform="translate(944.3 946.5)"><tspan x="0" y="0">Boats</tspan></text>
+              <text class="st2" transform="translate(944.3 946.5)"><tspan x="0" y="0">Boats</tspan></text>
+            </g>
+          </g>
+          <g id="Tanker1" data-name="Tanker">
+            <g class="st7">
+              <text class="st12" transform="translate(978 946.5)"><tspan x="0" y="0">Tanker</tspan></text>
+              <text class="st2" transform="translate(978 946.5)"><tspan x="0" y="0">Tanker</tspan></text>
+            </g>
+          </g>
+          <g id="Cargo__x22_Van_Don-2_x22_1" data-name="Cargo__x22_Van_Don-2_x22_">
+            <g class="st8">
+              <text class="st12" transform="translate(973.7 940.3)"><tspan x="0" y="0">Cargo &quot;Van Don-2&quot;</tspan></text>
+              <text class="st2" transform="translate(973.7 940.3)"><tspan x="0" y="0">Cargo &quot;Van Don-2&quot;</tspan></text>
+            </g>
+          </g>
+          <g id="Bulk_carrier1" data-name="Bulk_carrier">
+            <g class="st7">
+              <text class="st12" transform="translate(1051.8 946.5)"><tspan x="0" y="0">Bulk carrier</tspan></text>
+              <text class="st2" transform="translate(1051.8 946.5)"><tspan x="0" y="0">Bulk carrier</tspan></text>
+            </g>
+          </g>
+        </g>
+      </g>
+      <g id="Coastal_flood">
+        <g id="circles30" data-name="circles">
+          <circle class="st13" cx="801.1" cy="973.5" r="3.5"/>
+          <circle class="st13" cx="885.1" cy="973.5" r="8.4"/>
+          <rect class="st13" x="909.1" y="973.5"/>
+          <circle class="st13" cx="933.1" cy="973.5" r="4.8"/>
+          <circle class="st13" cx="975.4" cy="973.3" r="5.1"/>
+          <circle class="st13" cx="987.3" cy="973.7" r="4.8"/>
+        </g>
+      </g>
+      <g id="Flood__x28_General_x29_">
+        <g id="circles31" data-name="circles">
+          <circle class="st13" cx="465.1" cy="1000.5" r="7.4"/>
+          <circle class="st13" cx="537.1" cy="1000.5" r="6.5"/>
+          <circle class="st13" cx="657.1" cy="1000.5" r="5.3"/>
+          <circle class="st13" cx="705.1" cy="1000.5" r="4.5"/>
+          <circle class="st13" cx="849.1" cy="1000.5" r="4.9"/>
+          <circle class="st13" cx="909.1" cy="1000.5" r="3.9"/>
+          <circle class="st13" cx="981.1" cy="1000.5" r="3.7"/>
+          <circle class="st13" cx="1073.6" cy="998.7" r="3.6"/>
+          <circle class="st13" cx="1090.6" cy="996.8" r="4.4"/>
+          <circle class="st13" cx="1082.2" cy="1003.3" r="4.2"/>
+          <circle class="st13" cx="1091.7" cy="1006.9" r="3.9"/>
+          <circle class="st13" cx="1099.5" cy="1012" r="3.5"/>
+          <circle class="st13" cx="1108.6" cy="993.3" r="4.1"/>
+          <circle class="st13" cx="1101.3" cy="1001.6" r="5.1"/>
+          <circle class="st13" cx="1099" cy="990.9" r="3.9"/>
+          <circle class="st13" cx="1112.5" cy="1002.8" r="4.2"/>
+          <circle class="st13" cx="1121.1" cy="1007.6" r="3.7"/>
+          <circle class="st13" cx="1121.5" cy="997.9" r="4"/>
+          <circle class="st13" cx="1130.6" cy="993.9" r="3.9"/>
+          <circle class="st13" cx="1129.4" cy="1003.4" r="3.7"/>
+          <circle class="st13" cx="1145.1" cy="996.6" r="3.7"/>
+          <circle class="st13" cx="1151.5" cy="1004.1" r="4.2"/>
+          <rect class="st13" x="1161.1" y="1000.5"/>
+          <circle class="st13" cx="1167.9" cy="993.8" r="4"/>
+          <circle class="st13" cx="1161.2" cy="1001.2" r="3.9"/>
+          <circle class="st13" cx="1154.3" cy="994.7" r="3.6"/>
+          <circle class="st13" cx="1160.1" cy="1010.9" r="3.8"/>
+          <circle class="st13" cx="1173.6" cy="1001.7" r="3.7"/>
+        </g>
+      </g>
+      <g id="Riverine_flood">
+        <g id="circles32" data-name="circles">
+          <circle class="st13" cx="489.1" cy="1027.5" r="4.4"/>
+          <circle class="st13" cx="633.1" cy="1027.5" r="5.1"/>
+          <circle class="st13" cx="716.4" cy="1027.5" r="5.3"/>
+          <circle class="st13" cx="729.6" cy="1027.5" r="5.9"/>
+          <circle class="st13" cx="774.4" cy="1025" r="5.2"/>
+          <circle class="st13" cx="782.6" cy="1032.9" r="4.2"/>
+          <circle class="st13" cx="785.9" cy="1022.7" r="4.6"/>
+          <circle class="st13" cx="794.4" cy="1031.5" r="5.7"/>
+          <circle class="st13" cx="805.1" cy="1025" r="4.8" transform="translate(-335.6 1655.5) rotate(-80.8)"/>
+          <circle class="st13" cx="822.2" cy="1027.5" r="6.9"/>
+          <circle class="st13" cx="837.7" cy="1027.4" r="6.6"/>
+          <circle class="st13" cx="852.1" cy="1027.6" r="5.9"/>
+          <circle class="st13" cx="870.8" cy="1026.9" r="4.7"/>
+          <circle class="st13" cx="882.4" cy="1030.7" r="5.6"/>
+          <circle class="st13" cx="894.7" cy="1021.5" r="7.7"/>
+          <circle class="st13" cx="897.7" cy="1035.4" r="4.5"/>
+          <circle class="st13" cx="910.3" cy="1026.9" r="6.9"/>
+          <circle class="st13" cx="914.7" cy="1039.1" r="3.9"/>
+          <circle class="st13" cx="922.7" cy="1020.3" r="5.2"/>
+          <circle class="st13" cx="923" cy="1032.3" r="4.8"/>
+          <circle class="st13" cx="934.6" cy="1030.7" r="4.9"/>
+          <circle class="st13" cx="934" cy="1019.7" r="4.1"/>
+          <circle class="st13" cx="945.3" cy="1032.5" r="3.9"/>
+          <circle class="st13" cx="944.3" cy="1022.1" r="4.5"/>
+          <rect class="st13" x="957.1" y="1027.5"/>
+          <circle class="st13" cx="953.1" cy="1015.9" r="4.1"/>
+          <circle class="st13" cx="954.7" cy="1027" r="5"/>
+          <circle class="st13" cx="953.9" cy="1038.5" r="4.6"/>
+          <circle class="st13" cx="963.3" cy="1019.2" r="4.6"/>
+          <circle class="st13" cx="977.7" cy="1032.5" r="4.9"/>
+          <circle class="st13" cx="966.1" cy="1030.4" r="4.9"/>
+          <circle class="st13" cx="973.6" cy="1022.4" r="4.1"/>
+          <circle class="st13" cx="984.2" cy="1018.7" r="5.2"/>
+          <circle class="st13" cx="995" cy="1022.1" r="4.1"/>
+          <circle class="st13" cx="998.5" cy="1033" r="5.3"/>
+          <circle class="st13" cx="987.9" cy="1029.1" r="3.9"/>
+          <circle class="st13" cx="1004.7" cy="1018.6" r="4.2"/>
+          <circle class="st13" cx="1008.5" cy="1038.5" r="4.1"/>
+          <circle class="st13" cx="1009" cy="1028.2" r="4.2"/>
+          <circle class="st13" cx="1019.3" cy="1031.2" r="4.4"/>
+          <circle class="st13" cx="1015.7" cy="1019.4" r="4.7"/>
+          <circle class="st13" cx="1029.9" cy="1032.5" r="4.3"/>
+          <circle class="st13" cx="1037.1" cy="1023.3" r="5.2"/>
+          <circle class="st13" cx="1025.8" cy="1023" r="4"/>
+          <circle class="st13" cx="1040.6" cy="1034.5" r="4.5"/>
+          <circle class="st13" cx="1046.2" cy="1016.7" r="3.8"/>
+          <circle class="st13" cx="1066.3" cy="1023.7" r="4.3"/>
+          <circle class="st13" cx="1048.2" cy="1026.7" r="4.4"/>
+          <circle class="st13" cx="1051.1" cy="1037.1" r="4.4"/>
+          <circle class="st13" cx="1058" cy="1029.5" r="3.8"/>
+          <circle class="st13" cx="1056.3" cy="1019.1" r="4.7"/>
+          <circle class="st13" cx="1089.1" cy="1027.5" r="4.5"/>
+        </g>
+      </g>
+      <g id="Tropical_cyclone">
+        <g id="circles33" data-name="circles">
+          <circle class="st3" cx="333.1" cy="1054.5" r="9.8"/>
+          <circle class="st3" cx="369.1" cy="1054.5" r="4.8"/>
+          <circle id="Iris" class="st3" cx="465.1" cy="1054.5" r="20.5"/>
+          <circle id="Wanda" class="st3" cx="542.4" cy="1053.6" r="4.3"/>
+          <circle class="st3" cx="553.8" cy="1055.2" r="5.2"/>
+          <circle class="st3" cx="573.1" cy="1054.5" r="5.4"/>
+          <rect id="Sarah" class="st3" x="621.1" y="1054.5"/>
+          <circle id="Joe__x28_n_xB0_4_x29_" class="st3" cx="658" cy="1061.6" r="5.7"/>
+          <circle id="Ruth__x28_N_xB0_6_x29_" class="st3" cx="656.2" cy="1048.1" r="6"/>
+          <circle id="Nancy__x28_N_xB0_7_x29_" class="st3" cx="678.5" cy="1055.1" r="5"/>
+          <circle id="Herbert__x28_N_xB0_7_x29__x2C__Kim__x28_N_xB0_9_x29__x2C__Lex__x28_N_xB0_10_x29_" class="st3" cx="692.5" cy="1049" r="8.2"/>
+          <circle id="Georgia__x28_N_xB0_6_x29_" class="st3" cx="687.3" cy="1063.5" r="5.1"/>
+          <circle class="st3" cx="706.4" cy="1045.1" r="4.2"/>
+          <circle id="Agnes__x28_n_xB0_9_x29_" class="st3" cx="700.1" cy="1063" r="5.7"/>
+          <circle id="Cecil" class="st3" cx="715.8" cy="1057.2" r="9.1"/>
+          <circle id="Wayne__x28_N_xB0_5_x29_" class="st3" cx="731.8" cy="1047.6" r="7.6"/>
+          <circle id="Maury" class="st3" cx="745" cy="1054.6" r="5.4"/>
+          <circle class="st3" cx="751.4" cy="1066" r="5.7"/>
+          <circle class="st3" cx="749.2" cy="1043.8" r="4.2"/>
+          <circle id="Irving" class="st3" cx="772.8" cy="1041.1" r="5.4"/>
+          <circle id="Brian_x2C__Angela_x2C__Dan" class="st3" cx="764.2" cy="1068.8" r="5.4"/>
+          <circle id="Cecil1" data-name="Cecil" class="st3" cx="761.4" cy="1052.7" r="8.9"/>
+          <circle id="Becky" class="st3" cx="776.5" cy="1052.1" r="4.2"/>
+          <circle class="st3" cx="784.3" cy="1060.1" r="5"/>
+          <circle class="st3" cx="773.3" cy="1061.8" r="4.1"/>
+          <circle id="Fred" class="st3" cx="785.8" cy="1047.4" r="4.1"/>
+          <circle id="Zeke" class="st3" cx="793.7" cy="1054.1" r="4.2"/>
+          <circle id="Chuck" class="st3" cx="803.3" cy="1057.8" r="4.1"/>
+          <circle id="Angela" class="st3" cx="802" cy="1047.7" r="4.1"/>
+          <circle id="Kyle" class="st3" cx="814.5" cy="1061.5" r="5.6"/>
+          <circle id="Lola" class="st3" cx="813.1" cy="1048.8" r="5.1"/>
+          <circle id="Luke" class="st3" cx="823.6" cy="1053.6" r="4.4"/>
+          <circle id="Zack" class="st3" cx="826" cy="1063.8" r="4.1"/>
+          <circle id="Frankie" class="st3" cx="839.6" cy="1059.1" r="8.3"/>
+          <circle id="Sally" class="st3" cx="831.7" cy="1047.8" r="3.5"/>
+          <circle id="Willie" class="st3" cx="850.5" cy="1068.1" r="3.9"/>
+          <circle class="st3" cx="842.2" cy="1042.9" r="6.2"/>
+          <rect id="Zita" class="st3" x="861.1" y="1054.5"/>
+          <circle id="Linda" class="st3" cx="864.5" cy="1051.6" r="15.8"/>
+          <circle id="Fritz" class="st3" cx="842" cy="1073.1" r="3.9"/>
+          <circle id="Chip_x2C__Elvis__x2C__Dawn" class="st3" cx="889" cy="1050.4" r="6.8"/>
+          <circle id="Faith__x26__Gil" class="st3" cx="883.9" cy="1062.8" r="4.6"/>
+          <circle id="Kaemi" class="st3" cx="901.5" cy="1053.2" r="4.1"/>
+          <circle id="Wukong" class="st3" cx="895.6" cy="1061" r="3.8"/>
+          <circle id="Durian" class="st3" cx="908.6" cy="1061" r="4.4"/>
+          <circle id="Usagi" class="st3" cx="909" cy="1047" r="3.7"/>
+          <circle id="Lingling__x28_Nanang_x29_" class="st3" cx="916.3" cy="1053.6" r="4.2"/>
+          <rect id="Koni" class="st3" x="933.1" y="1054.5"/>
+          <circle id="Chanthu__x28_Gener_x2F_08W_x29_" class="st3" cx="938.8" cy="1059.6" r="4.1"/>
+          <circle id="Muifa__x28_Unding_x2F_29W_x29_" class="st3" cx="943.5" cy="1049.7" r="4.8"/>
+          <circle id="Vicente" class="st3" cx="948.8" cy="1059.6" r="3.9"/>
+          <circle id="Damrey" class="st3" cx="955.3" cy="1050.8" r="5.1"/>
+          <circle id="Kai_Tak__x28_21_x29_" class="st3" cx="958.7" cy="1061.6" r="4.2"/>
+          <circle id="Chanchu__x28_Caloy_x29_" class="st3" cx="969.9" cy="1067.2" r="6.2"/>
+          <circle id="Bilis" class="st3" cx="963.5" cy="1043.1" r="4.1"/>
+          <circle id="Xangsane__x28_Milenyo_x29_" class="st3" cx="974.7" cy="1044.1" r="5"/>
+          <circle id="Durian__x28_Reming_x29_" class="st3" cx="967.3" cy="1054" r="5.3"/>
+          <circle id="Lekima__x28_Hanna_x29_" class="st3" cx="983.2" cy="1064.6" r="5.3"/>
+          <circle id="Tropical_storm__x22_Kammuri_x22___x28_Julian_x29_" class="st3" cx="997.8" cy="1046.2" r="5.9"/>
+          <circle id="Typhoon__x22_Hagupit_x22___x28_Nina_x29_" class="st3" cx="1007.8" cy="1053.8" r="4.7"/>
+          <circle id="Typhoon__x22_Mekkhala_x22_" class="st3" cx="985.7" cy="1045.7" r="4.2"/>
+          <circle id="Tropical_Storm__x22_Maysak_x22___x28_Quinta-Sony_x29_" class="st3" cx="979.7" cy="1053.8" r="4"/>
+          <circle id="Tropical_storm__x22_Noul_x22_" class="st3" cx="989.8" cy="1055.2" r="4.1"/>
+          <circle id="Tropical_storm__x22_Ondoy_x22___x28_Ketsana_x29_" class="st3" cx="1012.2" cy="1065.8" r="6.1"/>
+          <rect id="Typhoon__x22_Pepeng_x22___x28_Parma_x29_" class="st3" x="1005.1" y="1054.5"/>
+          <circle id="Tropical_storm__x22_Mirinae_x22___x28_Santi_x29_" class="st3" cx="999" cy="1062.4" r="5.6"/>
+          <circle id="Typhoon_Conson__x28_Basyang_x29_" class="st3" cx="1015.6" cy="1046.5" r="4"/>
+          <circle id="Typhoon_Chanthu" class="st3" cx="1019" cy="1055.9" r="3.9"/>
+          <circle id="Typhoon_Mindulle" class="st3" cx="1025.5" cy="1048.3" r="4.1"/>
+          <rect id="Tropical_Storm_Haima__x28_Egay_x29_" class="st3" x="1029.1" y="1054.5"/>
+          <circle id="Typhoon_Vicente" class="st3" cx="1039.4" cy="1050.4" r="3.9"/>
+          <circle id="TYphoon_Kai-Tak" class="st3" cx="1041.5" cy="1060.3" r="4.1"/>
+          <circle id="Typhoon_Son_Tinh__x28_Ofel_x29_" class="st3" cx="1032" cy="1056.9" r="4"/>
+          <circle id="Tropical_storm_Jebi" class="st3" cx="1053.7" cy="1067.2" r="3.8"/>
+          <circle id="Typhoon_Wutip" class="st3" cx="1059.2" cy="1050.1" r="4.4"/>
+          <circle id="Tropical_storm_Nari__x28_SAnti_x29_" class="st3" cx="1051.5" cy="1057.4" r="4.2"/>
+          <circle id="Typhoon_Haiyan__x28_Yolanda_x29_" class="st3" cx="1049" cy="1047.4" r="4.1"/>
+          <circle id="Typhoon_Rammasun__x28_Glenda_x29_" class="st3" cx="1061.6" cy="1060.7" r="4.4"/>
+          <circle id="Typhoon_Kalmaegi__x28_Luis_x29_" class="st3" cx="1069.1" cy="1053.6" r="4"/>
+          <rect id="Tropical_storm__x27_Sinlaku_x27___x28_Queenie_x29_" class="st3" x="1065.1" y="1054.5"/>
+          <circle id="Tropical_storm_Kujira" class="st3" cx="1077.3" cy="1059" r="3.8"/>
+          <circle id="Cyclone_Vamco" class="st3" cx="1077.7" cy="1048.7" r="4"/>
+          <circle id="Storm_Mirinae" class="st3" cx="1086.8" cy="1044.4" r="3.5"/>
+          <circle id="Tropical_storm_Aere" class="st3" cx="1086.5" cy="1054.4" r="4.5"/>
+          <circle id="Tropical_storm_Dianmu" class="st3" cx="1088.9" cy="1064.5" r="4"/>
+          <circle id="Tropical_Storm_Talas" class="st3" cx="1095.2" cy="1048.6" r="3.9"/>
+          <circle id="Typhoon__x27_Hato_x27_" class="st3" cx="1103.4" cy="1053.2" r="3.5"/>
+          <circle id="Typhoon__x27_Doksuri_x27_" class="st3" cx="1103.8" cy="1043.7" r="4.1"/>
+          <circle id="Typhoon__x27_Damrey_x27___x2F___x27_Ramil_x27_" class="st3" cx="1104.7" cy="1064.6" r="5.6"/>
+          <circle id="Tropical_storm__x27_Ewiniar_x27_" class="st3" cx="1095.8" cy="1058" r="3.5"/>
+          <circle id="Tyhoon__x27_Son_Tinh_x27_" class="st3" cx="1114.5" cy="1045.4" r="4.5"/>
+          <circle id="Typhoon__x27_Bebinca_x27_" class="st3" cx="1116.7" cy="1065.4" r="4"/>
+          <circle id="Tropical_depression__x27_Toraji_x27_" class="st3" cx="1112.7" cy="1055.9" r="4.2"/>
+          <circle id="Typhoon__x27_Matmo_x27_" class="st3" cx="1121.8" cy="1052.6" r="3.5"/>
+          <circle id="Tropical_cyclone__x27_Nakri_x27_" class="st3" cx="1125.1" cy="1044.1" r="3.7"/>
+          <circle id="Tropical_cyclone__x27_Sinlaku_x27_" class="st3" cx="1125.3" cy="1061" r="3.6"/>
+          <circle id="Tropical_storm_Linfa" class="st3" cx="1133.8" cy="1052.5" r="6.5"/>
+          <circle id="Tropical_storm__x27_Nangka_x27___x28_Nika_x29_" class="st3" cx="1143" cy="1044.6" r="3.6"/>
+          <circle id="Tropical_storm__x27_Noul_x27___x28_Leon_x29_" class="st3" cx="1153.7" cy="1060" r="3.8"/>
+          <circle id="Typhoon__x27_Molave_x27___x28_Quinta_x29_" class="st3" cx="1143.4" cy="1061.4" r="4.6"/>
+          <rect id="Tyhoon__x27_Ulysses_x27___x28_Vamco_x29_" class="st3" x="1137.1" y="1054.5"/>
+          <circle id="Tropical_storm__x27_Etau_x27___x28_Tonyo_x29_" class="st3" cx="1133.7" cy="1064.6" r="3.6"/>
+          <circle id="Tropical_depression__x27_Vicky_x27___x28_Krovanh_x29_" class="st3" cx="1134.8" cy="1040.5" r="3.5"/>
+          <circle id="Tropical_storm__x27_Koguma_x27_" class="st3" cx="1148.6" cy="1070.1" r="3.5"/>
+          <circle id="Tropical_cyclone__x27_Conson_x27___x28_Jolina_x29_" class="st3" cx="1157.4" cy="1051.3" r="3.6"/>
+          <circle id="Tropical_depression__x27_Twe_x27_" class="st3" cx="1152.2" cy="1043.5" r="3.8"/>
+          <circle id="Typhoon__x27_Rai_x27___x28_Odette_x29_" class="st3" cx="1148.2" cy="1052.3" r="3.7"/>
+          <circle id="Tropical_storm__x27_Sonca_x27_" class="st3" cx="1164.5" cy="1058" r="4.2"/>
+          <circle id="Tropical_cyclone__x27_Talim_x27_" class="st3" cx="1173.5" cy="1054.3" r="3.5"/>
+        </g>
+        <g id="labels33" data-name="labels">
+          <g id="Iris1" data-name="Iris">
+            <g class="st7">
+              <text class="st12" transform="translate(458.4 1054.5)"><tspan x="0" y="0">Iris</tspan></text>
+              <text class="st2" transform="translate(458.4 1054.5)"><tspan x="0" y="0">Iris</tspan></text>
+            </g>
+          </g>
+          <g id="Wanda1" data-name="Wanda">
+            <g class="st8">
+              <text class="st12" transform="translate(526.7 1053.6)"><tspan x="0" y="0">Wanda</tspan></text>
+              <text class="st2" transform="translate(526.7 1053.6)"><tspan x="0" y="0">Wanda</tspan></text>
+            </g>
+          </g>
+          <g id="Sarah1" data-name="Sarah">
+            <g class="st8">
+              <text class="st12" transform="translate(607.7 1054.5)"><tspan x="0" y="0">Sarah</tspan></text>
+              <text class="st2" transform="translate(607.7 1054.5)"><tspan x="0" y="0">Sarah</tspan></text>
+            </g>
+          </g>
+          <g id="Joe__x28_n_xB0_4_x29_1" data-name="Joe__x28_n_xB0_4_x29_">
+            <g class="st7">
+              <text class="st12" transform="translate(637.6 1061.6)"><tspan x="0" y="0">Joe (n°4)</tspan></text>
+              <text class="st2" transform="translate(637.6 1061.6)"><tspan x="0" y="0">Joe (n°4)</tspan></text>
+            </g>
+          </g>
+          <g id="Ruth__x28_N_xB0_6_x29_1" data-name="Ruth__x28_N_xB0_6_x29_">
+            <g class="st7">
+              <text class="st12" transform="translate(632.6 1048.1)"><tspan x="0" y="0">Ruth (N°6)</tspan></text>
+              <text class="st2" transform="translate(632.6 1048.1)"><tspan x="0" y="0">Ruth (N°6)</tspan></text>
+            </g>
+          </g>
+          <g id="Nancy__x28_N_xB0_7_x29_1" data-name="Nancy__x28_N_xB0_7_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(651.2 1055.1)"><tspan x="0" y="0">Nancy (N°7)</tspan></text>
+              <text class="st2" transform="translate(651.2 1055.1)"><tspan x="0" y="0">Nancy (N°7)</tspan></text>
+            </g>
+          </g>
+          <g id="Herbert__x28_N_xB0_7_x29__x2C__Kim__x28_N_xB0_9_x29__x2C__Lex__x28_N_xB0_10_x29_1" data-name="Herbert__x28_N_xB0_7_x29__x2C__Kim__x28_N_xB0_9_x29__x2C__Lex__x28_N_xB0_10_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(611.5 1049)"><tspan x="0" y="0">Herbert (N°7), Kim (N°9), Lex (N°10)</tspan></text>
+              <text class="st2" transform="translate(611.5 1049)"><tspan x="0" y="0">Herbert (N°7), Kim (N°9), Lex (N°10)</tspan></text>
+            </g>
+          </g>
+          <g id="Georgia__x28_N_xB0_6_x29_1" data-name="Georgia__x28_N_xB0_6_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(656.4 1063.5)"><tspan x="0" y="0">Georgia (N°6)</tspan></text>
+              <text class="st2" transform="translate(656.4 1063.5)"><tspan x="0" y="0">Georgia (N°6)</tspan></text>
+            </g>
+          </g>
+          <g id="Agnes__x28_n_xB0_9_x29_1" data-name="Agnes__x28_n_xB0_9_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(673.6 1063)"><tspan x="0" y="0">Agnes (n°9)</tspan></text>
+              <text class="st2" transform="translate(673.6 1063)"><tspan x="0" y="0">Agnes (n°9)</tspan></text>
+            </g>
+          </g>
+          <g id="Cecil2" data-name="Cecil">
+            <g class="st7">
+              <text class="st12" transform="translate(704.7 1057.2)"><tspan x="0" y="0">Cecil</tspan></text>
+              <text class="st2" transform="translate(704.7 1057.2)"><tspan x="0" y="0">Cecil</tspan></text>
+            </g>
+          </g>
+          <g id="Wayne__x28_N_xB0_5_x29_1" data-name="Wayne__x28_N_xB0_5_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(703.3 1047.6)"><tspan x="0" y="0">Wayne (N°5)</tspan></text>
+              <text class="st2" transform="translate(703.3 1047.6)"><tspan x="0" y="0">Wayne (N°5)</tspan></text>
+            </g>
+          </g>
+          <g id="Maury1" data-name="Maury">
+            <g class="st8">
+              <text class="st12" transform="translate(731.2 1054.6)"><tspan x="0" y="0">Maury</tspan></text>
+              <text class="st2" transform="translate(731.2 1054.6)"><tspan x="0" y="0">Maury</tspan></text>
+            </g>
+          </g>
+          <g id="Irving1" data-name="Irving">
+            <g class="st7">
+              <text class="st12" transform="translate(760.6 1041.1)"><tspan x="0" y="0">Irving</tspan></text>
+              <text class="st2" transform="translate(760.6 1041.1)"><tspan x="0" y="0">Irving</tspan></text>
+            </g>
+          </g>
+          <g id="Brian_x2C__Angela_x2C__Dan1" data-name="Brian_x2C__Angela_x2C__Dan">
+            <g class="st8">
+              <text class="st12" transform="translate(722.4 1068.8)"><tspan x="0" y="0">Brian, Angela, Dan</tspan></text>
+              <text class="st2" transform="translate(722.4 1068.8)"><tspan x="0" y="0">Brian, Angela, Dan</tspan></text>
+            </g>
+          </g>
+          <g id="Cecil3" data-name="Cecil">
+            <g class="st7">
+              <text class="st12" transform="translate(750.3 1052.7)"><tspan x="0" y="0">Cecil</tspan></text>
+              <text class="st2" transform="translate(750.3 1052.7)"><tspan x="0" y="0">Cecil</tspan></text>
+            </g>
+          </g>
+          <g id="Becky1" data-name="Becky">
+            <g class="st8">
+              <text class="st12" transform="translate(762.9 1052.1)"><tspan x="0" y="0">Becky</tspan></text>
+              <text class="st2" transform="translate(762.9 1052.1)"><tspan x="0" y="0">Becky</tspan></text>
+            </g>
+          </g>
+          <g id="Fred1" data-name="Fred">
+            <g class="st8">
+              <text class="st12" transform="translate(775.5 1047.4)"><tspan x="0" y="0">Fred</tspan></text>
+              <text class="st2" transform="translate(775.5 1047.4)"><tspan x="0" y="0">Fred</tspan></text>
+            </g>
+          </g>
+          <g id="Zeke1" data-name="Zeke">
+            <g class="st8">
+              <text class="st12" transform="translate(782.6 1054.1)"><tspan x="0" y="0">Zeke</tspan></text>
+              <text class="st2" transform="translate(782.6 1054.1)"><tspan x="0" y="0">Zeke</tspan></text>
+            </g>
+          </g>
+          <g id="Chuck1" data-name="Chuck">
+            <g class="st8">
+              <text class="st12" transform="translate(789.2 1057.8)"><tspan x="0" y="0">Chuck</tspan></text>
+              <text class="st2" transform="translate(789.2 1057.8)"><tspan x="0" y="0">Chuck</tspan></text>
+            </g>
+          </g>
+          <g id="Angela1" data-name="Angela">
+            <g class="st8">
+              <text class="st12" transform="translate(786.4 1047.7)"><tspan x="0" y="0">Angela</tspan></text>
+              <text class="st2" transform="translate(786.4 1047.7)"><tspan x="0" y="0">Angela</tspan></text>
+            </g>
+          </g>
+          <g id="Kyle1" data-name="Kyle">
+            <g class="st7">
+              <text class="st12" transform="translate(804.7 1061.5)"><tspan x="0" y="0">Kyle</tspan></text>
+              <text class="st2" transform="translate(804.7 1061.5)"><tspan x="0" y="0">Kyle</tspan></text>
+            </g>
+          </g>
+          <g id="Lola1" data-name="Lola">
+            <g class="st7">
+              <text class="st12" transform="translate(803.7 1048.8)"><tspan x="0" y="0">Lola</tspan></text>
+              <text class="st2" transform="translate(803.7 1048.8)"><tspan x="0" y="0">Lola</tspan></text>
+            </g>
+          </g>
+          <g id="Luke1" data-name="Luke">
+            <g class="st8">
+              <text class="st12" transform="translate(812.7 1053.6)"><tspan x="0" y="0">Luke</tspan></text>
+              <text class="st2" transform="translate(812.7 1053.6)"><tspan x="0" y="0">Luke</tspan></text>
+            </g>
+          </g>
+          <g id="Zack1" data-name="Zack">
+            <g class="st8">
+              <text class="st12" transform="translate(815.2 1063.8)"><tspan x="0" y="0">Zack</tspan></text>
+              <text class="st2" transform="translate(815.2 1063.8)"><tspan x="0" y="0">Zack</tspan></text>
+            </g>
+          </g>
+          <g id="Frankie1" data-name="Frankie">
+            <g class="st8">
+              <text class="st12" transform="translate(822.9 1059.1)"><tspan x="0" y="0">Frankie</tspan></text>
+              <text class="st2" transform="translate(822.9 1059.1)"><tspan x="0" y="0">Frankie</tspan></text>
+            </g>
+          </g>
+          <g id="Sally1" data-name="Sally">
+            <g class="st8">
+              <text class="st12" transform="translate(820.8 1047.8)"><tspan x="0" y="0">Sally</tspan></text>
+              <text class="st2" transform="translate(820.8 1047.8)"><tspan x="0" y="0">Sally</tspan></text>
+            </g>
+          </g>
+          <g id="Willie1" data-name="Willie">
+            <g class="st8">
+              <text class="st12" transform="translate(838.6 1068.1)"><tspan x="0" y="0">Willie</tspan></text>
+              <text class="st2" transform="translate(838.6 1068.1)"><tspan x="0" y="0">Willie</tspan></text>
+            </g>
+          </g>
+          <g id="Zita1" data-name="Zita">
+            <g class="st8">
+              <text class="st12" transform="translate(852.8 1054.5)"><tspan x="0" y="0">Zita</tspan></text>
+              <text class="st2" transform="translate(852.8 1054.5)"><tspan x="0" y="0">Zita</tspan></text>
+            </g>
+          </g>
+          <g id="Linda1" data-name="Linda">
+            <g class="st7">
+              <text class="st12" transform="translate(852.3 1051.6)"><tspan x="0" y="0">Linda</tspan></text>
+              <text class="st2" transform="translate(852.3 1051.6)"><tspan x="0" y="0">Linda</tspan></text>
+            </g>
+          </g>
+          <g id="Fritz1" data-name="Fritz">
+            <g class="st7">
+              <text class="st12" transform="translate(832.3 1073.1)"><tspan x="0" y="0">Fritz</tspan></text>
+              <text class="st2" transform="translate(832.3 1073.1)"><tspan x="0" y="0">Fritz</tspan></text>
+            </g>
+          </g>
+          <g id="Chip_x2C__Elvis__x2C__Dawn1" data-name="Chip_x2C__Elvis__x2C__Dawn">
+            <g class="st8">
+              <text class="st12" transform="translate(848.4 1050.4)"><tspan x="0" y="0">Chip, Elvis , Dawn</tspan></text>
+              <text class="st2" transform="translate(848.4 1050.4)"><tspan x="0" y="0">Chip, Elvis , Dawn</tspan></text>
+            </g>
+          </g>
+          <g id="Faith__x26__Gil1" data-name="Faith__x26__Gil">
+            <g class="st7">
+              <text class="st12" transform="translate(860.6 1062.8)"><tspan x="0" y="0">Faith &amp; Gil</tspan></text>
+              <text class="st2" transform="translate(860.6 1062.8)"><tspan x="0" y="0">Faith &amp; Gil</tspan></text>
+            </g>
+          </g>
+          <g id="Kaemi1" data-name="Kaemi">
+            <g class="st8">
+              <text class="st12" transform="translate(887.4 1053.2)"><tspan x="0" y="0">Kaemi</tspan></text>
+              <text class="st2" transform="translate(887.4 1053.2)"><tspan x="0" y="0">Kaemi</tspan></text>
+            </g>
+          </g>
+          <g id="Wukong1" data-name="Wukong">
+            <g class="st8">
+              <text class="st12" transform="translate(877.2 1061)"><tspan x="0" y="0">Wukong</tspan></text>
+              <text class="st2" transform="translate(877.2 1061)"><tspan x="0" y="0">Wukong</tspan></text>
+            </g>
+          </g>
+          <g id="Durian1" data-name="Durian">
+            <g class="st8">
+              <text class="st12" transform="translate(893.9 1061)"><tspan x="0" y="0">Durian</tspan></text>
+              <text class="st2" transform="translate(893.9 1061)"><tspan x="0" y="0">Durian</tspan></text>
+            </g>
+          </g>
+          <g id="Usagi1" data-name="Usagi">
+            <g class="st7">
+              <text class="st12" transform="translate(896.2 1047)"><tspan x="0" y="0">Usagi</tspan></text>
+              <text class="st2" transform="translate(896.2 1047)"><tspan x="0" y="0">Usagi</tspan></text>
+            </g>
+          </g>
+          <g id="Lingling__x28_Nanang_x29_1" data-name="Lingling__x28_Nanang_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(876.8 1053.6)"><tspan x="0" y="0">Lingling (Nanang)</tspan></text>
+              <text class="st2" transform="translate(876.8 1053.6)"><tspan x="0" y="0">Lingling (Nanang)</tspan></text>
+            </g>
+          </g>
+          <g id="Koni1" data-name="Koni">
+            <g class="st8">
+              <text class="st12" transform="translate(923.1 1054.5)"><tspan x="0" y="0">Koni</tspan></text>
+              <text class="st2" transform="translate(923.1 1054.5)"><tspan x="0" y="0">Koni</tspan></text>
+            </g>
+          </g>
+          <g id="Chanthu__x28_Gener_x2F_08W_x29_1" data-name="Chanthu__x28_Gener_x2F_08W_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(889.7 1059.6)"><tspan x="0" y="0">Chanthu (Gener/08W)</tspan></text>
+              <text class="st2" transform="translate(889.7 1059.6)"><tspan x="0" y="0">Chanthu (Gener/08W)</tspan></text>
+            </g>
+          </g>
+          <g id="Muifa__x28_Unding_x2F_29W_x29_1" data-name="Muifa__x28_Unding_x2F_29W_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(899 1049.7)"><tspan x="0" y="0">Muifa (Unding/29W)</tspan></text>
+              <text class="st2" transform="translate(899 1049.7)"><tspan x="0" y="0">Muifa (Unding/29W)</tspan></text>
+            </g>
+          </g>
+          <g id="Vicente1" data-name="Vicente">
+            <g class="st8">
+              <text class="st12" transform="translate(932.2 1059.6)"><tspan x="0" y="0">Vicente</tspan></text>
+              <text class="st2" transform="translate(932.2 1059.6)"><tspan x="0" y="0">Vicente</tspan></text>
+            </g>
+          </g>
+          <g id="Damrey1" data-name="Damrey">
+            <g class="st8">
+              <text class="st12" transform="translate(937.8 1050.8)"><tspan x="0" y="0">Damrey</tspan></text>
+              <text class="st2" transform="translate(937.8 1050.8)"><tspan x="0" y="0">Damrey</tspan></text>
+            </g>
+          </g>
+          <g id="Kai_Tak__x28_21_x29_1" data-name="Kai_Tak__x28_21_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(931.9 1061.6)"><tspan x="0" y="0">Kai Tak (21)</tspan></text>
+              <text class="st2" transform="translate(931.9 1061.6)"><tspan x="0" y="0">Kai Tak (21)</tspan></text>
+            </g>
+          </g>
+          <g id="Chanchu__x28_Caloy_x29_1" data-name="Chanchu__x28_Caloy_x29_">
+            <g class="st7">
+              <text class="st12" transform="translate(932.4 1067.2)"><tspan x="0" y="0">Chanchu (Caloy)</tspan></text>
+              <text class="st2" transform="translate(932.4 1067.2)"><tspan x="0" y="0">Chanchu (Caloy)</tspan></text>
+            </g>
+          </g>
+          <g id="Bilis1" data-name="Bilis">
+            <g class="st8">
+              <text class="st12" transform="translate(954.4 1043.1)"><tspan x="0" y="0">Bilis</tspan></text>
+              <text class="st2" transform="translate(954.4 1043.1)"><tspan x="0" y="0">Bilis</tspan></text>
+            </g>
+          </g>
+          <g id="Xangsane__x28_Milenyo_x29_1" data-name="Xangsane__x28_Milenyo_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(930.2 1044.1)"><tspan x="0" y="0">Xangsane (Milenyo)</tspan></text>
+              <text class="st2" transform="translate(930.2 1044.1)"><tspan x="0" y="0">Xangsane (Milenyo)</tspan></text>
+            </g>
+          </g>
+          <g id="Durian__x28_Reming_x29_1" data-name="Durian__x28_Reming_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(930.6 1054)"><tspan x="0" y="0">Durian (Reming)</tspan></text>
+              <text class="st2" transform="translate(930.6 1054)"><tspan x="0" y="0">Durian (Reming)</tspan></text>
+            </g>
+          </g>
+          <g id="Lekima__x28_Hanna_x29_1" data-name="Lekima__x28_Hanna_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(947.6 1064.6)"><tspan x="0" y="0">Lekima (Hanna)</tspan></text>
+              <text class="st2" transform="translate(947.6 1064.6)"><tspan x="0" y="0">Lekima (Hanna)</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_storm__x22_Kammuri_x22___x28_Julian_x29_1" data-name="Tropical_storm__x22_Kammuri_x22___x28_Julian_x29_">
+            <g class="st7">
+              <text class="st12" transform="translate(923.8 1046.2)"><tspan x="0" y="0">Tropical storm &quot;Kammuri&quot; (Julian)</tspan></text>
+              <text class="st2" transform="translate(923.8 1046.2)"><tspan x="0" y="0">Tropical storm &quot;Kammuri&quot; (Julian)</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon__x22_Hagupit_x22___x28_Nina_x29_1" data-name="Typhoon__x22_Hagupit_x22___x28_Nina_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(951.6 1053.8)"><tspan x="0" y="0">Typhoon &quot;Hagupit&quot; (Nina)</tspan></text>
+              <text class="st2" transform="translate(951.6 1053.8)"><tspan x="0" y="0">Typhoon &quot;Hagupit&quot; (Nina)</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon__x22_Mekkhala_x22_1" data-name="Typhoon__x22_Mekkhala_x22_">
+            <g class="st8">
+              <text class="st12" transform="translate(940.3 1045.7)"><tspan x="0" y="0">Typhoon &quot;Mekkhala&quot;</tspan></text>
+              <text class="st2" transform="translate(940.3 1045.7)"><tspan x="0" y="0">Typhoon &quot;Mekkhala&quot;</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_Storm__x22_Maysak_x22___x28_Quinta-Sony_x29_1" data-name="Tropical_Storm__x22_Maysak_x22___x28_Quinta-Sony_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(892.9 1053.8)"><tspan x="0" y="0">Tropical Storm &quot;Maysak&quot; (Quinta-Sony)</tspan></text>
+              <text class="st2" transform="translate(892.9 1053.8)"><tspan x="0" y="0">Tropical Storm &quot;Maysak&quot; (Quinta-Sony)</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_storm__x22_Noul_x22_1" data-name="Tropical_storm__x22_Noul_x22_">
+            <g class="st8">
+              <text class="st12" transform="translate(943.2 1055.2)"><tspan x="0" y="0">Tropical storm &quot;Noul&quot;</tspan></text>
+              <text class="st2" transform="translate(943.2 1055.2)"><tspan x="0" y="0">Tropical storm &quot;Noul&quot;</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_storm__x22_Ondoy_x22___x28_Ketsana_x29_1" data-name="Tropical_storm__x22_Ondoy_x22___x28_Ketsana_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(938.2 1065.8)"><tspan x="0" y="0">Tropical storm &quot;Ondoy&quot; (Ketsana)</tspan></text>
+              <text class="st2" transform="translate(938.2 1065.8)"><tspan x="0" y="0">Tropical storm &quot;Ondoy&quot; (Ketsana)</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon__x22_Pepeng_x22___x28_Parma_x29_1" data-name="Typhoon__x22_Pepeng_x22___x28_Parma_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(944.4 1054.5)"><tspan x="0" y="0">Typhoon &quot;Pepeng&quot; (Parma)</tspan></text>
+              <text class="st2" transform="translate(944.4 1054.5)"><tspan x="0" y="0">Typhoon &quot;Pepeng&quot; (Parma)</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_storm__x22_Mirinae_x22___x28_Santi_x29_1" data-name="Tropical_storm__x22_Mirinae_x22___x28_Santi_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(930.3 1062.4)"><tspan x="0" y="0">Tropical storm &quot;Mirinae&quot; (Santi)</tspan></text>
+              <text class="st2" transform="translate(930.3 1062.4)"><tspan x="0" y="0">Tropical storm &quot;Mirinae&quot; (Santi)</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon_Conson__x28_Basyang_x29_1" data-name="Typhoon_Conson__x28_Basyang_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(953.7 1046.5)"><tspan x="0" y="0">Typhoon Conson (Basyang)</tspan></text>
+              <text class="st2" transform="translate(953.7 1046.5)"><tspan x="0" y="0">Typhoon Conson (Basyang)</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon_Chanthu1" data-name="Typhoon_Chanthu">
+            <g class="st8">
+              <text class="st12" transform="translate(979.6 1055.9)"><tspan x="0" y="0">Typhoon Chanthu</tspan></text>
+              <text class="st2" transform="translate(979.6 1055.9)"><tspan x="0" y="0">Typhoon Chanthu</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon_Mindulle1" data-name="Typhoon_Mindulle">
+            <g class="st8">
+              <text class="st12" transform="translate(986.4 1048.3)"><tspan x="0" y="0">Typhoon Mindulle</tspan></text>
+              <text class="st2" transform="translate(986.4 1048.3)"><tspan x="0" y="0">Typhoon Mindulle</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_Storm_Haima__x28_Egay_x29_1" data-name="Tropical_Storm_Haima__x28_Egay_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(965 1054.5)"><tspan x="0" y="0">Tropical Storm Haima (Egay)</tspan></text>
+              <text class="st2" transform="translate(965 1054.5)"><tspan x="0" y="0">Tropical Storm Haima (Egay)</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon_Vicente1" data-name="Typhoon_Vicente">
+            <g class="st8">
+              <text class="st12" transform="translate(1002.4 1050.4)"><tspan x="0" y="0">Typhoon Vicente</tspan></text>
+              <text class="st2" transform="translate(1002.4 1050.4)"><tspan x="0" y="0">Typhoon Vicente</tspan></text>
+            </g>
+          </g>
+          <g id="TYphoon_Kai-Tak1" data-name="TYphoon_Kai-Tak">
+            <g class="st8">
+              <text class="st12" transform="translate(1003.4 1060.3)"><tspan x="0" y="0">TYphoon Kai-Tak</tspan></text>
+              <text class="st2" transform="translate(1003.4 1060.3)"><tspan x="0" y="0">TYphoon Kai-Tak</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon_Son_Tinh__x28_Ofel_x29_1" data-name="Typhoon_Son_Tinh__x28_Ofel_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(977.6 1056.9)"><tspan x="0" y="0">Typhoon Son Tinh (Ofel)</tspan></text>
+              <text class="st2" transform="translate(977.6 1056.9)"><tspan x="0" y="0">Typhoon Son Tinh (Ofel)</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_storm_Jebi1" data-name="Tropical_storm_Jebi">
+            <g class="st8">
+              <text class="st12" transform="translate(1011.9 1067.2)"><tspan x="0" y="0">Tropical storm Jebi</tspan></text>
+              <text class="st2" transform="translate(1011.9 1067.2)"><tspan x="0" y="0">Tropical storm Jebi</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon_Wutip1" data-name="Typhoon_Wutip">
+            <g class="st8">
+              <text class="st12" transform="translate(1026 1050.1)"><tspan x="0" y="0">Typhoon Wutip</tspan></text>
+              <text class="st2" transform="translate(1026 1050.1)"><tspan x="0" y="0">Typhoon Wutip</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_storm_Nari__x28_SAnti_x29_1" data-name="Tropical_storm_Nari__x28_SAnti_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(993 1057.4)"><tspan x="0" y="0">Tropical storm Nari (SAnti)</tspan></text>
+              <text class="st2" transform="translate(993 1057.4)"><tspan x="0" y="0">Tropical storm Nari (SAnti)</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon_Haiyan__x28_Yolanda_x29_1" data-name="Typhoon_Haiyan__x28_Yolanda_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(990.2 1047.4)"><tspan x="0" y="0">Typhoon Haiyan (Yolanda)</tspan></text>
+              <text class="st2" transform="translate(990.2 1047.4)"><tspan x="0" y="0">Typhoon Haiyan (Yolanda)</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon_Rammasun__x28_Glenda_x29_1" data-name="Typhoon_Rammasun__x28_Glenda_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(994.7 1060.7)"><tspan x="0" y="0">Typhoon Rammasun (Glenda)</tspan></text>
+              <text class="st2" transform="translate(994.7 1060.7)"><tspan x="0" y="0">Typhoon Rammasun (Glenda)</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon_Kalmaegi__x28_Luis_x29_1" data-name="Typhoon_Kalmaegi__x28_Luis_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(1013.9 1053.6)"><tspan x="0" y="0">Typhoon Kalmaegi (Luis)</tspan></text>
+              <text class="st2" transform="translate(1013.9 1053.6)"><tspan x="0" y="0">Typhoon Kalmaegi (Luis)</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_storm__x27_Sinlaku_x27___x28_Queenie_x29_1" data-name="Tropical_storm__x27_Sinlaku_x27___x28_Queenie_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(990.5 1054.5)"><tspan x="0" y="0">Tropical storm &apos;Sinlaku&apos; (Queenie)</tspan></text>
+              <text class="st2" transform="translate(990.5 1054.5)"><tspan x="0" y="0">Tropical storm &apos;Sinlaku&apos; (Queenie)</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_storm_Kujira1" data-name="Tropical_storm_Kujira">
+            <g class="st8">
+              <text class="st12" transform="translate(1031.8 1059)"><tspan x="0" y="0">Tropical storm Kujira</tspan></text>
+              <text class="st2" transform="translate(1031.8 1059)"><tspan x="0" y="0">Tropical storm Kujira</tspan></text>
+            </g>
+          </g>
+          <g id="Cyclone_Vamco1" data-name="Cyclone_Vamco">
+            <g class="st8">
+              <text class="st12" transform="translate(1042.9 1048.7)"><tspan x="0" y="0">Cyclone Vamco</tspan></text>
+              <text class="st2" transform="translate(1042.9 1048.7)"><tspan x="0" y="0">Cyclone Vamco</tspan></text>
+            </g>
+          </g>
+          <g id="Storm_Mirinae1" data-name="Storm_Mirinae">
+            <g class="st8">
+              <text class="st12" transform="translate(1055.7 1044.4)"><tspan x="0" y="0">Storm Mirinae</tspan></text>
+              <text class="st2" transform="translate(1055.7 1044.4)"><tspan x="0" y="0">Storm Mirinae</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_storm_Aere1" data-name="Tropical_storm_Aere">
+            <g class="st8">
+              <text class="st12" transform="translate(1043.4 1054.4)"><tspan x="0" y="0">Tropical storm Aere</tspan></text>
+              <text class="st2" transform="translate(1043.4 1054.4)"><tspan x="0" y="0">Tropical storm Aere</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_storm_Dianmu1" data-name="Tropical_storm_Dianmu">
+            <g class="st8">
+              <text class="st12" transform="translate(1039 1064.5)"><tspan x="0" y="0">Tropical storm Dianmu</tspan></text>
+              <text class="st2" transform="translate(1039 1064.5)"><tspan x="0" y="0">Tropical storm Dianmu</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_Storm_Talas1" data-name="Tropical_Storm_Talas">
+            <g class="st8">
+              <text class="st12" transform="translate(1049.9 1048.6)"><tspan x="0" y="0">Tropical Storm Talas</tspan></text>
+              <text class="st2" transform="translate(1049.9 1048.6)"><tspan x="0" y="0">Tropical Storm Talas</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon__x27_Hato_x27_1" data-name="Typhoon__x27_Hato_x27_">
+            <g class="st8">
+              <text class="st12" transform="translate(1070.5 1053.2)"><tspan x="0" y="0">Typhoon &apos;Hato&apos;</tspan></text>
+              <text class="st2" transform="translate(1070.5 1053.2)"><tspan x="0" y="0">Typhoon &apos;Hato&apos;</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon__x27_Doksuri_x27_1" data-name="Typhoon__x27_Doksuri_x27_">
+            <g class="st8">
+              <text class="st12" transform="translate(1064.5 1043.7)"><tspan x="0" y="0">Typhoon &apos;Doksuri&apos;</tspan></text>
+              <text class="st2" transform="translate(1064.5 1043.7)"><tspan x="0" y="0">Typhoon &apos;Doksuri&apos;</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon__x27_Damrey_x27___x2F___x27_Ramil_x27_1" data-name="Typhoon__x27_Damrey_x27___x2F___x27_Ramil_x27_">
+            <g class="st7">
+              <text class="st12" transform="translate(1046 1064.6)"><tspan x="0" y="0">Typhoon &apos;Damrey&apos; / &apos;Ramil&apos;</tspan></text>
+              <text class="st2" transform="translate(1046 1064.6)"><tspan x="0" y="0">Typhoon &apos;Damrey&apos; / &apos;Ramil&apos;</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_storm__x27_Ewiniar_x27_1" data-name="Tropical_storm__x27_Ewiniar_x27_">
+            <g class="st8">
+              <text class="st12" transform="translate(1044.8 1058)"><tspan x="0" y="0">Tropical storm &apos;Ewiniar&apos;</tspan></text>
+              <text class="st2" transform="translate(1044.8 1058)"><tspan x="0" y="0">Tropical storm &apos;Ewiniar&apos;</tspan></text>
+            </g>
+          </g>
+          <g id="Tyhoon__x27_Son_Tinh_x27_1" data-name="Tyhoon__x27_Son_Tinh_x27_">
+            <g class="st8">
+              <text class="st12" transform="translate(1075 1045.4)"><tspan x="0" y="0">Tyhoon &apos;Son Tinh&apos;</tspan></text>
+              <text class="st2" transform="translate(1075 1045.4)"><tspan x="0" y="0">Tyhoon &apos;Son Tinh&apos;</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon__x27_Bebinca_x27_1" data-name="Typhoon__x27_Bebinca_x27_">
+            <g class="st8">
+              <text class="st12" transform="translate(1076.2 1065.4)"><tspan x="0" y="0">Typhoon &apos;Bebinca&apos;</tspan></text>
+              <text class="st2" transform="translate(1076.2 1065.4)"><tspan x="0" y="0">Typhoon &apos;Bebinca&apos;</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_depression__x27_Toraji_x27_1" data-name="Tropical_depression__x27_Toraji_x27_">
+            <g class="st8">
+              <text class="st12" transform="translate(1054.1 1055.9)"><tspan x="0" y="0">Tropical depression &apos;Toraji&apos;</tspan></text>
+              <text class="st2" transform="translate(1054.1 1055.9)"><tspan x="0" y="0">Tropical depression &apos;Toraji&apos;</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon__x27_Matmo_x27_1" data-name="Typhoon__x27_Matmo_x27_">
+            <g class="st8">
+              <text class="st12" transform="translate(1084.2 1052.6)"><tspan x="0" y="0">Typhoon &apos;Matmo&apos;</tspan></text>
+              <text class="st2" transform="translate(1084.2 1052.6)"><tspan x="0" y="0">Typhoon &apos;Matmo&apos;</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_cyclone__x27_Nakri_x27_1" data-name="Tropical_cyclone__x27_Nakri_x27_">
+            <g class="st8">
+              <text class="st12" transform="translate(1074.3 1044.1)"><tspan x="0" y="0">Tropical cyclone &apos;Nakri&apos;</tspan></text>
+              <text class="st2" transform="translate(1074.3 1044.1)"><tspan x="0" y="0">Tropical cyclone &apos;Nakri&apos;</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_cyclone__x27_Sinlaku_x27_1" data-name="Tropical_cyclone__x27_Sinlaku_x27_">
+            <g class="st8">
+              <text class="st12" transform="translate(1069.8 1061)"><tspan x="0" y="0">Tropical cyclone &apos;Sinlaku&apos;</tspan></text>
+              <text class="st2" transform="translate(1069.8 1061)"><tspan x="0" y="0">Tropical cyclone &apos;Sinlaku&apos;</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_storm_Linfa1" data-name="Tropical_storm_Linfa">
+            <g class="st7">
+              <text class="st12" transform="translate(1090.3 1052.5)"><tspan x="0" y="0">Tropical storm Linfa</tspan></text>
+              <text class="st2" transform="translate(1090.3 1052.5)"><tspan x="0" y="0">Tropical storm Linfa</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_storm__x27_Nangka_x27___x28_Nika_x29_1" data-name="Tropical_storm__x27_Nangka_x27___x28_Nika_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(1076.4 1044.6)"><tspan x="0" y="0">Tropical storm &apos;Nangka&apos; (Nika)</tspan></text>
+              <text class="st2" transform="translate(1076.4 1044.6)"><tspan x="0" y="0">Tropical storm &apos;Nangka&apos; (Nika)</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_storm__x27_Noul_x27___x28_Leon_x29_1" data-name="Tropical_storm__x27_Noul_x27___x28_Leon_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(1093 1060)"><tspan x="0" y="0">Tropical storm &apos;Noul&apos; (Leon)</tspan></text>
+              <text class="st2" transform="translate(1093 1060)"><tspan x="0" y="0">Tropical storm &apos;Noul&apos; (Leon)</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon__x27_Molave_x27___x28_Quinta_x29_1" data-name="Typhoon__x27_Molave_x27___x28_Quinta_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(1085.5 1061.4)"><tspan x="0" y="0">Typhoon &apos;Molave&apos; (Quinta)</tspan></text>
+              <text class="st2" transform="translate(1085.5 1061.4)"><tspan x="0" y="0">Typhoon &apos;Molave&apos; (Quinta)</tspan></text>
+            </g>
+          </g>
+          <g id="Tyhoon__x27_Ulysses_x27___x28_Vamco_x29_1" data-name="Tyhoon__x27_Ulysses_x27___x28_Vamco_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(1079.9 1054.5)"><tspan x="0" y="0">Tyhoon &apos;Ulysses&apos; (Vamco)</tspan></text>
+              <text class="st2" transform="translate(1079.9 1054.5)"><tspan x="0" y="0">Tyhoon &apos;Ulysses&apos; (Vamco)</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_storm__x27_Etau_x27___x28_Tonyo_x29_1" data-name="Tropical_storm__x27_Etau_x27___x28_Tonyo_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(1070.7 1064.6)"><tspan x="0" y="0">Tropical storm &apos;Etau&apos; (Tonyo)</tspan></text>
+              <text class="st2" transform="translate(1070.7 1064.6)"><tspan x="0" y="0">Tropical storm &apos;Etau&apos; (Tonyo)</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_depression__x27_Vicky_x27___x28_Krovanh_x29_1" data-name="Tropical_depression__x27_Vicky_x27___x28_Krovanh_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(1053.1 1040.5)"><tspan x="0" y="0">Tropical depression &apos;Vicky&apos; (Krovanh)</tspan></text>
+              <text class="st2" transform="translate(1053.1 1040.5)"><tspan x="0" y="0">Tropical depression &apos;Vicky&apos; (Krovanh)</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_storm__x27_Koguma_x27_1" data-name="Tropical_storm__x27_Koguma_x27_">
+            <g class="st8">
+              <text class="st12" transform="translate(1095.4 1070.1)"><tspan x="0" y="0">Tropical storm &apos;Koguma&apos;</tspan></text>
+              <text class="st2" transform="translate(1095.4 1070.1)"><tspan x="0" y="0">Tropical storm &apos;Koguma&apos;</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_cyclone__x27_Conson_x27___x28_Jolina_x29_1" data-name="Tropical_cyclone__x27_Conson_x27___x28_Jolina_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(1083.3 1051.3)"><tspan x="0" y="0">Tropical cyclone &apos;Conson&apos; (Jolina)</tspan></text>
+              <text class="st2" transform="translate(1083.3 1051.3)"><tspan x="0" y="0">Tropical cyclone &apos;Conson&apos; (Jolina)</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_depression__x27_Twe_x27_1" data-name="Tropical_depression__x27_Twe_x27_">
+            <g class="st8">
+              <text class="st12" transform="translate(1096.6 1043.5)"><tspan x="0" y="0">Tropical depression &apos;Twe&apos;</tspan></text>
+              <text class="st2" transform="translate(1096.6 1043.5)"><tspan x="0" y="0">Tropical depression &apos;Twe&apos;</tspan></text>
+            </g>
+          </g>
+          <g id="Typhoon__x27_Rai_x27___x28_Odette_x29_1" data-name="Typhoon__x27_Rai_x27___x28_Odette_x29_">
+            <g class="st8">
+              <text class="st12" transform="translate(1098.6 1052.3)"><tspan x="0" y="0">Typhoon &apos;Rai&apos; (Odette)</tspan></text>
+              <text class="st2" transform="translate(1098.6 1052.3)"><tspan x="0" y="0">Typhoon &apos;Rai&apos; (Odette)</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_storm__x27_Sonca_x27_1" data-name="Tropical_storm__x27_Sonca_x27_">
+            <g class="st8">
+              <text class="st12" transform="translate(1115.7 1058)"><tspan x="0" y="0">Tropical storm &apos;Sonca&apos;</tspan></text>
+              <text class="st2" transform="translate(1115.7 1058)"><tspan x="0" y="0">Tropical storm &apos;Sonca&apos;</tspan></text>
+            </g>
+          </g>
+          <g id="Tropical_cyclone__x27_Talim_x27_1" data-name="Tropical_cyclone__x27_Talim_x27_">
+            <g class="st8">
+              <text class="st12" transform="translate(1122.6 1054.3)"><tspan x="0" y="0">Tropical cyclone &apos;Talim&apos;</tspan></text>
+              <text class="st2" transform="translate(1122.6 1054.3)"><tspan x="0" y="0">Tropical cyclone &apos;Talim&apos;</tspan></text>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+  <g id="legend">
+    <g>
+      <g>
+        <g>
+          <g>
+            <circle class="st1" cx="1272.6" cy="158.5" r="3.5"/>
+            <g class="st7">
+              <text class="st11" transform="translate(1298.1 163.5)"><tspan x="0" y="0">1.0</tspan></text>
+            </g>
+          </g>
+          <g>
+            <circle class="st1" cx="1272.6" cy="195" r="20.5"/>
+            <g class="st7">
+              <text class="st11" transform="translate(1298.1 200)"><tspan x="0" y="0">7000.0</tspan></text>
+            </g>
+          </g>
+        </g>
+        <g class="st7">
+          <text class="st10" transform="translate(1252.1 139)"><tspan x="0" y="0">Total Deaths</tspan></text>
+        </g>
+      </g>
+      <g>
+        <g>
+          <g>
+            <rect class="st15" x="1252.1" y="264.5" width="15" height="15"/>
+            <g class="st7">
+              <text class="st11" transform="translate(1272.1 277)"><tspan x="0" y="0">Biological</tspan></text>
+            </g>
+          </g>
+          <g>
+            <rect class="st6" x="1252.1" y="285.5" width="15" height="15"/>
+            <g class="st7">
+              <text class="st11" transform="translate(1272.1 298)"><tspan x="0" y="0">Climatological</tspan></text>
+            </g>
+          </g>
+          <g>
+            <rect class="st13" x="1252.1" y="306.5" width="15" height="15"/>
+            <g class="st7">
+              <text class="st11" transform="translate(1272.1 319)"><tspan x="0" y="0">Hydrological</tspan></text>
+            </g>
+          </g>
+          <g>
+            <rect class="st14" x="1252.1" y="327.5" width="15" height="15"/>
+            <g class="st7">
+              <text class="st11" transform="translate(1272.1 340)"><tspan x="0" y="0">Industrial accident</tspan></text>
+            </g>
+          </g>
+          <g>
+            <rect class="st3" x="1252.1" y="348.5" width="15" height="15"/>
+            <g class="st7">
+              <text class="st11" transform="translate(1272.1 361)"><tspan x="0" y="0">Meteorological</tspan></text>
+            </g>
+          </g>
+          <g>
+            <rect class="st16" x="1252.1" y="369.5" width="15" height="15"/>
+            <g class="st7">
+              <text class="st11" transform="translate(1272.1 382)"><tspan x="0" y="0">Miscellaneous accident</tspan></text>
+            </g>
+          </g>
+          <g>
+            <rect class="st4" x="1252.1" y="390.5" width="15" height="15"/>
+            <g class="st7">
+              <text class="st11" transform="translate(1272.1 403)"><tspan x="0" y="0">Transport</tspan></text>
+            </g>
+          </g>
+        </g>
+        <g class="st7">
+          <text class="st10" transform="translate(1252.1 248.5)"><tspan x="0" y="0">Disaster Subgroup</tspan></text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,4306 @@
+{
+   "type": "FeatureCollection",
+   "features": [
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.1816059,10.64623261 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-89",
+    "Name_EN":"An Giang",
+    "Name_VI":"An Giang",
+    "Tổng (ha)":"13.907",
+    "Rừng tự nhiên (ha)":"1.117",
+    "Rừng trồng (ha)":"12.789",
+    "Tỷ lệ che phủ rừng (%)":"3,68"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.5601405,8.638106848 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-77",
+    "Name_EN":"Ba Ria - Vung Tau",
+    "Name_VI":"Bà Rịa-Vũng Tàu",
+    "Tổng (ha)":"28.55",
+    "Rừng tự nhiên (ha)":"16.465",
+    "Rừng trồng (ha)":"12.085",
+    "Tỷ lệ che phủ rừng (%)":"13,79"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.6814634,8.66828328 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-77",
+    "Name_EN":"Ba Ria - Vung Tau",
+    "Name_VI":"Bà Rịa-Vũng Tàu",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 107.1253511,10.4362719 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-77",
+    "Name_EN":"Ba Ria - Vung Tau",
+    "Name_VI":"Bà Rịa-Vũng Tàu",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 107.2701505,10.5477768 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-77",
+    "Name_EN":"Ba Ria - Vung Tau",
+    "Name_VI":"Bà Rịa-Vũng Tàu",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.4671686,21.3611274 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-24",
+    "Name_EN":"Bac Giang",
+    "Name_VI":"Bắc Giang",
+    "Tổng (ha)":"160.223",
+    "Rừng tự nhiên (ha)":"55.092",
+    "Rừng trồng (ha)":"105.131",
+    "Tỷ lệ che phủ rừng (%)":"38,00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.8436027,22.30040684 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-6",
+    "Name_EN":"Bac Kan",
+    "Name_VI":"Bắc Kạn",
+    "Tổng (ha)":"373.597",
+    "Rừng tự nhiên (ha)":"272.35",
+    "Rừng trồng (ha)":"101.247",
+    "Tỷ lệ che phủ rừng (%)":"73,35"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.5553576,9.340287261 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-95",
+    "Name_EN":"Bac Lieu",
+    "Name_VI":"Bạc Liêu",
+    "Tổng (ha)":"4.488",
+    "Rừng tự nhiên (ha)":"1.906",
+    "Rừng trồng (ha)":"2.581",
+    "Tỷ lệ che phủ rừng (%)":"1,61"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.1254189,21.09790616 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-27",
+    "Name_EN":"Bac Ninh",
+    "Name_VI":"Bắc Ninh",
+    "Tổng (ha)":"556",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"556",
+    "Tỷ lệ che phủ rừng (%)":"0,68"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.5078301,10.08007648 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-83",
+    "Name_EN":"Ben Tre",
+    "Name_VI":"Bến Tre",
+    "Tổng (ha)":"4.482",
+    "Rừng tự nhiên (ha)":"1.25",
+    "Rừng trồng (ha)":"3.232",
+    "Tỷ lệ che phủ rừng (%)":"1,83"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 108.9595359,14.08106127 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-52",
+    "Name_EN":"Binh Dinh",
+    "Name_VI":"Bình Định",
+    "Tổng (ha)":"381.11",
+    "Rừng tự nhiên (ha)":"214.544",
+    "Rừng trồng (ha)":"166.567",
+    "Tỷ lệ che phủ rừng (%)":"56,92"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.676036,11.18019763 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-74",
+    "Name_EN":"Binh Duong",
+    "Name_VI":"Bình Dương",
+    "Tổng (ha)":"9.878",
+    "Rừng tự nhiên (ha)":"1.809",
+    "Rừng trồng (ha)":"8.069",
+    "Tỷ lệ che phủ rừng (%)":"3,03"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.9221723,11.81482174 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-70",
+    "Name_EN":"Binh Phuoc",
+    "Name_VI":"Bình Phước",
+    "Tổng (ha)":"159.445",
+    "Rừng tự nhiên (ha)":"55.978",
+    "Rừng trồng (ha)":"103.467",
+    "Tỷ lệ che phủ rừng (%)":"22,66"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 107.9575472,11.10185188 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-60",
+    "Name_EN":"Binh Thuan",
+    "Name_VI":"Bình Thuận",
+    "Tổng (ha)":"349.625",
+    "Rừng tự nhiên (ha)":"296.927",
+    "Rừng trồng (ha)":"52.699",
+    "Tỷ lệ che phủ rừng (%)":"43,11"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.0637174,9.062737954 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-96",
+    "Name_EN":"Ca Mau",
+    "Name_VI":"Cà Mau",
+    "Tổng (ha)":"93.093",
+    "Rừng tự nhiên (ha)":"11.535",
+    "Rừng trồng (ha)":"81.557",
+    "Tỷ lệ che phủ rừng (%)":"14,74"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.5679731,10.06518188 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-92",
+    "Name_EN":"Can Tho",
+    "Name_VI":"TP Cần Thơ",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.2669958,22.71611584 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-4",
+    "Name_EN":"Cao Bang",
+    "Name_VI":"Cao Bằng",
+    "Tổng (ha)":"380.099",
+    "Rừng tự nhiên (ha)":"358.391",
+    "Rừng trồng (ha)":"21.708",
+    "Tỷ lệ che phủ rừng (%)":"56,00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.5895099,8.677687274 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-77",
+    "Name_EN":"Con Dao (Ba Ria - Vung Tau)",
+    "Name_VI":"Côn Đảo (Bà Rịa-Vũng Tàu)",
+    "Tổng (ha)":"",
+    "Rừng tự nhiên (ha)":"",
+    "Rừng trồng (ha)":"",
+    "Tỷ lệ che phủ rừng (%)":""
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 107.9997552,16.08243152 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Da Nang",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"63.044",
+    "Rừng tự nhiên (ha)":"43.126",
+    "Rừng trồng (ha)":"19.919",
+    "Tỷ lệ che phủ rừng (%)":"45,50"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 108.4259528,12.75222166 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-66",
+    "Name_EN":"Dak Lak",
+    "Name_VI":"Đắk Lắk",
+    "Tổng (ha)":"505.557",
+    "Rừng tự nhiên (ha)":"413.845",
+    "Rừng trồng (ha)":"91.711",
+    "Tỷ lệ che phủ rừng (%)":"38,03"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 107.73041,12.27341272 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-67",
+    "Name_EN":"Dak Nong",
+    "Name_VI":"Đắk Nông",
+    "Tổng (ha)":"254.359",
+    "Rừng tự nhiên (ha)":"196.02",
+    "Rừng trồng (ha)":"58.339",
+    "Tỷ lệ che phủ rừng (%)":"38,52"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 103.2859948,21.71460572 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-11",
+    "Name_EN":"Dien Bien",
+    "Name_VI":"Điện Biên",
+    "Tổng (ha)":"417.344",
+    "Rừng tự nhiên (ha)":"409.033",
+    "Rừng trồng (ha)":"8.311",
+    "Tỷ lệ che phủ rừng (%)":"43,54"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 107.1663726,11.05570266 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-75",
+    "Name_EN":"Dong Nai",
+    "Name_VI":"Đồng Nai",
+    "Tổng (ha)":"181.376",
+    "Rừng tự nhiên (ha)":"123.939",
+    "Rừng trồng (ha)":"57.437",
+    "Tỷ lệ che phủ rừng (%)":"29,24"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.6718334,10.55641707 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-87",
+    "Name_EN":"Dong Thap",
+    "Name_VI":"Đồng Tháp",
+    "Tổng (ha)":"6.041",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"6.041",
+    "Tỷ lệ che phủ rừng (%)":"1,68"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 108.1221204,13.85953205 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-64",
+    "Name_EN":"Gia Lai",
+    "Name_VI":"Gia Lai",
+    "Tổng (ha)":"648.278",
+    "Rừng tự nhiên (ha)":"478.75",
+    "Rừng trồng (ha)":"169.529",
+    "Tỷ lệ che phủ rừng (%)":"40,89"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 104.956075,22.7885074 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-2",
+    "Name_EN":"Ha Giang",
+    "Name_VI":"Hà Giang",
+    "Tổng (ha)":"475.001",
+    "Rừng tự nhiên (ha)":"385.688",
+    "Rừng trồng (ha)":"89.313",
+    "Tỷ lệ che phủ rừng (%)":"58,58"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.9790297,20.52440152 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-35",
+    "Name_EN":"Ha Nam",
+    "Name_VI":"Hà Nam",
+    "Tổng (ha)":"5.578",
+    "Rừng tự nhiên (ha)":"4.373",
+    "Rừng trồng (ha)":"1.205",
+    "Tỷ lệ che phủ rừng (%)":"6,47"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.7064225,20.95133581 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-1",
+    "Name_EN":"Ha Noi",
+    "Name_VI":"TP Hà Nội",
+    "Tổng (ha)":"19.514",
+    "Rừng tự nhiên (ha)":"7.587",
+    "Rừng trồng (ha)":"11.926",
+    "Tỷ lệ che phủ rừng (%)":"5,59"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.5709307,18.38411614 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-42",
+    "Name_EN":"Ha Tinh",
+    "Name_VI":"Hà Tĩnh",
+    "Tổng (ha)":"337.231",
+    "Rừng tự nhiên (ha)":"217.327",
+    "Rừng trồng (ha)":"119.904",
+    "Tỷ lệ che phủ rừng (%)":"52,56"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.3518155,20.96582185 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-30",
+    "Name_EN":"Hai Duong",
+    "Name_VI":"Hải Dương",
+    "Tổng (ha)":"9.16",
+    "Rừng tự nhiên (ha)":"2.241",
+    "Rừng trồng (ha)":"6.919",
+    "Tỷ lệ che phủ rừng (%)":"5,33"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.8795335,20.81009644 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-31",
+    "Name_EN":"Hai Phong",
+    "Name_VI":"Hải Phòng",
+    "Tổng (ha)":"13.84",
+    "Rừng tự nhiên (ha)":"9.072",
+    "Rừng trồng (ha)":"4.768",
+    "Tỷ lệ che phủ rừng (%)":"8,63"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 107.026275,20.78344127 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-31",
+    "Name_EN":"Hai Phong",
+    "Name_VI":"Hải Phòng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.6293097,20.78642203 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-31",
+    "Name_EN":"Hai Phong",
+    "Name_VI":"Hải Phòng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.6587882,9.83498238 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-93",
+    "Name_EN":"Hau Giang",
+    "Name_VI":"Hậu Giang",
+    "Tổng (ha)":"3.794",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"3.794",
+    "Tỷ lệ che phủ rừng (%)":"1,83"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.2491336,20.69716157 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-17",
+    "Name_EN":"Hoa Binh",
+    "Name_VI":"Hoà Bình",
+    "Tổng (ha)":"266.509",
+    "Rừng tự nhiên (ha)":"141.614",
+    "Rừng trồng (ha)":"124.895",
+    "Tỷ lệ che phủ rừng (%)":"51,69"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.2134427,15.78815714 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 112.5267601,16.03371102 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.7803781,16.05247124 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.7009527,16.23668148 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.7597177,16.2496818 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 112.016886,16.35338274 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.7109728,16.45119113 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.5388488,16.45619205 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.5950334,16.46626672 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.5906367,16.51195235 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.7553468,16.47720666 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.6212659,16.53625214 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.6969302,16.55560711 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.66474,16.55508137 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.7118066,16.56792168 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 112.7330564,16.66409166 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.3845527,16.72565642 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 112.3348854,16.83462621 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 112.3306757,16.94405236 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 112.239311,16.99274769 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.4846504,17.08822672 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-48",
+    "Name_EN":"Hoang Sa (Da Nang)",
+    "Name_VI":"TP Đà Nẵng",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.0802636,20.75642655 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-33",
+    "Name_EN":"Hung Yen",
+    "Name_VI":"Hưng Yên",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 109.2430452,11.84604251 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Khanh Hoa",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"244.332",
+    "Rừng tự nhiên (ha)":"176.383",
+    "Rừng trồng (ha)":"67.949",
+    "Tỷ lệ che phủ rừng (%)":"45,41"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 109.3037158,12.16968784 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Khanh Hoa",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 109.2987765,12.21215794 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Khanh Hoa",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 109.2277278,12.39325249 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Khanh Hoa",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 109.2977485,12.49101701 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Khanh Hoa",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 109.368861,12.59313274 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Khanh Hoa",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 109.2981931,12.71670204 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Khanh Hoa",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 108.9480726,12.33369165 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Khanh Hoa",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 103.4432121,9.30525678 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-91",
+    "Name_EN":"Kien Giang",
+    "Name_VI":"Kiên Giang",
+    "Tổng (ha)":"76.7",
+    "Rừng tự nhiên (ha)":"58.02",
+    "Rừng trồng (ha)":"18.68",
+    "Tỷ lệ che phủ rừng (%)":"11,93"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 104.3472647,9.684437495 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-91",
+    "Name_EN":"Kien Giang",
+    "Name_VI":"Kiên Giang",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 104.6316123,9.812307851 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-91",
+    "Name_EN":"Kien Giang",
+    "Name_VI":"Kiên Giang",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 104.0126807,9.959597335 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-91",
+    "Name_EN":"Kien Giang",
+    "Name_VI":"Kiên Giang",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 104.8361346,9.959196809 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-91",
+    "Name_EN":"Kien Giang",
+    "Name_VI":"Kiên Giang",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 104.5485081,10.0231119 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-91",
+    "Name_EN":"Kien Giang",
+    "Name_VI":"Kiên Giang",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 104.528863,10.17785217 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-91",
+    "Name_EN":"Kien Giang",
+    "Name_VI":"Kiên Giang",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 104.3190178,10.43958255 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-91",
+    "Name_EN":"Kien Giang",
+    "Name_VI":"Kiên Giang",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.244502,10.01585191 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-91",
+    "Name_EN":"Kien Giang",
+    "Name_VI":"Kiên Giang",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 108.0201158,14.67356705 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-62",
+    "Name_EN":"Kon Tum",
+    "Name_VI":"Kon Tum",
+    "Tổng (ha)":"624.66",
+    "Rừng tự nhiên (ha)":"547.604",
+    "Rừng trồng (ha)":"77.056",
+    "Tỷ lệ che phủ rừng (%)":"63,05"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 103.2658643,22.24687539 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-12",
+    "Name_EN":"Lai Chau",
+    "Name_VI":"Lai Châu",
+    "Tổng (ha)":"473.927",
+    "Rừng tự nhiên (ha)":"450.392",
+    "Rừng trồng (ha)":"23.534",
+    "Tỷ lệ che phủ rừng (%)":"51,87"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 108.0127645,11.73503279 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-68",
+    "Name_EN":"Lam Dong",
+    "Name_VI":"Lâm Đồng",
+    "Tổng (ha)":"538.234",
+    "Rừng tự nhiên (ha)":"454.534",
+    "Rừng trồng (ha)":"83.7",
+    "Tỷ lệ che phủ rừng (%)":"54,44"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.5654179,21.87696721 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-20",
+    "Name_EN":"Lang Son",
+    "Name_VI":"Lạng Sơn",
+    "Tổng (ha)":"572.095",
+    "Rừng tự nhiên (ha)":"255.522",
+    "Rừng trồng (ha)":"316.573",
+    "Tỷ lệ che phủ rừng (%)":"63,70"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 104.1639693,22.37358634 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-10",
+    "Name_EN":"Lao Cai",
+    "Name_VI":"Lào Cai",
+    "Tổng (ha)":"382.861",
+    "Rừng tự nhiên (ha)":"266.753",
+    "Rừng trồng (ha)":"116.108",
+    "Tỷ lệ che phủ rừng (%)":"57,70"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.1359944,10.70499274 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-80",
+    "Name_EN":"Long An",
+    "Name_VI":"Long An",
+    "Tổng (ha)":"21.826",
+    "Rừng tự nhiên (ha)":"838",
+    "Rừng trồng (ha)":"20.988",
+    "Tỷ lệ che phủ rừng (%)":"4,00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.2986074,20.20174576 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-36",
+    "Name_EN":"Nam Dinh",
+    "Name_VI":"Nam Định",
+    "Tổng (ha)":"3.045",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"3.045",
+    "Tỷ lệ che phủ rừng (%)":"1,78"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 104.9164067,19.24566609 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-40",
+    "Name_EN":"Nghe An",
+    "Name_VI":"Nghệ An",
+    "Tổng (ha)":"1.014.075",
+    "Rừng tự nhiên (ha)":"789.934",
+    "Rừng trồng (ha)":"224.141",
+    "Tỷ lệ che phủ rừng (%)":"58,36"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.9324293,20.20509113 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-37",
+    "Name_EN":"Ninh Binh",
+    "Name_VI":"Ninh Bình",
+    "Tổng (ha)":"27.892",
+    "Rừng tự nhiên (ha)":"23.036",
+    "Rừng trồng (ha)":"4.857",
+    "Tỷ lệ che phủ rừng (%)":"19,62"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 108.9318688,11.7656278 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-58",
+    "Name_EN":"Ninh Thuan",
+    "Name_VI":"Ninh Thuận",
+    "Tổng (ha)":"160.424",
+    "Rừng tự nhiên (ha)":"147.42",
+    "Rừng trồng (ha)":"13.004",
+    "Tỷ lệ che phủ rừng (%)":"47,11"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 103.9848159,10.22063214 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-91",
+    "Name_EN":"Phu Quoc (Kien Giang)",
+    "Name_VI":"Kiên Giang",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.1161299,21.31342082 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-25",
+    "Name_EN":"Phu Tho",
+    "Name_VI":"Phú Thọ",
+    "Tổng (ha)":"169.333",
+    "Rừng tự nhiên (ha)":"47.403",
+    "Rừng trồng (ha)":"121.93",
+    "Tỷ lệ che phủ rừng (%)":"39,90"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 109.0825011,13.2095924 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-54",
+    "Name_EN":"Phu Yen",
+    "Name_VI":"Phú Yên",
+    "Tổng (ha)":"250.659",
+    "Rừng tự nhiên (ha)":"126.974",
+    "Rừng trồng (ha)":"123.685",
+    "Tỷ lệ che phủ rừng (%)":"45,95"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.313928,17.49254737 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-44",
+    "Name_EN":"Quang Binh",
+    "Name_VI":"Quảng Bình",
+    "Tổng (ha)":"590.038",
+    "Rừng tự nhiên (ha)":"469.317",
+    "Rừng trồng (ha)":"120.722",
+    "Tỷ lệ che phủ rừng (%)":"68,69"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 108.5233278,15.94359724 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-49",
+    "Name_EN":"Quang Nam",
+    "Name_VI":"Quảng Nam",
+    "Tổng (ha)":"680.806",
+    "Rừng tự nhiên (ha)":"463.53",
+    "Rừng trồng (ha)":"217.276",
+    "Tỷ lệ che phủ rừng (%)":"58,71"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 107.9235847,15.62029189 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-49",
+    "Name_EN":"Quang Nam",
+    "Name_VI":"Quảng Nam",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 108.6434612,14.9294163 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-51",
+    "Name_EN":"Quang Ngai",
+    "Name_VI":"Quảng Ngãi",
+    "Tổng (ha)":"333.05",
+    "Rừng tự nhiên (ha)":"106.672",
+    "Rừng trồng (ha)":"226.378",
+    "Tỷ lệ che phủ rừng (%)":"51,01"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 107.5043078,20.96439118 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-22",
+    "Name_EN":"Quang Ninh",
+    "Name_VI":"Quảng Ninh",
+    "Tổng (ha)":"370.213",
+    "Rừng tự nhiên (ha)":"121.872",
+    "Rừng trồng (ha)":"248.341",
+    "Tỷ lệ che phủ rừng (%)":"55,00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 107.6131183,21.08655617 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-22",
+    "Name_EN":"Quang Ninh",
+    "Name_VI":"Quảng Ninh",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 107.4520423,21.11221695 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-22",
+    "Name_EN":"Quang Ninh",
+    "Name_VI":"Quảng Ninh",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 107.1759295,21.24761653 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-22",
+    "Name_EN":"Quang Ninh",
+    "Name_VI":"Quảng Ninh",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.9599523,16.71965653 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-45",
+    "Name_EN":"Quang Tri",
+    "Name_VI":"Quảng Trị",
+    "Tổng (ha)":"248.122",
+    "Rừng tự nhiên (ha)":"126.692",
+    "Rừng trồng (ha)":"121.429",
+    "Tỷ lệ che phủ rừng (%)":"49,90"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.9520771,9.668493009 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-94",
+    "Name_EN":"Soc Trang",
+    "Name_VI":"Sóc Trăng",
+    "Tổng (ha)":"10.246",
+    "Rừng tự nhiên (ha)":"1.733",
+    "Rừng trồng (ha)":"8.513",
+    "Tỷ lệ che phủ rừng (%)":"2,54"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 104.1179282,21.30643649 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-14",
+    "Name_EN":"Son La",
+    "Name_VI":"Sơn La",
+    "Tổng (ha)":"672.934",
+    "Rừng tự nhiên (ha)":"594.076",
+    "Rừng trồng (ha)":"78.858",
+    "Tỷ lệ che phủ rừng (%)":"47,30"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.123982,11.39337205 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-72",
+    "Name_EN":"Tay Ninh",
+    "Name_VI":"Tây Ninh",
+    "Tổng (ha)":"66.569",
+    "Rừng tự nhiên (ha)":"46.425",
+    "Rừng trồng (ha)":"20.144",
+    "Tỷ lệ che phủ rừng (%)":"16,16"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.3819015,20.54243691 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-34",
+    "Name_EN":"Thai Binh",
+    "Name_VI":"Thái Bình",
+    "Tổng (ha)":"4.248",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"4.248",
+    "Tỷ lệ che phủ rừng (%)":"2,49"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.8521144,21.65172107 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-19",
+    "Name_EN":"Thai Nguyen",
+    "Name_VI":"Thái Nguyên",
+    "Tổng (ha)":"165.749",
+    "Rừng tự nhiên (ha)":"62.452",
+    "Rừng trồng (ha)":"103.297",
+    "Tỷ lệ che phủ rừng (%)":"47,06"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.4918164,19.98389591 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-38",
+    "Name_EN":"Thanh Hoa",
+    "Name_VI":"Thanh Hoá",
+    "Tổng (ha)":"647.737",
+    "Rừng tự nhiên (ha)":"393.361",
+    "Rừng trồng (ha)":"254.376",
+    "Tỷ lệ che phủ rừng (%)":"53,60"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 107.4529463,16.40783733 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-46",
+    "Name_EN":"Thua Thien - Hue",
+    "Name_VI":"Thừa Thiên Huế",
+    "Tổng (ha)":"305.56",
+    "Rừng tự nhiên (ha)":"205.602",
+    "Rừng trồng (ha)":"99.958",
+    "Tỷ lệ che phủ rừng (%)":"57,15"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.3096726,10.38396808 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-82",
+    "Name_EN":"Tien Giang",
+    "Name_VI":"Tiền Giang",
+    "Tổng (ha)":"2.591",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"2.591",
+    "Tỷ lệ che phủ rừng (%)":"0,99"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.6342494,10.72758196 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-79",
+    "Name_EN":"TP. Ho Chi Minh",
+    "Name_VI":"TP Hồ Chí Minh",
+    "Tổng (ha)":"33.557",
+    "Rừng tự nhiên (ha)":"13.509",
+    "Rừng trồng (ha)":"20.049",
+    "Tỷ lệ che phủ rừng (%)":"15,93"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 106.2843661,9.842357244 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-84",
+    "Name_EN":"Tra Vinh",
+    "Name_VI":"Trà Vinh",
+    "Tổng (ha)":"9.539",
+    "Rừng tự nhiên (ha)":"2.955",
+    "Rừng trồng (ha)":"6.583",
+    "Tỷ lệ che phủ rừng (%)":"4,07"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 113.5856403,6.964497899 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 113.8479749,7.404952462 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.5467549,7.538452339 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.6065534,7.568841521 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.0808057,7.610387625 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.1465228,7.605731999 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.6804792,7.637587409 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 113.7879081,7.635891964 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.5486938,7.658222587 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.7492357,7.693427437 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.2751927,7.701737509 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.3091105,7.716347293 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.3665461,7.725267561 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.0534499,7.688522352 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.1924626,7.746266941 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.3641553,7.771622423 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.740283,7.7813026 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.3851168,7.808166795 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 109.1335639,7.82479695 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 110.4974387,7.83617698 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.4140033,7.832022717 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.7335214,7.866492647 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.240304,7.804567335 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.4805186,7.916972506 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.7195024,7.933356987 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.3334907,7.915998034 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 113.9386481,7.981002223 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 110.6101242,8.035896991 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.1409425,8.095187712 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.6254813,8.122282158 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.6005027,8.21400197 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 113.2819783,8.150777262 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 115.2196681,8.370302813 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.5862479,8.490477593 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 111.6611261,8.678157262 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.1753799,8.702572084 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.0135034,8.798459514 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 112.6001675,8.833622974 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.6725284,8.857841526 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 112.8241365,8.868891573 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 112.1927539,8.859677851 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.2789199,8.89129763 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 113.6685982,8.953502265 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.6786791,9.030807174 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 115.9292436,9.320978208 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 115.4398397,9.398062543 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.9276705,9.457017514 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.1677448,9.599916835 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 112.9845974,9.645863898 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.2735882,9.711961945 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.5453229,9.726298104 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.4379698,9.761022414 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.2549629,9.764577012 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.3676732,9.778416961 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.4264687,9.779822042 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.3970209,9.799657535 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 115.8559133,9.720327222 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.4703552,9.79069673 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.4551634,9.834256841 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.320362,9.868641496 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.4255731,9.886656709 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.39246,9.891747572 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.462579,9.906407513 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.5941878,9.904501891 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.4917503,9.916377652 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.514854,9.91751772 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 115.5092793,9.904802574 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.5252056,9.936002675 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.5660545,9.964367586 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.5935999,9.983617424 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.6368871,9.964046812 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.1497141,10.12211231 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 113.8503818,10.06352712 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.359723,10.17791173 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 115.2951341,10.18501683 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.4910097,10.24211817 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.5569627,10.25193204 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 113.6148028,10.26006174 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.6298918,10.27857775 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.6088933,10.3185921 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.5752575,10.31817207 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.4894576,10.32756256 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.6814404,10.33573177 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.7205273,10.34664159 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.5116652,10.35449729 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.762493,10.36733743 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.6581628,10.3323473 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.4115834,10.37875139 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.4613126,10.37927306 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.5664532,10.36504711 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.5191766,10.39022682 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 115.7115394,10.50212228 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.5629204,10.50047677 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 115.73229,10.52975176 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 115.7777603,10.50964747 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.5871299,10.54783199 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.9111222,10.52899687 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.8118946,10.63053191 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.3272415,10.70423753 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.5224482,10.70785762 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.1824928,10.68423734 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.6863114,10.784852 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.579928,10.75265197 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.2608775,10.80551223 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.1997031,10.79081227 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.628787,10.80820735 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.7965029,10.82243287 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 115.815064,10.72217684 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.3123966,10.82439292 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.2238743,10.83199236 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.5215258,10.85531267 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.2422495,10.85633273 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.5409555,10.87040741 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.245199,10.88687253 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.6441778,10.85988721 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.3799585,10.88539234 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.9204719,10.88747192 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.4302437,10.89045216 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.5867471,10.86178694 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.6120215,10.92261693 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.0817535,10.92673258 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.660084,10.97448709 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.7031907,11.02090724 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.182226,11.03506243 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.2167028,11.05480162 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.374858,11.08508664 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.7981458,11.10670678 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.1116742,11.35943232 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.5716603,11.34492711 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.2124136,11.37964682 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.3254674,11.38385694 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.6448984,11.40310726 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.1548798,11.41508223 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.3498693,11.4466222 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.6898323,11.47060194 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 114.6363611,11.44429195 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.209332,11.47308202 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.3924502,11.51923698 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.3048672,11.54998706 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.3715626,11.62823239 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.4213005,11.67207724 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.4756543,11.68763685 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 116.1644866,12.03527152 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-56",
+    "Name_EN":"Truong Sa (Khanh Hoa)",
+    "Name_VI":"Khánh Hoà",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.168506,22.12907617 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-8",
+    "Name_EN":"Tuyen Quang",
+    "Name_VI":"Tuyên Quang",
+    "Tổng (ha)":"426.205",
+    "Rừng tự nhiên (ha)":"233.133",
+    "Rừng trồng (ha)":"193.072",
+    "Tỷ lệ che phủ rừng (%)":"65,21"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.9687308,10.10890607 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-86",
+    "Name_EN":"Vinh Long",
+    "Name_VI":"Vĩnh Long",
+    "Tổng (ha)":"-",
+    "Rừng tự nhiên (ha)":"-",
+    "Rừng trồng (ha)":"-",
+    "Tỷ lệ che phủ rừng (%)":"-"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 105.5327573,21.42928741 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-26",
+    "Name_EN":"Vinh Phuc",
+    "Name_VI":"Vĩnh Phúc",
+    "Tổng (ha)":"33.357",
+    "Rừng tự nhiên (ha)":"12.049",
+    "Rừng trồng (ha)":"21.308",
+    "Tỷ lệ che phủ rừng (%)":"25,00"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 104.4949454,21.82365717 ]
+    },
+    "properties": {
+    "id":"",
+    "ISO3166_2_CODE":"VN-15",
+    "Name_EN":"Yen Bai",
+    "Name_VI":"Yên Bái",
+    "Tổng (ha)":"463.811",
+    "Rừng tự nhiên (ha)":"215.913",
+    "Rừng trồng (ha)":"247.898",
+    "Tỷ lệ che phủ rừng (%)":"63,00"
+    }
+  }
+]
+}

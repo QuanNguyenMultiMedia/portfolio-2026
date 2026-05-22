@@ -10,69 +10,74 @@ import HUDLabel from "@/components/HUDLabel";
 import SectionHeader from "@/components/SectionHeader";
 import TechButton from "@/components/TechButton";
 import LogoMark from "@/components/LogoMark";
+import Portal from "@/components/Portal";
 
 export default function FreebiesPage() {
   const [selectedItem, setSelectedItem] = useState<FreebieItem | null>(null);
 
   return (
-    <PageWrapper>
-      <div className="relative min-h-screen pb-64">
-        <SectionHeader
-          directory="Archive // 01"
-          title="Boutique"
-          subtitle="Digital Assets"
-        />
+    <>
+      <PageWrapper>
+        <div className="relative min-h-screen pb-64">
+          <SectionHeader
+            directory="Archive // 01"
+            title="Boutique"
+            subtitle="Digital Assets"
+          />
 
-        {/* Minimal Staggered Grid */}
-        <motion.div
-          animate={{
-            filter: selectedItem ? "blur(20px)" : "blur(0px)",
-            opacity: selectedItem ? 0.3 : 1,
-            scale: selectedItem ? 0.98 : 1,
-          }}
-          transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-          className="grid grid-cols-1 md:grid-cols-12 gap-x-12 gap-y-32 md:gap-y-48 relative"
-        >
-          {freebies.map((item, idx) => {
-            const layoutConfig = [
-              "md:col-start-2 md:col-span-3",
-              "md:col-start-7 md:col-span-4 mt-24",
-              "md:col-start-4 md:col-span-3",
-              "md:col-start-8 md:col-span-3 mt-12",
-              "md:col-start-3 md:col-span-4",
-            ][idx % 5];
+          {/* Minimal Staggered Grid */}
+          <motion.div
+            animate={{
+              filter: selectedItem ? "blur(20px)" : "blur(0px)",
+              opacity: selectedItem ? 0.3 : 1,
+              scale: selectedItem ? 0.98 : 1,
+            }}
+            transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+            className="grid grid-cols-1 md:grid-cols-12 gap-x-12 gap-y-32 md:gap-y-48 relative"
+          >
+            {freebies.map((item, idx) => {
+              const layoutConfig = [
+                "md:col-start-2 md:col-span-3",
+                "md:col-start-7 md:col-span-4 mt-24",
+                "md:col-start-4 md:col-span-3",
+                "md:col-start-8 md:col-span-3 mt-12",
+                "md:col-start-3 md:col-span-4",
+              ][idx % 5];
 
-            return (
-              <motion.div
-                key={item.id}
-                layoutId={`container-${item.id}`}
-                className={`${layoutConfig} group cursor-pointer`}
-                onClick={() => setSelectedItem(item)}
-              >
+              return (
                 <motion.div
-                  layoutId={`thumb-${item.id}`}
-                  className="relative aspect-[4/5] overflow-hidden bg-primary/5 border border-primary/5 mb-4"
+                  key={item.id}
+                  layoutId={`container-${item.id}`}
+                  className={`${layoutConfig} group cursor-pointer`}
+                  onClick={() => setSelectedItem(item)}
                 >
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    fill
-                    referrerPolicy="no-referrer"
-                    className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out opacity-60 group-hover:opacity-100"
-                  />
+                  <motion.div
+                    layoutId={`thumb-${item.id}`}
+                    className="relative aspect-[4/5] overflow-hidden bg-primary/5 border border-primary/5 mb-4"
+                  >
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      referrerPolicy="no-referrer"
+                      className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out opacity-60 group-hover:opacity-100"
+                    />
+                  </motion.div>
+
+                  <div className="px-1 mt-6">
+                    <h3 className="text-3xl md:text-4xl lg:text-5xl font-display uppercase tracking-tighter leading-[0.85] text-primary font-bold transition-all duration-500 group-hover:text-primary">
+                      {item.title}
+                    </h3>
+                  </div>
                 </motion.div>
+              );
+            })}
+          </motion.div>
+        </div>
+      </PageWrapper>
 
-                <div className="px-1 mt-6">
-                  <h3 className="text-3xl md:text-4xl lg:text-5xl font-display uppercase tracking-tighter leading-[0.85] text-primary font-bold transition-all duration-500 group-hover:text-primary">
-                    {item.title}
-                  </h3>
-                </div>
-              </motion.div>
-            );
-          })}
-        </motion.div>
-
-        {/* Detail View Overlay */}
+      {/* Detail View Overlay inside Portal to completely escape parent containing block transforms */}
+      <Portal>
         <AnimatePresence>
           {selectedItem && (
             <>
@@ -116,8 +121,9 @@ export default function FreebiesPage() {
                 className="fixed inset-0 z-[110] pointer-events-none hidden md:block"
               >
                 <LogoMark
-                  variant="inverted"
-                  className="!right-16 md:!right-24 !top-16 md:!top-24 scale-110 origin-right"
+                  variant="auto"
+                  animate={false}
+                  className="!z-[110]"
                 />
               </motion.div>
 
@@ -151,7 +157,7 @@ export default function FreebiesPage() {
                 </div>
 
                 {/* Content Focus */}
-                <div className="flex-grow p-8 md:p-12 flex flex-col justify-center space-y-12">
+                <div className="flex-grow p-8 md:p-12 flex flex-col justify-center space-y-12 overflow-y-auto">
                   <div className="space-y-4">
                     <h2 className="text-5xl md:text-6xl lg:text-7xl font-display uppercase tracking-tighter leading-[0.85] text-primary font-bold">
                       {selectedItem.title}
@@ -192,7 +198,7 @@ export default function FreebiesPage() {
             </>
           )}
         </AnimatePresence>
-      </div>
-    </PageWrapper>
+      </Portal>
+    </>
   );
 }

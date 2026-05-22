@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Vietnam Map with Draggable Callouts</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            overflow: hidden;
+        }
+
+        #map-viewport {
+            width: 90vw;
+            max-width: 1000px;
+            height: 70vh;
+            max-height: 650px;
+            border: 2px solid #555;
+            overflow: hidden;
+            position: relative;
+            background-color: #e0e0e0;
+            cursor: grab;
+        }
+
+        #map-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-origin: 0 0;
+        }
+
+        #vietnam-map {
+            display: block;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .map-point {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background-color: rgba(255, 0, 0, 0.75);
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 8px rgba(0,0,0,0.6);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            z-index: 10;
+        }
+
+        .map-point:hover {
+            background-color: rgba(200, 0, 0, 1);
+            transform: translate(-50%, -50%) scale(1.25);
+        }
+        .map-point.active {
+            background-color: rgba(0, 128, 0, 0.9);
+            border-color: #ccffcc;
+        }
+
+        #annotation-box {
+            position: fixed;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+            min-width: 300px; /* Adjusted min-width */
+            max-width: 450px; /* Adjusted max-width */
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.9);
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+            cursor: move;
+        }
+
+        #annotation-box.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        #annotation-box-header {
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #annotation-box-header h3 {
+            margin: 0;
+            color: #333;
+            font-size: 1.3em;
+        }
+        
+        #annotation-image {
+            width: 100%;
+            max-height: 200px; /* Max height for the image */
+            object-fit: cover; /* Scales the image nicely */
+            border-radius: 4px;
+            margin-bottom: 15px; /* Space below image */
+        }
+
+        #annotation-box p {
+            color: #555;
+            line-height: 1.6;
+            font-size: 0.95em;
+            margin-bottom: 10px; /* Adjusted margin */
+            max-height: 150px; /* Adjusted for image */
+            overflow-y: auto;
+        }
+        
+        #annotation-box .image-info-link {
+            font-size: 0.85em;
+            color: #007bff;
+            text-decoration: none;
+            display: block;
+            margin-top: 10px;
+        }
+        #annotation-box .image-info-link:hover {
+            text-decoration: underline;
+        }
+
+        #close-annotation {
+            padding: 6px 10px;
+            background-color: #e6e6e6;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        #close-annotation:hover {
+            background-color: #d4d4d4;
+        }
+
+        #connecting-line-svg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 500;
+        }
+
+        #connecting-line {
+            stroke: #333;
+            stroke-width: 2.5;
+            stroke-dasharray: 4 2;
+        }
+
+        #controls {
+            margin-top: 25px;
+            padding: 15px 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90vw;
+            max-width: 1000px;
+        }
+        #controls h2{ margin-top: 0; font-size: 1.2em; }
+        #controls button {
+            padding: 10px 15px; margin-bottom: 10px; background-color: #28a745;
+            color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.95em;
+        }
+        #controls button:hover { background-color: #218838; }
+        #controls button.active { background-color: #dc3545; }
+        #controls button.active:hover { background-color: #c82333; }
+        #coordinates-output {
+            width: calc(100% - 22px); padding: 10px; border: 1px solid #ccc;
+            border-radius: 4px; font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em; margin-top: 10px; box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div id="map-viewport">
+        <div id="map-container">
+            <img src="D:\Works\Personal Branding\DataStorytellingShowcase\disasters\Vietnam renders\full.png" id="vietnam-map" alt="Map of Vietnam">
+        </div>
+    </div>
+
+    <svg id="connecting-line-svg">
+        <line id="connecting-line" x1="0" y1="0" x2="0" y2="0" style="display:none;"/>
+    </svg>
+
+    <div id="annotation-box" style="display: none;">
+        <div id="annotation-box-header">
+            <h3 id="annotation-title"></h3>
+            <button id="close-annotation">Close</button>
+        </div>
+        <img id="annotation-image" src="https://via.placeholder.com/350x150.png?text=Event+Image" alt="Event image">
+        <p id="annotation-text"></p>
+        <a id="annotation-image-link" href="#" target="_blank" class="image-info-link">View images and more info</a>
+    </div>
+
+    <div id="controls">
+        <h2>Add Data Points</h2>
+        <button id="toggle-add-point-mode">Enter Add Point Mode</button>
+        <p style="font-size:0.85em; color:#555;">Click on the map (in 'Add Point Mode') to get coordinates.<br>These are % of the image's original dimensions.</p>
+        <textarea id="coordinates-output" rows="5" placeholder="Coordinates will appear here..."></textarea>
+    </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Draggable.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    gsap.registerPlugin(Draggable);
+
+    const mapViewport = document.getElementById('map-viewport');
+    const mapContainer = document.getElementById('map-container');
+    const vietnamMap = document.getElementById('vietnam-map');
+
+    const annotationBox = document.getElementById('annotation-box');
+    const annotationTitle = document.getElementById('annotation-title');
+    const annotationText = document.getElementById('annotation-text');
+    const annotationImage = document.getElementById('annotation-image');
+    const annotationImageLink = document.getElementById('annotation-image-link');
+    const closeAnnotationButton = document.getElementById('close-annotation');
+
+    const connectingLineSVG = document.getElementById('connecting-line-svg');
+    const connectingLine = document.getElementById('connecting-line');
+
+    const toggleAddPointModeButton = document.getElementById('toggle-add-point-mode');
+    const coordinatesOutput = document.getElementById('coordinates-output');
+    let isAddPointMode = false;
+
+    const MIN_SCALE = 1;
+    const MAX_SCALE = 7;
+    const ZOOM_INCREMENT = 1.2;
+
+    let currentScale = 1;
+    let mapOriginalWidth, mapOriginalHeight;
+    let activeMapPointElement = null;
+
+    const dataPoints = [
+        // Historical Events Data
+        {
+            id: 'redRiverDeltaFlood1971', x: 39.20, y: 18.76,
+            title: "1971 Red River Delta Flood",
+            text: "Considered one of the deadliest floods, causing an estimated 100,000 fatalities due to dyke breaches in the Red River Delta.",
+            image_info_url: "https://www.ebay.com/itm/355761572138" // Page with press photo
+        },
+        {
+            id: 'typhoonLinda1997', x: 34.82, y: 86.71,
+            title: "Typhoon Linda (1997)",
+            text: "Struck southern Vietnam (Mekong Delta), causing over 3,000 deaths/missing and devastating coastal communities and agriculture.",
+            image_info_url: "https://en.wikipedia.org/wiki/File:Tropical_Storm_Linda_(WPac)_1997.gif" // Wikipedia page for the image file
+        },
+        {
+            id: 'haiphongTyphoon1881', x: 41.69, y: 16.94,
+            title: "Haiphong Typhoon (1881)",
+            text: "One of the deadliest typhoons globally, estimated to have killed around 300,000 people in and around Haiphong due to storm surge and flooding.",
+            image_info_url: "https://en.wikipedia.org/wiki/1881_Haiphong_typhoon"
+        },
+        {
+            id: 'centralVnFloods_1999', x: 39.61, y: 35.42, // Near central region
+            title: "Central Vietnam Floods (e.g., 1999, 2020)",
+            text: "Central region frequently affected. 1999 floods: >700 deaths. 2020 floods: >230 deaths/missing, widespread damage.",
+            image_info_url: "https://mytour.vn/en/blog/bai-viet/flood-images-flooding-rampant.html"
+        },
+        {
+            id: 'centralVnFloods_2020', x: 47.40, y: 50.05, // Near central region
+            title: "Central Vietnam Floods (e.g., 1999, 2020)",
+            text: "Central region frequently affected. 1999 floods: >700 deaths. 2020 floods: >230 deaths/missing, widespread damage.",
+            image_info_url: "https://mytour.vn/en/blog/bai-viet/flood-images-flooding-rampant.html"
+        },
+        {
+            id: 'typhoonYagi2024', x: 32.52, y: 13.56, // Lào Cai Province area
+            title: "Typhoon Yagi & Floods (2024)",
+            text: "Strongest typhoon in 30 years hit northern Vietnam (Sept 2024), >300 fatalities/missing. Devastating flash flood in Nủ Village, Lào Cai.",
+            image_info_url: "https://timesofindia.indiatimes.com/world/rest-of-world/in-pics-after-typhoon-yagis-destruction-massive-floods-in-vietnam-kill-over-170/photostory/113267968.cms"
+        },
+        {
+            id: 'dongNaiTrainDisaster1982', x: 42.06, y: 75.37, // Dong Nai province
+            title: "Dong Nai Train Disaster (1982)",
+            text: "Severe train accident in Dong Nai province (March 17, 1982), resulting in over 200 fatalities. One of Vietnam's worst railway disasters.",
+            image_info_url: "https://news.tuoitre.vn/a-return-to-the-cemetery-of-unknown-victims-in-vietnam-train-crash-10314444.htm"
+        },
+        {
+            id: 'hcmcItcFire2002', x: 41.50, y: 76.34, // HCMC
+            title: "Ho Chi Minh City ITC Fire (2002)",
+            text: "Catastrophic fire at the International Trade Centre in HCMC (Oct 29, 2002), killing 60 people and injuring many.",
+            image_info_url: "https://en.wikipedia.org/wiki/2002_Ho_Chi_Minh_City_ITC_fire"
+        },
+        {
+            id: 'canThoBridgeCollapse2007', x: 37.92, y: 80.69, // Can Tho
+            title: "Collapse of Can Tho Bridge (2007)",
+            text: "Section of the partially constructed Can Tho Bridge collapsed (Sept 26, 2007), killing 55 construction workers.",
+            image_info_url: "https://www.gettyimages.com/photos/can-tho-bridge"
+        },
+        {
+            id: 'sarsEpidemic2003', x: 38.67, y: 19.00, // Near Hanoi
+            title: "SARS Epidemic (2003)",
+            text: "Vietnam was first country outside China affected by SARS. Swift response contained it (5 deaths), internationally recognized.",
+            image_info_url: "https://www.ncbi.nlm.nih.gov/books/NBK92460/"
+        }
+    ];
+
+    let mapDraggable = Draggable.create(mapContainer, {
+        type: "x,y", edgeResistance: 0.75, bounds: mapViewport, inertia: true,
+        cursor: "grab", activeCursor: "grabbing",
+        onDrag: () => { updatePointsPosition(); updateActiveConnectingLine(); },
+        onThrowUpdate: () => { updatePointsPosition(); updateActiveConnectingLine(); },
+        onDragEnd: restrictMovement,
+        onThrowComplete: restrictMovement,
+        zIndexBoost: false // Added this line
+    })[0];
+
+    let annotationDraggable = Draggable.create(annotationBox, {
+        type: "x,y",
+        onDrag: updateActiveConnectingLine,
+        onClick: (e) => {
+             e.stopPropagation();
+        }
+    })[0];
+    annotationDraggable.disable();
+
+
+    mapViewport.addEventListener('wheel', (event) => {
+        event.preventDefault();
+        const rect = mapViewport.getBoundingClientRect();
+        const mouseX = event.clientX - rect.left;
+        const mouseY = event.clientY - rect.top;
+        const currentTransform = gsap.getProperty(mapContainer, ["x", "y"]);
+        const currentX = parseFloat(currentTransform.x) || 0;
+        const currentY = parseFloat(currentTransform.y) || 0;
+        const mouseOnMapX = (mouseX - currentX) / currentScale;
+        const mouseOnMapY = (mouseY - currentY) / currentScale;
+
+        let newScale = currentScale * (event.deltaY < 0 ? ZOOM_INCREMENT : 1 / ZOOM_INCREMENT);
+        newScale = gsap.utils.clamp(MIN_SCALE, MAX_SCALE, newScale);
+
+        const newX = mouseX - mouseOnMapX * newScale;
+        const newY = mouseY - mouseOnMapY * newScale;
+
+        gsap.to(mapContainer, {
+            duration: 0.2, scale: newScale, x: newX, y: newY,
+            onUpdate: () => { updatePointsPosition(); updateActiveConnectingLine(); },
+            onComplete: () => {
+                currentScale = newScale;
+                restrictMovement();
+                mapDraggable.update(true);
+                updateActiveConnectingLine();
+            }
+        });
+        currentScale = newScale; // Update currentScale immediately for subsequent calculations
+    });
+
+    function restrictMovement() {
+        let { x, y } = gsap.getTweensOf(mapContainer)[0] ? gsap.getTweensOf(mapContainer)[0].vars : gsap.getProperty(mapContainer, ["x","y"]);
+        x = parseFloat(x) || 0;
+        y = parseFloat(y) || 0;
+
+        const mapScaledWidth = mapOriginalWidth * currentScale;
+        const mapScaledHeight = mapOriginalHeight * currentScale;
+        const viewportWidth = mapViewport.clientWidth;
+        const viewportHeight = mapViewport.clientHeight;
+
+        let targetX = x;
+        let targetY = y;
+
+        if (mapScaledWidth <= viewportWidth) { targetX = (viewportWidth - mapScaledWidth) / 2; }
+        else { targetX = gsap.utils.clamp(viewportWidth - mapScaledWidth, 0, x); }
+
+        if (mapScaledHeight <= viewportHeight) { targetY = (viewportHeight - mapScaledHeight) / 2; }
+        else { targetY = gsap.utils.clamp(viewportHeight - mapScaledHeight, 0, y); }
+        
+        if (targetX !== x || targetY !== y) {
+            gsap.to(mapContainer, {
+                x: targetX, y: targetY, duration: 0.2,
+                onUpdate: () => { updatePointsPosition(); updateActiveConnectingLine(); }
+            });
+        }
+    }
+
+    function createMapPoints() {
+        mapContainer.querySelectorAll('.map-point').forEach(p => p.remove());
+        dataPoints.forEach(pointData => {
+            const pointElement = document.createElement('div');
+            pointElement.classList.add('map-point');
+            pointElement.id = `point-${pointData.id}`;
+            pointElement.dataset.pointId = pointData.id;
+
+            Object.keys(pointData).forEach(key => {
+                pointElement.dataset[key] = pointData[key];
+            });
+
+            mapContainer.appendChild(pointElement);
+            pointElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                handlePointClick(pointElement, pointData);
+            });
+        });
+        updatePointsPosition();
+    }
+
+    function updatePointsPosition() {
+        if (!mapOriginalWidth || !mapOriginalHeight) return;
+        // No need to get mapContainerX/Y as points are relative to mapContainer itself
+        document.querySelectorAll('.map-point').forEach(pointElement => {
+            const originalXPercent = parseFloat(pointElement.dataset.x);
+            const originalYPercent = parseFloat(pointElement.dataset.y);
+            const xPos = (originalXPercent / 100) * mapOriginalWidth;
+            const yPos = (originalYPercent / 100) * mapOriginalHeight;
+            gsap.set(pointElement, { left: xPos + 'px', top: yPos + 'px' });
+        });
+    }
+
+    function handlePointClick(pointElement, pointData) {
+        if (activeMapPointElement) {
+            activeMapPointElement.classList.remove('active');
+        }
+        activeMapPointElement = pointElement;
+        activeMapPointElement.classList.add('active');
+
+        annotationTitle.textContent = pointData.title;
+        annotationText.textContent = pointData.text;
+        
+        // Set placeholder image source and alt text
+        annotationImage.src = "https://via.placeholder.com/350x150.png?text=" + encodeURIComponent(pointData.title); // Placeholder with title
+        annotationImage.alt = pointData.title;
+
+        if (pointData.image_info_url && pointData.image_info_url !== "null" && pointData.image_info_url.trim() !== "") {
+            annotationImageLink.href = pointData.image_info_url;
+            annotationImageLink.style.display = 'block'; // Show the link
+        } else {
+            annotationImageLink.style.display = 'none'; // Hide if no URL
+        }
+
+        const pointRect = pointElement.getBoundingClientRect();
+        const viewportRect = mapViewport.getBoundingClientRect();
+
+        let initialX = pointRect.right + 20;
+        let initialY = pointRect.top - annotationBox.offsetHeight / 2;
+
+        initialX = Math.max(viewportRect.left + 10, Math.min(initialX, viewportRect.right - annotationBox.offsetWidth - 10));
+        initialY = Math.max(viewportRect.top + 10, Math.min(initialY, viewportRect.bottom - annotationBox.offsetHeight - 10));
+
+        gsap.set(annotationBox, {
+            display: 'block',
+            left: initialX + 'px',
+            top: initialY + 'px'
+        });
+
+        annotationBox.classList.add('visible');
+        annotationDraggable.enable();
+        connectingLine.style.display = 'block';
+        updateActiveConnectingLine();
+    }
+
+    function hideAnnotation() {
+        annotationBox.classList.remove('visible');
+        if (activeMapPointElement) {
+            activeMapPointElement.classList.remove('active');
+            activeMapPointElement = null;
+        }
+        annotationDraggable.disable();
+        connectingLine.style.display = 'none';
+        gsap.to(annotationBox, {duration: 0.3, onComplete: () => {
+            if (!annotationBox.classList.contains('visible')) annotationBox.style.display = 'none';
+        }});
+    }
+    closeAnnotationButton.addEventListener('click', hideAnnotation);
+
+    function updateActiveConnectingLine() {
+        if (!activeMapPointElement || !annotationBox.classList.contains('visible')) {
+            connectingLine.style.display = 'none';
+            return;
+        }
+        connectingLine.style.display = 'block';
+
+        const pointRect = activeMapPointElement.getBoundingClientRect();
+        const boxRect = annotationBox.getBoundingClientRect();
+
+        const x1 = pointRect.left + pointRect.width / 2;
+        const y1 = pointRect.top + pointRect.height / 2;
+
+        let x2, y2;
+        if (boxRect.left + boxRect.width / 2 > x1) {
+            x2 = boxRect.left;
+        } else {
+            x2 = boxRect.right;
+        }
+        y2 = boxRect.top + boxRect.height / 2;
+
+        gsap.set(connectingLine, { attr: { x1, y1, x2, y2 } });
+    }
+
+    toggleAddPointModeButton.addEventListener('click', () => {
+        isAddPointMode = !isAddPointMode;
+        toggleAddPointModeButton.textContent = isAddPointMode ? 'Exit Add Point Mode' : 'Enter Add Point Mode';
+        toggleAddPointModeButton.classList.toggle('active', isAddPointMode);
+        mapViewport.style.cursor = isAddPointMode ? 'crosshair' : 'grab';
+        if (!isAddPointMode) coordinatesOutput.value = '';
+        else coordinatesOutput.value = 'Click on the map...\n';
+    });
+
+    mapViewport.addEventListener('click', (event) => {
+        if (isAddPointMode) {
+            if (event.target !== mapViewport && event.target !== mapContainer) return;
+
+            const mapContainerRect = mapContainer.getBoundingClientRect();
+            const clickXOnViewport = event.clientX;
+            const clickYOnViewport = event.clientY;
+
+            const xOnScaledMap = clickXOnViewport - mapContainerRect.left;
+            const yOnScaledMap = clickYOnViewport - mapContainerRect.top;
+
+            const xOnImage = xOnScaledMap / currentScale;
+            const yOnImage = yOnScaledMap / currentScale;
+
+            if (xOnImage >= 0 && xOnImage <= mapOriginalWidth && yOnImage >= 0 && yOnImage <= mapOriginalHeight) {
+                const xPercent = (xOnImage / mapOriginalWidth) * 100;
+                const yPercent = (yOnImage / mapOriginalHeight) * 100;
+                const outputText = `{ id: 'newPoint${Date.now()}', x: ${xPercent.toFixed(2)}, y: ${yPercent.toFixed(2)}, title: "New Point", text: "Description...", image_info_url: "" },`;
+                coordinatesOutput.value += outputText + '\n';
+                coordinatesOutput.scrollTop = coordinatesOutput.scrollHeight;
+            } else {
+                 coordinatesOutput.value += "Clicked outside the map image boundaries.\n";
+            }
+        } else if (!annotationBox.contains(event.target) && !event.target.classList.contains('map-point') && annotationBox.classList.contains('visible')) {
+             hideAnnotation();
+        }
+    });
+
+    function initializeMap() {
+        // Fallback if naturalWidth/Height is 0 (e.g. image not loaded yet)
+        if (!vietnamMap.naturalWidth || !vietnamMap.naturalHeight) {
+             // Wait for the image to load if it's not ready
+            if (vietnamMap.complete) { // If loading is complete but dimensions are 0, it's an error
+                console.error("Map image loaded but has no dimensions. Path: " + vietnamMap.src);
+                mapViewport.innerHTML = "<p style='text-align:center; padding:20px;'>Error: Map image has no dimensions.</p>";
+                return;
+            }
+            // If not complete, the onload event below will handle initialization.
+            return;
+        }
+
+        mapOriginalWidth = vietnamMap.naturalWidth;
+        mapOriginalHeight = vietnamMap.naturalHeight;
+
+        gsap.set(mapContainer, {
+            x: 0, y: 0, scale: currentScale,
+            width: mapOriginalWidth, height: mapOriginalHeight,
+            transformOrigin: "0 0"
+        });
+        gsap.set(vietnamMap, { width: "100%", height: "100%" });
+
+        createMapPoints();
+        restrictMovement(); //Initial restrict
+        mapDraggable.enable();
+        mapDraggable.update(true); // Ensure draggable bounds are correct
+    }
+
+    vietnamMap.onload = initializeMap;
+    vietnamMap.onerror = () => {
+        console.error("Failed to load map image. Check path: " + vietnamMap.src);
+        mapViewport.innerHTML = "<p style='text-align:center; padding:20px;'>Error: Could not load map image. Please check the image path.</p>";
+    };
+
+    // If image is already loaded (e.g. cached)
+    if (vietnamMap.complete && vietnamMap.naturalWidth !== 0) {
+        initializeMap();
+    } else if (vietnamMap.complete && vietnamMap.naturalWidth === 0) {
+        // If loading is complete but dimensions are 0, it's an error.
+        // onerror might not fire for all scenarios (e.g. valid path, but 0-byte image)
+        console.error("Map image loaded but has no dimensions (already complete). Path: " + vietnamMap.src);
+        mapViewport.innerHTML = "<p style='text-align:center; padding:20px;'>Error: Map image has no dimensions.</p>";
+    }
+    // If not complete, onload will handle it. If src is invalid, onerror will.
+
+
+    window.addEventListener('resize', () => {
+        if (mapOriginalWidth) { // Only if map is initialized
+            mapDraggable.update(true); // Recalculate bounds
+            restrictMovement();
+            updateActiveConnectingLine();
+        }
+    });
+});
+</script>
+</body>
+</html>

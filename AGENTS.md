@@ -41,3 +41,24 @@ Your goal is to write code that ensures top-of-the-line UI, cinematic interactio
 - Do not use generic colors. Rely on curated HSL/Hex palettes (e.g., sophisticated dark mode grays like `#0a0a0a` instead of absolute black, except for deep contrast).
 
 Follow these rules unconditionally to produce elite, award-winning digital experiences.
+
+# 🛠️ Installed Skills & References
+
+To ensure top-of-the-line, high-fidelity development following the **Tech-Luxe Editorial** design system, the following local agent skills have been installed and are active:
+
+## 🎨 Creative & Animation
+- **Premium Frontend Design (`neversight-learn-skills.dev-premium-frontend-design`)**: Guidance on Awwwards-level interactive designs, micro-interactions, custom WebGL/shaders, and premium aesthetics.
+- **Scroll Experience (`dokhacgiakhoa-antigravity-ide-scroll-experience`)**: Immersive scroll-driven storytelling, Apple-style product showcases, and parallax sequencing.
+- **GSAP Animations (`aiskillstore-marketplace-gsap-animations`)**: ScrollTrigger orchestration, optimized timeline setup, and high-fps transitions.
+
+## 🏗️ 3D & WebGL
+- **3D Web Experience (`davila7-claude-code-templates-3d-web-experience`)**: Building interactive 3D pages with React Three Fiber, Three.js, and WebGL.
+- **Three.js Shaders (`calesthio-openmontage-threejs-shaders`)**: GLSL custom vertex/fragment shaders, uniforms, and procedural effects.
+- **Three.js Lighting (`calesthio-openmontage-threejs-lighting`)**: Environment maps, complex lighting systems, and performant shadows.
+
+## ⚡ Framework Performance & Patterns
+- **Next.js App Router Patterns (`sickn33-antigravity-awesome-skills-nextjs-app-router-patterns`)**: Advanced routing, Server/Client component boundary hygiene, streaming, and caching.
+- **React Best Practices (`davila7-claude-code-templates-react-best-practices`)**: Eliminating layout waterfalls, bundle optimizations, and performant hooks.
+
+## 🔍 Modern Web Standards
+- **Modern Web Guidance (`modern-web-guidance`)**: Reference for modern native APIs (e.g. `:has()`, view transitions, scroll-driven animations) to avoid bloated dependencies. Always search and retrieve guides before building new features.
