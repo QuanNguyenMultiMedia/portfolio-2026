@@ -38,6 +38,11 @@ The design system marries warm, luxury architectural layouts (as seen in high-en
 - **Container Isolation:** In the Freebies archive page, detail overlays use a custom, hydration-safe `<Portal>` component to render directly under `document.body`. This breaks the overlays out of parent containers containing `will-change: transform` or Lenis scroll intercepts, ensuring popovers lock strictly to the viewport height.
 - **Pixel-Perfect Logo Masking:** Duplicate logos inside detail panel masks align pixel-for-pixel with the global layout header by falling back to identical layout coordinates and avoiding animation-induced coordinate offsets.
 
+### 4. Viewport Cursor-Following Parallax
+- **Smooth Cursor Tracking:** Implemented window-level mouse movement capture, normalizing the cursor coordinates relative to the center of the screen, and routing them through a Framer Motion `useSpring` physics engine (`damping: 30, stiffness: 80, mass: 1`) to achieve a high-end architectural drift lag.
+- **3D Tilt & Slide Transform Mapping:** Maps smoothed mouse offsets to rotation and translation properties (`rotateX`/`rotateY` up to `±6deg` and `translateX`/`translateY` up to `±60px`) on the parent `preserve-3d` container. Because elements are spaced along the Z-depth volume, deeper elements naturally shift wider across screen coordinates, producing a correct 3D perspective parallax view.
+- **Auto-Centering & Mobile Bypass:** Touch screen devices bypass tracking to preserve performance and avoid layout offsets. The 3D scene automatically centers itself when the cursor leaves the window viewport.
+
 ---
 
 ## 🚀 Getting Started
