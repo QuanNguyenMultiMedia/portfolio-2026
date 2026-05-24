@@ -17,9 +17,9 @@ const dummyProject = {
     {
       type: "hero",
       title: "FREEBIE PACK 01",
-      subtitle: "ASSET DROP // 2026",
+      subtitle: "ASSET DROP // 2026 EDITION",
       description:
-        "High quality digital assets crafted for modern creative workflows. Usable in both personal and commercial projects.",
+        "Professionally crafted digital assets designed for modern creative workflows. Each file is optimized, organized, and layered for immediate deployment — usable in both personal and commercial projects. Formats include layered PSDs, editable SVGs, and web-optimized exports.",
     },
     {
       type: "image",
@@ -29,7 +29,7 @@ const dummyProject = {
     {
       type: "details",
       content:
-        "All files are organized, layered, and prepared for immediate deployment in standard design software.",
+        "Every asset is built with production scalability in mind. Organized layer structures, consistent naming conventions, and colour-managed profiles ensure seamless integration into any existing workflow — whether you're working in After Effects, Figma, or a custom WebGL pipeline.",
     },
   ],
 };
@@ -118,7 +118,7 @@ export default function FreebiesPage({
             </span>
           </div>
           <span className="text-[10px] font-mono tracking-[0.4em] uppercase opacity-40 group-hover:opacity-100 transition-opacity">
-            Return_Archive
+            Back To Boutique
           </span>
         </Link>
       </div>

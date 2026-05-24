@@ -20,9 +20,9 @@ export default function FreebiesPage() {
       <PageWrapper>
         <div className="relative min-h-screen pb-64">
           <SectionHeader
-            directory="Archive // 01"
+            directory="Free Library // 01"
             title="Boutique"
-            subtitle="Digital Assets"
+            subtitle="Curated Downloads"
           />
 
           {/* Minimal Staggered Grid */}
@@ -171,7 +171,7 @@ export default function FreebiesPage() {
 
                   <div className="space-y-2">
                     <span className="text-[8px] font-mono opacity-20 tracking-widest block">
-                      TECH_SPEC // 2026_EDITION
+                      COLOR PALETTE // SPEC_2026
                     </span>
                     <div className="flex gap-1">
                       {selectedItem.colors.map((color, i) => (
@@ -191,7 +191,7 @@ export default function FreebiesPage() {
                     href={selectedItem.downloadUrl}
                     className="w-full !py-6"
                   >
-                    Download_Asset
+                    Download // Free
                   </TechButton>
                 </div>
               </motion.div>

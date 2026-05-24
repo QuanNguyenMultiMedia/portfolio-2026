@@ -123,14 +123,22 @@ export default function PlayPage({
                 return next;
               });
             }}
-            className="pointer-events-auto flex items-center gap-3 group/btn"
+            className={`pointer-events-auto flex items-center gap-3 group/btn transition-all duration-300 ${
+              isFullscreen
+                ? "bg-background/80 backdrop-blur-xl border border-foreground/15 rounded-sm px-3 py-1.5 hover:bg-foreground/10"
+                : ""
+            }`}
           >
-            <span className="font-mono text-[9px] tracking-[0.2em] group-hover/btn:text-foreground transition-colors">
+            <span className={`font-mono tracking-[0.2em] group-hover/btn:text-foreground transition-colors ${
+              isFullscreen ? "text-[11px]" : "text-[9px]"
+            }`}>
               {isFullscreen ? "MINIMIZE" : "EXPAND"}
             </span>
-            <div className="w-4 h-4 border border-foreground/30 flex items-center justify-center group-hover/btn:border-foreground transition-colors bg-background/50 backdrop-blur-sm">
+            <div className={`border flex items-center justify-center group-hover/btn:border-foreground transition-colors bg-background/50 backdrop-blur-sm ${
+              isFullscreen ? "w-5 h-5" : "w-4 h-4"
+            }`}>
               {isFullscreen ? (
-                <div className="w-2 h-2 border-b border-l border-foreground/60 transition-transform" />
+                <div className="w-2.5 h-2.5 border-b border-l border-foreground/60 transition-transform" />
               ) : (
                 <div className="w-2 h-2 border-t border-r border-foreground/60 transition-transform" />
               )}

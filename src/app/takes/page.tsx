@@ -18,7 +18,7 @@ export default function TakesPage() {
               }`}
             >
               <div className="md:col-span-2 text-[10px] font-mono tracking-widest uppercase opacity-20 group-hover:opacity-60 transition-opacity">
-                {post.date.split(" ").pop()} // {post.topic}
+                ESSAY_{String(idx + 1).padStart(2, "0")} // {post.topic} // {post.date.split(" ").pop()}
               </div>
 
               <div className="md:col-span-7 space-y-6">
