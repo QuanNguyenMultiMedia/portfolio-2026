@@ -3,7 +3,6 @@
 import { useRef, useState, useEffect } from "react";
 import {
   motion,
-  useScroll,
   useTransform,
   useMotionValueEvent,
   useMotionTemplate,
@@ -23,14 +22,22 @@ export default function Home() {
   const [activeFrame, setActiveFrame] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Track scroll progress across the 500vh page height
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
+  // Drive scroll progress from Lenis's own RAF-synced animation loop
+  // instead of native scroll events — eliminates micro-jitter.
+  const scrollProgress = useMotionValue(0);
+
+  useEffect(() => {
+    const lenis = (window as any).lenis;
+    if (!lenis) return;
+    const onScroll = (l: any) => {
+      scrollProgress.set(l.animatedScroll / l.dimensions.limit.y);
+    };
+    lenis.on("scroll", onScroll);
+    return () => lenis.off("scroll", onScroll);
+  }, [scrollProgress]);
 
   // Parallax multiplier based on scroll progress (0 on Hero, fades in during scroll transition)
-  const parallaxMultiplier = useTransform(scrollYProgress, [0.15, 0.25], [0, 1]);
+  const parallaxMultiplier = useTransform(scrollProgress, [0.15, 0.25], [0, 1]);
 
   // ==========================================
   // VIEWPORT CURSOR PARALLAX
@@ -103,7 +110,7 @@ export default function Home() {
 
   // Track active frame based on scroll progress
   // Boundaries are midpoints between waypoints
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+  useMotionValueEvent(scrollProgress, "change", (latest) => {
     if (latest < 0.075) {
       setActiveFrame(0);
     } else if (latest >= 0.075 && latest < 0.25) {
@@ -129,7 +136,7 @@ export default function Home() {
   //   Capabilities    → 20% scroll → Testimonials (Z=4800)
   //   Testimonials    → 35% scroll → Stats (Z=6300), holds to end
   const zWorld = useTransform(
-    scrollYProgress,
+    scrollProgress,
     [0.0, 0.15, 0.35, 0.55, 0.90, 1.0],
     [0,   1800, 3300, 4800, 6300, 6300]
   );
@@ -166,7 +173,7 @@ export default function Home() {
   const blurStats = useTransform(zWorld, [5300, 5900, 6300], ["blur(8px)", "blur(0px)", "blur(0px)"]);
 
   // Camera focal length warp (dynamic 3D perspective distortion)
-  const perspectiveVal = useTransform(scrollYProgress, (progress) => {
+  const perspectiveVal = useTransform(scrollProgress, (progress) => {
     const start = isMobile ? 1200 : 1400;
     const end = isMobile ? 850 : 950;
     return start + progress * (end - start);
@@ -174,9 +181,9 @@ export default function Home() {
   const perspectiveTemplate = useMotionTemplate`${perspectiveVal}px`;
 
   // Radial lens focus blur & vignette overlays
-  const lensBlurVal = useTransform(scrollYProgress, [0, 1], [0, 6]);
+  const lensBlurVal = useTransform(scrollProgress, [0, 1], [0, 6]);
   const lensBlurTemplate = useMotionTemplate`blur(${lensBlurVal}px)`;
-  const lensEffectsOpacity = useTransform(scrollYProgress, [0, 1], [0, 0.55]);
+  const lensEffectsOpacity = useTransform(scrollProgress, [0, 1], [0, 0.55]);
 
   // HUD sections list for the indicator
   const HUDSections = [
