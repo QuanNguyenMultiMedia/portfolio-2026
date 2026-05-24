@@ -20,7 +20,7 @@ export default function SmoothScroll({
     });
 
     // Waypoints for gentle snap (must match page.tsx waypoints)
-    const snapWaypoints = [0, 0.15, 0.35, 0.55, 0.75];
+    const snapWaypoints = [0, 0.15, 0.35, 0.55, 0.90];
     const SNAP_THRESHOLD = 0.07;
     const IDLE_MS = 350;
 
