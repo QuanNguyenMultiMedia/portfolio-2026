@@ -29,15 +29,8 @@ export default function Home() {
     offset: ["start start", "end end"],
   });
 
-  // Smooth the scroll input to eliminate micro-jitter from Lenis + useScroll
-  const smoothScrollProgress = useSpring(scrollYProgress, {
-    stiffness: 120,
-    damping: 30,
-    mass: 0.5,
-  });
-
   // Parallax multiplier based on scroll progress (0 on Hero, fades in during scroll transition)
-  const parallaxMultiplier = useTransform(smoothScrollProgress, [0.15, 0.25], [0, 1]);
+  const parallaxMultiplier = useTransform(scrollYProgress, [0.15, 0.25], [0, 1]);
 
   // ==========================================
   // VIEWPORT CURSOR PARALLAX
@@ -109,15 +102,15 @@ export default function Home() {
   }, [isMobile, mouseX, mouseY]);
 
   // Track active frame based on scroll progress
-  // Boundaries are midpoints between the smooth-eased waypoints below
-  useMotionValueEvent(smoothScrollProgress, "change", (latest) => {
+  // Boundaries are midpoints between waypoints
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
     if (latest < 0.075) {
       setActiveFrame(0);
     } else if (latest >= 0.075 && latest < 0.25) {
       setActiveFrame(1);
-    } else if (latest >= 0.25 && latest < 0.45) {
+    } else if (latest >= 0.25 && latest < 0.425) {
       setActiveFrame(2);
-    } else if (latest >= 0.45 && latest < 0.65) {
+    } else if (latest >= 0.425 && latest < 0.725) {
       setActiveFrame(3);
     } else {
       setActiveFrame(4);
@@ -127,39 +120,19 @@ export default function Home() {
   // ==========================================
   // CAMERA / WORLD TRANSLATION
   // ==========================================
-  // The Z-axis camera movement uses smoothstep easing between waypoints.
-  // Each waypoint is a "main state" where the camera decelerates to a brief,
-  // gentle pause (derivative zero at that exact point) before accelerating to the next.
-  // No flat plateau zones — the slowdown is fluid and momentary.
+  // Linear Z mapping between waypoints — no extra easing during scroll.
+  // The only smoothing comes from Lenis itself. Snap feel is handled by
+  // the idle-based snap in SmoothScroll.tsx.
   //
-  //   Hero (Z=0)      → waypoint at 0%   → 15% scroll to Manifesto
-  //   Manifesto (Z=1800) → waypoint at 15% → 20% scroll to Capabilities
-  //   Capabilities (Z=3300) → waypoint at 35% → 20% scroll to Testimonials
-  //   Testimonials (Z=4800) → waypoint at 55% → 20% scroll to Stats
-  //   Stats (Z=6300)   → waypoint at 75% → 25% scroll to end
-  const easeSmoothstep = (t: number) => t * t * (3 - 2 * t);
-
-  const zWorld = useTransform(smoothScrollProgress, (progress) => {
-    const p = Math.max(0, Math.min(1, progress));
-    type WP = [number, number];
-    const waypoints: WP[] = [
-      [0.0, 0],
-      [0.15, 1800],
-      [0.35, 3300],
-      [0.55, 4800],
-      [0.75, 6300],
-      [1.0, 6300],
-    ];
-    for (let i = 0; i < waypoints.length - 1; i++) {
-      const [x1, y1] = waypoints[i];
-      const [x2, y2] = waypoints[i + 1];
-      if (p >= x1 && p <= x2) {
-        const t = (p - x1) / (x2 - x1);
-        return y1 + (y2 - y1) * easeSmoothstep(t);
-      }
-    }
-    return waypoints[waypoints.length - 1][1];
-  });
+  //   Hero (Z=0)      → 15% scroll → Manifesto (Z=1800)
+  //   Manifesto       → 20% scroll → Capabilities (Z=3300)
+  //   Capabilities    → 20% scroll → Testimonials (Z=4800)
+  //   Testimonials    → 35% scroll → Stats (Z=6300), holds to end
+  const zWorld = useTransform(
+    scrollYProgress,
+    [0.0, 0.15, 0.35, 0.55, 0.90, 1.0],
+    [0,   1800, 3300, 4800, 6300, 6300]
+  );
 
   // Combine into single dynamic transform template
   const transformWorld = useMotionTemplate`translate3d(${translateX}px, ${translateY}px, ${zWorld}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
@@ -193,7 +166,7 @@ export default function Home() {
   const blurStats = useTransform(zWorld, [5300, 5900, 6300], ["blur(8px)", "blur(0px)", "blur(0px)"]);
 
   // Camera focal length warp (dynamic 3D perspective distortion)
-  const perspectiveVal = useTransform(smoothScrollProgress, (progress) => {
+  const perspectiveVal = useTransform(scrollYProgress, (progress) => {
     const start = isMobile ? 1200 : 1400;
     const end = isMobile ? 850 : 950;
     return start + progress * (end - start);
@@ -201,9 +174,9 @@ export default function Home() {
   const perspectiveTemplate = useMotionTemplate`${perspectiveVal}px`;
 
   // Radial lens focus blur & vignette overlays
-  const lensBlurVal = useTransform(smoothScrollProgress, [0, 1], [0, 6]);
+  const lensBlurVal = useTransform(scrollYProgress, [0, 1], [0, 6]);
   const lensBlurTemplate = useMotionTemplate`blur(${lensBlurVal}px)`;
-  const lensEffectsOpacity = useTransform(smoothScrollProgress, [0, 1], [0, 0.55]);
+  const lensEffectsOpacity = useTransform(scrollYProgress, [0, 1], [0, 0.55]);
 
   // HUD sections list for the indicator
   const HUDSections = [
