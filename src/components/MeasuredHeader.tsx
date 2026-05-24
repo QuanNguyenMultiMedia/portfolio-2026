@@ -71,7 +71,7 @@ export default function MeasuredHeader({
         >
           {/* Dimension Label */}
           <div className="absolute -top-6 left-0 text-[8px] font-mono opacity-0 group-hover/line:opacity-100 transition-all duration-300 transform translate-y-2 group-hover/line:translate-y-0 text-tech-blue">
-            MEAS_W // {Math.round(line.width)}PX
+            GLYPH_WIDTH // {Math.round(line.width)}PX
           </div>
 
           <h2

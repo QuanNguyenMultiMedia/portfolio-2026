@@ -34,43 +34,61 @@ export default function PostPage({
             </span>
           </div>
           <span className="text-[10px] font-sans tracking-[0.4em] uppercase opacity-40 group-hover:opacity-100 transition-opacity">
-            Return_Index
+            Back To Essays
           </span>
         </Link>
       </div>
 
-      {/* Main Content Area - Moved one column right (pl-64), reduced leading */}
-      <main className="pt-40 pb-32 px-16 md:pl-64 md:pr-24 max-w-[1000px] relative z-10">
-        <header className="mb-12">
-          <h1 className="text-2xl md:text-3xl">{post.title}</h1>
-          <div className="mt-4 font-sans text-xs uppercase tracking-widest opacity-40">
-            {post.date}
-          </div>
-        </header>
+      {/* Main Content Area — table layout: media rows (left), text rows (right), never both */}
+      <main className="pt-40 pb-32 px-16 md:pr-[256px] relative z-10">
+        <div className="space-y-14">
+          {/* --- Media Row --- */}
+          {post.image && (
+            <div className="grid grid-cols-12 gap-x-8">
+              <div className="col-span-4 col-start-2">
+                <div className="relative w-full aspect-video border border-primary/10 p-2">
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={post.image}
+                      alt={post.title}
+                      fill
+                      referrerPolicy="no-referrer"
+                      className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
-        {post.image && (
-          <div className="mb-12 relative w-full aspect-video border border-primary/10 p-2">
-            <div className="relative w-full h-full">
-              <Image
-                src={post.image}
-                alt={post.title}
-                fill
-                referrerPolicy="no-referrer"
-                className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
-              />
+          {/* --- Text Rows --- */}
+          <div className="grid grid-cols-12 gap-x-8">
+            <div className="col-span-4 col-start-8">
+              <header>
+                <h1 className="text-2xl md:text-3xl">{post.title}</h1>
+                <div className="mt-4 font-sans text-xs uppercase tracking-widest opacity-40">
+                  {post.date}
+                </div>
+              </header>
             </div>
           </div>
-        )}
 
-        <article className="space-y-6 md:space-y-8 text-body">
-          <p className="text-center italic opacity-60 text-xs md:text-sm px-8 md:px-16 mb-8">
-            ( {post.excerpt} )
-          </p>
+          <div className="grid grid-cols-12 gap-x-8">
+            <div className="col-span-4 col-start-8">
+              <p className="italic opacity-60 text-xs md:text-sm">
+                ( {post.excerpt} )
+              </p>
+            </div>
+          </div>
 
           {paragraphs.map((p, idx) => (
-            <p key={idx}>{p}</p>
+            <div key={idx} className="grid grid-cols-12 gap-x-8">
+              <div className="col-span-4 col-start-8 text-body">
+                <p>{p}</p>
+              </div>
+            </div>
           ))}
-        </article>
+        </div>
       </main>
     </div>
   );

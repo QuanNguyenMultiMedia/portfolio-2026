@@ -8,6 +8,17 @@ export default function LoadingScreen() {
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
 
+  const statusMessages = [
+    "Initializing Environment",
+    "Mounting Modules",
+    "Compiling Shaders",
+    "Calibrating Viewport",
+    "Establishing Connection",
+    "Ready",
+  ];
+
+  const currentStatus = statusMessages[Math.min(Math.floor(progress / 18), statusMessages.length - 1)];
+
   useEffect(() => {
     // Artificial progress to simulate loading
     const interval = setInterval(() => {
@@ -67,7 +78,10 @@ export default function LoadingScreen() {
           {/* HUD Metadata & Progress */}
           <div className="absolute bottom-24 w-full max-w-[300px] px-8 space-y-6">
             <div className="space-y-2">
-              <div className="flex justify-end items-end">
+              <div className="flex justify-between items-end">
+                <span className="text-[8px] font-mono tracking-[0.3em] uppercase opacity-40">
+                  {currentStatus}
+                </span>
                 <span className="text-[11px] font-mono text-primary font-bold">
                   {progress}%
                 </span>

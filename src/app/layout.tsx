@@ -12,8 +12,26 @@ import SmoothScroll from "@/components/SmoothScroll";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
-  title: "Portfolio 2026 | Minimalist Luxury",
-  description: "Personal branding space for motion, 3D, and design assets.",
+  title: "Minh Quan | Motion Design & Creative Engineering",
+  description:
+    "Portfolio of Minh Quan — Midweight Motion Designer exploring the intersection of cinematic motion, 3D engineering, and editorial design. Ho Chi Minh City based, globally available.",
+  keywords: [
+    "Motion Design",
+    "WebGL",
+    "Three.js",
+    "Creative Developer",
+    "UI Animation",
+    "Branding",
+    "Minh Quan",
+  ],
+  openGraph: {
+    title: "Minh Quan | Motion Design & Creative Engineering",
+    description:
+      "Cinematic motion, 3D engineering, and editorial design portfolio.",
+    url: "https://portfolio-2026.vercel.app",
+    siteName: "Minh Quan Portfolio",
+    type: "website",
+  },
   icons: {
     icon: "/assets/favicon white.png",
     apple: "/assets/favicon white.png",

@@ -20,7 +20,7 @@ export default function GlobalSideBar() {
   const isHome = pathname === "/";
 
   let colors = ["#005f73", "#0a9396", "#94d2bd"];
-  let topic = "EXPLORE";
+  let topic = "INDEX";
 
   if (pathname === "/") {
     colors = ["#1e3a8a", "#1e40af", "#3b82f6"];
@@ -150,7 +150,7 @@ export default function GlobalSideBar() {
                     className="flex flex-col items-start ml-6"
                   >
                     <span className="text-[7px] font-mono tracking-[0.4em] uppercase opacity-40 group-hover:opacity-100 transition-opacity">
-                      MODE // {isDark ? "DARK" : "LIGHT"}
+                      THEME // {isDark ? "DARK" : "LIGHT"}
                     </span>
                     <div className="h-[0.5px] w-0 group-hover:w-full bg-tech-blue transition-all duration-500" />
                   </motion.div>

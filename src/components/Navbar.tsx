@@ -60,7 +60,7 @@ export default function Navbar() {
   }, [pathname]);
 
   // Determine current directory and title for the HUD Notch
-  let directory = "DIRECTORY_INDEX";
+  let directory = "DIRECTORY";
   let title = "HOME";
 
   if (pathname === "/") {
