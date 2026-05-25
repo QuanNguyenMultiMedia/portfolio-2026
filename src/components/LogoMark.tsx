@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
+import { useState, useEffect } from "react";
 
 interface LogoMarkProps {
   variant?: "default" | "inverted" | "auto";
@@ -15,39 +17,35 @@ export default function LogoMark({
   className = "",
   animate = true,
 }: LogoMarkProps) {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const isDefault = variant === "default" || variant === "auto";
   const shouldAnimate = animate && isDefault;
+
+  const logoSrc =
+    variant === "auto"
+      ? mounted && resolvedTheme === "dark"
+        ? "/assets/Logo_Full_DarkMode.svg"
+        : "/assets/Logo_Full_LightMode.svg"
+      : variant === "inverted"
+        ? "/assets/Logo_Full_DarkMode.svg"
+        : "/assets/Logo_Full_LightMode.svg";
 
   const content = (
     <Link href="/" className="group flex items-center">
       <div className="relative w-32 h-16 overflow-hidden">
-        {variant === "auto" ? (
-          <>
-            {/* Light mode logo - hidden in dark mode */}
-            <Image
-              src="/assets/Logo_Full_LightMode.svg"
-              alt="Minh Quan Logo"
-              fill
-              priority
-              className="object-contain group-hover:scale-105 transition-transform duration-700 dark:hidden"
-            />
-            {/* Dark mode logo - visible in dark mode */}
-            <Image
-              src="/assets/Logo_Full_DarkMode.svg"
-              alt="Minh Quan Logo"
-              fill
-              priority
-              className="object-contain group-hover:scale-105 transition-transform duration-700 hidden dark:block"
-            />
-          </>
-        ) : (
+        {mounted ? (
           <Image
-            src={variant === "inverted" ? "/assets/Logo_Full_DarkMode.svg" : "/assets/Logo_Full_LightMode.svg"}
+            src={logoSrc}
             alt="Minh Quan Logo"
             fill
             priority
             className="object-contain group-hover:scale-105 transition-transform duration-700"
           />
+        ) : (
+          <div className="w-full h-full" />
         )}
       </div>
     </Link>
