@@ -42,6 +42,7 @@
   body {
     @apply bg-background text-foreground font-sans selection:bg-primary selection:text-background;
     overflow-x: hidden;
+    overscroll-behavior: none;
   }
 
   /* Hide all scrollbars globally */

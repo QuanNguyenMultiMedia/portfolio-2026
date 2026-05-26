@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Large media files
 *.mp4
+
+# Playwright MCP
+.playwright-mcp/
