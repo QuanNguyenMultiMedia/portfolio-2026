@@ -91,14 +91,13 @@ export default function ContactsPage() {
     tiltY.set(0);
 
     setIsAnimating(true);
+    pivotX.set(xPct);
+    pivotY.set(yPct);
+    animate(pivotX, 50, { duration: 1.2, ease: [0.23, 1, 0.32, 1] });
+    animate(pivotY, 50, { duration: 1.2, ease: [0.23, 1, 0.32, 1] });
     setIsFlipped(!isFlipped);
 
-    const px = pivotX.get();
-    const py = pivotY.get();
-    animate(pivotX, [px, xPct, 50], { duration: 1.2, ease: [0.23, 1, 0.32, 1] });
-    animate(pivotY, [py, yPct, 50], { duration: 1.2, ease: [0.23, 1, 0.32, 1] });
-
-    setTimeout(() => setIsAnimating(false), 1500);
+    setTimeout(() => setIsAnimating(false), 200);
   };
 
   return (
