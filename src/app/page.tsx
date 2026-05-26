@@ -12,7 +12,6 @@ import {
 import Image from "next/image";
 
 import BalancedText from "@/components/BalancedText";
-import MeasuredHeader from "@/components/MeasuredHeader";
 import PageWrapper from "@/components/PageWrapper";
 import TechButton from "@/components/TechButton";
 
@@ -67,6 +66,7 @@ export default function Home() {
 
 
   const scrollProgress = useMotionValue(0);
+  const oversnapRef = useRef(false);
 
   useEffect(() => {
     let cleanup: (() => void) | null = null;
@@ -78,7 +78,18 @@ export default function Home() {
         return;
       }
       const onScroll = (l: any) => {
-        scrollProgress.set(l.animatedScroll / l.dimensions.limit.y);
+        const progress = l.animatedScroll / l.dimensions.limit.y;
+        scrollProgress.set(progress);
+        if (progress > 0.92 && Math.abs(l.velocity) < 0.3 && !oversnapRef.current) {
+          oversnapRef.current = true;
+          const normalEnd = 0.90 * l.dimensions.limit.y;
+          window.requestAnimationFrame(() => {
+            l.scrollTo(normalEnd, { duration: 0.5, easing: (t: number) => t * (2 - t) });
+          });
+        }
+        if (progress < 0.88) {
+          oversnapRef.current = false;
+        }
       };
       onScroll(lenis);
       lenis.on("scroll", onScroll);
@@ -148,11 +159,23 @@ export default function Home() {
     else setActiveFrame(4);
   });
 
-  const zWorld = useTransform(
-    scrollProgress,
-    [0.0, 0.15, 0.35, 0.55, 0.90, 1.0],
-    [0, 1800, 3300, 4800, 6300, 6300],
-  );
+  const zWorld = useTransform(scrollProgress, (progress) => {
+    const p = Math.min(progress, 0.90);
+    const points = [0.0, 0.15, 0.35, 0.55, 0.90] as const;
+    const values = [0, 1800, 3300, 4800, 6300] as const;
+    for (let i = 0; i < points.length - 1; i++) {
+      if (p >= points[i] && p < points[i + 1]) {
+        const t = (p - points[i]) / (points[i + 1] - points[i]);
+        return values[i] + t * (values[i + 1] - values[i]);
+      }
+    }
+    if (progress > 0.90) {
+      const t = Math.min((progress - 0.90) / 0.10, 1);
+      const easedT = 1 - Math.pow(1 - t, 3);
+      return 6300 + easedT * 100;
+    }
+    return 6300;
+  });
 
   const transformWorld = useMotionTemplate`translate3d(${translateX}px, ${translateY}px, ${zWorld}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
 
@@ -195,7 +218,7 @@ export default function Home() {
     const delta = e.clientX - (el as any).__lastX;
     (el as any).__lastX = e.clientX;
     dragOffset.set(dragOffset.get() + delta * 0.005);
-  }, []);
+  }, [dragOffset]);
 
   const handleDragEnd = useCallback((e: React.PointerEvent) => {
     delete (e.currentTarget as any).__dragging;
@@ -226,66 +249,65 @@ export default function Home() {
               }}
               className="absolute inset-0 pointer-events-none"
             >
-              <motion.div
-                className="absolute top-32 left-8 z-10 md:left-24 md:top-48 max-w-[55vw]"
-                style={{
-                  transform: "translate3d(0px, 0px, 0px)",
-                  transformStyle: "preserve-3d",
-                  opacity: opacityHero,
-                  filter: blurHero,
-                }}
-              >
-                <div className="flex flex-col gap-0 select-none">
-                  <MeasuredHeader
-                    text="Minh Quan"
-                    className="font-display text-6xl font-bold uppercase leading-[0.75] tracking-tighter md:text-[10rem]"
-                    maxWidth={900}
-                    font="800 192px Plus Jakarta Sans"
-                  />
-                  <div className="mt-4">
-                    <span className="font-display text-primary text-2xl font-light italic uppercase tracking-tighter md:text-5xl">
-                      Midweight Motion Designer
-                    </span>
+              <div className="absolute inset-0 pointer-events-none">
+                <motion.div
+                  className="absolute top-32 left-8 md:left-24 md:top-48"
+                  style={{
+                    transform: "translate3d(0px, 0px, 0px)",
+                    transformStyle: "preserve-3d",
+                    opacity: opacityHero,
+                    filter: blurHero,
+                  }}
+                >
+                  <div className="flex flex-col gap-0 select-none">
+                    <h1 className="font-display text-6xl md:text-7xl lg:text-[5.25rem] font-bold uppercase tracking-tighter leading-[0.85] text-primary whitespace-nowrap">
+                      Minh Quan
+                    </h1>
+                    <div className="mt-5">
+                      <h2 className="font-display text-2xl md:text-3xl uppercase leading-tight tracking-tight text-primary">
+                        Midweight Motion Designer
+                      </h2>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
 
-              <motion.div
-                className="absolute left-8 top-24 z-10 hidden aspect-[3/4] w-full max-w-[220px] md:right-[12vw] md:left-auto md:top-1/2 md:block md:max-w-xs"
-                style={{
-                  transform: "translate3d(0px, 0px, 150px) translateY(-50%)",
-                  transformStyle: "preserve-3d",
-                  opacity: opacityHero,
-                  filter: blurHero,
-                }}
-              >
-                <div className="group relative h-full w-full overflow-hidden bg-surface/5">
-                  <Image
-                    src="/assets/portrait_standing.jpg"
-                    alt="Minh Quan - Standing Portrait"
-                    fill
-                    priority
-                    className="object-cover opacity-90 grayscale transition-all duration-[2000ms] group-hover:grayscale-0"
+                <motion.div
+                  className="absolute left-8 top-24 hidden aspect-[3/4] w-full max-w-[220px] md:right-[18%] md:left-auto md:top-48 md:block md:max-w-sm"
+                  style={{
+                    transform: "translate3d(0px, 0px, 150px)",
+                    transformStyle: "preserve-3d",
+                    opacity: opacityHero,
+                    filter: blurHero,
+                  }}
+                >
+                  <div className="group relative h-full w-full overflow-hidden bg-surface/5">
+                    <Image
+                      src="/assets/portrait_standing.jpg"
+                      alt="Minh Quan - Standing Portrait"
+                      fill
+                      priority
+                      className="object-cover opacity-90 grayscale transition-all duration-[2000ms] group-hover:grayscale-0"
+                    />
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  className="absolute bottom-12 left-8 max-w-sm md:bottom-24 md:left-24"
+                  style={{
+                    transform: "translate3d(0px, 0px, -100px)",
+                    transformStyle: "preserve-3d",
+                    opacity: opacityHero,
+                    filter: blurHero,
+                  }}
+                >
+                  <BalancedText
+                    text="Orchestrating space, time, and identity into cinematic digital products. Scroll to explore the craft."
+                    className="text-base font-light leading-relaxed text-foreground/80 font-sans"
+                    maxWidth={400}
+                    font="300 16px Inter"
                   />
-                </div>
-              </motion.div>
-
-              <motion.div
-                className="absolute bottom-12 left-8 z-10 max-w-sm md:bottom-24 md:left-24"
-                style={{
-                  transform: "translate3d(0px, 0px, -100px)",
-                  transformStyle: "preserve-3d",
-                  opacity: opacityHero,
-                  filter: blurHero,
-                }}
-              >
-                <BalancedText
-                  text="Orchestrating space, time, and identity into cinematic digital products. Scroll to explore the craft."
-                  className="text-subhead"
-                  maxWidth={400}
-                  font="300 24px Inter"
-                />
-              </motion.div>
+                </motion.div>
+              </div>
             </motion.div>
 
             {/* FRAME 1: MANIFESTO */}
@@ -549,7 +571,7 @@ function SineCard({
       style={{ x, y, scale: s, zIndex: zIdx }}
     >
       <div className="relative w-full h-full overflow-hidden bg-surface/10">
-        <Image src={img.src} alt={img.alt} fill className="object-cover" sizes="80px" loading="lazy" />
+        <Image src={img.src} alt={img.alt} fill className="object-cover" sizes="80px" />
       </div>
     </motion.div>
   );

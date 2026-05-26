@@ -66,7 +66,7 @@ export default function VietnamForestationPage() {
             className="horizontal-slide flex-shrink-0 w-screen h-screen flex items-center justify-center p-12 border-r border-primary/5 relative"
           >
             <div className="absolute top-12 right-12 tech-label">
-              SEC_0{i + 1} // {screen.type.toUpperCase()}
+              {`SEC_0${i + 1} // ${screen.type.toUpperCase()}`}
             </div>
 
             {screen.type === "hero" && (

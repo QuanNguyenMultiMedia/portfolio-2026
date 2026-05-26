@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   prepareWithSegments,
   layoutNextLineRange,
@@ -55,7 +55,6 @@ export default function MagneticText({
   useEffect(() => {
     if (!prepared) return;
 
-    let rafId: number;
     const reflow = () => {
       try {
         const newLines: string[] = [];
@@ -109,7 +108,7 @@ export default function MagneticText({
       }
     };
 
-    rafId = requestAnimationFrame(reflow);
+    const rafId = requestAnimationFrame(reflow);
     return () => cancelAnimationFrame(rafId);
   }, [prepared, mousePos, maxWidth, text]);
 

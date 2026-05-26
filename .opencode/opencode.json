@@ -1,0 +1,41 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  "instructions": ["AGENTS.md", "PRD.md"],
+
+  "mcp": {
+    "playwright": {
+      "type": "local",
+      "command": ["npx", "-y", "@playwright/mcp"],
+      "enabled": true,
+      "env": {}
+    },
+    "github": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-github"],
+      "enabled": false,
+      "env": {}
+    }
+  },
+
+  "skills": {
+    "paths": [".opencode/skills"]
+  },
+
+  "agent": {
+    "design-review": {
+      "description": "Reviews UI/UX against the Tech-Luxe Editorial design system defined in the PRD.",
+      "mode": "subagent",
+      "permission": { "edit": "deny", "bash": "deny", "read": "allow" },
+      "prompt": "You are a design system reviewer. Check all UI against the Tech-Luxe Editorial design system in PRD.md. Verify color usage, typography hierarchy, spacing, and component styles. Focus on: (1) sharp 0px corners everywhere, (2) correct font families (Plus Jakarta Sans for display, Inter for body, JetBrains Mono for labels), (3) hairline borders not shadows, (4) tech-blue used sparingly, (5) consistent tracking on monospace text. Output a markdown report of violations."
+    }
+  },
+
+  "permission": {
+    "external_directory": {
+      "C:/Users/quann/.agents/**": "deny",
+      "C:/Users/quann/.claude/**": "deny",
+      "*": "allow"
+    }
+  }
+}

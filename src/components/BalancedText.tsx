@@ -82,9 +82,9 @@ export default function BalancedText({
                 top: `${i * 1.6}em`,
               }}
             >
-              <div className="absolute top-0 right-0 text-[6px] font-mono text-tech-blue opacity-50">
-                L_0{i + 1} // {Math.round(line.width)}PX
-              </div>
+            <div className="absolute top-0 right-0 text-[6px] font-mono text-tech-blue opacity-50">
+              {`L_0${i + 1} // ${Math.round(line.width)}PX`}
+            </div>
               <div className="absolute bottom-0 left-0 w-full h-[0.5px] bg-tech-blue/10" />
               <div className="absolute inset-0 bg-gradient-to-r from-tech-blue/5 to-transparent animate-scanline opacity-20" />
             </div>

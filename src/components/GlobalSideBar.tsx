@@ -53,7 +53,7 @@ export default function GlobalSideBar() {
   } else if (segments[0] === "play") {
     colors = ["#ca6702", "#bb3e03", "#ae2012"];
     topic = "LABS";
-  } else if (segments[0] === "contact") {
+  } else if (segments[0] === "contacts") {
     colors = ["#333333", "#444444", "#555555"];
     topic = "CONNECT";
   }
@@ -62,7 +62,7 @@ export default function GlobalSideBar() {
 
   return (
     <div
-      className={`fixed left-0 top-24 bottom-0 z-[60] flex flex-col w-6 md:w-8 pointer-events-none bg-background transition-opacity duration-300 ${mounted ? "opacity-100" : "opacity-0"}`}
+      className={`fixed left-0 top-24 bottom-0 z-[60] flex-col w-6 md:w-8 pointer-events-none bg-background transition-opacity duration-300 hidden md:flex ${mounted ? "opacity-100" : "opacity-0"}`}
     >
       {!mounted ? null : (
         <>

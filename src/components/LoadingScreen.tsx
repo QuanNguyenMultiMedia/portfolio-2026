@@ -58,6 +58,7 @@ export default function LoadingScreen() {
                 src="/assets/Logo_Icon_Only.svg"
                 alt="Logo"
                 fill
+                priority
                 className="object-contain"
               />
             </motion.div>
