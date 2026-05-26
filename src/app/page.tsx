@@ -80,14 +80,14 @@ export default function Home() {
       const onScroll = (l: any) => {
         const progress = l.animatedScroll / l.dimensions.limit.y;
         scrollProgress.set(progress);
-        if (progress > 0.92 && Math.abs(l.velocity) < 0.3 && !oversnapRef.current) {
+        if (progress > 0.99 && Math.abs(l.velocity) < 0.3 && !oversnapRef.current) {
           oversnapRef.current = true;
           const normalEnd = 0.90 * l.dimensions.limit.y;
           window.requestAnimationFrame(() => {
             l.scrollTo(normalEnd, { duration: 0.5, easing: (t: number) => t * (2 - t) });
           });
         }
-        if (progress < 0.88) {
+        if (progress < 0.50) {
           oversnapRef.current = false;
         }
       };
