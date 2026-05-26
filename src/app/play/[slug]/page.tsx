@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useState, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { playItems } from "@/data/play";
@@ -13,12 +13,13 @@ export default function PlayPage({
 }) {
   const { slug } = use(params);
   
-  const [isHovered, setIsHovered] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
   const [colorMode, setColorMode] = useState<"mono" | "rgb">("mono");
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const [zoom, setZoom] = useState<number>(0.75);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const currentIndex = playItems.findIndex((p) => p.slug === slug);
   const project = playItems[currentIndex];
@@ -38,16 +39,21 @@ export default function PlayPage({
 
   const handleReload = () => {
     setIsLoading(true);
+    setHasError(false);
     setReloadKey((prev) => prev + 1);
+  };
+
+  const handleIframeLoad = () => {
+    setIsLoading(false);
+    setHasError(false);
   };
 
   return (
     <div className="bg-background h-screen w-full overflow-hidden relative flex items-center justify-center font-sans text-foreground selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
       
-      {/* Background scanline effect */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.02] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_4px,3px_100%]" />
 
-      {/* Back Button (Hidden in fullscreen) */}
+      {/* Back Button */}
       <motion.div
         animate={{
           opacity: isFullscreen ? 0 : 1,
@@ -88,8 +94,7 @@ export default function PlayPage({
           marginTop: isFullscreen ? 0 : "3rem", // mt-12 approx
         }}
         transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+
         className={`relative flex flex-col z-10 border border-foreground/10 group bg-background ${
           isFullscreen ? "w-screen h-screen p-8 md:p-16 bg-background z-50 fixed inset-0" : ""
         }`}
@@ -203,9 +208,10 @@ export default function PlayPage({
           {/* Iframe element */}
           <iframe
             key={reloadKey}
+            ref={iframeRef}
             src={project.url}
             title={project.title}
-            onLoad={() => setIsLoading(false)}
+            onLoad={handleIframeLoad}
             style={{
               width: `${100 / zoom}%`,
               height: `${100 / zoom}%`,
@@ -222,10 +228,50 @@ export default function PlayPage({
             allowFullScreen
           />
 
-          {/* Fallback/Loader Layer */}
-          <AnimatePresence>
-            {isLoading && (
+          {/* Fallback/Loader/Error Layer */}
+          <AnimatePresence mode="wait">
+            {hasError ? (
               <motion.div
+                key="error"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.4 }}
+                className="absolute inset-0 bg-background z-20 flex flex-col items-center justify-center p-8 text-center"
+              >
+                <div className="z-10 flex flex-col items-center gap-8 font-mono max-w-md w-full">
+                  <div className="w-12 h-12 border border-red-500/30 rounded-full flex items-center justify-center">
+                    <span className="text-red-500/80 text-lg">!</span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="text-[10px] tracking-[0.3em] uppercase text-red-400/80 font-bold">
+                      SANDBOX_UNAVAILABLE
+                    </div>
+                    <div className="text-[9px] tracking-[0.15em] uppercase text-foreground/45">
+                      FAILED TO RESOLVE: {project.slug.toUpperCase()}
+                    </div>
+                  </div>
+                  <div className="w-full border-t border-foreground/10 pt-4 mt-2 space-y-1 text-left text-[8px] tracking-[0.1em] text-foreground/45">
+                    <div className="flex justify-between">
+                      <span>ERROR_TYPE</span>
+                      <span className="text-red-400/60">CONNECTION_REFUSED</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>RESOURCE_PATH</span>
+                      <span className="text-foreground/75 truncate max-w-[200px]" title={project.url}>{project.url}</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleReload}
+                    className="border border-foreground/20 hover:border-foreground hover:bg-foreground hover:text-background transition-all px-6 py-3 text-[10px] tracking-[0.2em] uppercase"
+                  >
+                    Retry Connection
+                  </button>
+                </div>
+              </motion.div>
+            ) : isLoading ? (
+              <motion.div
+                key="loading"
                 initial={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.6, ease: "easeInOut" }}
@@ -275,7 +321,7 @@ export default function PlayPage({
                   </div>
                 </div>
               </motion.div>
-            )}
+            ) : null}
           </AnimatePresence>
         </div>
 
@@ -372,7 +418,7 @@ export default function PlayPage({
       {!isFullscreen && (
         <>
           <div className="absolute bottom-8 left-8 md:bottom-16 md:left-16 z-0 hidden md:block font-mono text-[8px] tracking-[0.2em] uppercase opacity-30 select-none">
-            {project.tech.join(" // ")} // PORTFOLIO_PLAY_V1
+            {`${project.tech.join(" // ")} // PORTFOLIO_PLAY_V1`}
           </div>
           <div className="absolute bottom-8 right-8 md:bottom-16 md:right-16 z-0 hidden md:block font-mono text-[8px] tracking-[0.2em] uppercase opacity-30 select-none">
             FRAME_LATENCY: 0.00ms // LOCAL_ENV_OK

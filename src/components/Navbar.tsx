@@ -94,8 +94,8 @@ export default function Navbar() {
         key={pathname}
         className="bg-surface/40 backdrop-blur-md border border-primary/10 border-b-0 px-4 py-1 -mb-[1px] relative z-0 origin-bottom"
       >
-        <div className="tech-label text-[7px] opacity-40 tracking-[0.4em] whitespace-nowrap">
-          {directory} // {title}
+        <div className="tech-label text-[7px] opacity-40 tracking-[0.4em] whitespace-nowrap max-w-[70vw] md:max-w-none overflow-hidden text-ellipsis">
+          {`${directory} // ${title}`}
         </div>
       </motion.div>
 

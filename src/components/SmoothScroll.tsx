@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 
 export default function SmoothScroll({
@@ -8,6 +9,9 @@ export default function SmoothScroll({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const prevPath = useRef(pathname);
+
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -28,11 +32,23 @@ export default function SmoothScroll({
     rafId = requestAnimationFrame(raf);
     (window as any).lenis = lenis;
 
+    (window as any).__lenisInstance = lenis;
+
     return () => {
       lenis.destroy();
       cancelAnimationFrame(rafId);
     };
   }, []);
+
+  useEffect(() => {
+    if (prevPath.current !== pathname) {
+      prevPath.current = pathname;
+      const lenis = (window as any).__lenisInstance;
+      if (lenis) {
+        lenis.scrollTo(0, { immediate: true });
+      }
+    }
+  }, [pathname]);
 
   return <>{children}</>;
 }

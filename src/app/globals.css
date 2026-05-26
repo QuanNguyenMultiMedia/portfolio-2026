@@ -76,7 +76,7 @@
   }
 
   .tech-label {
-    @apply font-mono text-[9px] tracking-[0.25em] uppercase font-medium opacity-60;
+    @apply font-mono text-[9px] tracking-[0.3em] uppercase font-medium opacity-60;
   }
 
   /* Custom horizontal scroll container */
@@ -92,11 +92,6 @@
 
   .horizontal-slide {
     @apply flex-shrink-0 w-full h-full relative border-r border-border-neutral;
-  }
-
-  /* Editorial Column Layout */
-  .editorial-grid {
-    @apply grid grid-cols-1 md:grid-cols-12 gap-8 w-full;
   }
 
   .editorial-main {

@@ -1,7 +1,6 @@
 "use client";
 
 import { ReactNode } from "react";
-import { motion } from "framer-motion";
 
 interface TechButtonProps {
   children: ReactNode;
@@ -19,7 +18,7 @@ export default function TechButton({
   variant = "primary",
 }: TechButtonProps) {
   const baseStyles =
-    "relative flex items-center justify-center py-6 px-12 border overflow-hidden transition-all duration-500 font-mono text-[10px] tracking-[0.4em] uppercase font-bold group";
+    "relative flex items-center justify-center py-6 px-12 border overflow-hidden transition-all duration-500 font-mono text-[10px] tracking-[0.4em] uppercase font-bold group rounded-none";
 
   const variants = {
     primary: "border-primary text-foreground hover:text-background",

@@ -112,7 +112,6 @@ void main(){
 
 export default function WaveGradientBar({
   colors,
-  topic,
   className = "",
 }: WaveGradientBarProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -239,7 +238,7 @@ export default function WaveGradientBar({
       const targetRgb3 = hexToRgb(color3Ref.current);
 
       // Lerp current colors towards targets
-      const lerpFactor = 0.05; // Adjust for speed
+      const lerpFactor = 0.08;
       for (let i = 0; i < 3; i++) {
         currentRgb1[i] += (targetRgb1[i] - currentRgb1[i]) * lerpFactor;
         currentRgb2[i] += (targetRgb2[i] - currentRgb2[i]) * lerpFactor;

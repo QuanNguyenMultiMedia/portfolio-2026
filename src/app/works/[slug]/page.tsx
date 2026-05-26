@@ -2,15 +2,9 @@
 
 import { useRef, use, useState, useEffect } from "react";
 import Link from "next/link";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
+import { motion } from "framer-motion";
 import { projects } from "@/data/projects";
 import { notFound } from "next/navigation";
-import BalancedText from "@/components/BalancedText";
 import Lenis from "lenis";
 
 export default function ProjectPage({
@@ -188,6 +182,7 @@ export default function ProjectPage({
                 >
                   <img
                     src={screen.images?.[0]}
+                    alt={project.title}
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110"
                   />
@@ -204,6 +199,7 @@ export default function ProjectPage({
                   >
                     <img
                       src={screen.images?.[1]}
+                      alt={`${project.title} detail`}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                     />
@@ -217,6 +213,7 @@ export default function ProjectPage({
                   >
                     <img
                       src={screen.images?.[2]}
+                      alt={`${project.title} detail secondary`}
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                     />
@@ -237,6 +234,7 @@ export default function ProjectPage({
                 >
                   <img
                     src={screen.src}
+                    alt={screen.caption || project.title}
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms]"
                   />
@@ -282,6 +280,7 @@ export default function ProjectPage({
                       projects.length
                   ].coverImage
                 }
+                alt="Next project preview"
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-background/20 group-hover:bg-transparent transition-colors" />

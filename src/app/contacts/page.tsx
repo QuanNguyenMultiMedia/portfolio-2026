@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
-import HUDLabel from "@/components/HUDLabel";
 
 const socialLinks = [
   {
@@ -68,7 +67,7 @@ export default function ContactsPage() {
     const timer = setTimeout(() => {
       pivotX.set(50);
       pivotY.set(50);
-    }, 300);
+    }, 1200);
     return () => clearTimeout(timer);
   }, [isFlipped, isAnimating, pivotX, pivotY]);
 
@@ -99,12 +98,17 @@ export default function ContactsPage() {
     const xPct = ((e.clientX - rect.left) / rect.width) * 100;
     const yPct = ((e.clientY - rect.top) / rect.height) * 100;
 
+    mouseX.set(0);
+    mouseY.set(0);
+    tiltX.set(0);
+    tiltY.set(0);
+
     setIsAnimating(true);
     pivotX.set(xPct);
     pivotY.set(yPct);
     setIsFlipped(!isFlipped);
 
-    setTimeout(() => setIsAnimating(false), 800);
+    setTimeout(() => setIsAnimating(false), 2000);
   };
 
   return (
@@ -118,11 +122,11 @@ export default function ContactsPage() {
           className="relative w-full cursor-pointer preserve-3d"
           initial={{ y: 50, opacity: 0 }}
           animate={{
-            y: [0, -15, 0],
+            y: isFlipped ? 0 : [0, -15, 0],
             opacity: 1,
           }}
           transition={{
-            y: { repeat: Infinity, duration: 6, ease: "easeInOut" },
+            y: { repeat: isFlipped ? 0 : Infinity, duration: 6, ease: "easeInOut" },
             opacity: { duration: 1.2 },
           }}
           style={{
@@ -166,11 +170,11 @@ export default function ContactsPage() {
                     <div className="space-y-4">
                       <a
                         href="mailto:quannguyenhere@gmail.com"
-                        className="group block text-xl md:text-2xl font-medium tracking-tight break-all pointer-events-auto py-4 px-2 -my-4 -mx-2"
+                        className="group block text-xl md:text-2xl font-medium tracking-tight pointer-events-auto py-4 px-2 -my-4 -mx-2"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <span className="group-hover:text-tech-blue transition-colors duration-300 uppercase">
-                          QUANNGUYENHERE@GMAIL.COM
+                        <span className="group-hover:text-tech-blue transition-colors duration-300 uppercase leading-tight">
+                          QUANNGUYENHERE<br />@GMAIL.COM
                         </span>
                         <div className="h-[1px] w-0 group-hover:w-full bg-tech-blue transition-all duration-700 mt-1" />
                       </a>
@@ -278,14 +282,14 @@ export default function ContactsPage() {
                 <div className="lg:col-span-8 p-12 md:p-24 lg:p-32 flex flex-col justify-center space-y-16 relative">
                   <div className="space-y-12 relative z-10 max-w-3xl">
                     <p className="text-xl md:text-2xl font-light leading-relaxed opacity-90 italic">
-                      "I'm a Multimedia Communications creative obsessed with
-                      telling stories with a purpose."
+                      &ldquo;I&apos;m a Multimedia Communications creative obsessed with
+                      telling stories with a purpose.&rdquo;
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                       <p className="text-[13px] font-light leading-relaxed opacity-60">
-                        Since 2020, I've been working as a Freelance Motion
-                        Graphics Designer, bringing brands' messages to life
+                        Since 2020, I&apos;ve been working as a Freelance Motion
+                        Graphics Designer, bringing brands&apos; messages to life
                         with dynamic and bold visuals.
                       </p>
                       <p className="text-[13px] font-light leading-relaxed opacity-60">

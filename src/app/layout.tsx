@@ -45,6 +45,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              try {
+                var m = localStorage.getItem('next-themes') || 'system';
+                var d = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (m === 'dark' || (m === 'system' && d)) {
+                  document.documentElement.classList.add('dark');
+                }
+              } catch(e) {}
+            })();
+          `,
+        }} />
+      </head>
       <body
         className="bg-background text-foreground min-h-full"
         suppressHydrationWarning

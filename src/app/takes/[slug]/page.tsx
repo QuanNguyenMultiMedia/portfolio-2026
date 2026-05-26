@@ -5,7 +5,6 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { takes } from "@/data/takes";
 import Link from "next/link";
-import WaveGradientBar from "@/components/WaveGradientBar";
 
 export default function PostPage({
   params,

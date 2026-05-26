@@ -25,6 +25,16 @@ export default function WorksPage() {
   // Persistent Audio Context to avoid browser bottlenecks and lag
   const audioCtxRef = useRef<AudioContext | null>(null);
 
+  // Eagerly create AudioContext on mount (starts suspended, resumes on first user gesture)
+  useEffect(() => {
+    const AudioContextClass =
+      window.AudioContext || (window as any).webkitAudioContext;
+    if (AudioContextClass) {
+      const ctx = new AudioContextClass();
+      audioCtxRef.current = ctx;
+    }
+  }, []);
+
   const activeProject = projects[activeIndex];
 
   const getCoverImage = (proj: (typeof projects)[0]) => {
@@ -41,6 +51,37 @@ export default function WorksPage() {
     }
     if (audioCtxRef.current && audioCtxRef.current.state === "suspended") {
       audioCtxRef.current.resume();
+    }
+  };
+
+  const playDirectClickSound = () => {
+    try {
+      initAudioContext();
+      const ctx = audioCtxRef.current;
+      if (!ctx) return;
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(1100, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.04);
+
+      gain.gain.setValueAtTime(0.14, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.045);
+    } catch {
+      // Audio blocked
+    }
+  };
+
+  const triggerVibration = () => {
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
+      navigator.vibrate(10);
     }
   };
 
@@ -294,39 +335,8 @@ export default function WorksPage() {
       gain.connect(ctx.destination);
       osc.start();
       osc.stop(ctx.currentTime + 0.018);
-    } catch (e) {
+    } catch {
       // Audio blocked
-    }
-  };
-
-  const playDirectClickSound = () => {
-    try {
-      initAudioContext();
-      const ctx = audioCtxRef.current;
-      if (!ctx) return;
-
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(1100, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.04);
-
-      gain.gain.setValueAtTime(0.14, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.045);
-    } catch (e) {
-      // Audio blocked
-    }
-  };
-
-  const triggerVibration = () => {
-    if (typeof navigator !== "undefined" && navigator.vibrate) {
-      navigator.vibrate(10);
     }
   };
 
@@ -399,7 +409,7 @@ export default function WorksPage() {
         <div className="relative z-10 w-full max-w-none grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch flex-1 min-h-0">
           {/* Left Column: Widescreen Viewport & Details */}
           <div className="col-span-12 lg:col-span-5 flex flex-col justify-between h-full min-h-0 space-y-4 lg:space-y-6 items-end text-right pb-2">
-            <div className="relative w-full flex-1 min-h-[240px] lg:min-h-[300px] bg-transparent border border-primary/10 rounded-sm overflow-hidden group shadow-2xl transition-all duration-700 ml-auto mr-0">
+            <div className="relative w-full flex-1 min-h-[240px] lg:min-h-[300px] bg-transparent border border-primary/10 overflow-hidden group shadow-2xl transition-all duration-700 ml-auto mr-0">
               <div
                 className="absolute inset-0 opacity-10 blur-xl group-hover:opacity-20 transition-opacity duration-700 pointer-events-none"
                 style={{
@@ -543,7 +553,7 @@ export default function WorksPage() {
               <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[220px] h-[220px] flex items-center justify-center z-20">
                 <div
                   ref={dialRef}
-                  className="relative w-[210px] h-[210px] rounded-full border border-primary/10 bg-transparent flex items-center justify-center select-none cursor-pointer"
+                  className="relative w-[220px] h-[220px] rounded-full border border-primary/10 bg-transparent flex items-center justify-center select-none cursor-pointer"
                   onMouseDown={(e) => {
                     e.preventDefault();
                     handleDialStart(e.clientX, e.clientY);

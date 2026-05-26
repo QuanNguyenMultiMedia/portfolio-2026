@@ -5,7 +5,6 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 import { freebies, FreebieItem } from "@/data/freebies";
-import WaveGradientBar from "@/components/WaveGradientBar";
 import HUDLabel from "@/components/HUDLabel";
 import SectionHeader from "@/components/SectionHeader";
 import TechButton from "@/components/TechButton";

@@ -2,37 +2,13 @@
 
 import { useRef, use, useState, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import BalancedText from "@/components/BalancedText";
 import Lenis from "lenis";
+import { notFound } from "next/navigation";
 
 import MeasuredHeader from "@/components/MeasuredHeader";
 import WaveGradientBar from "@/components/WaveGradientBar";
-
-// Dummy data to ensure the Freebies layout renders exactly like Portfolio
-const dummyProject = {
-  title: "Freebie Item",
-  slug: "dummy-freebie",
-  screens: [
-    {
-      type: "hero",
-      title: "FREEBIE PACK 01",
-      subtitle: "ASSET DROP // 2026 EDITION",
-      description:
-        "Professionally crafted digital assets designed for modern creative workflows. Each file is optimized, organized, and layered for immediate deployment — usable in both personal and commercial projects. Formats include layered PSDs, editable SVGs, and web-optimized exports.",
-    },
-    {
-      type: "image",
-      caption: "PREVIEW_RENDER_01",
-      src: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop",
-    },
-    {
-      type: "details",
-      content:
-        "Every asset is built with production scalability in mind. Organized layer structures, consistent naming conventions, and colour-managed profiles ensure seamless integration into any existing workflow — whether you're working in After Effects, Figma, or a custom WebGL pipeline.",
-    },
-  ],
-};
+import { freebies } from "@/data/freebies";
 
 export default function FreebiesPage({
   params,
@@ -46,8 +22,34 @@ export default function FreebiesPage({
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
-  // Using dummy data
-  const project = dummyProject;
+  const item = freebies.find((f) => f.slug === slug);
+
+  if (!item) {
+    notFound();
+  }
+
+  const project = {
+    title: item.title,
+    slug: item.id,
+    screens: [
+      {
+        type: "hero" as const,
+        title: item.title.toUpperCase(),
+        subtitle: `${item.category} // 2026 EDITION`,
+        description: item.description,
+      },
+      {
+        type: "image" as const,
+        caption: "PREVIEW_RENDER_01",
+        src: item.image,
+      },
+      {
+        type: "details" as const,
+        content:
+          "Every asset is built with production scalability in mind. Organized layer structures, consistent naming conventions, and colour-managed profiles ensure seamless integration into any existing workflow — whether you're working in After Effects, Figma, or a custom WebGL pipeline.",
+      },
+    ],
+  };
   const screens = project.screens;
 
   // Initialize Local Horizontal Lenis
@@ -138,9 +140,9 @@ export default function FreebiesPage({
               ${screen.type === "details" ? "min-w-[60vw]" : ""}
             `}
           >
-            <div className="absolute top-12 right-12 tech-label">
-              SEC_0{i + 1} // {screen.type.toUpperCase()}
-            </div>
+              <div className="absolute top-12 right-12 tech-label">
+                {`SEC_0${i + 1} // ${screen.type.toUpperCase()}`}
+              </div>
 
             {screen.type === "hero" && (
               <div className="max-w-4xl w-full">
