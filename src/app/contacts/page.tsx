@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { motion, useMotionValue, useSpring, useTransform, animate } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 
 const socialLinks = [
@@ -47,14 +47,18 @@ export default function ContactsPage() {
   const pivotY = useMotionValue(50);
 
   const springConfig = { damping: 40, stiffness: 250, mass: 0.5 };
+  const pivotSpringConfig = { damping: 15, stiffness: 40, mass: 1 };
 
   const springX = useSpring(mouseX, springConfig);
   const springY = useSpring(mouseY, springConfig);
   const springTiltX = useSpring(tiltX, springConfig);
   const springTiltY = useSpring(tiltY, springConfig);
 
+  const springPivotX = useSpring(pivotX, pivotSpringConfig);
+  const springPivotY = useSpring(pivotY, pivotSpringConfig);
+
   const transformOrigin = useTransform(
-    [pivotX, pivotY],
+    [springPivotX, springPivotY],
     ([x, y]) => `${x}% ${y}%`,
   );
 
@@ -93,10 +97,12 @@ export default function ContactsPage() {
     setIsAnimating(true);
     pivotX.set(xPct);
     pivotY.set(yPct);
-    animate(pivotX, 50, { duration: 1.2, ease: [0.23, 1, 0.32, 1] });
-    animate(pivotY, 50, { duration: 1.2, ease: [0.23, 1, 0.32, 1] });
     setIsFlipped(!isFlipped);
 
+    setTimeout(() => {
+      pivotX.set(50);
+      pivotY.set(50);
+    }, 300);
     setTimeout(() => setIsAnimating(false), 200);
   };
 
