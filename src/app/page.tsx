@@ -66,7 +66,6 @@ export default function Home() {
 
 
   const scrollProgress = useMotionValue(0);
-  const oversnapRef = useRef(false);
 
   useEffect(() => {
     let cleanup: (() => void) | null = null;
@@ -77,23 +76,17 @@ export default function Home() {
         cleanup = () => cancelAnimationFrame(rafId);
         return;
       }
+      lenis.options.wheelMultiplier = 0.8;
+      lenis.options.easing = (t: number) => 1 - Math.pow(1 - t, 3);
       const onScroll = (l: any) => {
-        const progress = l.animatedScroll / l.dimensions.limit.y;
-        scrollProgress.set(progress);
-        if (progress > 0.995 && l.velocity > 0 && !oversnapRef.current) {
-          oversnapRef.current = true;
-          const rest = 0.97 * l.dimensions.limit.y;
-          window.requestAnimationFrame(() => {
-            l.scrollTo(rest, { duration: 0.4, easing: (t: number) => t * (2 - t) });
-          });
-        }
-        if (progress < 0.50) {
-          oversnapRef.current = false;
-        }
+        scrollProgress.set(l.animatedScroll / l.dimensions.limit.y);
       };
-      onScroll(lenis);
       lenis.on("scroll", onScroll);
-      cleanup = () => lenis.off("scroll", onScroll);
+      cleanup = () => {
+        lenis.off("scroll", onScroll);
+        lenis.options.wheelMultiplier = 1.0;
+        lenis.options.easing = (t: number) => t;
+      };
     }
     attach();
     return () => cleanup?.();
@@ -159,25 +152,63 @@ export default function Home() {
     else setActiveFrame(4);
   });
 
-  const zWorld = useTransform(scrollProgress, (progress) => {
+  const baseZ = useTransform(scrollProgress, (p) => {
     const points = [0.0, 0.15, 0.35, 0.55, 0.90];
     const values = [0, 1800, 3300, 4800, 6200];
-    if (progress <= 0.90) {
+    if (p <= 0.90) {
       for (let i = 0; i < points.length - 1; i++) {
-        if (progress >= points[i] && progress < points[i + 1]) {
-          const t = (progress - points[i]) / (points[i + 1] - points[i]);
+        if (p >= points[i] && p < points[i + 1]) {
+          const t = (p - points[i]) / (points[i + 1] - points[i]);
           return values[i] + t * (values[i + 1] - values[i]);
         }
       }
-      return 6200;
-    }
-    if (progress > 0.99) {
-      const t = (progress - 0.99) / 0.01;
-      const easedT = 1 - Math.pow(1 - t, 3);
-      return 6200 + easedT * 80;
     }
     return 6200;
   });
+  const tailTarget = useMotionValue(0);
+  const tailOffset = useSpring(tailTarget, { damping: 20, stiffness: 150, mass: 0.5 });
+  const overscrollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      if (e.deltaY <= 0) return;
+      const lenis = (window as any).lenis;
+      if (!lenis) return;
+      if (lenis.dimensions.limit.y < 100) return;
+      if (lenis.animatedScroll >= lenis.dimensions.limit.y - 2) {
+        tailTarget.set(120);
+        if (overscrollTimer.current) clearTimeout(overscrollTimer.current);
+        overscrollTimer.current = setTimeout(() => tailTarget.set(0), 200);
+      }
+    };
+    window.addEventListener("wheel", handleWheel, { passive: true });
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+      if (overscrollTimer.current) clearTimeout(overscrollTimer.current);
+    };
+  }, []);
+  const timerFired = useRef(false);
+  useMotionValueEvent(scrollProgress, "change", (progress) => {
+    if (progress > 0.97 && !timerFired.current) {
+      const tailT = Math.min((progress - 0.97) / 0.03, 1);
+      tailTarget.set((1 - Math.pow(1 - tailT, 3)) * 120);
+    }
+    if (progress > 0.999 && !overscrollTimer.current) {
+      timerFired.current = false;
+      overscrollTimer.current = setTimeout(() => {
+        tailTarget.set(0);
+        timerFired.current = true;
+      }, 200);
+    }
+    if (progress < 0.95) {
+      timerFired.current = false;
+      if (overscrollTimer.current) {
+        clearTimeout(overscrollTimer.current);
+        overscrollTimer.current = null;
+      }
+      tailTarget.set(0);
+    }
+  });
+  const zWorld = useTransform([baseZ, tailOffset], ([z, off]) => (z as number) + (off as number));
 
   const transformWorld = useMotionTemplate`translate3d(${translateX}px, ${translateY}px, ${zWorld}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
 

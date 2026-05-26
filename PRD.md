@@ -5,7 +5,7 @@
 > **Repository:** `github.com/QuanNguyenMultiMedia/portfolio-2026`  
 > **Stack:** Next.js 16 (App Router) · React 19 · Tailwind CSS v4 · Framer Motion 12 · GSAP 3.15 · Three.js 0.184 · R3F 9 · Lenis 1.3 · OGL 1.0  
 > **Target Device Baseline:** RTX 3050 Ti (4GB VRAM), 1080p–1440p, 60–120 FPS  
-> **Last Updated:** May 25, 2026 (v4 — Overscroll dampening, contacts card flip anchor point fix, scroll snap)
+> **Last Updated:** May 26, 2026 (v5 — Overscroll snap-back converted to spring-driven visual offset, extended tail range to 3%, increased magnitude to 120px)
 
 ---
 
@@ -323,9 +323,9 @@ Scroll % → Z Position
 0.35   →    3300px (Capabilities)
 0.55   →    4800px (Testimonials)
 0.90   →    6200px (Stats — camera pulled back 100px from original 6300)
-0.99-1.0 → 6200-6280px (overscroll tail — cubic ease-out, 80px max, last 1% of scroll only)
+0.97-1.0 → 6200-6320px (overscroll tail — cubic ease-out, 120px max, last 3% of scroll and snap-back spring at 0.995)
 ```
-The overscroll tail is confined to the final 1% of scroll (not the whole 0.90-1.0 range), so earlier scene transitions are unaffected. When the user reaches the literal scroll limit and continues scrolling forward (velocity > 0), the snap-back triggers: scrolls to 0.97 × limit over 400ms with quadratic ease-out.
+The overscroll tail is confined to the final 3% of scroll (progress 0.97–1.0). When the user reaches the scroll limit with forward velocity > 0, the snap-back triggers: a spring-driven visual offset pushes the camera forward 40px then pulls it back 120px with framer-motion spring physics (damping:14, stiffness:180, mass:0.4), creating a tactile snap-back without altering the scroll position. The guard resets when the user scrolls back above progress 0.94.
 
 **Frame Z Depths & Opacity/Blur Curves:**
 
@@ -671,7 +671,7 @@ Scroll Position (0–600vh)
   ↓
 Normalized Progress (0–1)
   ↓
-Z Transform (0px → 6200px → 6280px overscroll)
+Z Transform (0px → 6200px → 6320px overscroll)
   ↓
 Each frame positioned at a Z depth offset
   ├── Hero:            translateZ(0px)
@@ -682,7 +682,7 @@ Each frame positioned at a Z depth offset
 ```
 
 **Overscroll dampening:**
-Confined to the last 1% of scroll (progress 0.99–1.0). A cubic ease-out tail (`1-(1-t)³`) maps Z 6200→6280 (80px max). When the user reaches the literal scroll limit with forward velocity > 0, snap-back scrolls to 0.97 × limit over 400ms with quadratic ease-out. All earlier scene transitions are unaffected.
+Confined to the last 3% of scroll (progress 0.97–1.0). A cubic ease-out tail (`1-(1-t)³`) maps Z 6200→6320 (120px max). When the user reaches the scroll limit with forward velocity > 0, a framer-motion spring (damping:14, stiffness:180, mass:0.4) drives a visual snap-offset: the camera pushes forward 40px then pulls back 120px, settling at the normal Z position. The scroll position is not altered — the snap-back is purely visual. The guard resets at progress < 0.94.
 
 **Key properties:**
 - `transformStyle: "preserve-3d"` on parent — children inherit 3D context
