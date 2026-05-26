@@ -322,10 +322,10 @@ Scroll % → Z Position
 0.15   →    1800px (Manifesto)
 0.35   →    3300px (Capabilities)
 0.55   →    4800px (Testimonials)
-0.90   →    6300px (Stats)
-0.90-1.0 → 6300-6400px (overscroll zone — cubic ease-out, 100px max)
+0.90   →    6200px (Stats — camera pulled back 100px from original 6300)
+0.99-1.0 → 6200-6280px (overscroll tail — cubic ease-out, 80px max, last 1% of scroll only)
 ```
-In the overscroll zone (progress 0.90–1.0), Z eases from 6300 to 6400 using a cubic ease-out curve (`1 - (1-t)³`), creating a tactile dampened feel. When the user stops scrolling in this zone, Lenis snaps back to the 0.90 waypoint automatically (triggered when velocity drops below 0.3). The snap-back uses a quadratic ease-out (`t*(2-t)`) over 500ms.
+The overscroll tail is confined to the final 1% of scroll (not the whole 0.90-1.0 range), so earlier scene transitions are unaffected. When the user reaches the literal scroll limit and continues scrolling forward (velocity > 0), the snap-back triggers: scrolls to 0.97 × limit over 400ms with quadratic ease-out.
 
 **Frame Z Depths & Opacity/Blur Curves:**
 
@@ -335,7 +335,7 @@ In the overscroll zone (progress 0.90–1.0), Z eases from 6300 to 6400 using a 
 | 1 | Manifesto | `-1800px` | Z: 1200–2400 | fades in 600–1200, fades out 2400–3000 |
 | 2 | Capabilities | `-3300px` | Z: 2700–3900 | fades in 2100–2700, fades out 3900–4500 |
 | 3 | Testimonials | `-4700px` to `-4850px` | Z: 4200–5400 | fades in 3600–4200, fades out 5400–6000 |
-| 4 | Stats | `-6300px` | Z: 5700–6300 | fades in 5100–5700, holds |
+| 4 | Stats | `-6200px` | Z: 5600–6200 | fades in 5000–5600, holds |
 
 **Frame Contents:**
 
@@ -671,18 +671,18 @@ Scroll Position (0–600vh)
   ↓
 Normalized Progress (0–1)
   ↓
-Z Transform (0px → 6300px → 6400px overscroll)
+Z Transform (0px → 6200px → 6280px overscroll)
   ↓
 Each frame positioned at a Z depth offset
   ├── Hero:            translateZ(0px)
   ├── Manifesto:       translateZ(-1800px)
   ├── Capabilities:    translateZ(-3300px)
   ├── Testimonials:    translateZ(-4700px to -4850px)
-  └── Stats:           translateZ(-6300px)
+  └── Stats:           translateZ(-6200px)
 ```
 
 **Overscroll dampening:**
-Beyond 90% scroll (Z=6300), a cubic ease-out tail (`1-(1-t)³`) maps progress 0.90–1.0 to Z 6300–6400 (100px max). When the user stops in this zone (Lenis velocity < 0.3), an automatic snap-back scrolls to Z=6300 over 500ms with quadratic ease-out (`t*(2-t)`).
+Confined to the last 1% of scroll (progress 0.99–1.0). A cubic ease-out tail (`1-(1-t)³`) maps Z 6200→6280 (80px max). When the user reaches the literal scroll limit with forward velocity > 0, snap-back scrolls to 0.97 × limit over 400ms with quadratic ease-out. All earlier scene transitions are unaffected.
 
 **Key properties:**
 - `transformStyle: "preserve-3d"` on parent — children inherit 3D context

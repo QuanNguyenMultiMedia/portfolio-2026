@@ -80,11 +80,11 @@ export default function Home() {
       const onScroll = (l: any) => {
         const progress = l.animatedScroll / l.dimensions.limit.y;
         scrollProgress.set(progress);
-        if (progress > 0.99 && Math.abs(l.velocity) < 0.3 && !oversnapRef.current) {
+        if (progress > 0.995 && l.velocity > 0 && !oversnapRef.current) {
           oversnapRef.current = true;
-          const normalEnd = 0.90 * l.dimensions.limit.y;
+          const rest = 0.97 * l.dimensions.limit.y;
           window.requestAnimationFrame(() => {
-            l.scrollTo(normalEnd, { duration: 0.5, easing: (t: number) => t * (2 - t) });
+            l.scrollTo(rest, { duration: 0.4, easing: (t: number) => t * (2 - t) });
           });
         }
         if (progress < 0.50) {
@@ -160,21 +160,23 @@ export default function Home() {
   });
 
   const zWorld = useTransform(scrollProgress, (progress) => {
-    const p = Math.min(progress, 0.90);
-    const points = [0.0, 0.15, 0.35, 0.55, 0.90] as const;
-    const values = [0, 1800, 3300, 4800, 6300] as const;
-    for (let i = 0; i < points.length - 1; i++) {
-      if (p >= points[i] && p < points[i + 1]) {
-        const t = (p - points[i]) / (points[i + 1] - points[i]);
-        return values[i] + t * (values[i + 1] - values[i]);
+    const points = [0.0, 0.15, 0.35, 0.55, 0.90];
+    const values = [0, 1800, 3300, 4800, 6200];
+    if (progress <= 0.90) {
+      for (let i = 0; i < points.length - 1; i++) {
+        if (progress >= points[i] && progress < points[i + 1]) {
+          const t = (progress - points[i]) / (points[i + 1] - points[i]);
+          return values[i] + t * (values[i + 1] - values[i]);
+        }
       }
+      return 6200;
     }
-    if (progress > 0.90) {
-      const t = Math.min((progress - 0.90) / 0.10, 1);
+    if (progress > 0.99) {
+      const t = (progress - 0.99) / 0.01;
       const easedT = 1 - Math.pow(1 - t, 3);
-      return 6300 + easedT * 100;
+      return 6200 + easedT * 80;
     }
-    return 6300;
+    return 6200;
   });
 
   const transformWorld = useMotionTemplate`translate3d(${translateX}px, ${translateY}px, ${zWorld}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
@@ -191,8 +193,8 @@ export default function Home() {
   const opacityTestimonials = useTransform(zWorld, [3600, 4200, 5400, 6000], [0, 1, 1, 0]);
   const blurTestimonials = useTransform(zWorld, [3600, 4200, 5400, 6000], ["blur(8px)", "blur(0px)", "blur(0px)", "blur(12px)"]);
 
-  const opacityStats = useTransform(zWorld, [5100, 5700, 6300], [0, 1, 1]);
-  const blurStats = useTransform(zWorld, [5100, 5700, 6300], ["blur(8px)", "blur(0px)", "blur(0px)"]);
+  const opacityStats = useTransform(zWorld, [5000, 5600, 6200], [0, 1, 1]);
+  const blurStats = useTransform(zWorld, [5000, 5600, 6200], ["blur(8px)", "blur(0px)", "blur(0px)"]);
 
   const perspectiveVal = useTransform(scrollProgress, (progress) => {
     const start = isMobile ? 1200 : 1400;
