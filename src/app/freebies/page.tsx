@@ -90,11 +90,11 @@ export default function FreebiesPage() {
                 className="fixed inset-0 bg-background/95 z-[100] cursor-zoom-out backdrop-blur-3xl"
               />
 
-              {/* Hero Centered Thumbnail */}
-              <div className="fixed inset-0 z-[102] pointer-events-none flex items-center pr-0 md:pr-[420px] justify-center">
+              {/* Image hero — left-aligned, vertically centered */}
+              <div className="hidden md:flex fixed inset-0 z-[102] pointer-events-none items-center pr-[420px]">
                 <motion.div
                   layoutId={`thumb-${selectedItem.id}`}
-                  className="relative w-[85vw] h-[50vh] md:w-[45vw] md:h-[65vh] overflow-hidden bg-foreground/5 shadow-2xl"
+                  className="relative lg:ml-12 xl:ml-24 w-[45vw] max-w-[55vh] h-[65vh] overflow-hidden bg-foreground/5 shadow-2xl"
                   transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
                 >
                   <Image
@@ -105,7 +105,6 @@ export default function FreebiesPage() {
                     className="object-cover grayscale-0"
                     priority
                   />
-                  {/* Inner Bloom/Glow */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent pointer-events-none" />
                 </motion.div>
               </div>
@@ -135,12 +134,9 @@ export default function FreebiesPage() {
                 transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
                 className="fixed top-0 right-0 bottom-0 w-full md:w-[420px] bg-background border-l border-primary/10 z-[101] flex flex-col shadow-[-20px_0_40px_rgba(0,0,0,0.1)]"
               >
-                {/* Minimal Header */}
+                {/* Header */}
                 <div className="p-8 md:p-12 pb-0 flex justify-between items-start">
-                  <HUDLabel
-                    text={selectedItem.category}
-                    className="!opacity-40"
-                  />
+                  <HUDLabel text={selectedItem.category} className="!opacity-60" />
                   <button
                     onClick={() => setSelectedItem(null)}
                     className="p-1 hover:opacity-40 transition-opacity z-[111] pointer-events-auto"
@@ -172,11 +168,11 @@ export default function FreebiesPage() {
                     <span className="text-[8px] font-mono opacity-20 tracking-widest block">
                       COLOR PALETTE // SPEC_2026
                     </span>
-                    <div className="flex gap-1">
+                    <div className="flex gap-1.5">
                       {selectedItem.colors.map((color, i) => (
                         <div
                           key={i}
-                          className="w-4 h-0.5"
+                          className="w-5 h-5 border border-primary/10"
                           style={{ backgroundColor: color }}
                         />
                       ))}

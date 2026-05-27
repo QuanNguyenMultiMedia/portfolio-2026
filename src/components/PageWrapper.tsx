@@ -33,6 +33,10 @@ export default function PageWrapper({
 
   const isStory = variant === "story";
 
+  const perspectiveStyle = !isStory ? { perspective: "1200px" as const, transformStyle: "preserve-3d" as const } : {};
+
+  const contentStyle = !isStory ? { transform: "translateZ(-200px)" as const } : {};
+
   const initialProps = isStory
     ? { opacity: 0 }
     : { opacity: 0, y: 16, scale: 0.99, filter: "blur(8px)" };
@@ -50,10 +54,10 @@ export default function PageWrapper({
       initial={initialProps}
       animate={animateProps}
       transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-      style={styleProps}
+      style={{ ...styleProps, ...perspectiveStyle }}
       className={`${baseStyles} ${className}`}
     >
-      <div className={paddingStyles}>{children}</div>
+      <div className={paddingStyles} style={contentStyle}>{children}</div>
     </motion.main>
   );
 }
