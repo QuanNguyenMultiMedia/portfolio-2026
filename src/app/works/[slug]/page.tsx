@@ -1,11 +1,11 @@
 "use client";
 
-import { useRef, use, useState, useEffect } from "react";
+import { useRef, use, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { projects } from "@/data/projects";
 import { notFound } from "next/navigation";
-import Lenis from "lenis";
+import useLenis from "@/hooks/useLenis";
 
 export default function ProjectPage({
   params,
@@ -14,7 +14,15 @@ export default function ProjectPage({
 }) {
   const { slug } = use(params);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const lenisRef = useRef<Lenis | null>(null);
+  const lenisRef = useLenis({
+    wrapperRef: scrollRef,
+    contentQuery: ".lenis-content",
+    orientation: "horizontal",
+    gestureOrientation: "both",
+    wheelMultiplier: 1.2,
+    lerp: 0.08,
+    autoAssign: false,
+  });
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -26,34 +34,6 @@ export default function ProjectPage({
   }
 
   const screens = project.screens;
-
-  useEffect(() => {
-    if (!scrollRef.current) return;
-
-    const lenis = new Lenis({
-      wrapper: scrollRef.current,
-      content: scrollRef.current.querySelector(".lenis-content") as HTMLElement,
-      orientation: "horizontal",
-      gestureOrientation: "both",
-      smoothWheel: true,
-      wheelMultiplier: 1.2,
-      lerp: 0.08,
-    });
-
-    lenisRef.current = lenis;
-
-    let rafId: number;
-    function raf(time: number) {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
-    rafId = requestAnimationFrame(raf);
-
-    return () => {
-      lenis.destroy();
-      cancelAnimationFrame(rafId);
-    };
-  }, []);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!lenisRef.current) return;

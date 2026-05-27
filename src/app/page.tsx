@@ -185,11 +185,12 @@ export default function Home() {
   const transformWorld = useMotionTemplate`translate3d(${translateX}px, ${translateY}px, ${zWorld}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
 
   // Dynamic Opacity and Visibility Transitions (Optimized, no expensive blur filters)
+  // We fade out layers earlier (before they get too close to the perspective camera) to prevent raster/text pixelation.
   const opacityHero = useTransform(zWorld, (zVal) => {
     const depths = getDepths();
     const h = depths[0] ?? 0;
     const m = depths[1] ?? 1800;
-    return interpolateDepth(zVal as number, [h, h + (m - h) * 0.3, h + (m - h) * 0.7], [1, 1, 0]);
+    return interpolateDepth(zVal as number, [h, h + (m - h) * 0.15, h + (m - h) * 0.45], [1, 1, 0]);
   });
   const visibilityHero = useTransform(opacityHero, (op) => (op as number) > 0.01 ? "visible" : "hidden");
 
@@ -200,8 +201,8 @@ export default function Home() {
     const s = depths[2] ?? 3500;
     const fadeInStart = h + (m - h) * 0.4;
     const fadeInEnd = h + (m - h) * 0.8;
-    const fadeOutStart = m + (s - m) * 0.4;
-    const fadeOutEnd = m + (s - m) * 0.8;
+    const fadeOutStart = m + (s - m) * 0.15;
+    const fadeOutEnd = m + (s - m) * 0.45;
     return interpolateDepth(zVal as number, [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd], [0, 1, 1, 0]);
   });
   const visibilityManifesto = useTransform(opacityManifesto, (op) => (op as number) > 0.01 ? "visible" : "hidden");
@@ -213,8 +214,8 @@ export default function Home() {
     const t = depths[3] ?? 5000;
     const fadeInStart = m + (s - m) * 0.4;
     const fadeInEnd = m + (s - m) * 0.8;
-    const fadeOutStart = s + (t - s) * 0.4;
-    const fadeOutEnd = s + (t - s) * 0.8;
+    const fadeOutStart = s + (t - s) * 0.15;
+    const fadeOutEnd = s + (t - s) * 0.45;
     return interpolateDepth(zVal as number, [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd], [0, 1, 1, 0]);
   });
   const visibilityShowreel = useTransform(opacityShowreel, (op) => (op as number) > 0.01 ? "visible" : "hidden");
@@ -226,7 +227,7 @@ export default function Home() {
       const s = depths[2] ?? 3500; // showreel
       const t = depths[3] ?? 5000; // testimonials
       const st = depths[4] ?? 6200; // stats
-
+ 
       if (isMobile) {
         // Sequentially space out cards on mobile
         const cardTargetZ = t + idx * 250;
@@ -238,8 +239,8 @@ export default function Home() {
       } else {
         const fadeInStart = s + (t - s) * 0.4;
         const fadeInEnd = s + (t - s) * 0.8;
-        const fadeOutStart = t + (st - t) * 0.4;
-        const fadeOutEnd = t + (st - t) * 0.8;
+        const fadeOutStart = t + (st - t) * 0.15;
+        const fadeOutEnd = t + (st - t) * 0.45;
         return interpolateDepth(zVal as number, [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd], [0, 1, 1, 0]);
       }
     });

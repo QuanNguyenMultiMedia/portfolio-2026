@@ -1,13 +1,13 @@
 "use client";
 
-import { useRef, use, useState, useEffect } from "react";
+import { useRef, use, useState } from "react";
 import Link from "next/link";
 import BalancedText from "@/components/BalancedText";
-import Lenis from "lenis";
 import { notFound } from "next/navigation";
 
 import MeasuredHeader from "@/components/MeasuredHeader";
 import WaveGradientBar from "@/components/WaveGradientBar";
+import useLenis from "@/hooks/useLenis";
 import { freebies } from "@/data/freebies";
 
 export default function FreebiesPage({
@@ -17,7 +17,15 @@ export default function FreebiesPage({
 }) {
   const { slug } = use(params);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const lenisRef = useRef<Lenis | null>(null);
+  const lenisRef = useLenis({
+    wrapperRef: scrollRef,
+    contentQuery: ".lenis-content",
+    orientation: "horizontal",
+    gestureOrientation: "both",
+    wheelMultiplier: 1,
+    lerp: 0.1,
+    autoAssign: false,
+  });
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -51,35 +59,6 @@ export default function FreebiesPage({
     ],
   };
   const screens = project.screens;
-
-  // Initialize Local Horizontal Lenis
-  useEffect(() => {
-    if (!scrollRef.current) return;
-
-    const lenis = new Lenis({
-      wrapper: scrollRef.current,
-      content: scrollRef.current.querySelector(".lenis-content") as HTMLElement,
-      orientation: "horizontal",
-      gestureOrientation: "both",
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      lerp: 0.1,
-    });
-
-    lenisRef.current = lenis;
-
-    let rafId: number;
-    function raf(time: number) {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
-    rafId = requestAnimationFrame(raf);
-
-    return () => {
-      lenis.destroy();
-      cancelAnimationFrame(rafId);
-    };
-  }, []);
 
   // Handle Dragging
   const handleMouseDown = (e: React.MouseEvent) => {
