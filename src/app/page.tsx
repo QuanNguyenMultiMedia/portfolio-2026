@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   motion,
   useTransform,
@@ -8,28 +8,13 @@ import {
   useMotionTemplate,
   useMotionValue,
   useSpring,
+  useScroll,
 } from "framer-motion";
 import Image from "next/image";
 
 import BalancedText from "@/components/BalancedText";
 import PageWrapper from "@/components/PageWrapper";
 import TechButton from "@/components/TechButton";
-
-const BASE_IMAGES = [
-  { src: "/projects/squarepeg.png", alt: "SquarePeg" },
-  { src: "/assets/portrait_sitting.jpg", alt: "Portrait" },
-  { src: "/projects/mo-lam-ma.png", alt: "Mo Lam Ma" },
-  { src: "/projects/gom-men.png", alt: "Gom Men" },
-  { src: "/assets/hero-visual.png", alt: "Hero Visual" },
-  { src: "/assets/portrait_sitting_smiling.jpg", alt: "Portrait Smiling" },
-];
-
-const CAROUSEL_IMAGES = [...BASE_IMAGES, ...BASE_IMAGES, ...BASE_IMAGES];
-
-const CAPABILITIES = [
-  "Motion Design", "Branding", "Social Media",
-  "Visual Effects", "Video Editing", "Web Animation",
-];
 
 const TESTIMONIALS = [
   {
@@ -59,56 +44,52 @@ const BRANDS = [
   "Upwork (VIP)", "Dobeedo", "Z Cung Viet", "Viettel Digital",
 ];
 
+const DESKTOP_DEPTHS = [0, 1800, 3500, 5000, 6200];
+const MOBILE_DEPTHS = [0, 1000, 2000, 3000, 4200];
+
+function interpolateDepth(z: number, input: number[], output: number[]) {
+  if (z <= input[0]) return output[0];
+  if (z >= input[input.length - 1]) return output[output.length - 1];
+  for (let i = 0; i < input.length - 1; i++) {
+    if (z >= input[i] && z < input[i + 1]) {
+      const t = (z - input[i]) / (input[i + 1] - input[i]);
+      return output[i] + t * (output[i + 1] - output[i]);
+    }
+  }
+  return output[output.length - 1];
+}
+
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const timecodeRef = useRef<HTMLSpanElement>(null);
+
   const [activeFrame, setActiveFrame] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
 
+  // 1. Framer Motion Scroll Progress Refactor
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
 
-  const scrollProgress = useMotionValue(0);
-
+  // Attach easing configs to Lenis on mount
   useEffect(() => {
-    let cleanup: (() => void) | null = null;
-    function attach() {
-      const lenis = (window as any).lenis;
-      if (!lenis) {
-        const rafId = requestAnimationFrame(attach);
-        cleanup = () => cancelAnimationFrame(rafId);
-        return;
-      }
+    const lenis = (window as any).lenis;
+    if (lenis) {
       lenis.options.wheelMultiplier = 0.8;
       lenis.options.easing = (t: number) => 1 - Math.pow(1 - t, 3);
-      const onScroll = (l: any) => {
-        scrollProgress.set(l.animatedScroll / l.dimensions.limit.y);
-      };
-      lenis.on("scroll", onScroll);
-      cleanup = () => {
-        lenis.off("scroll", onScroll);
+    }
+    return () => {
+      if (lenis) {
         lenis.options.wheelMultiplier = 1.0;
         lenis.options.easing = (t: number) => t;
-      };
-    }
-    attach();
-    return () => cleanup?.();
-  }, [scrollProgress]);
+      }
+    };
+  }, []);
 
-  const parallaxMultiplier = useTransform(scrollProgress, [0.15, 0.25], [0, 1]);
-
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const smoothMouseX = useSpring(mouseX, { damping: 30, stiffness: 80, mass: 1 });
-  const smoothMouseY = useSpring(mouseY, { damping: 30, stiffness: 80, mass: 1 });
-
-  const rawRotateX = useTransform(smoothMouseY, [-0.5, 0.5], [-1.5, 1.5]);
-  const rawRotateY = useTransform(smoothMouseX, [-0.5, 0.5], [1.5, -1.5]);
-  const rawTranslateX = useTransform(smoothMouseX, [-0.5, 0.5], [-15, 15]);
-  const rawTranslateY = useTransform(smoothMouseY, [-0.5, 0.5], [-15, 15]);
-
-  const rotateX = useTransform([rawRotateX, parallaxMultiplier], ([rX, mult]) => (rX as number) * (mult as number));
-  const rotateY = useTransform([rawRotateY, parallaxMultiplier], ([rY, mult]) => (rY as number) * (mult as number));
-  const translateX = useTransform([rawTranslateX, parallaxMultiplier], ([tX, mult]) => (tX as number) * (mult as number));
-  const translateY = useTransform([rawTranslateY, parallaxMultiplier], ([tY, mult]) => (tY as number) * (mult as number));
-
+  // 2. Responsive Device Detection
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -116,13 +97,33 @@ export default function Home() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  const getDepths = () => (isMobile ? MOBILE_DEPTHS : DESKTOP_DEPTHS);
+
+  // 3. Cursor Follower System (Tilt Parallax)
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const smoothMouseX = useSpring(mouseX, { damping: 30, stiffness: 80, mass: 1 });
+  const smoothMouseY = useSpring(mouseY, { damping: 30, stiffness: 80, mass: 1 });
+
+  const rawRotateX = useTransform(smoothMouseY, [-0.5, 0.5], [-1.2, 1.2]);
+  const rawRotateY = useTransform(smoothMouseX, [-0.5, 0.5], [1.2, -1.2]);
+  const rawTranslateX = useTransform(smoothMouseX, [-0.5, 0.5], [-10, 10]);
+  const rawTranslateY = useTransform(smoothMouseY, [-0.5, 0.5], [-10, 10]);
+
+  // Modulate parallax from 50% on Hero to 100% on other sections
+  const parallaxMultiplier = useTransform(scrollYProgress, [0.0, 0.15], [0.5, 1.0]);
+
+  const rotateX = useTransform([rawRotateX, parallaxMultiplier], ([rX, mult]) => (rX as number) * (mult as number));
+  const rotateY = useTransform([rawRotateY, parallaxMultiplier], ([rY, mult]) => (rY as number) * (mult as number));
+  const translateX = useTransform([rawTranslateX, parallaxMultiplier], ([tX, mult]) => (tX as number) * (mult as number));
+  const translateY = useTransform([rawTranslateY, parallaxMultiplier], ([tY, mult]) => (tY as number) * (mult as number));
+
   useEffect(() => {
     if (isMobile) {
       mouseX.set(0);
       mouseY.set(0);
       return;
     }
-
     const handleMouseMove = (e: MouseEvent) => {
       const { clientX, clientY } = e;
       const { innerWidth, innerHeight } = window;
@@ -130,12 +131,10 @@ export default function Home() {
       mouseX.set(clamp(clientX / innerWidth - 0.5));
       mouseY.set(clamp(clientY / innerHeight - 0.5));
     };
-
     const handleMouseLeave = () => {
       mouseX.set(0);
       mouseY.set(0);
     };
-
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseleave", handleMouseLeave);
     return () => {
@@ -144,117 +143,154 @@ export default function Home() {
     };
   }, [isMobile, mouseX, mouseY]);
 
-  useMotionValueEvent(scrollProgress, "change", (latest) => {
+  // Frame Activation
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
     if (latest < 0.075) setActiveFrame(0);
     else if (latest < 0.25) setActiveFrame(1);
-    else if (latest < 0.55) setActiveFrame(2);
+    else if (latest < 0.50) setActiveFrame(2);
     else if (latest < 0.75) setActiveFrame(3);
     else setActiveFrame(4);
   });
 
-  const baseZ = useTransform(scrollProgress, (p) => {
-    const points = [0.0, 0.15, 0.35, 0.55, 0.90];
-    const values = [0, 1800, 3300, 4800, 6200];
-    if (p <= 0.90) {
+  // Control video playback based on active slide visibility
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (activeFrame === 2) {
+      video.play().catch((err) => {
+        console.warn("Playback blocked or interrupted:", err);
+      });
+    } else {
+      video.pause();
+    }
+  }, [activeFrame]);
+
+  // Z-Axis Depth Interpolation (Responsive)
+  const baseZ = useTransform(scrollYProgress, (p) => {
+    const points = [0.0, 0.15, 0.35, 0.55, 1.00];
+    const depths = getDepths();
+    if (p <= 1.00) {
       for (let i = 0; i < points.length - 1; i++) {
         if (p >= points[i] && p < points[i + 1]) {
           const t = (p - points[i]) / (points[i + 1] - points[i]);
-          return values[i] + t * (values[i + 1] - values[i]);
+          return depths[i] + t * (depths[i + 1] - depths[i]);
         }
       }
     }
-    return 6200;
+    return depths[depths.length - 1];
   });
-  const tailTarget = useMotionValue(0);
-  const tailOffset = useSpring(tailTarget, { damping: 20, stiffness: 150, mass: 0.5 });
-  const overscrollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      if (e.deltaY <= 0) return;
-      const lenis = (window as any).lenis;
-      if (!lenis) return;
-      if (lenis.dimensions.limit.y < 100) return;
-      if (lenis.animatedScroll >= lenis.dimensions.limit.y - 2) {
-        tailTarget.set(120);
-        if (overscrollTimer.current) clearTimeout(overscrollTimer.current);
-        overscrollTimer.current = setTimeout(() => tailTarget.set(0), 200);
-      }
-    };
-    window.addEventListener("wheel", handleWheel, { passive: true });
-    return () => {
-      window.removeEventListener("wheel", handleWheel);
-      if (overscrollTimer.current) clearTimeout(overscrollTimer.current);
-    };
-  }, []);
-  const timerFired = useRef(false);
-  useMotionValueEvent(scrollProgress, "change", (progress) => {
-    if (progress > 0.97 && !timerFired.current) {
-      const tailT = Math.min((progress - 0.97) / 0.03, 1);
-      tailTarget.set((1 - Math.pow(1 - tailT, 3)) * 120);
-    }
-    if (progress > 0.999 && !overscrollTimer.current) {
-      timerFired.current = false;
-      overscrollTimer.current = setTimeout(() => {
-        tailTarget.set(0);
-        timerFired.current = true;
-      }, 200);
-    }
-    if (progress < 0.95) {
-      timerFired.current = false;
-      if (overscrollTimer.current) {
-        clearTimeout(overscrollTimer.current);
-        overscrollTimer.current = null;
-      }
-      tailTarget.set(0);
-    }
-  });
-  const zWorld = useTransform([baseZ, tailOffset], ([z, off]) => (z as number) + (off as number));
 
+  // Smooth, refined Z transitions and end stops using spring physics
+  const zWorld = useSpring(baseZ, { damping: 28, stiffness: 100, mass: 0.6 });
   const transformWorld = useMotionTemplate`translate3d(${translateX}px, ${translateY}px, ${zWorld}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
 
-  const opacityHero = useTransform(zWorld, [0, 600, 1000], [1, 1, 0]);
-  const blurHero = useTransform(zWorld, [0, 600, 1000], ["blur(0px)", "blur(0px)", "blur(12px)"]);
+  // Dynamic Opacity and Visibility Transitions (Optimized, no expensive blur filters)
+  const opacityHero = useTransform(zWorld, (zVal) => {
+    const depths = getDepths();
+    const h = depths[0] ?? 0;
+    const m = depths[1] ?? 1800;
+    return interpolateDepth(zVal as number, [h, h + (m - h) * 0.3, h + (m - h) * 0.7], [1, 1, 0]);
+  });
+  const visibilityHero = useTransform(opacityHero, (op) => (op as number) > 0.01 ? "visible" : "hidden");
 
-  const opacityManifesto = useTransform(zWorld, [600, 1200, 2400, 3000], [0, 1, 1, 0]);
-  const blurManifesto = useTransform(zWorld, [600, 1200, 2400, 3000], ["blur(8px)", "blur(0px)", "blur(0px)", "blur(12px)"]);
+  const opacityManifesto = useTransform(zWorld, (zVal) => {
+    const depths = getDepths();
+    const h = depths[0] ?? 0;
+    const m = depths[1] ?? 1800;
+    const s = depths[2] ?? 3500;
+    const fadeInStart = h + (m - h) * 0.4;
+    const fadeInEnd = h + (m - h) * 0.8;
+    const fadeOutStart = m + (s - m) * 0.4;
+    const fadeOutEnd = m + (s - m) * 0.8;
+    return interpolateDepth(zVal as number, [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd], [0, 1, 1, 0]);
+  });
+  const visibilityManifesto = useTransform(opacityManifesto, (op) => (op as number) > 0.01 ? "visible" : "hidden");
 
-  const opacityCapabilities = useTransform(zWorld, [2100, 2700, 3900, 4500], [0, 1, 1, 0]);
-  const blurCapabilities = useTransform(zWorld, [2100, 2700, 3900, 4500], ["blur(8px)", "blur(0px)", "blur(0px)", "blur(12px)"]);
+  const opacityShowreel = useTransform(zWorld, (zVal) => {
+    const depths = getDepths();
+    const m = depths[1] ?? 1800;
+    const s = depths[2] ?? 3500;
+    const t = depths[3] ?? 5000;
+    const fadeInStart = m + (s - m) * 0.4;
+    const fadeInEnd = m + (s - m) * 0.8;
+    const fadeOutStart = s + (t - s) * 0.4;
+    const fadeOutEnd = s + (t - s) * 0.8;
+    return interpolateDepth(zVal as number, [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd], [0, 1, 1, 0]);
+  });
+  const visibilityShowreel = useTransform(opacityShowreel, (op) => (op as number) > 0.01 ? "visible" : "hidden");
 
-  const opacityTestimonials = useTransform(zWorld, [3600, 4200, 5400, 6000], [0, 1, 1, 0]);
-  const blurTestimonials = useTransform(zWorld, [3600, 4200, 5400, 6000], ["blur(8px)", "blur(0px)", "blur(0px)", "blur(12px)"]);
+  // Staggered testimonials opacity & visibility curves
+  const testimonialOpacityCurves = TESTIMONIALS.map((_, idx) => {
+    return useTransform(zWorld, (zVal) => {
+      const depths = getDepths();
+      const s = depths[2] ?? 3500; // showreel
+      const t = depths[3] ?? 5000; // testimonials
+      const st = depths[4] ?? 6200; // stats
 
-  const opacityStats = useTransform(zWorld, [5000, 5600, 6200], [0, 1, 1]);
-  const blurStats = useTransform(zWorld, [5000, 5600, 6200], ["blur(8px)", "blur(0px)", "blur(0px)"]);
+      if (isMobile) {
+        // Sequentially space out cards on mobile
+        const cardTargetZ = t + idx * 250;
+        const fadeInStart = cardTargetZ - 300;
+        const fadeInEnd = cardTargetZ - 50;
+        const fadeOutStart = cardTargetZ + 50;
+        const fadeOutEnd = cardTargetZ + 300;
+        return interpolateDepth(zVal as number, [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd], [0, 1, 1, 0]);
+      } else {
+        const fadeInStart = s + (t - s) * 0.4;
+        const fadeInEnd = s + (t - s) * 0.8;
+        const fadeOutStart = t + (st - t) * 0.4;
+        const fadeOutEnd = t + (st - t) * 0.8;
+        return interpolateDepth(zVal as number, [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd], [0, 1, 1, 0]);
+      }
+    });
+  });
 
-  const perspectiveVal = useTransform(scrollProgress, (progress) => {
+  const testimonialVisibilityCurves = testimonialOpacityCurves.map((opCurve) => {
+    return useTransform(opCurve, (op) => (op as number) > 0.01 ? "visible" : "hidden");
+  });
+
+  const opacityStats = useTransform(zWorld, (zVal) => {
+    const depths = getDepths();
+    const t = depths[3] ?? 5000;
+    const st = depths[4] ?? 6200;
+    const fadeInStart = t + (st - t) * 0.4;
+    const fadeInEnd = t + (st - t) * 0.8;
+    return interpolateDepth(zVal as number, [fadeInStart, fadeInEnd, st], [0, 1, 1]);
+  });
+  const visibilityStats = useTransform(opacityStats, (op) => (op as number) > 0.01 ? "visible" : "hidden");
+
+  const perspectiveVal = useTransform(scrollYProgress, (progress) => {
     const start = isMobile ? 1200 : 1400;
     const end = isMobile ? 850 : 950;
     return start + progress * (end - start);
   });
   const perspectiveTemplate = useMotionTemplate`${perspectiveVal}px`;
 
-  // Sine carousel: drag to advance image strip forward/back, wraps around
-  const dragOffset = useMotionValue(0);
-  const smoothOffset = useSpring(dragOffset, { damping: 30, stiffness: 200 });
+  // Custom Showreel HUD Video Mute Trigger
+  const toggleMute = () => {
+    if (videoRef.current) {
+      const nextMuted = !videoRef.current.muted;
+      videoRef.current.muted = nextMuted;
+      setIsMuted(nextMuted);
+    }
+  };
 
-  const handleDragStart = useCallback((e: React.PointerEvent) => {
-    const el = e.currentTarget;
-    el.setPointerCapture(e.pointerId);
-    (el as any).__dragging = true;
-    (el as any).__lastX = e.clientX;
-  }, []);
-
-  const handleDragMove = useCallback((e: React.PointerEvent) => {
-    const el = e.currentTarget;
-    if (!(el as any).__dragging) return;
-    const delta = e.clientX - (el as any).__lastX;
-    (el as any).__lastX = e.clientX;
-    dragOffset.set(dragOffset.get() + delta * 0.005);
-  }, [dragOffset]);
-
-  const handleDragEnd = useCallback((e: React.PointerEvent) => {
-    delete (e.currentTarget as any).__dragging;
+  // Direct DOM Timecode Counter Raf Loop
+  useEffect(() => {
+    let rafId: number;
+    const updateTimecode = () => {
+      const video = videoRef.current;
+      if (video && timecodeRef.current) {
+        const curTime = video.currentTime ?? 0;
+        const minutes = Math.floor(curTime / 60).toString().padStart(2, "0");
+        const seconds = Math.floor(curTime % 60).toString().padStart(2, "0");
+        const frames = Math.floor((curTime % 1) * 30).toString().padStart(2, "0");
+        timecodeRef.current.textContent = `00:${minutes}:${seconds}:${frames}`;
+      }
+      rafId = requestAnimationFrame(updateTimecode);
+    };
+    rafId = requestAnimationFrame(updateTimecode);
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
   return (
@@ -279,17 +315,16 @@ export default function Home() {
               style={{
                 pointerEvents: activeFrame === 0 ? "auto" : "none",
                 transformStyle: "preserve-3d",
+                visibility: visibilityHero,
               }}
               className="absolute inset-0 pointer-events-none"
             >
               <div className="absolute inset-0 pointer-events-none">
                 <motion.div
-                  className="absolute top-32 left-8 md:left-24 md:top-48"
+                  className="absolute top-32 left-8 md:left-24 md:top-48 z-10"
                   style={{
                     transform: "translate3d(0px, 0px, 0px)",
-                    transformStyle: "preserve-3d",
                     opacity: opacityHero,
-                    filter: blurHero,
                   }}
                 >
                   <div className="flex flex-col gap-0 select-none">
@@ -305,12 +340,10 @@ export default function Home() {
                 </motion.div>
 
                 <motion.div
-                  className="absolute left-8 top-24 hidden aspect-[3/4] w-full max-w-[220px] md:right-[18%] md:left-auto md:top-48 md:block md:max-w-sm"
+                  className="absolute left-8 top-24 z-10 hidden aspect-[3/4] w-full max-w-[220px] md:right-[18%] md:left-auto md:top-48 md:block md:max-w-sm"
                   style={{
                     transform: "translate3d(0px, 0px, 150px)",
-                    transformStyle: "preserve-3d",
                     opacity: opacityHero,
-                    filter: blurHero,
                   }}
                 >
                   <div className="group relative h-full w-full overflow-hidden bg-surface/5">
@@ -325,12 +358,10 @@ export default function Home() {
                 </motion.div>
 
                 <motion.div
-                  className="absolute bottom-12 left-8 max-w-sm md:bottom-24 md:left-24"
+                  className="absolute bottom-12 left-8 max-w-sm md:bottom-24 md:left-24 z-10"
                   style={{
                     transform: "translate3d(0px, 0px, -100px)",
-                    transformStyle: "preserve-3d",
                     opacity: opacityHero,
-                    filter: blurHero,
                   }}
                 >
                   <BalancedText
@@ -351,60 +382,37 @@ export default function Home() {
               }}
               className="absolute inset-0 pointer-events-none"
             >
-              {/* Z-anchored wrapper — same depth plane as manifesto text */}
               <motion.div
-                className="absolute inset-0"
+                className="absolute inset-0 flex items-center justify-center antialiased"
                 style={{
-                  transform: "translate3d(0px, 0px, -1800px)",
+                  transform: `translate3d(0px, 0px, ${-getDepths()[1]}px)`,
                   opacity: opacityManifesto,
-                  filter: blurManifesto,
+                  visibility: visibilityManifesto,
                 }}
               >
-                {/* Sine wave image carousel — drag left/right to advance */}
-                <div
-                  onPointerDown={handleDragStart}
-                  onPointerMove={handleDragMove}
-                  onPointerUp={handleDragEnd}
-                  onPointerCancel={handleDragEnd}
-                  className="absolute top-0 left-0 w-full h-[55vh] overflow-hidden pointer-events-auto touch-none select-none"
-                >
-                  <div className="relative w-full h-full">
-                    {CAROUSEL_IMAGES.map((img, i) => (
-                      <SineCard
-                        key={`${i}-${img.src}`}
-                        img={img}
-                        index={i}
-                        total={CAROUSEL_IMAGES.length}
-                        offset={smoothOffset}
-                        isMobile={isMobile}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
+                <div className="relative text-center max-w-3xl px-8 py-12 md:px-16 md:py-20 bg-surface/30 backdrop-blur-xl border border-border-neutral/20 select-none">
+                  {/* Subtle technical HUD corner markers */}
+                  <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-primary/30" />
+                  <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-primary/30" />
+                  <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-primary/30" />
+                  <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-primary/30" />
 
-              {/* Manifesto Text — bottom left */}
-              <motion.div
-                className="absolute bottom-12 left-8 z-30 md:bottom-16 md:left-16 max-w-lg text-left"
-                style={{
-                  transform: "translate3d(0px, 0px, -1800px)",
-                  transformStyle: "preserve-3d",
-                  opacity: opacityManifesto,
-                  filter: blurManifesto,
-                }}
-              >
-                <p className="font-mono text-[10px] tracking-[0.3em] text-foreground/40 uppercase mb-4">
-                  Manifesto
-                </p>
-                <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-bold tracking-tighter uppercase leading-[0.95] text-primary">
-                  Motion Is The <br />
-                  <span className="italic font-light text-tech-blue">Language</span> Of <br />
-                  Intention.
-                </h2>
+                  <p className="font-mono text-[9px] tracking-[0.4em] text-tech-blue font-bold uppercase mb-8">
+                    // Visual Philosophy
+                  </p>
+                  <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter uppercase leading-[0.9] text-primary antialiased">
+                    Motion Is The <br />
+                    <span className="italic font-light text-tech-blue">Language</span> Of <br />
+                    Intention.
+                  </h2>
+                  <p className="mt-8 text-sm md:text-base font-light leading-relaxed text-foreground/60 max-w-md mx-auto antialiased">
+                    Every transition, every curve, every frame exists because it serves the narrative. Nothing is ornamental.
+                  </p>
+                </div>
               </motion.div>
             </motion.div>
 
-            {/* FRAME 2: CAPABILITIES */}
+            {/* FRAME 2: SHOWREEL */}
             <motion.div
               style={{
                 pointerEvents: activeFrame === 2 ? "auto" : "none",
@@ -413,22 +421,64 @@ export default function Home() {
               className="absolute inset-0 pointer-events-none"
             >
               <motion.div
-                className="absolute inset-0 flex items-center justify-center"
+                className="absolute inset-0 flex items-center justify-center px-6 md:px-16"
                 style={{
-                  transform: "translate3d(0px, 0px, -3300px)",
-                  transformStyle: "preserve-3d",
-                  opacity: opacityCapabilities,
-                  filter: blurCapabilities,
+                  transform: `translate3d(0px, 0px, ${-getDepths()[2]}px)`,
+                  opacity: opacityShowreel,
+                  visibility: visibilityShowreel,
                 }}
               >
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-x-16 md:gap-x-24 gap-y-10 md:gap-y-14">
-                  {CAPABILITIES.map((cap) => (
-                    <div key={cap} className="text-left">
-                      <h2 className="font-display text-xl md:text-3xl lg:text-4xl font-bold uppercase tracking-tight text-primary whitespace-nowrap">
-                        {cap}
-                      </h2>
+                <div className="relative w-full max-w-4xl aspect-video bg-surface/5 border border-border-neutral/30 backdrop-blur-sm p-2 md:p-3 pointer-events-auto">
+                  {/* Outer Technical HUD viewfinders */}
+                  <div className="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-tech-blue/55" />
+                  <div className="absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-tech-blue/55" />
+                  <div className="absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 border-tech-blue/55" />
+                  <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-tech-blue/55" />
+
+                  {/* Video Container */}
+                  <div className="relative w-full h-full overflow-hidden bg-black">
+                    <MuxPlayer
+                      playbackId="La6KMZg8Gi00YVNHDPjuOwYZPnIIEprMgKb8HI9Ma92M"
+                      className="w-full h-full object-cover"
+                      onVideoReady={(el) => {
+                        videoRef.current = el as any;
+                        // Play if slide is already active when loaded
+                        if (activeFrame === 2) {
+                          (el as HTMLVideoElement).play().catch((err) => {
+                            console.warn("Autoplay on mount blocked:", err);
+                          });
+                        } else {
+                          (el as HTMLVideoElement).pause();
+                        }
+                      }}
+                    />
+
+                    {/* HUD Status Bar (Top) */}
+                    <div className="absolute top-3 left-4 right-4 flex justify-between items-center font-mono text-[9px] text-white/70 select-none tracking-wider bg-black/45 backdrop-blur-xs px-2.5 py-1">
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                        LIVE_FEED // SHOWREEL_2026
+                      </span>
+                      <span>SRC: MUX_STREAM // 1080P</span>
                     </div>
-                  ))}
+
+                    {/* HUD Controls / Metrics (Bottom) */}
+                    <div className="absolute bottom-3 left-4 right-4 flex justify-between items-end select-none">
+                      {/* Left: Timecode and Stats */}
+                      <div className="flex flex-col gap-1 font-mono text-[8px] text-white/50 bg-black/45 backdrop-blur-xs p-2 text-left">
+                        <div>TIME: <span ref={timecodeRef} className="text-white font-medium">00:00:00:00</span></div>
+                        <div>ENC: H.264 // FPS: 60.0</div>
+                      </div>
+
+                      {/* Right: Custom Mute Button */}
+                      <button
+                        onClick={toggleMute}
+                        className="font-mono text-[9px] uppercase tracking-widest px-3 py-1.5 border border-white/20 bg-black/60 text-white hover:bg-white hover:text-black transition-colors duration-300 pointer-events-auto"
+                      >
+                        {isMuted ? "UNMUTE // AUDIO_OFF" : "MUTE // AUDIO_ON"}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             </motion.div>
@@ -442,17 +492,19 @@ export default function Home() {
               className="absolute inset-0 pointer-events-none"
             >
               {TESTIMONIALS.map((test, idx) => {
-                const x = idx % 2 === 0 ? "-20vw" : "20vw";
-                const y = idx < 2 ? "-14vh" : "14vh";
-                const z = -4700 + idx * 50;
+                const depths = getDepths();
+                const x = isMobile ? "0vw" : (idx % 2 === 0 ? "-20vw" : "20vw");
+                const y = isMobile ? "0vh" : (idx < 2 ? "-14vh" : "14vh");
+                const z = isMobile ? (-depths[3] - idx * 250) : (-depths[3] + idx * 50);
+
                 return (
                   <motion.div
                     key={test.brand}
                     className="absolute left-1/2 top-1/2 w-[85vw] md:w-[34vw] border border-border-neutral/20 p-6 md:p-8 bg-surface/50 backdrop-blur-xl pointer-events-auto"
                     style={{
                       transform: `translate3d(${x}, ${y}, ${z}px) translate(-50%, -50%)`,
-                      opacity: opacityTestimonials,
-                      filter: blurTestimonials,
+                      opacity: testimonialOpacityCurves[idx],
+                      visibility: testimonialVisibilityCurves[idx],
                     }}
                   >
                     <div className="flex items-center border-b border-border-neutral/10 pb-3 mb-4">
@@ -487,9 +539,9 @@ export default function Home() {
               <motion.div
                 className="absolute left-1/2 top-1/2 w-[90vw] md:w-[75vw] max-w-6xl border border-border-neutral/20 p-6 md:p-14 bg-surface/50 backdrop-blur-xl pointer-events-auto"
                 style={{
-                  transform: "translate3d(0px, 0px, -6300px) translate(-50%, -50%)",
+                  transform: `translate3d(0px, 0px, ${-getDepths()[4]}px) translate(-50%, -50%)`,
                   opacity: opacityStats,
-                  filter: blurStats,
+                  visibility: visibilityStats,
                 }}
               >
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-14">
@@ -526,7 +578,7 @@ export default function Home() {
                         {BRANDS.map((brand) => (
                           <div
                             key={brand}
-                            className="border border-border-neutral/20 p-3 bg-surface/10 flex items-center justify-center font-display text-xs md:text-sm font-semibold uppercase tracking-wider text-foreground/75 hover:text-tech-blue hover:border-tech-blue/30 hover:bg-surface/30 transition-all duration-300"
+                            className="border border-border-neutral/20 p-3 bg-surface/10 flex items-center justify-center font-display text-xs md:text-sm font-semibold uppercase tracking-wider text-foreground/75 hover:text-tech-blue hover:border-tech-blue/30 hover:bg-surface/30 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
                           >
                             {brand}
                           </div>
@@ -558,54 +610,36 @@ export default function Home() {
   );
 }
 
-function SineCard({
-  img,
-  index,
-  total,
-  offset,
-  isMobile,
+function MuxPlayer({
+  playbackId,
+  className,
+  onVideoReady,
 }: {
-  img: { src: string; alt: string };
-  index: number;
-  total: number;
-  offset: any;
-  isMobile: boolean;
+  playbackId: string;
+  className?: string;
+  onVideoReady?: (el: HTMLElement) => void;
 }) {
-  const spread = isMobile ? 500 : 1200;
-  const yAmp = isMobile ? 80 : 200;
+  const ref = useRef<HTMLDivElement>(null);
 
-  const x = useTransform(offset, (v: number) => {
-    const raw = (index / total + v * 0.05) % 1;
-    const relPos = ((raw % 1) + 1.5) % 1 - 0.5;
-    return relPos * spread;
-  });
+  useEffect(() => {
+    import("@mux/mux-video").then(() => {
+      if (!ref.current) return;
+      let el = ref.current.querySelector("mux-video") as HTMLElement;
+      if (!el) {
+        el = document.createElement("mux-video");
+        el.setAttribute("stream-type", "on-demand");
+        el.setAttribute("playback-id", playbackId);
+        el.setAttribute("loop", "");
+        el.setAttribute("muted", "");
+        el.setAttribute("playsinline", "");
+        el.setAttribute("preload", "auto");
+        el.className = className ?? "";
+        ref.current.innerHTML = "";
+        ref.current.appendChild(el);
+      }
+      onVideoReady?.(el);
+    });
+  }, [playbackId, className, onVideoReady]);
 
-  const y = useTransform(offset, (v: number) => {
-    const raw = (index / total + v * 0.05) % 1;
-    const relPos = ((raw % 1) + 1.5) % 1 - 0.5;
-    return Math.sin(relPos * Math.PI) * yAmp;
-  });
-
-  const s = useTransform(offset, (v: number) => {
-    const raw = (index / total + v * 0.05) % 1;
-    const relPos = Math.abs(((raw % 1) + 1.5) % 1 - 0.5);
-    return Math.max(0.35, 0.8 - relPos * 0.9);
-  });
-
-  const zIdx = useTransform(offset, (v: number) => {
-    const raw = (index / total + v * 0.05) % 1;
-    const relPos = Math.abs(((raw % 1) + 1.5) % 1 - 0.5);
-    return Math.round(100 - relPos * 180);
-  });
-
-  return (
-    <motion.div
-      className="absolute left-1/2 top-[45%] w-[55px] md:w-[80px] aspect-[4/5] will-change-transform"
-      style={{ x, y, scale: s, zIndex: zIdx }}
-    >
-      <div className="relative w-full h-full overflow-hidden bg-surface/10">
-        <Image src={img.src} alt={img.alt} fill className="object-cover" sizes="80px" />
-      </div>
-    </motion.div>
-  );
+  return <div ref={ref} className="w-full h-full animate-fade-in" />;
 }
