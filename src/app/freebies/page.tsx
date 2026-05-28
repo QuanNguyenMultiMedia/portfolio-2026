@@ -13,6 +13,20 @@ import Portal from "@/components/Portal";
 
 export default function FreebiesPage() {
   const [selectedItem, setSelectedItem] = useState<FreebieItem | null>(null);
+  const [screenSize, setScreenSize] = useState<"mobile" | "laptop" | "3xl" | "4xl">("laptop");
+
+  useEffect(() => {
+    const handleResize = () => {
+      const w = window.innerWidth;
+      if (w < 768) setScreenSize("mobile");
+      else if (w >= 2560) setScreenSize("4xl");
+      else if (w >= 1920) setScreenSize("3xl");
+      else setScreenSize("laptop");
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Disable scrolling when popover is open
   useEffect(() => {
@@ -30,6 +44,8 @@ export default function FreebiesPage() {
       document.body.style.overflow = "";
     };
   }, [selectedItem]);
+
+  const panelWidth = screenSize === "4xl" ? 680 : screenSize === "3xl" ? 540 : 420;
 
   return (
     <>
@@ -49,7 +65,7 @@ export default function FreebiesPage() {
               scale: selectedItem ? 0.98 : 1,
             }}
             transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            className="grid grid-cols-1 md:grid-cols-12 gap-x-12 gap-y-32 md:gap-y-48 relative"
+            className="grid grid-cols-1 md:grid-cols-12 gap-x-12 3xl:gap-x-20 4xl:gap-x-28 gap-y-32 md:gap-y-48 relative"
           >
             {freebies.map((item, idx) => {
               const layoutConfig = [
@@ -81,7 +97,7 @@ export default function FreebiesPage() {
                   </motion.div>
 
                   <div className="px-1 mt-6">
-                    <h3 className="text-3xl md:text-4xl lg:text-5xl font-display uppercase tracking-tighter leading-[0.85] text-primary font-bold transition-all duration-500 group-hover:text-primary">
+                    <h3 className="text-3xl md:text-4xl lg:text-5xl 3xl:text-6xl 4xl:text-7xl font-display uppercase tracking-tighter leading-[0.85] text-primary font-bold transition-all duration-500 group-hover:text-primary">
                       {item.title}
                     </h3>
                   </div>
@@ -108,7 +124,10 @@ export default function FreebiesPage() {
               />
 
               {/* Image hero — centered, vertically centered within the left area */}
-              <div className="hidden md:flex fixed inset-0 z-[102] pointer-events-none items-center justify-center pr-[420px]">
+              <div 
+                className="hidden md:flex fixed inset-0 z-[102] pointer-events-none items-center justify-center"
+                style={{ paddingRight: `${panelWidth}px` }}
+              >
                 <motion.div
                   layoutId={`thumb-${selectedItem.id}`}
                   className="relative w-[45vw] max-w-[55vh] h-[65vh] overflow-hidden bg-foreground/5 shadow-2xl"
@@ -130,7 +149,7 @@ export default function FreebiesPage() {
               <motion.div
                 key="logo-mask"
                 initial={{ clipPath: "inset(0 0 0 100%)" }}
-                animate={{ clipPath: "inset(0 0 0 calc(100% - 420px))" }}
+                animate={{ clipPath: `inset(0 0 0 calc(100% - ${panelWidth}px))` }}
                 exit={{ clipPath: "inset(0 0 0 100%)" }}
                 transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
                 className="fixed inset-0 z-[110] pointer-events-none hidden md:block"
@@ -149,7 +168,8 @@ export default function FreebiesPage() {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-                className="fixed top-0 right-0 bottom-0 w-full md:w-[420px] bg-background/85 backdrop-blur-2xl border-l border-primary/10 z-[101] flex flex-col shadow-[-20px_0_40px_rgba(0,0,0,0.1)] pointer-events-auto"
+                className="fixed top-0 right-0 bottom-0 bg-background/85 backdrop-blur-2xl border-l border-primary/10 z-[101] flex flex-col shadow-[-20px_0_40px_rgba(0,0,0,0.1)] pointer-events-auto"
+                style={{ width: screenSize === "mobile" ? "100%" : `${panelWidth}px` }}
               >
                 {/* Tech corner accents */}
                 <div className="absolute top-0 left-0 w-3.5 h-3.5 border-t border-l border-primary/25 pointer-events-none" />
@@ -158,7 +178,7 @@ export default function FreebiesPage() {
                 <div className="absolute bottom-0 right-0 w-3.5 h-3.5 border-b border-r border-primary/25 pointer-events-none" />
 
                 {/* Header */}
-                <div className="p-8 md:p-12 pb-4 flex justify-between items-center border-b border-primary/5">
+                <div className="p-8 md:p-12 pb-4 3xl:p-16 3xl:pb-6 4xl:p-20 4xl:pb-8 flex justify-between items-center border-b border-primary/5">
                   <HUDLabel text={selectedItem.category} className="!opacity-60" />
                   <button
                     onClick={() => setSelectedItem(null)}
@@ -175,7 +195,7 @@ export default function FreebiesPage() {
                 </div>
 
                 {/* Content Focus */}
-                <div className="flex-grow p-8 md:p-12 flex flex-col justify-start md:justify-center space-y-8 md:space-y-12 overflow-y-auto">
+                <div className="flex-grow p-8 md:p-12 3xl:p-16 4xl:p-20 flex flex-col justify-start md:justify-center space-y-8 md:space-y-12 3xl:space-y-16 4xl:space-y-24 overflow-y-auto">
                   {/* Mobile Image Preview */}
                   <div className="block md:hidden w-full aspect-[16/10] relative overflow-hidden bg-primary/5 border border-primary/10">
                     <Image
@@ -188,29 +208,29 @@ export default function FreebiesPage() {
                   </div>
 
                   <div className="space-y-4">
-                    <h2 className="text-3xl md:text-5xl lg:text-6xl font-display uppercase tracking-tighter leading-[0.85] text-primary font-bold">
+                    <h2 className="text-3xl md:text-5xl lg:text-6xl 3xl:text-7xl 4xl:text-8xl font-display uppercase tracking-tighter leading-[0.85] text-primary font-bold">
                       {selectedItem.title}
                     </h2>
                     <div className="h-px w-8 bg-primary/20" />
                   </div>
 
-                  <div className="space-y-4 max-w-sm">
+                  <div className="space-y-4 max-w-sm 3xl:max-w-md 4xl:max-w-xl">
                     {selectedItem.description.split("\n\n").map((para, i) => (
-                      <p key={i} className="text-base md:text-lg font-light leading-relaxed opacity-70">
+                      <p key={i} className="text-base md:text-lg 3xl:text-xl 4xl:text-2xl font-light leading-relaxed opacity-70">
                         {para}
                       </p>
                     ))}
                   </div>
 
                   <div className="space-y-2">
-                    <span className="text-[8px] font-mono opacity-20 tracking-widest block">
+                    <span className="text-[8px] 3xl:text-[10px] 4xl:text-xs font-mono opacity-20 tracking-widest block">
                       COLOR PALETTE // SPEC_2026
                     </span>
                     <div className="flex gap-2">
                       {selectedItem.colors.map((color, i) => (
                         <div key={i} className="group relative">
                           <div
-                            className="w-6 h-6 border border-primary/15 transition-transform duration-300 hover:scale-110 cursor-help"
+                            className="w-6 h-6 3xl:w-9 3xl:h-9 4xl:w-12 4xl:h-12 border border-primary/15 transition-transform duration-300 hover:scale-110 cursor-help"
                             style={{ backgroundColor: color }}
                           />
                           <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-1.5 py-0.5 bg-foreground text-background text-[8px] font-mono uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[120]">
@@ -223,10 +243,10 @@ export default function FreebiesPage() {
                 </div>
 
                 {/* Action Area */}
-                <div className="p-8 md:p-12 pt-4 border-t border-primary/5">
+                <div className="p-8 md:p-12 pt-4 3xl:p-16 3xl:pt-6 4xl:p-20 4xl:pb-8 border-t border-primary/5">
                   <TechButton
                     href={selectedItem.downloadUrl}
-                    className="w-full !py-6"
+                    className="w-full !py-6 3xl:!py-8 4xl:!py-10 3xl:text-lg 4xl:text-xl"
                   >
                     Download // Free
                   </TechButton>

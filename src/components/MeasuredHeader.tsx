@@ -22,17 +22,51 @@ export default function MeasuredHeader({
 }: MeasuredHeaderProps) {
   const [lines, setLines] = useState<{ text: string; width: number }[]>([]);
   const [isReady, setIsReady] = useState(false);
-
+  const [fontsLoaded, setFontsLoaded] = useState(false);
   const [prepared, setPrepared] = useState<any>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const fonts = (document as any).fonts;
+    if (!fonts) {
+      setFontsLoaded(true);
+      return;
+    }
+
+    const checkFonts = () => {
+      try {
+        if (fonts.check(font)) {
+          setFontsLoaded(true);
+        } else {
+          setTimeout(checkFonts, 150);
+        }
+      } catch (e) {
+        setFontsLoaded(true);
+      }
+    };
+
+    checkFonts();
+    fonts.ready.then(() => {
+      setFontsLoaded(true);
+    }).catch(() => {
+      setFontsLoaded(true);
+    });
+    fonts.addEventListener("loadingdone", checkFonts);
+
+    return () => {
+      fonts.removeEventListener("loadingdone", checkFonts);
+    };
+  }, [font]);
 
   useEffect(() => {
     if (!text) return;
     try {
+      const _ = fontsLoaded;
       setPrepared(prepareWithSegments(text, font));
     } catch (e) {
       console.warn("Pretext preparation failed:", e);
     }
-  }, [text, font]);
+  }, [text, font, fontsLoaded]);
 
   useEffect(() => {
     if (!prepared) return;
@@ -49,7 +83,7 @@ export default function MeasuredHeader({
     setLines(lineData);
     setIsReady(false);
     setTimeout(() => setIsReady(true), 100);
-  }, [prepared, maxWidth, text]);
+  }, [prepared, maxWidth, text, fontsLoaded]);
 
   return (
     <div

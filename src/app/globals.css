@@ -36,6 +36,9 @@
   --spacing-wide: 112px;
   --spacing-xl: 140px;
   --spacing-section-top: 96px;
+
+  --breakpoint-3xl: 120rem; /* 1920px */
+  --breakpoint-4xl: 160rem; /* 2560px */
 }
 
 @layer base {

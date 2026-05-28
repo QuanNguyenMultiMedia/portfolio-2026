@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState, useRef } from "react";
+import { use, useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { playItems } from "@/data/play";
@@ -19,7 +19,21 @@ export default function PlayPage({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const [zoom, setZoom] = useState<number>(0.75);
+  const [screenSize, setScreenSize] = useState<"mobile" | "laptop" | "3xl" | "4xl">("laptop");
   const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const w = window.innerWidth;
+      if (w < 768) setScreenSize("mobile");
+      else if (w >= 2560) setScreenSize("4xl");
+      else if (w >= 1920) setScreenSize("3xl");
+      else setScreenSize("laptop");
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const currentIndex = playItems.findIndex((p) => p.slug === slug);
   const project = playItems[currentIndex];
@@ -48,6 +62,13 @@ export default function PlayPage({
     setHasError(false);
   };
 
+  const frameWidth = isFullscreen
+    ? "100vw"
+    : (screenSize === "4xl" ? "78vw" : screenSize === "3xl" ? "75vw" : "70vw");
+  const frameHeight = isFullscreen
+    ? "100vh"
+    : (screenSize === "4xl" ? "78vh" : screenSize === "3xl" ? "75vh" : "70vh");
+
   return (
     <div className="bg-background h-screen w-full overflow-hidden relative flex items-center justify-center font-sans text-foreground selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
       
@@ -59,16 +80,16 @@ export default function PlayPage({
           opacity: isFullscreen ? 0 : 1,
           pointerEvents: isFullscreen ? "none" : "auto",
         }}
-        className="absolute top-16 left-16 md:top-24 md:left-24 z-50"
+        className="absolute top-16 left-16 md:top-24 md:left-24 3xl:top-32 3xl:left-32 4xl:top-40 4xl:left-40 z-50"
       >
         <Link href="/play" className="group flex items-center gap-4 py-2">
-          <div className="relative w-8 h-8 flex items-center justify-center">
+          <div className="relative w-8 h-8 3xl:w-12 3xl:h-12 4xl:w-16 4xl:h-16 flex items-center justify-center">
             <div className="absolute inset-0 border border-foreground/20 group-hover:border-foreground/60 transition-colors" />
-            <span className="text-[10px] font-sans group-hover:-translate-x-1 transition-transform">
+            <span className="text-[10px] 3xl:text-xs 4xl:text-sm font-sans group-hover:-translate-x-1 transition-transform">
               ←
             </span>
           </div>
-          <span className="text-[10px] font-sans tracking-[0.4em] uppercase opacity-40 group-hover:opacity-100 transition-opacity">
+          <span className="text-[10px] 3xl:text-xs 4xl:text-sm font-sans tracking-[0.4em] uppercase opacity-40 group-hover:opacity-100 transition-opacity">
             Return_Archive
           </span>
         </Link>
@@ -76,7 +97,7 @@ export default function PlayPage({
 
       {/* HUD Header Info - Left top edge (Title / Status) (Hidden in fullscreen) */}
       {!isFullscreen && (
-        <div className="absolute top-16 right-16 md:top-24 md:right-24 z-40 hidden md:flex items-center gap-8 font-mono text-[9px] tracking-[0.2em] uppercase opacity-40">
+        <div className="absolute top-16 right-16 md:top-24 md:right-24 3xl:top-32 3xl:right-32 4xl:top-40 4xl:right-40 z-40 hidden md:flex items-center gap-8 font-mono text-[9px] 3xl:text-xs 4xl:text-sm tracking-[0.2em] uppercase opacity-40">
           <div>SYS_LOC: LOCAL_STATIC_MIRROR</div>
           <div className="flex items-center gap-2">
             <span className={`w-1.5 h-1.5 rounded-full ${isLoading ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
@@ -89,8 +110,8 @@ export default function PlayPage({
       <motion.div
         initial={false}
         animate={{
-          width: isFullscreen ? "100vw" : "70vw",
-          height: isFullscreen ? "100vh" : "70vh",
+          width: frameWidth,
+          height: frameHeight,
           marginTop: isFullscreen ? 0 : "3rem", // mt-12 approx
         }}
         transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
@@ -113,8 +134,8 @@ export default function PlayPage({
         >
           {/* Top Left: Metadata */}
           <div className="flex flex-col gap-1 pointer-events-auto">
-            <span className="font-mono text-[9px] tracking-[0.2em] text-foreground/50">DATA_VIZ // {project.slug.toUpperCase()}</span>
-            <span className="font-mono text-[10px] opacity-80 font-bold uppercase">
+            <span className="font-mono text-[9px] 3xl:text-xs 4xl:text-sm tracking-[0.2em] text-foreground/50">DATA_VIZ // {project.slug.toUpperCase()}</span>
+            <span className="font-mono text-[10px] 3xl:text-sm 4xl:text-base opacity-80 font-bold uppercase">
               {project.title}
             </span>
           </div>
@@ -135,17 +156,17 @@ export default function PlayPage({
             }`}
           >
             <span className={`font-mono tracking-[0.2em] group-hover/btn:text-foreground transition-colors ${
-              isFullscreen ? "text-[11px]" : "text-[9px]"
+              isFullscreen ? "text-[11px] 3xl:text-sm" : "text-[9px] 3xl:text-xs"
             }`}>
               {isFullscreen ? "MINIMIZE" : "EXPAND"}
             </span>
             <div className={`border flex items-center justify-center group-hover/btn:border-foreground transition-colors bg-background/50 backdrop-blur-sm ${
-              isFullscreen ? "w-5 h-5" : "w-4 h-4"
+              isFullscreen ? "w-5 h-5 3xl:w-7 3xl:h-7" : "w-4 h-4 3xl:w-5 3xl:h-5"
             }`}>
               {isFullscreen ? (
-                <div className="w-2.5 h-2.5 border-b border-l border-foreground/60 transition-transform" />
+                <div className="w-2.5 h-2.5 3xl:w-3.5 3xl:h-3.5 border-b border-l border-foreground/60 transition-transform" />
               ) : (
-                <div className="w-2 h-2 border-t border-r border-foreground/60 transition-transform" />
+                <div className="w-2 h-2 3xl:w-3 3xl:h-3 border-t border-r border-foreground/60 transition-transform" />
               )}
             </div>
           </button>
@@ -159,10 +180,10 @@ export default function PlayPage({
         >
           {/* Bottom Left: Counter */}
           <div className="pointer-events-auto flex gap-2 items-baseline">
-            <span className="font-mono text-[14px]">
+            <span className="font-mono text-[14px] 3xl:text-lg 4xl:text-xl">
               {(currentIndex + 1).toString().padStart(2, "0")}
             </span>
-            <span className="font-mono text-[9px] tracking-[0.2em] mb-[1px] opacity-44">
+            <span className="font-mono text-[9px] 3xl:text-xs 4xl:text-sm tracking-[0.2em] mb-[1px] opacity-44">
               / {playItems.length.toString().padStart(2, "0")}
             </span>
           </div>
@@ -170,35 +191,35 @@ export default function PlayPage({
           {/* Bottom Right: Status */}
           <div className="pointer-events-auto flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-red-500/80 animate-pulse" />
-            <span className="font-mono text-[9px] tracking-[0.2em] opacity-80">INTERACTIVE</span>
+            <span className="font-mono text-[9px] 3xl:text-xs 4xl:text-sm tracking-[0.2em] opacity-80">INTERACTIVE</span>
           </div>
         </div>
 
         {/* LEFT NAV: Sits to the left normally, slides inside during fullscreen */}
         <div
           className={`absolute top-1/2 -translate-y-1/2 pointer-events-auto transition-all duration-700 ease-[0.23,1,0.32,1] z-30 ${
-            isFullscreen ? "left-6" : "right-[calc(100%+32px)]"
+            isFullscreen ? "left-6" : "right-[calc(100%+32px)] 3xl:right-[calc(100%+48px)] 4xl:right-[calc(100%+64px)]"
           }`}
         >
           <Link
             href={`/play/${prevProject.slug}`}
-            className="block p-4 group/nav backdrop-blur-sm bg-background/20 hover:bg-background/40 transition-colors rounded-full border border-transparent hover:border-foreground/10"
+            className="block p-4 3xl:p-6 4xl:p-8 group/nav backdrop-blur-sm bg-background/20 hover:bg-background/40 transition-colors rounded-full border border-transparent hover:border-foreground/10"
           >
-            <div className="w-3 h-3 border-l border-t border-foreground/30 group-hover/nav:border-foreground transition-colors -rotate-45" />
+            <div className="w-3 h-3 3xl:w-4.5 3xl:h-4.5 4xl:w-6 4xl:h-6 border-l border-t border-foreground/30 group-hover/nav:border-foreground transition-colors -rotate-45" />
           </Link>
         </div>
 
         {/* RIGHT NAV: Sits to the right normally, slides inside during fullscreen */}
         <div
           className={`absolute top-1/2 -translate-y-1/2 pointer-events-auto transition-all duration-700 ease-[0.23,1,0.32,1] z-30 ${
-            isFullscreen ? "right-6" : "left-[calc(100%+32px)]"
+            isFullscreen ? "right-6" : "left-[calc(100%+32px)] 3xl:left-[calc(100%+48px)] 4xl:left-[calc(100%+64px)]"
           }`}
         >
           <Link
             href={`/play/${nextProject.slug}`}
-            className="block p-4 group/nav backdrop-blur-sm bg-background/20 hover:bg-background/40 transition-colors rounded-full border border-transparent hover:border-foreground/10"
+            className="block p-4 3xl:p-6 4xl:p-8 group/nav backdrop-blur-sm bg-background/20 hover:bg-background/40 transition-colors rounded-full border border-transparent hover:border-foreground/10"
           >
-            <div className="w-3 h-3 border-r border-t border-foreground/30 group-hover/nav:border-foreground transition-colors rotate-45" />
+            <div className="w-3 h-3 3xl:w-4.5 3xl:h-4.5 4xl:w-6 4xl:h-6 border-r border-t border-foreground/30 group-hover/nav:border-foreground transition-colors rotate-45" />
           </Link>
         </div>
 
@@ -326,12 +347,12 @@ export default function PlayPage({
         </div>
 
         {/* HUD Bottom Control Panel */}
-        <div className="flex flex-wrap justify-between items-center gap-4 mt-3 font-mono text-[9px] tracking-[0.15em] uppercase z-20">
+        <div className="flex flex-wrap justify-between items-center gap-4 mt-3 font-mono text-[9px] 3xl:text-xs 4xl:text-sm tracking-[0.15em] uppercase z-20">
           {/* Tech stack metadata tags */}
           <div className="flex items-center gap-2 opacity-50">
             <span>TECH:</span>
             {project.tech.map((t) => (
-              <span key={t} className="border border-foreground/20 px-1.5 py-0.5 text-[8px]">
+              <span key={t} className="border border-foreground/20 px-1.5 py-0.5 text-[8px] 3xl:text-[10px] 4xl:text-xs">
                 {t}
               </span>
             ))}
@@ -340,7 +361,7 @@ export default function PlayPage({
           {/* Interactive control buttons */}
           <div className="flex items-center gap-4 pointer-events-auto">
             {/* Color Mode Toggle */}
-            <div className="flex items-center gap-1 border border-foreground/20 px-2 py-0.5 bg-background/50 backdrop-blur-sm">
+            <div className="flex items-center gap-1 border border-foreground/20 px-2 py-0.5 3xl:px-3 3xl:py-1 4xl:px-4 4xl:py-1.5 bg-background/50 backdrop-blur-sm">
               <span className="opacity-40">COLOR:</span>
               <button
                 onClick={() => setColorMode("mono")}
@@ -362,7 +383,7 @@ export default function PlayPage({
             </div>
 
             {/* Scale Selector */}
-            <div className="flex items-center gap-1 border border-foreground/20 px-2 py-0.5 bg-background/50 backdrop-blur-sm">
+            <div className="flex items-center gap-1 border border-foreground/20 px-2 py-0.5 3xl:px-3 3xl:py-1 4xl:px-4 4xl:py-1.5 bg-background/50 backdrop-blur-sm">
               <span className="opacity-40">SCALE:</span>
               <button
                 onClick={() => setZoom(0.65)}
@@ -404,7 +425,7 @@ export default function PlayPage({
             {/* Reload button */}
             <button
               onClick={handleReload}
-              className="cursor-pointer border border-foreground/20 hover:border-foreground hover:bg-foreground hover:text-background transition-all px-2.5 py-0.5 flex items-center gap-1.5 bg-background/50 backdrop-blur-sm"
+              className="cursor-pointer border border-foreground/20 hover:border-foreground hover:bg-foreground hover:text-background transition-all px-2.5 py-0.5 3xl:px-4 3xl:py-1 4xl:px-5 4xl:py-1.5 flex items-center gap-1.5 bg-background/50 backdrop-blur-sm"
               title="Reload sandbox experience"
             >
               <span>RE-INIT</span>

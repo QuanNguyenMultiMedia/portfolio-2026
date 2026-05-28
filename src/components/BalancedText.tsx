@@ -22,19 +22,56 @@ export default function BalancedText({
 }: BalancedTextProps) {
   const [balancedWidth, setBalancedWidth] = useState<number | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
   const [lines, setLines] = useState<
     { width: number; height: number; y: number }[]
   >([]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const fonts = (document as any).fonts;
+    if (!fonts) {
+      setFontsLoaded(true);
+      return;
+    }
+
+    const checkFonts = () => {
+      try {
+        if (fonts.check(font)) {
+          setFontsLoaded(true);
+        } else {
+          // Retry if not yet loaded
+          setTimeout(checkFonts, 150);
+        }
+      } catch (e) {
+        setFontsLoaded(true);
+      }
+    };
+
+    checkFonts();
+    fonts.ready.then(() => {
+      setFontsLoaded(true);
+    }).catch(() => {
+      setFontsLoaded(true);
+    });
+    fonts.addEventListener("loadingdone", checkFonts);
+
+    return () => {
+      fonts.removeEventListener("loadingdone", checkFonts);
+    };
+  }, [font]);
+
   const prepared = useMemo(() => {
     if (!text || typeof window === "undefined") return null;
     try {
+      // Reference fontsLoaded to force re-evaluation when fonts ready
+      const _ = fontsLoaded;
       return prepareWithSegments(text, font);
     } catch (e) {
       console.warn("Pretext preparation failed:", e);
       return null;
     }
-  }, [text, font]);
+  }, [text, font, fontsLoaded]);
 
   useEffect(() => {
     if (!prepared) return;
@@ -56,16 +93,17 @@ export default function BalancedText({
     setLines(lineData);
     setBalancedWidth(Math.ceil(maxW) + 1);
     setIsReady(true);
-  }, [prepared, maxWidth]);
+  }, [prepared, maxWidth, fontsLoaded]);
 
   return (
     <div
       className={`${className} relative transition-opacity duration-500 group/text`}
       style={{
         ...style,
-        maxWidth: balancedWidth ? `${balancedWidth}px` : `${maxWidth}px`,
+        maxWidth: (isReady && fontsLoaded && balancedWidth) ? `${balancedWidth}px` : `${maxWidth}px`,
         opacity: isReady ? 1 : 0,
         width: "100%",
+        textWrap: "balance" as any,
       }}
     >
       <div className="relative z-10">{text}</div>

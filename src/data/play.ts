@@ -22,7 +22,7 @@ export const playItems: PlayItem[] = [
     title: "Coruscating Donut",
     slug: "coruscating-donut",
     description: "Interactive application test deployment.",
-    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Claude_Monet_-_Water_Lilies_-_Google_Art_Project1.jpg/1280px-Claude_Monet_-_Water_Lilies_-_Google_Art_Project1.jpg",
+    src: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Claude_Monet_-_Water_Lilies_-_Google_Art_Project.jpg/1280px-Claude_Monet_-_Water_Lilies_-_Google_Art_Project.jpg",
     url: "/play-static/coruscating-donut-a699dd/index.html",
     colors: ["#ff9e00", "#ff6d00", "#ff5400"],
     tech: ["Web", "Netlify"],

@@ -11,10 +11,17 @@ import {
   useScroll,
 } from "framer-motion";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 
 import BalancedText from "@/components/BalancedText";
 import PageWrapper from "@/components/PageWrapper";
 import TechButton from "@/components/TechButton";
+
+const MuxPlayer = dynamic(() => import("@/components/MuxPlayerWrapper"), {
+  ssr: false,
+});
+
+import { VerticalCutReveal } from "@/components/VerticalCutReveal";
 
 const TESTIMONIALS = [
   {
@@ -64,9 +71,17 @@ export default function Home() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const timecodeRef = useRef<HTMLSpanElement>(null);
 
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+  const progressKnobRef = useRef<HTMLDivElement>(null);
+  const playButtonRef = useRef<HTMLButtonElement>(null);
+
   const [activeFrame, setActiveFrame] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [screenSize, setScreenSize] = useState<"mobile" | "laptop" | "3xl" | "4xl">("laptop");
   const [isMuted, setIsMuted] = useState(true);
+  const [viewportWidth, setViewportWidth] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // 1. Framer Motion Scroll Progress Refactor
   const { scrollYProgress } = useScroll({
@@ -91,13 +106,26 @@ export default function Home() {
 
   // 2. Responsive Device Detection
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    const handleResize = () => {
+      const w = window.innerWidth;
+      if (w < 768) setScreenSize("mobile");
+      else if (w >= 2560) setScreenSize("4xl");
+      else if (w >= 1920) setScreenSize("3xl");
+      else setScreenSize("laptop");
+      setIsMobile(w < 768);
+      setViewportWidth(w);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const getDepths = () => (isMobile ? MOBILE_DEPTHS : DESKTOP_DEPTHS);
+  const getDepths = () => {
+    if (screenSize === "mobile") return MOBILE_DEPTHS;
+    if (screenSize === "4xl") return [0, 3000, 5800, 8200, 10000];
+    if (screenSize === "3xl") return [0, 2400, 4600, 6600, 8000];
+    return DESKTOP_DEPTHS;
+  };
 
   // 3. Cursor Follower System (Tilt Parallax)
   const mouseX = useMotionValue(0);
@@ -157,9 +185,7 @@ export default function Home() {
     const video = videoRef.current;
     if (!video) return;
     if (activeFrame === 2) {
-      video.play().catch((err) => {
-        console.warn("Playback blocked or interrupted:", err);
-      });
+      video.play().catch(() => {});
     } else {
       video.pause();
     }
@@ -261,8 +287,18 @@ export default function Home() {
   const visibilityStats = useTransform(opacityStats, (op) => (op as number) > 0.01 ? "visible" : "hidden");
 
   const perspectiveVal = useTransform(scrollYProgress, (progress) => {
-    const start = isMobile ? 1200 : 1400;
-    const end = isMobile ? 850 : 950;
+    let start = 1400;
+    let end = 950;
+    if (screenSize === "mobile") {
+      start = 1200;
+      end = 850;
+    } else if (screenSize === "4xl") {
+      start = 2200;
+      end = 1500;
+    } else if (screenSize === "3xl") {
+      start = 1800;
+      end = 1200;
+    }
     return start + progress * (end - start);
   });
   const perspectiveTemplate = useMotionTemplate`${perspectiveVal}px`;
@@ -276,23 +312,90 @@ export default function Home() {
     }
   };
 
-  // Direct DOM Timecode Counter Raf Loop
+  // Direct DOM Timecode and Video Status Raf Loop
   useEffect(() => {
     let rafId: number;
-    const updateTimecode = () => {
+    const updateVideoStatus = () => {
       const video = videoRef.current;
-      if (video && timecodeRef.current) {
+      if (video) {
         const curTime = video.currentTime ?? 0;
-        const minutes = Math.floor(curTime / 60).toString().padStart(2, "0");
-        const seconds = Math.floor(curTime % 60).toString().padStart(2, "0");
-        const frames = Math.floor((curTime % 1) * 30).toString().padStart(2, "0");
-        timecodeRef.current.textContent = `00:${minutes}:${seconds}:${frames}`;
+        const duration = video.duration || 1;
+
+        // 1. Update Timecode Text
+        if (timecodeRef.current) {
+          const minutes = Math.floor(curTime / 60).toString().padStart(2, "0");
+          const seconds = Math.floor(curTime % 60).toString().padStart(2, "0");
+          const frames = Math.floor((curTime % 1) * 30).toString().padStart(2, "0");
+          timecodeRef.current.textContent = `00:${minutes}:${seconds}:${frames}`;
+        }
+
+        // 2. Update Progress Bar & Knob
+        const pct = (curTime / duration) * 100;
+        if (progressBarRef.current) {
+          progressBarRef.current.style.width = `${pct}%`;
+        }
+        if (progressKnobRef.current) {
+          progressKnobRef.current.style.left = `${pct}%`;
+        }
+
+        // 3. Update Play/Pause Button Icon
+        if (playButtonRef.current) {
+          playButtonRef.current.textContent = video.paused ? "▶" : "‖";
+        }
       }
-      rafId = requestAnimationFrame(updateTimecode);
+      rafId = requestAnimationFrame(updateVideoStatus);
     };
-    rafId = requestAnimationFrame(updateTimecode);
+    rafId = requestAnimationFrame(updateVideoStatus);
     return () => cancelAnimationFrame(rafId);
   }, []);
+
+  useEffect(() => {
+    const handleFSChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFSChange);
+    return () => document.removeEventListener("fullscreenchange", handleFSChange);
+  }, []);
+
+  const toggleFullscreen = () => {
+    const container = videoContainerRef.current;
+    if (!container) return;
+    if (!document.fullscreenElement) {
+      container.requestFullscreen().catch((err) => {
+        console.warn("Fullscreen request blocked:", err);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
+  const handleScrubMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    const video = videoRef.current;
+    if (!video) return;
+    
+    const element = e.currentTarget;
+    const updateTime = (clientX: number) => {
+      const rect = element.getBoundingClientRect();
+      const offsetX = clientX - rect.left;
+      const percentage = Math.max(0, Math.min(1, offsetX / rect.width));
+      video.currentTime = percentage * video.duration;
+    };
+
+    updateTime(e.clientX);
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      updateTime(moveEvent.clientX);
+    };
+
+    const handleMouseUp = () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+  };
 
   return (
     <PageWrapper variant="story">
@@ -322,18 +425,18 @@ export default function Home() {
             >
               <div className="absolute inset-0 pointer-events-none">
                 <motion.div
-                  className="absolute top-32 left-8 md:left-24 md:top-48 z-10"
+                  className="absolute top-32 left-8 md:left-24 md:top-48 3xl:top-64 3xl:left-32 4xl:top-80 4xl:left-48 z-10"
                   style={{
                     transform: "translate3d(0px, 0px, 0px)",
                     opacity: opacityHero,
                   }}
                 >
                   <div className="flex flex-col gap-0 select-none">
-                    <h1 className="font-display text-6xl md:text-7xl lg:text-[5.25rem] font-bold uppercase tracking-tighter leading-[0.85] text-primary whitespace-nowrap">
+                    <h1 className="font-display text-6xl md:text-7xl lg:text-[5.25rem] 3xl:text-[7.5rem] 4xl:text-[10rem] font-bold uppercase tracking-tighter leading-[0.85] text-primary whitespace-nowrap">
                       Minh Quan
                     </h1>
-                    <div className="mt-5">
-                      <h2 className="font-display text-2xl md:text-3xl uppercase leading-tight tracking-tight text-primary">
+                    <div className="mt-5 3xl:mt-8">
+                      <h2 className="font-display text-2xl md:text-3xl 3xl:text-4xl 4xl:text-5xl uppercase leading-tight tracking-tight text-primary">
                         Midweight Motion Designer
                       </h2>
                     </div>
@@ -341,7 +444,7 @@ export default function Home() {
                 </motion.div>
 
                 <motion.div
-                  className="absolute left-8 top-24 z-10 hidden aspect-[3/4] w-full max-w-[220px] md:right-[18%] md:left-auto md:top-48 md:block md:max-w-sm pointer-events-auto"
+                  className="absolute left-8 top-24 z-10 hidden aspect-[3/4] w-full max-w-[220px] md:right-[18%] md:left-auto md:top-48 md:block md:max-w-sm 3xl:right-[20%] 3xl:top-60 3xl:max-w-md 4xl:right-[22%] 4xl:top-72 4xl:max-w-lg pointer-events-auto"
                   style={{
                     transform: "translate3d(0px, 0px, 150px)",
                     opacity: opacityHero,
@@ -359,7 +462,7 @@ export default function Home() {
                 </motion.div>
 
                 <motion.div
-                  className="absolute bottom-12 left-8 max-w-sm md:bottom-24 md:left-24 z-10"
+                  className="absolute bottom-12 left-8 w-[35vw] min-w-[320px] md:bottom-24 md:left-24 3xl:bottom-40 3xl:left-32 4xl:bottom-48 4xl:left-48 z-10"
                   style={{
                     transform: "translate3d(0px, 0px, -100px)",
                     opacity: opacityHero,
@@ -367,9 +470,17 @@ export default function Home() {
                 >
                   <BalancedText
                     text="Orchestrating space, time, and identity into cinematic digital products. Scroll to explore the craft."
-                    className="text-base font-light leading-relaxed text-foreground/80 font-sans"
-                    maxWidth={400}
-                    font="300 16px Inter"
+                    className={
+                      screenSize === "4xl" ? "text-3xl leading-relaxed text-foreground/80 font-sans font-light" :
+                      screenSize === "3xl" ? "text-2xl leading-relaxed text-foreground/80 font-sans font-light" :
+                      "text-base font-light leading-relaxed text-foreground/80 font-sans"
+                    }
+                    maxWidth={Math.max(320, Math.floor(viewportWidth * 0.35))}
+                    font={
+                      screenSize === "4xl" ? "300 28px Inter" :
+                      screenSize === "3xl" ? "300 22px Inter" :
+                      "300 16px Inter"
+                    }
                   />
                 </motion.div>
               </div>
@@ -391,22 +502,33 @@ export default function Home() {
                   visibility: visibilityManifesto,
                 }}
               >
-                <div className="relative text-center max-w-3xl px-8 py-12 md:px-16 md:py-20 bg-surface/30 backdrop-blur-xl border border-border-neutral/20 select-none">
+                <div className="relative text-left max-w-3xl px-8 py-12 md:px-16 md:py-20 3xl:max-w-5xl 3xl:px-24 3xl:py-28 4xl:max-w-7xl 4xl:px-32 4xl:py-36 bg-surface/30 backdrop-blur-xl border border-border-neutral/20 select-none">
                   {/* Subtle technical HUD corner markers */}
                   <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-primary/30" />
                   <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-primary/30" />
                   <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-primary/30" />
                   <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-primary/30" />
 
-                  <p className="font-mono text-[9px] tracking-[0.4em] text-tech-blue font-bold uppercase mb-8">
+                  <p className="font-mono text-[9px] tracking-[0.4em] text-tech-blue font-bold uppercase mb-8 3xl:text-xs 3xl:mb-12 4xl:text-sm 4xl:mb-16">
                     // Visual Philosophy
                   </p>
-                  <h2 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter uppercase leading-[0.9] text-primary antialiased">
-                    Motion Is The <br />
-                    <span className="italic font-light text-tech-blue">Language</span> Of <br />
-                    Intention.
+                  <h2 className="font-display text-4xl md:text-6xl lg:text-7xl 3xl:text-[7rem] 4xl:text-[10rem] font-bold tracking-tighter uppercase leading-[0.9] text-primary antialiased flex flex-col items-start">
+                    <VerticalCutReveal splitBy="characters" staggerDuration={0.015} staggerFrom="first" autoStart={activeFrame === 1}>
+                      Motion Is The
+                    </VerticalCutReveal>
+                    <span className="inline-flex gap-x-3 items-center justify-start flex-wrap">
+                      <VerticalCutReveal splitBy="characters" staggerDuration={0.015} staggerFrom="first" autoStart={activeFrame === 1} transition={{ type: "spring", stiffness: 190, damping: 22, delay: 0.15 }} containerClassName="italic font-light text-tech-blue">
+                        Language
+                      </VerticalCutReveal>
+                      <VerticalCutReveal splitBy="characters" staggerDuration={0.015} staggerFrom="first" autoStart={activeFrame === 1} transition={{ type: "spring", stiffness: 190, damping: 22, delay: 0.25 }}>
+                        Of
+                      </VerticalCutReveal>
+                    </span>
+                    <VerticalCutReveal splitBy="characters" staggerDuration={0.015} staggerFrom="first" autoStart={activeFrame === 1} transition={{ type: "spring", stiffness: 190, damping: 22, delay: 0.35 }}>
+                      Intention.
+                    </VerticalCutReveal>
                   </h2>
-                  <p className="mt-8 text-sm md:text-base font-light leading-relaxed text-foreground/60 max-w-md mx-auto antialiased">
+                  <p className="mt-8 text-sm md:text-base font-light leading-relaxed text-foreground/60 max-w-md ml-0 mr-auto antialiased 3xl:text-xl 3xl:max-w-xl 3xl:mt-12 4xl:text-2xl 4xl:max-w-2xl 4xl:mt-16">
                     Every transition, every curve, every frame exists because it serves the narrative. Nothing is ornamental.
                   </p>
                 </div>
@@ -429,54 +551,133 @@ export default function Home() {
                   visibility: visibilityShowreel,
                 }}
               >
-                <div className="relative w-full max-w-4xl aspect-video bg-surface/5 border border-border-neutral/30 backdrop-blur-sm p-2 md:p-3 pointer-events-auto">
-                  {/* Outer Technical HUD viewfinders */}
-                  <div className="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-tech-blue/55" />
-                  <div className="absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-tech-blue/55" />
-                  <div className="absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 border-tech-blue/55" />
-                  <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-tech-blue/55" />
+                <div 
+                  ref={videoContainerRef}
+                  className={`relative bg-surface/5 border border-border-neutral/30 backdrop-blur-sm transition-all duration-300 ${
+                    isFullscreen
+                      ? 'fixed inset-0 z-50 max-w-none bg-black border-0 p-0'
+                      : 'w-full max-w-4xl p-2 md:p-3 3xl:max-w-6xl 3xl:p-4 4xl:max-w-[1600px] 4xl:p-6'
+                  }`}
+                >
+                  {/* Outer Technical HUD viewfinders (standard view only) */}
+                  {!isFullscreen && (
+                    <>
+                      <div className="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-tech-blue/55 animate-pulse" />
+                      <div className="absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-tech-blue/55 animate-pulse" />
+                      <div className="absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 border-tech-blue/55 animate-pulse" />
+                      <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-tech-blue/55 animate-pulse" />
+                    </>
+                  )}
+
+                  {/* HUD Status Bar (Top) — above video in standard, absolute overlay in fullscreen */}
+                  <div
+                    className={`flex justify-between items-center font-mono text-[9px] 3xl:text-xs 4xl:text-sm text-white/70 select-none tracking-wider bg-black/45 backdrop-blur-xs px-2.5 py-1 3xl:px-4 3xl:py-2 4xl:px-6 4xl:py-3 ${
+                      isFullscreen
+                        ? 'absolute top-3 left-4 right-4 z-10 3xl:top-5 3xl:left-6 3xl:right-6'
+                        : 'mb-1'
+                    }`}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                      LIVE_FEED // SHOWREEL_2026
+                    </span>
+                    <span>SRC: MUX_STREAM // 1080P</span>
+                  </div>
 
                   {/* Video Container */}
-                  <div className="relative w-full h-full overflow-hidden bg-black">
+                  <div
+                    onClick={() => {
+                      if (videoRef.current) {
+                        const video = videoRef.current as unknown as HTMLVideoElement;
+                        if (video.paused) {
+                          video.play().catch(() => {});
+                        } else {
+                          video.pause();
+                        }
+                      }
+                    }}
+                    className={`relative w-full overflow-hidden bg-black cursor-pointer group ${
+                      isFullscreen ? 'h-full' : 'aspect-video'
+                    }`}
+                  >
                     <MuxPlayer
-                      playbackId="La6KMZg8Gi00YVNHDPjuOwYZPnIIEprMgKb8HI9Ma92M"
+                      playbackId="SIBtpHN00huNJBdr01O00pcO02kjQElwnZFgWODBciieRg8"
                       className="w-full h-full object-cover"
                       onVideoReady={(el) => {
                         videoRef.current = el as any;
                         // Play if slide is already active when loaded
                         if (activeFrame === 2) {
-                          (el as HTMLVideoElement).play().catch((err) => {
-                            console.warn("Autoplay on mount blocked:", err);
-                          });
+                          (el as HTMLVideoElement).play().catch(() => {});
                         } else {
                           (el as HTMLVideoElement).pause();
                         }
                       }}
                     />
+                  </div>
 
-                    {/* HUD Status Bar (Top) */}
-                    <div className="absolute top-3 left-4 right-4 flex justify-between items-center font-mono text-[9px] text-white/70 select-none tracking-wider bg-black/45 backdrop-blur-xs px-2.5 py-1">
-                      <span className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                        LIVE_FEED // SHOWREEL_2026
-                      </span>
-                      <span>SRC: MUX_STREAM // 1080P</span>
-                    </div>
+                  {/* Progress Bar Container — below video in standard, absolute bottom overlay in fullscreen */}
+                  <div 
+                    className={`relative h-1 bg-white/10 hover:h-2 hover:bg-white/20 transition-all duration-200 cursor-pointer pointer-events-auto group/scrub ${
+                      isFullscreen
+                        ? 'absolute bottom-16 3xl:bottom-24 left-4 right-4 z-10'
+                        : 'mt-1'
+                    }`}
+                    onMouseDown={handleScrubMouseDown}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="absolute top-0 left-0 h-full bg-tech-blue/80 group-hover/scrub:bg-tech-blue transition-colors duration-200" ref={progressBarRef} style={{ width: "0%" }} />
+                    <div className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-none bg-white opacity-0 group-hover/scrub:opacity-100 transition-opacity border border-black shadow" ref={progressKnobRef} style={{ left: "0%" }} />
+                  </div>
 
-                    {/* HUD Controls / Metrics (Bottom) */}
-                    <div className="absolute bottom-3 left-4 right-4 flex justify-between items-end select-none">
-                      {/* Left: Timecode and Stats */}
-                      <div className="flex flex-col gap-1 font-mono text-[8px] text-white/50 bg-black/45 backdrop-blur-xs p-2 text-left">
-                        <div>TIME: <span ref={timecodeRef} className="text-white font-medium">00:00:00:00</span></div>
+                  {/* Bottom Controls — below in standard, absolute overlay in fullscreen */}
+                  <div
+                    className={`flex justify-between items-center select-none pointer-events-auto ${
+                      isFullscreen
+                        ? 'absolute bottom-3 left-4 right-4 z-10 3xl:bottom-6 3xl:left-6 3xl:right-6'
+                        : 'mt-1'
+                    }`}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {/* Left: Play/Pause and Timecode */}
+                    <div className="flex items-center gap-4 bg-black/45 backdrop-blur-xs p-2 3xl:p-3 border border-white/5">
+                      <button
+                        ref={playButtonRef}
+                        onClick={() => {
+                          if (videoRef.current) {
+                            const video = videoRef.current;
+                            if (video.paused) {
+                              video.play().catch(() => {});
+                            } else {
+                              video.pause();
+                            }
+                          }
+                        }}
+                        className="w-8 h-8 3xl:w-11 3xl:h-11 4xl:w-14 4xl:h-14 flex items-center justify-center font-mono text-xs 3xl:text-sm 4xl:text-base border border-white/20 bg-black/60 text-white hover:bg-white hover:text-black transition-colors duration-300 pointer-events-auto cursor-pointer"
+                      >
+                        ▶
+                      </button>
+                      
+                      <div className="flex flex-col gap-0.5 font-mono text-[8px] 3xl:text-[10px] 4xl:text-xs text-white/50 text-left">
+                        <div>TIME: <span ref={timecodeRef} className="text-white font-medium text-[9px] 3xl:text-xs 4xl:text-sm">00:00:00:00</span></div>
                         <div>ENC: H.264 // FPS: 60.0</div>
                       </div>
+                    </div>
 
-                      {/* Right: Custom Mute Button */}
+                    {/* Right: Audio and Fullscreen Controls */}
+                    <div className="flex items-center gap-2 bg-black/45 backdrop-blur-xs p-2 3xl:p-3 border border-white/5">
                       <button
                         onClick={toggleMute}
-                        className="font-mono text-[9px] uppercase tracking-widest px-3 py-1.5 border border-white/20 bg-black/60 text-white hover:bg-white hover:text-black transition-colors duration-300 pointer-events-auto"
+                        className="font-mono text-[9px] 3xl:text-[11px] 4xl:text-xs uppercase tracking-widest px-3 py-1.5 3xl:px-4 3xl:py-2 4xl:px-5 4xl:py-2.5 border border-white/20 bg-black/60 text-white hover:bg-white hover:text-black transition-colors duration-300 pointer-events-auto cursor-pointer"
                       >
                         {isMuted ? "UNMUTE // AUDIO_OFF" : "MUTE // AUDIO_ON"}
+                      </button>
+
+                      <button
+                        onClick={toggleFullscreen}
+                        className="w-8 h-8 3xl:w-11 3xl:h-11 4xl:w-14 4xl:h-14 flex items-center justify-center font-mono text-[10px] border border-white/20 bg-black/60 text-white hover:bg-white hover:text-black transition-colors duration-300 pointer-events-auto cursor-pointer"
+                        title="Toggle Fullscreen"
+                      >
+                        ⛶
                       </button>
                     </div>
                   </div>
@@ -494,14 +695,39 @@ export default function Home() {
             >
               {TESTIMONIALS.map((test, idx) => {
                 const depths = getDepths();
-                const x = isMobile ? "0vw" : (idx % 2 === 0 ? "-20vw" : "20vw");
-                const y = isMobile ? "0vh" : (idx < 2 ? "-14vh" : "14vh");
-                const z = isMobile ? (-depths[3] - idx * 250) : (-depths[3] + idx * 50);
+                
+                const getOffsets = () => {
+                  if (screenSize === "mobile") return { x: "0vw", y: "0vh", zOffset: idx * 250 };
+                  if (screenSize === "4xl") {
+                    return {
+                      x: idx % 2 === 0 ? "-16vw" : "16vw",
+                      y: idx < 2 ? "-13vh" : "13vh",
+                      zOffset: idx * 100,
+                    };
+                  }
+                  if (screenSize === "3xl") {
+                    return {
+                      x: idx % 2 === 0 ? "-15vw" : "15vw",
+                      y: idx < 2 ? "-11vh" : "11vh",
+                      zOffset: idx * 80,
+                    };
+                  }
+                  return {
+                    x: idx % 2 === 0 ? "-13vw" : "13vw",
+                    y: idx < 2 ? "-9vh" : "9vh",
+                    zOffset: idx * 50,
+                  };
+                };
+
+                const offsets = getOffsets();
+                const x = offsets.x;
+                const y = offsets.y;
+                const z = screenSize === "mobile" ? (-depths[3] - offsets.zOffset) : (-depths[3] + offsets.zOffset);
 
                 return (
                   <motion.div
                     key={test.brand}
-                    className="absolute left-1/2 top-1/2 w-[85vw] md:w-[34vw] border border-border-neutral/20 p-6 md:p-8 bg-surface/50 backdrop-blur-xl pointer-events-auto"
+                    className="absolute left-1/2 top-1/2 w-[85vw] md:w-[34vw] 3xl:w-[28vw] 4xl:w-[24vw] border border-border-neutral/20 p-6 md:p-8 3xl:p-12 4xl:p-16 bg-surface/50 backdrop-blur-xl pointer-events-auto"
                     style={{
                       transform: `translate3d(${x}, ${y}, ${z}px) translate(-50%, -50%)`,
                       opacity: testimonialOpacityCurves[idx],
@@ -509,18 +735,18 @@ export default function Home() {
                     }}
                   >
                     <div className="flex items-center border-b border-border-neutral/10 pb-3 mb-4">
-                      <span className="font-mono text-xs text-tech-blue font-bold tracking-wider">
+                      <span className="font-mono text-xs 3xl:text-sm 4xl:text-base text-tech-blue font-bold tracking-wider">
                         {test.brand}
                       </span>
                     </div>
-                    <p className="font-sans text-sm md:text-lg italic font-light text-foreground/90 leading-relaxed">
+                    <p className="font-sans text-sm md:text-lg 3xl:text-xl 4xl:text-2xl italic font-light text-foreground/90 leading-relaxed">
                       &ldquo;{test.quote}&rdquo;
                     </p>
                     <div className="border-t border-border-neutral/10 pt-3 mt-4 flex flex-col gap-1">
-                      <span className="font-display text-xs md:text-sm font-bold uppercase tracking-wider text-primary">
+                      <span className="font-display text-xs md:text-sm 3xl:text-base 4xl:text-lg font-bold uppercase tracking-wider text-primary">
                         {test.author}
                       </span>
-                      <span className="font-mono text-[10px] md:text-xs text-foreground/45 uppercase tracking-widest">
+                      <span className="font-mono text-[10px] md:text-xs 3xl:text-xs 4xl:text-sm text-foreground/45 uppercase tracking-widest">
                         {test.role}
                       </span>
                     </div>
@@ -538,48 +764,48 @@ export default function Home() {
               className="absolute inset-0 pointer-events-none"
             >
               <motion.div
-                className="absolute left-1/2 top-1/2 w-[90vw] md:w-[75vw] max-w-6xl border border-border-neutral/20 p-6 md:p-14 bg-surface/50 backdrop-blur-xl pointer-events-auto"
+                className="absolute left-1/2 top-1/2 w-[90vw] md:w-[75vw] max-w-6xl 3xl:max-w-7xl 4xl:max-w-[1600px] border border-border-neutral/20 p-6 md:p-14 3xl:p-20 4xl:p-28 bg-surface/50 backdrop-blur-xl pointer-events-auto"
                 style={{
                   transform: `translate3d(0px, 0px, ${-getDepths()[4]}px) translate(-50%, -50%)`,
                   opacity: opacityStats,
                   visibility: visibilityStats,
                 }}
               >
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-14">
-                  <div className="md:col-span-6 space-y-8">
-                    <p className="font-mono text-xs md:text-sm text-tech-blue font-bold tracking-widest">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-14 3xl:gap-20">
+                  <div className="md:col-span-6 space-y-8 3xl:space-y-12">
+                    <p className="font-mono text-xs md:text-sm 3xl:text-base 4xl:text-lg text-tech-blue font-bold tracking-widest">
                       Key Metrics
                     </p>
-                    <div className="grid grid-cols-2 gap-x-8 gap-y-8">
-                      <div className="border-b border-border-neutral/10 pb-4">
-                        <div className="font-display text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-primary leading-none">50+</div>
-                        <div className="font-mono text-sm uppercase tracking-widest text-foreground/50 mt-3">Projects Completed</div>
+                    <div className="grid grid-cols-2 gap-x-8 gap-y-8 3xl:gap-x-12 3xl:gap-y-12">
+                      <div className="border-b border-border-neutral/10 pb-4 3xl:pb-6">
+                        <div className="font-display text-5xl md:text-6xl lg:text-7xl 3xl:text-8xl 4xl:text-9xl font-bold tracking-tighter text-primary leading-none">50+</div>
+                        <div className="font-mono text-sm 3xl:text-base 4xl:text-lg uppercase tracking-widest text-foreground/50 mt-3 3xl:mt-5">Projects Completed</div>
                       </div>
-                      <div className="border-b border-border-neutral/10 pb-4">
-                        <div className="font-display text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-primary leading-none">100%</div>
-                        <div className="font-mono text-sm uppercase tracking-widest text-foreground/50 mt-3">Client Rating</div>
+                      <div className="border-b border-border-neutral/10 pb-4 3xl:pb-6">
+                        <div className="font-display text-5xl md:text-6xl lg:text-7xl 3xl:text-8xl 4xl:text-9xl font-bold tracking-tighter text-primary leading-none">100%</div>
+                        <div className="font-mono text-sm 3xl:text-base 4xl:text-lg uppercase tracking-widest text-foreground/50 mt-3 3xl:mt-5">Client Rating</div>
                       </div>
-                      <div className="border-b border-border-neutral/10 pb-4">
-                        <div className="font-display text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-primary leading-none">04+</div>
-                        <div className="font-mono text-sm uppercase tracking-widest text-foreground/50 mt-3">Years Active</div>
+                      <div className="border-b border-border-neutral/10 pb-4 3xl:pb-6">
+                        <div className="font-display text-5xl md:text-6xl lg:text-7xl 3xl:text-8xl 4xl:text-9xl font-bold tracking-tighter text-primary leading-none">04+</div>
+                        <div className="font-mono text-sm 3xl:text-base 4xl:text-lg uppercase tracking-widest text-foreground/50 mt-3 3xl:mt-5">Years Active</div>
                       </div>
-                      <div className="border-b border-border-neutral/10 pb-4">
-                        <div className="font-display text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter text-primary uppercase leading-none mt-1">HCMC</div>
-                        <div className="font-mono text-sm uppercase tracking-widest text-foreground/50 mt-3">VN // Global Base</div>
+                      <div className="border-b border-border-neutral/10 pb-4 3xl:pb-6">
+                        <div className="font-display text-3xl md:text-4xl lg:text-5xl 3xl:text-6xl 4xl:text-7xl font-bold tracking-tighter text-primary uppercase leading-none mt-1 3xl:mt-3">HCMC</div>
+                        <div className="font-mono text-sm 3xl:text-base 4xl:text-lg uppercase tracking-widest text-foreground/50 mt-3 3xl:mt-5">VN // Global Base</div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="md:col-span-6 flex flex-col justify-between border-t md:border-t-0 md:border-l border-border-neutral/15 pt-8 md:pt-0 md:pl-10">
+                  <div className="md:col-span-6 flex flex-col justify-between border-t md:border-t-0 md:border-l border-border-neutral/15 pt-8 md:pt-0 md:pl-10 3xl:pl-16">
                     <div>
-                      <p className="font-mono text-xs md:text-sm text-tech-blue font-bold tracking-widest mb-5">
+                      <p className="font-mono text-xs md:text-sm 3xl:text-base 4xl:text-lg text-tech-blue font-bold tracking-widest mb-5 3xl:mb-8 4xl:mb-10">
                         Trusted Collaborators
                       </p>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-2 gap-3 3xl:gap-5">
                         {BRANDS.map((brand) => (
                           <div
                             key={brand}
-                            className="border border-border-neutral/20 p-3 bg-surface/10 flex items-center justify-center font-display text-xs md:text-sm font-semibold uppercase tracking-wider text-foreground/75 hover:text-tech-blue hover:border-tech-blue/30 hover:bg-surface/30 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
+                            className="border border-border-neutral/20 p-3 3xl:p-5 4xl:p-6 bg-surface/10 flex items-center justify-center font-display text-xs md:text-sm 3xl:text-base 4xl:text-lg font-semibold uppercase tracking-wider text-foreground/75 hover:text-tech-blue hover:border-tech-blue/30 hover:bg-surface/30 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
                           >
                             {brand}
                           </div>
@@ -587,14 +813,14 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <div className="pt-8 space-y-5">
-                      <TechButton href="/works" className="w-full text-sm md:text-base">
+                    <div className="pt-8 space-y-5 3xl:pt-12 3xl:space-y-7">
+                      <TechButton href="/works" className="w-full text-sm md:text-base 3xl:text-lg 3xl:py-5 4xl:text-xl 4xl:py-6">
                         Browse Archive // View Works
                       </TechButton>
                       <div className="text-center pt-1">
                         <a
                           href="/contacts"
-                          className="font-mono text-xs md:text-sm uppercase tracking-widest text-foreground/50 hover:text-tech-blue hover:underline transition-all duration-300"
+                          className="font-mono text-xs md:text-sm 3xl:text-base 4xl:text-lg uppercase tracking-widest text-foreground/50 hover:text-tech-blue hover:underline transition-all duration-300"
                         >
                           Initiate Contact // Connect
                         </a>
@@ -611,36 +837,4 @@ export default function Home() {
   );
 }
 
-function MuxPlayer({
-  playbackId,
-  className,
-  onVideoReady,
-}: {
-  playbackId: string;
-  className?: string;
-  onVideoReady?: (el: HTMLElement) => void;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    import("@mux/mux-video").then(() => {
-      if (!ref.current) return;
-      let el = ref.current.querySelector("mux-video") as HTMLElement;
-      if (!el) {
-        el = document.createElement("mux-video");
-        el.setAttribute("stream-type", "on-demand");
-        el.setAttribute("playback-id", playbackId);
-        el.setAttribute("loop", "");
-        el.setAttribute("muted", "");
-        el.setAttribute("playsinline", "");
-        el.setAttribute("preload", "auto");
-        el.className = className ?? "";
-        ref.current.innerHTML = "";
-        ref.current.appendChild(el);
-      }
-      onVideoReady?.(el);
-    });
-  }, [playbackId, className, onVideoReady]);
-
-  return <div ref={ref} className="w-full h-full animate-fade-in" />;
-}
