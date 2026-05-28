@@ -742,7 +742,7 @@ The `<Portal>` component solves a specific problem: when a detail panel needs to
 | Works archive with 3D dial | ✅ Complete | Mechanical audio feedback, haptic vibration, DOM-bypass rendering |
 | Project detail pages (horizontal scroll) | ✅ Complete | 3 content module types |
 | Takes (essays) archive + detail | ✅ Complete | 12-column editorial layout |
-| Play sandbox archive | ✅ Complete | Static iframe hosting |
+| Play archive | ✅ Complete | Connected cards layout with public domain thumbnails & title frames |
 | Play sandbox detail with HUD | ✅ Complete | Fullscreen, zoom, color mode, reload |
 | Freebies boutique archive | ✅ Complete | Portal-based detail overlay with shared layout animation |
 | Freebie detail page | ✅ Partial | Horizontal scroll works; uses dummy data |
@@ -831,6 +831,11 @@ The `<Portal>` component solves a specific problem: when a detail panel needs to
 | B15 | **WaveGradientBar color transitions** — Increased lerp factor from 0.05 to 0.08 for faster color smoothing. | `WaveGradientBar.tsx` | ✅ Faster color transitions |
 | B12 | **Navbar notch truncation** — Added `max-w-[70vw] overflow-hidden text-ellipsis` to prevent overflow. | `Navbar.tsx` | ✅ Text truncates with ellipsis on small viewports |
 | B16 | **Contacts card flip pivot** — Extended pivot hold duration from 300ms to 800ms for a more visible effect. | `contacts/page.tsx` | ✅ Pivot persists longer after flip |
+| B17 | **Failing images in Takes & Play items** — Fixed incorrect MD5 hash subdirectories for Wikimedia Commons paths. | `data/takes.ts`, `data/play.ts` | ✅ All image 404 paths corrected |
+| B18 | **Works list active item text jump** — Unified active/inactive DOM structures for titles & arrows in the 3D scroll list. | `works/page.tsx` | ✅ Prevents line height baseline jumps on click |
+| B19 | **Select Freelance Work container overflow** — Added helper functions to auto-scale font-size for titles longer than 15 chars. | `works/page.tsx` | ✅ Long titles dynamically scale to fit containers |
+| B20 | **Works wheel list edge clipping** — Replaced hard visibility cuts with smooth opacity fade-out and vertical gradient mask. | `works/page.tsx` | ✅ Softer, cinematic top/bottom boundary edges |
+| B21 | **Takes title slanting line wrap jumps** | `takes/page.tsx` | ✅ Replaced hover italic font changes with CSS skew-x transform & reduced duration to 300ms |
 
 ### Remaining Known Issues
 

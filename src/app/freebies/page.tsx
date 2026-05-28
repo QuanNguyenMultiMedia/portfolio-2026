@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
@@ -13,6 +13,23 @@ import Portal from "@/components/Portal";
 
 export default function FreebiesPage() {
   const [selectedItem, setSelectedItem] = useState<FreebieItem | null>(null);
+
+  // Disable scrolling when popover is open
+  useEffect(() => {
+    const lenis = (window as any).lenis || (window as any).__lenisInstance;
+    if (!lenis) return;
+    if (selectedItem) {
+      lenis.stop();
+      document.body.style.overflow = "hidden";
+    } else {
+      lenis.start();
+      document.body.style.overflow = "";
+    }
+    return () => {
+      if (lenis) lenis.start();
+      document.body.style.overflow = "";
+    };
+  }, [selectedItem]);
 
   return (
     <>
@@ -90,11 +107,11 @@ export default function FreebiesPage() {
                 className="fixed inset-0 bg-background/95 z-[100] cursor-zoom-out backdrop-blur-3xl"
               />
 
-              {/* Image hero — left-aligned, vertically centered */}
-              <div className="hidden md:flex fixed inset-0 z-[102] pointer-events-none items-center pr-[420px]">
+              {/* Image hero — centered, vertically centered within the left area */}
+              <div className="hidden md:flex fixed inset-0 z-[102] pointer-events-none items-center justify-center pr-[420px]">
                 <motion.div
                   layoutId={`thumb-${selectedItem.id}`}
-                  className="relative lg:ml-12 xl:ml-24 w-[45vw] max-w-[55vh] h-[65vh] overflow-hidden bg-foreground/5 shadow-2xl"
+                  className="relative w-[45vw] max-w-[55vh] h-[65vh] overflow-hidden bg-foreground/5 shadow-2xl"
                   transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
                 >
                   <Image
@@ -132,14 +149,20 @@ export default function FreebiesPage() {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-                className="fixed top-0 right-0 bottom-0 w-full md:w-[420px] bg-background border-l border-primary/10 z-[101] flex flex-col shadow-[-20px_0_40px_rgba(0,0,0,0.1)]"
+                className="fixed top-0 right-0 bottom-0 w-full md:w-[420px] bg-background/85 backdrop-blur-2xl border-l border-primary/10 z-[101] flex flex-col shadow-[-20px_0_40px_rgba(0,0,0,0.1)] pointer-events-auto"
               >
+                {/* Tech corner accents */}
+                <div className="absolute top-0 left-0 w-3.5 h-3.5 border-t border-l border-primary/25 pointer-events-none" />
+                <div className="absolute top-0 right-0 w-3.5 h-3.5 border-t border-r border-primary/25 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-3.5 h-3.5 border-b border-l border-primary/25 pointer-events-none" />
+                <div className="absolute bottom-0 right-0 w-3.5 h-3.5 border-b border-r border-primary/25 pointer-events-none" />
+
                 {/* Header */}
-                <div className="p-8 md:p-12 pb-0 flex justify-between items-start">
+                <div className="p-8 md:p-12 pb-4 flex justify-between items-center border-b border-primary/5">
                   <HUDLabel text={selectedItem.category} className="!opacity-60" />
                   <button
                     onClick={() => setSelectedItem(null)}
-                    className="p-1 hover:opacity-40 transition-opacity z-[111] pointer-events-auto"
+                    className="p-2 hover:opacity-40 transition-opacity z-[111] cursor-pointer"
                   >
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                       <path
@@ -152,36 +175,55 @@ export default function FreebiesPage() {
                 </div>
 
                 {/* Content Focus */}
-                <div className="flex-grow p-8 md:p-12 flex flex-col justify-center space-y-12 overflow-y-auto">
+                <div className="flex-grow p-8 md:p-12 flex flex-col justify-start md:justify-center space-y-8 md:space-y-12 overflow-y-auto">
+                  {/* Mobile Image Preview */}
+                  <div className="block md:hidden w-full aspect-[16/10] relative overflow-hidden bg-primary/5 border border-primary/10">
+                    <Image
+                      src={selectedItem.image}
+                      alt={selectedItem.title}
+                      fill
+                      referrerPolicy="no-referrer"
+                      className="object-cover"
+                    />
+                  </div>
+
                   <div className="space-y-4">
-                    <h2 className="text-5xl md:text-6xl lg:text-7xl font-display uppercase tracking-tighter leading-[0.85] text-primary font-bold">
+                    <h2 className="text-3xl md:text-5xl lg:text-6xl font-display uppercase tracking-tighter leading-[0.85] text-primary font-bold">
                       {selectedItem.title}
                     </h2>
                     <div className="h-px w-8 bg-primary/20" />
                   </div>
 
-                  <p className="text-lg font-light leading-relaxed opacity-70 max-w-xs">
-                    {selectedItem.description}
-                  </p>
+                  <div className="space-y-4 max-w-sm">
+                    {selectedItem.description.split("\n\n").map((para, i) => (
+                      <p key={i} className="text-base md:text-lg font-light leading-relaxed opacity-70">
+                        {para}
+                      </p>
+                    ))}
+                  </div>
 
                   <div className="space-y-2">
                     <span className="text-[8px] font-mono opacity-20 tracking-widest block">
                       COLOR PALETTE // SPEC_2026
                     </span>
-                    <div className="flex gap-1.5">
+                    <div className="flex gap-2">
                       {selectedItem.colors.map((color, i) => (
-                        <div
-                          key={i}
-                          className="w-5 h-5 border border-primary/10"
-                          style={{ backgroundColor: color }}
-                        />
+                        <div key={i} className="group relative">
+                          <div
+                            className="w-6 h-6 border border-primary/15 transition-transform duration-300 hover:scale-110 cursor-help"
+                            style={{ backgroundColor: color }}
+                          />
+                          <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-1.5 py-0.5 bg-foreground text-background text-[8px] font-mono uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[120]">
+                            {color}
+                          </span>
+                        </div>
                       ))}
                     </div>
                   </div>
                 </div>
 
                 {/* Action Area */}
-                <div className="p-8 md:p-12 pt-0">
+                <div className="p-8 md:p-12 pt-4 border-t border-primary/5">
                   <TechButton
                     href={selectedItem.downloadUrl}
                     className="w-full !py-6"

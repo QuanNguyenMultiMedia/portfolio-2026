@@ -19,8 +19,8 @@ export default function ProjectPage({
     contentQuery: ".lenis-content",
     orientation: "horizontal",
     gestureOrientation: "both",
-    wheelMultiplier: 1.2,
-    lerp: 0.08,
+    wheelMultiplier: 0.7,
+    lerp: 0.11,
     autoAssign: false,
   });
   const [isDragging, setIsDragging] = useState(false);

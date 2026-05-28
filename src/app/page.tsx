@@ -76,15 +76,15 @@ export default function Home() {
 
   // Attach easing configs to Lenis on mount
   useEffect(() => {
-    const lenis = (window as any).lenis;
+    const lenis = (window as any).lenis || (window as any).__lenisInstance;
     if (lenis) {
-      lenis.options.wheelMultiplier = 0.8;
-      lenis.options.easing = (t: number) => 1 - Math.pow(1 - t, 3);
+      lenis.options.wheelMultiplier = 0.7;
+      lenis.options.duration = 0.9;
     }
     return () => {
       if (lenis) {
-        lenis.options.wheelMultiplier = 1.0;
-        lenis.options.easing = (t: number) => t;
+        lenis.options.wheelMultiplier = 0.75;
+        lenis.options.duration = 1.0;
       }
     };
   }, []);
@@ -341,7 +341,7 @@ export default function Home() {
                 </motion.div>
 
                 <motion.div
-                  className="absolute left-8 top-24 z-10 hidden aspect-[3/4] w-full max-w-[220px] md:right-[18%] md:left-auto md:top-48 md:block md:max-w-sm"
+                  className="absolute left-8 top-24 z-10 hidden aspect-[3/4] w-full max-w-[220px] md:right-[18%] md:left-auto md:top-48 md:block md:max-w-sm pointer-events-auto"
                   style={{
                     transform: "translate3d(0px, 0px, 150px)",
                     opacity: opacityHero,

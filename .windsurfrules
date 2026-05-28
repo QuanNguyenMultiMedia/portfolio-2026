@@ -36,3 +36,11 @@ Your goal is to write code that ensures top-of-the-line UI, cinematic interactio
 - Do not use generic colors. Rely on curated HSL/Hex palettes (e.g., sophisticated dark mode grays like `#0a0a0a` instead of absolute black, except for deep contrast).
 
 Follow these rules unconditionally to produce elite, award-winning digital experiences.
+
+# Agent OS — Standards & Commands
+
+Agent OS manages coding standards. Installed at `agent-os/standards/` and `.claude/commands/agent-os/`.
+
+Before implementing: check `@agent-os/standards/index.yml` for relevant standards, inject via `@agent-os/standards/<path>`.
+
+Commands (reference via `@`): discover-standards.md, inject-standards.md, index-standards.md, plan-product.md, shape-spec.md
