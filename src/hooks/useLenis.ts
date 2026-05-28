@@ -37,6 +37,12 @@ export default function useLenis(options: UseLenisOptions = {}) {
     }
 
     const wrapper = wrapperRef?.current || undefined;
+    if (wrapper) {
+      const computedStyle = window.getComputedStyle(wrapper);
+      if (computedStyle.position === "static") {
+        wrapper.style.position = "relative";
+      }
+    }
     const content = wrapper && contentQuery ? (wrapper.querySelector(contentQuery) as HTMLElement) || undefined : undefined;
 
     const lenis = new Lenis({

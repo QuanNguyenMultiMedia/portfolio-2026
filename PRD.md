@@ -845,6 +845,14 @@ The `<Portal>` component solves a specific problem: when a detail panel needs to
 | B8 | **Next.js `unoptimized: true`** — Disables next/image optimization globally. Intended for architecture. | `next.config.ts` | Larger image bundles | 🟢 Expected |
 | B13 | **MagneticText** RAF-driven reflow — CPU spike when many instances on screen. Currently only theoretical. | `MagneticText.tsx` | Performance overhead | 🟡 Monitor |
 
+## 14. Asset & Imagery Constraints
+
+### Placeholder Image Source Policy
+> [!IMPORTANT]
+> **Strict Guideline:** All placeholder images used across the project (e.g., in `data/play.ts`, `data/freebies.ts`, `data/takes.ts`, or any future items) **MUST** be sourced from verified **Wikimedia Commons** URLs.
+> - **DO NOT** use AI-generated images for placeholders.
+> - Always format Wikimedia paths correctly and verify the URL is accessible in production builds.
+
 ---
 
 ## Appendix A: Data Schemas

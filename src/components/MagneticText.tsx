@@ -24,20 +24,55 @@ export default function MagneticText({
   const containerRef = useRef<HTMLDivElement>(null);
   const [lines, setLines] = useState<string[]>([]);
   const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
+  const [fontsLoaded, setFontsLoaded] = useState(false);
 
   const [prepared, setPrepared] = useState<PreparedTextWithSegments | null>(
     null,
   );
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const fonts = (document as any).fonts;
+    if (!fonts) {
+      setFontsLoaded(true);
+      return;
+    }
+
+    const checkFonts = () => {
+      try {
+        if (fonts.check(font)) {
+          setFontsLoaded(true);
+        } else {
+          setTimeout(checkFonts, 150);
+        }
+      } catch (e) {
+        setFontsLoaded(true);
+      }
+    };
+
+    checkFonts();
+    fonts.ready.then(() => {
+      setFontsLoaded(true);
+    }).catch(() => {
+      setFontsLoaded(true);
+    });
+    fonts.addEventListener("loadingdone", checkFonts);
+
+    return () => {
+      fonts.removeEventListener("loadingdone", checkFonts);
+    };
+  }, [font]);
+
+  useEffect(() => {
     if (!text) return;
     try {
+      const _ = fontsLoaded;
       const p = prepareWithSegments(text, font);
       setPrepared(p);
     } catch (e) {
       console.warn("Pretext preparation failed:", e);
     }
-  }, [text, font]);
+  }, [text, font, fontsLoaded]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {

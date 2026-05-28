@@ -87,7 +87,7 @@ export default function FreebiesPage({
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}
       data-lenis-prevent
-      className="bg-background h-screen w-full overflow-hidden select-none cursor-grab active:cursor-grabbing"
+      className="relative bg-background h-screen w-full overflow-hidden select-none cursor-grab active:cursor-grabbing"
     >
       {/* Back Button */}
       <div className="fixed top-16 left-16 z-50 pointer-events-auto">

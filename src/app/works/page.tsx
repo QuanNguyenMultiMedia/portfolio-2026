@@ -11,6 +11,20 @@ export default function WorksPage() {
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDialDragging, setIsDialDragging] = useState(false);
+  const [screenSize, setScreenSize] = useState<"mobile" | "laptop" | "3xl" | "4xl">("laptop");
+
+  useEffect(() => {
+    const handleResize = () => {
+      const w = window.innerWidth;
+      if (w < 768) setScreenSize("mobile");
+      else if (w >= 2560) setScreenSize("4xl");
+      else if (w >= 1920) setScreenSize("3xl");
+      else setScreenSize("laptop");
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Refs for extreme performance (no React state renders during dragging)
   const dialRef = useRef<HTMLDivElement>(null);
@@ -90,6 +104,22 @@ export default function WorksPage() {
   // Direct DOM Mutator for 3D wheel styling (by-passing React render cycle for 120 FPS performance)
   const updateItemStyles = (currentRot: number) => {
     const sectorSize = 360 / projects.length;
+    
+    // Scale projection parameters based on screen size
+    let R = 360;
+    let curveAmount = 140;
+    
+    if (typeof window !== "undefined") {
+      const w = window.innerWidth;
+      if (w >= 2560) {
+        R = 640;
+        curveAmount = 240;
+      } else if (w >= 1920) {
+        R = 500;
+        curveAmount = 180;
+      }
+    }
+
     projects.forEach((_, i) => {
       const itemEl = itemRefs.current[i];
       if (!itemEl) return;
@@ -101,13 +131,11 @@ export default function WorksPage() {
 
       const angle = diff * 28; // Increased from 22 to 28 degrees for more space between items!
       const rad = (angle * Math.PI) / 180;
-      const R = 360; // Curved projection radius
 
       const translateY = Math.sin(rad) * R;
       const translateZ = (Math.cos(rad) - 1) * R;
       const rotateX = -angle;
 
-      const curveAmount = 140;
       const translateX = (1 - Math.cos(rad)) * curveAmount;
 
       const isActive = i === activeIndexRef.current;
@@ -126,10 +154,10 @@ export default function WorksPage() {
     });
   };
 
-  // Initial placement of wheel items on mount
+  // Initial placement of wheel items on mount and screen size changes
   useEffect(() => {
-    updateItemStyles(0);
-  }, []);
+    updateItemStyles(rotationRef.current);
+  }, [screenSize]);
 
   const handleDialStart = (clientX: number, clientY: number) => {
     setIsDialDragging(true);
@@ -378,16 +406,16 @@ export default function WorksPage() {
 
   const getTitleFontSizeClass = (title: string) => {
     if (title.length > 15) {
-      return "text-3xl md:text-5xl lg:text-[3.5rem] xl:text-[4rem]";
+      return "text-3xl md:text-5xl lg:text-[3.5rem] xl:text-[4rem] 3xl:text-[5rem] 4xl:text-[6.5rem]";
     }
-    return "text-4xl md:text-6xl lg:text-[4.75rem] xl:text-[5.25rem]";
+    return "text-4xl md:text-6xl lg:text-[4.75rem] xl:text-[5.25rem] 3xl:text-[6.5rem] 4xl:text-[8.5rem]";
   };
 
   const getArrowSizeClass = (title: string) => {
     if (title.length > 15) {
-      return "text-4xl md:text-6xl lg:text-[4.5rem] xl:text-[5rem]";
+      return "text-4xl md:text-6xl lg:text-[4.5rem] xl:text-[5rem] 3xl:text-[6rem] 4xl:text-[7.5rem]";
     }
-    return "text-5xl md:text-7xl lg:text-[6rem] xl:text-[6.5rem]";
+    return "text-5xl md:text-7xl lg:text-[6rem] xl:text-[6.5rem] 3xl:text-[7.5rem] 4xl:text-[9.5rem]";
   };
 
   return (
@@ -412,20 +440,20 @@ export default function WorksPage() {
         {/* Minimal SubHeader */}
         <div className="w-full flex justify-between items-end border-b border-primary/10 pb-4 mb-4 lg:mb-6 shrink-0">
           <div className="flex flex-col gap-1">
-            <span className="text-[10px] font-mono tracking-[0.4em] opacity-40 uppercase">
+            <span className="text-[10px] font-mono tracking-[0.4em] opacity-40 uppercase 3xl:text-xs 4xl:text-sm">
               Selected Works
             </span>
-            <h1 className="text-2xl md:text-3xl font-display uppercase tracking-tight font-bold">
+            <h1 className="text-2xl md:text-3xl 3xl:text-4xl 4xl:text-5xl font-display uppercase tracking-tight font-bold">
               DIRECTORY
             </h1>
           </div>
         </div>
 
         {/* Main Grid conformed to viewport */}
-        <div className="relative z-10 w-full max-w-none grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch flex-1 min-h-0">
+        <div className="relative z-10 w-full max-w-none grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 3xl:gap-16 items-stretch flex-1 min-h-0">
           {/* Left Column: Widescreen Viewport & Details */}
-          <div className="col-span-12 lg:col-span-5 flex flex-col justify-between h-full min-h-0 space-y-4 lg:space-y-6 items-end text-right pb-2">
-            <div className="relative w-full flex-1 min-h-[240px] lg:min-h-[300px] bg-transparent border border-primary/10 overflow-hidden group shadow-2xl transition-all duration-700 ml-auto mr-0">
+          <div className="col-span-12 lg:col-span-5 flex flex-col justify-between h-full min-h-0 space-y-4 lg:space-y-6 3xl:space-y-10 items-end text-right pb-2">
+            <div className="relative w-full flex-1 min-h-[240px] lg:min-h-[300px] 3xl:min-h-[440px] 4xl:min-h-[580px] bg-transparent border border-primary/10 overflow-hidden group shadow-2xl transition-all duration-700 ml-auto mr-0">
               <div
                 className="absolute inset-0 opacity-10 blur-xl group-hover:opacity-20 transition-opacity duration-700 pointer-events-none"
                 style={{
@@ -474,21 +502,21 @@ export default function WorksPage() {
                 className="flex flex-col gap-3 shrink-0 w-full items-end text-right"
               >
                 <div className="flex flex-wrap items-center gap-3 shrink-0 justify-end w-full">
-                  <span className="tech-label">{activeProject.category}</span>
+                  <span className="tech-label 3xl:text-xs 3xl:tracking-[0.35em] 4xl:text-sm 4xl:tracking-[0.4em]">{activeProject.category}</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-primary/20" />
-                  <span className="tech-label">{activeProject.year}</span>
+                  <span className="tech-label 3xl:text-xs 3xl:tracking-[0.35em] 4xl:text-sm 4xl:tracking-[0.4em]">{activeProject.year}</span>
 
-                  <div className="flex gap-1.5 ml-2">
-                    <span className="px-2 py-0.5 bg-primary/5 rounded-none text-[8px] font-bold font-mono uppercase tracking-widest opacity-60">
+                  <div className="flex gap-1.5 ml-2 3xl:gap-2.5">
+                    <span className="px-2 py-0.5 bg-primary/5 rounded-none text-[8px] 3xl:text-[10px] 4xl:text-xs font-bold font-mono uppercase tracking-widest opacity-60">
                       CASE_STUDY
                     </span>
-                    <span className="px-2 py-0.5 bg-tech-blue/5 text-tech-blue rounded-none text-[8px] font-bold font-mono uppercase tracking-widest opacity-70">
+                    <span className="px-2 py-0.5 bg-tech-blue/5 text-tech-blue rounded-none text-[8px] 3xl:text-[10px] 4xl:text-xs font-bold font-mono uppercase tracking-widest opacity-70">
                       {activeProject.id}
                     </span>
                   </div>
                 </div>
 
-                <p className="text-body max-w-[480px] text-right ml-auto">
+                <p className="text-body max-w-[480px] 3xl:text-xl 3xl:max-w-[620px] 4xl:text-2xl 4xl:max-w-[800px] text-right ml-auto">
                   {activeProject.description}
                 </p>
               </motion.div>
@@ -499,9 +527,9 @@ export default function WorksPage() {
           <div className="col-span-12 lg:col-span-7 flex flex-col justify-center relative min-h-[440px] lg:min-h-0 lg:h-full select-none pl-4">
             <div className="relative w-full h-full flex items-center">
               {/* Left Section: 3D Cylinder Scroll Container */}
-              <div className="relative flex-1 h-full pr-[120px] flex items-center justify-start overflow-hidden">
+              <div className="relative flex-1 h-full pr-[120px] 3xl:pr-[180px] 4xl:pr-[240px] flex items-center justify-start overflow-hidden">
                 {/* Viewfinder Selection Frame - aligns perfectly to Bezel boundary */}
-                <div className="absolute left-0 right-[110px] h-[160px] border-y border-primary/10 bg-transparent pointer-events-none z-0">
+                <div className="absolute left-0 right-[110px] 3xl:right-[170px] 4xl:right-[230px] h-[160px] 3xl:h-[220px] 4xl:h-[280px] border-y border-primary/10 bg-transparent pointer-events-none z-0">
                   {/* Persistent, stationary vertical indicator on the left edge */}
                   <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary rounded-full z-10" />
                 </div>
@@ -517,7 +545,7 @@ export default function WorksPage() {
                   }}
                 >
                   <div
-                    className="relative w-full h-[160px] flex items-center justify-start"
+                    className="relative w-full h-[160px] 3xl:h-[220px] 4xl:h-[280px] flex items-center justify-start"
                     style={{ transformStyle: "preserve-3d" }}
                   >
                     {projects.map((project, i) => {
@@ -536,7 +564,7 @@ export default function WorksPage() {
                               handleItemClick(i);
                             }
                           }}
-                          className={`absolute left-0 w-[95%] max-w-[580px] pl-8 pr-6 h-[160px] flex items-center cursor-pointer select-none group/wheel-item ${
+                          className={`absolute left-0 w-[calc(100%-110px)] 3xl:w-[calc(100%-170px)] 4xl:w-[calc(100%-230px)] pl-8 pr-6 h-[160px] 3xl:h-[220px] 4xl:h-[280px] flex items-center cursor-pointer select-none group/wheel-item ${
                             isActive
                               ? "bg-foreground/[0.02]"
                               : "hover:bg-foreground/[0.003]"
@@ -570,10 +598,10 @@ export default function WorksPage() {
               </div>
 
               {/* Integrated Dial Bezel (Pristine wireframe strokes only) */}
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[220px] h-[220px] flex items-center justify-center z-20">
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[220px] h-[220px] 3xl:w-[320px] 3xl:h-[320px] 4xl:w-[420px] 4xl:h-[420px] flex items-center justify-center z-20">
                 <div
                   ref={dialRef}
-                  className="relative w-[220px] h-[220px] rounded-full border border-primary/10 bg-transparent flex items-center justify-center select-none cursor-pointer"
+                  className="relative w-[220px] h-[220px] 3xl:w-[320px] 3xl:h-[320px] 4xl:w-[420px] 4xl:h-[420px] rounded-full border border-primary/10 bg-transparent flex items-center justify-center select-none cursor-pointer"
                   onMouseDown={(e) => {
                     e.preventDefault();
                     handleDialStart(e.clientX, e.clientY);
@@ -600,8 +628,8 @@ export default function WorksPage() {
                         <div
                           className={`w-0.5 transition-all duration-300 ${
                             isActive
-                              ? "h-3.5 bg-primary"
-                              : "h-2 bg-foreground/20 mt-1.5"
+                              ? "h-3.5 3xl:h-5 4xl:h-7 bg-primary"
+                              : "h-2 3xl:h-3 4xl:h-4 bg-foreground/20 mt-1.5 3xl:mt-2.5 4xl:mt-3.5"
                           }`}
                         />
                       </div>
@@ -611,19 +639,19 @@ export default function WorksPage() {
                   {/* Rotatable Knob */}
                   <div
                     ref={knobRef}
-                    className="w-[156px] h-[156px] rounded-full bg-transparent border border-primary/20 flex items-center justify-center relative"
+                    className="w-[156px] h-[156px] 3xl:w-[226px] 3xl:h-[226px] 4xl:w-[300px] 4xl:h-[300px] rounded-full bg-transparent border border-primary/20 flex items-center justify-center relative"
                   >
                     {/* Concentric rings texture details */}
                     <div className="absolute inset-2 rounded-full border border-primary/[0.04] pointer-events-none" />
                     <div className="absolute inset-4 rounded-full border border-primary/[0.02] pointer-events-none" />
 
                     {/* Indicator Marker - hollow stroke ring */}
-                    <div className="absolute top-3 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full border border-primary bg-transparent" />
+                    <div className="absolute top-3 3xl:top-5 4xl:top-7 left-1/2 -translate-x-1/2 w-3 h-3 3xl:w-4.5 3xl:h-4.5 4xl:w-6 4xl:h-6 rounded-full border border-primary bg-transparent" />
                   </div>
 
                   {/* Static Center Cap (Sibling - remains stationary and upright) */}
-                  <div className="absolute w-[66px] h-[66px] rounded-full bg-transparent backdrop-blur-[1px] border border-primary/15 flex items-center justify-center pointer-events-none z-30">
-                    <span className="text-sm font-mono font-black text-primary/80 tracking-tighter">
+                  <div className="absolute w-[66px] h-[66px] 3xl:w-[90px] 3xl:h-[90px] 4xl:w-[120px] 4xl:h-[120px] rounded-full bg-transparent backdrop-blur-[1px] border border-primary/15 flex items-center justify-center pointer-events-none z-30">
+                    <span className="text-sm 3xl:text-xl 4xl:text-3xl font-mono font-black text-primary/80 tracking-tighter">
                       0{activeIndex + 1}
                     </span>
                   </div>
