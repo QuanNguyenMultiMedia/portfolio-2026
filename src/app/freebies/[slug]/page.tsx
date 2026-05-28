@@ -22,8 +22,8 @@ export default function FreebiesPage({
     contentQuery: ".lenis-content",
     orientation: "horizontal",
     gestureOrientation: "both",
-    wheelMultiplier: 1,
-    lerp: 0.1,
+    wheelMultiplier: 0.7,
+    lerp: 0.11,
     autoAssign: false,
   });
   const [isDragging, setIsDragging] = useState(false);

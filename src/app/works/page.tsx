@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 import { projects } from "@/data/projects";
 
 export default function WorksPage() {
+  const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDialDragging, setIsDialDragging] = useState(false);
 
@@ -110,10 +112,10 @@ export default function WorksPage() {
 
       const isActive = i === activeIndexRef.current;
       const scale = isActive ? 1.02 : 1 - Math.min(Math.abs(diff) * 0.08, 0.3);
-      const opacity = isActive ? 1 : Math.max(0.12, 1 - Math.abs(diff) * 0.3);
+      const opacity = isActive ? 1 : Math.max(0, 1 - Math.abs(diff) * 0.32);
       const blur = isActive ? 0 : Math.min(Math.abs(diff) * 1.5, 4);
 
-      const isVisible = Math.abs(diff) <= 2.2;
+      const isVisible = opacity > 0.01;
       const finalOpacity = isVisible ? opacity : 0;
 
       // Apply style values directly to the DOM node
@@ -374,6 +376,20 @@ export default function WorksPage() {
     triggerVibration();
   };
 
+  const getTitleFontSizeClass = (title: string) => {
+    if (title.length > 15) {
+      return "text-3xl md:text-5xl lg:text-[3.5rem] xl:text-[4rem]";
+    }
+    return "text-4xl md:text-6xl lg:text-[4.75rem] xl:text-[5.25rem]";
+  };
+
+  const getArrowSizeClass = (title: string) => {
+    if (title.length > 15) {
+      return "text-4xl md:text-6xl lg:text-[4.5rem] xl:text-[5rem]";
+    }
+    return "text-5xl md:text-7xl lg:text-[6rem] xl:text-[6.5rem]";
+  };
+
   return (
     <PageWrapper variant="hero">
       <div className="relative w-full h-full flex flex-col justify-between pt-24 lg:pt-28 pb-28 lg:pb-36 px-8 lg:px-24 overflow-y-auto lg:overflow-hidden z-10">
@@ -496,6 +512,8 @@ export default function WorksPage() {
                   style={{
                     perspective: "1500px",
                     transformStyle: "preserve-3d",
+                    maskImage: "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+                    WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
                   }}
                 >
                   <div
@@ -511,7 +529,13 @@ export default function WorksPage() {
                           ref={(el) => {
                             itemRefs.current[i] = el;
                           }}
-                          onClick={() => handleItemClick(i)}
+                          onClick={() => {
+                            if (isActive) {
+                              router.push(`/works/${project.slug}`);
+                            } else {
+                              handleItemClick(i);
+                            }
+                          }}
                           className={`absolute left-0 w-[95%] max-w-[580px] pl-8 pr-6 h-[160px] flex items-center cursor-pointer select-none group/wheel-item ${
                             isActive
                               ? "bg-foreground/[0.02]"
@@ -522,26 +546,22 @@ export default function WorksPage() {
                             transformStyle: "preserve-3d",
                           }}
                         >
-                          {isActive ? (
-                            <Link
-                              href={`/works/${project.slug}`}
-                              className="w-full h-full flex items-center justify-between pointer-events-auto animate-pulse-subtle"
-                            >
-                              <h3 className="text-4xl md:text-6xl lg:text-[4.75rem] xl:text-[5.25rem] font-display uppercase tracking-tighter leading-[0.85] text-primary font-bold">
-                                {project.title}
-                              </h3>
-                              {/* Towering arrow matching text area height */}
-                              <span className="text-5xl md:text-7xl lg:text-[6rem] xl:text-[6.5rem] text-primary font-light leading-none ml-6 transition-transform duration-300 translate-x-0 group-hover/wheel-item:translate-x-2 group-hover/wheel-item:-translate-y-2 shrink-0">
-                                ↗
-                              </span>
-                            </Link>
-                          ) : (
-                            <div className="w-full flex items-center justify-between">
-                              <h3 className="text-4xl md:text-6xl lg:text-[4.75rem] xl:text-[5.25rem] font-display uppercase tracking-tighter leading-[0.85] text-foreground/15 group-hover/wheel-item:text-foreground/45 transition-colors font-bold">
-                                {project.title}
-                              </h3>
-                            </div>
-                          )}
+                          <div className="w-full h-full flex items-center justify-between">
+                            <h3 className={`font-display uppercase tracking-tighter leading-[0.85] font-bold transition-colors duration-500 ${
+                              isActive
+                                ? "text-primary animate-pulse-subtle"
+                                : "text-foreground/15 group-hover/wheel-item:text-foreground/45"
+                            } ${getTitleFontSizeClass(project.title)}`}>
+                              {project.title}
+                            </h3>
+                            <span className={`font-light leading-none ml-6 transition-all duration-500 shrink-0 ${
+                              isActive
+                                ? "text-primary opacity-100 translate-x-0 scale-100"
+                                : "text-foreground/0 opacity-0 scale-90 translate-x-4 pointer-events-none"
+                            } group-hover/wheel-item:translate-x-1 group-hover/wheel-item:-translate-y-1 ${getArrowSizeClass(project.title)}`}>
+                              ↗
+                            </span>
+                          </div>
                         </div>
                       );
                     })}

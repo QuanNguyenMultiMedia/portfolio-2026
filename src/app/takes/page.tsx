@@ -22,7 +22,7 @@ export default function TakesPage() {
               </div>
 
               <div className="md:col-span-7 space-y-6">
-                <h2 className="text-5xl md:text-8xl font-display uppercase leading-[0.85] tracking-tighter transition-all duration-700 group-hover:italic">
+                <h2 className="text-5xl md:text-8xl font-display uppercase leading-none tracking-tighter transition-transform duration-300 group-hover:skew-x-[-10deg] origin-left inline-block">
                   {post.title}
                 </h2>
                 <p className="text-body max-w-[576px] line-clamp-2 group-hover:opacity-100 transition-opacity">

@@ -62,3 +62,20 @@ To ensure top-of-the-line, high-fidelity development following the **Tech-Luxe E
 
 ## 🔍 Modern Web Standards
 - **Modern Web Guidance (`modern-web-guidance`)**: Reference for modern native APIs (e.g. `:has()`, view transitions, scroll-driven animations) to avoid bloated dependencies. Always search and retrieve guides before building new features.
+
+# 🏗️ Agent OS — Standards & Commands
+
+Agent OS manages coding standards for this project. It's installed at both `~/agent-os/` (base) and `agent-os/` (project).
+
+**Before implementing anything:**
+1. Check `@agent-os/standards/index.yml` for relevant standards
+2. Inject matching standards into context via `@agent-os/standards/<path>`
+3. Use `@.claude/commands/agent-os/discover-standards.md` to extract new patterns
+4. Use `@.claude/commands/agent-os/inject-standards.md` to load relevant standards
+
+Available command references (reference via `@` path or equivalent):
+- `@.claude/commands/agent-os/discover-standards.md` — Extract codebase patterns into standards
+- `@.claude/commands/agent-os/inject-standards.md` — Inject relevant standards into context
+- `@.claude/commands/agent-os/index-standards.md` — Rebuild standards index
+- `@.claude/commands/agent-os/plan-product.md` — Document product vision
+- `@.claude/commands/agent-os/shape-spec.md` — Shape specs in plan mode
