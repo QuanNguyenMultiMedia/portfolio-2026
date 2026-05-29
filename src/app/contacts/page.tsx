@@ -17,12 +17,17 @@ const socialLinks = [
 
 const experience = [
   {
-    company: "Upwork",
-    role: "Freelance Motion Graphic Designer",
-    period: "2020 – Present",
+    company: "Herond Labs",
+    role: "Motion Designer",
+    period: "2025 – Present",
   },
   {
-    company: "“Z Cũng Viết”",
+    company: "Upwork",
+    role: "Freelance Motion Graphic Designer",
+    period: "2020 – 2025",
+  },
+  {
+    company: "\u201CZ Cũng Viết\u201D",
     role: "Project Manager & Lead Creative",
     period: "2023",
   },
@@ -108,7 +113,7 @@ export default function ContactsPage() {
 
   return (
     <PageWrapper className="h-screen overflow-hidden flex flex-col justify-center py-0">
-      <div className="max-w-[1300px] 3xl:max-w-[1600px] 4xl:max-w-[2100px] mx-auto px-8 3xl:px-16 4xl:px-24 w-full perspective-[3000px]">
+      <div className="max-w-[900px] 3xl:max-w-[1200px] 4xl:max-w-[1500px] mx-auto px-8 3xl:px-16 4xl:px-24 w-full perspective-[3000px]">
         <motion.div
           ref={containerRef}
           onMouseMove={handleMouseMove}
@@ -143,14 +148,16 @@ export default function ContactsPage() {
               transformStyle: "preserve-3d",
               transformOrigin: transformOrigin,
             }}
-            className="relative w-full"
+            className="grid grid-cols-1 grid-rows-1 w-full"
           >
             {/* FRONT SIDE */}
             <div
-              className="backface-hidden w-full relative z-10 preserve-3d"
+              className="col-start-1 row-start-1 backface-hidden w-full preserve-3d"
               style={{
                 backfaceVisibility: "hidden",
                 transformStyle: "preserve-3d",
+                pointerEvents: isFlipped ? "none" : "auto",
+                zIndex: isFlipped ? 0 : 1,
               }}
             >
               <div className="bg-primary/5 backdrop-blur-xl border border-primary/10 border-b-0 px-8 py-3 3xl:px-12 3xl:py-5 4xl:px-16 4xl:py-7 h-[50px] 3xl:h-[70px] 4xl:h-[90px] inline-flex items-center absolute top-0 right-0 -translate-y-full">
@@ -159,9 +166,9 @@ export default function ContactsPage() {
                 </h1>
               </div>
 
-              <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-0 border border-primary/10 bg-background/40 backdrop-blur-md overflow-hidden min-h-[550px] 3xl:min-h-[700px] 4xl:min-h-[850px]">
-                <div className="lg:col-span-4 p-8 md:p-12 3xl:p-16 4xl:p-20 border-b lg:border-b-0 lg:border-r border-primary/10 flex flex-col justify-between">
-                  <div className="space-y-8 3xl:space-y-12 4xl:space-y-16">
+              <div className="w-full h-full grid grid-cols-1 lg:grid-cols-12 gap-0 border border-primary/10 bg-background/40 backdrop-blur-md overflow-hidden min-h-[450px] 3xl:min-h-[580px] 4xl:min-h-[700px]">
+                <div className="lg:col-span-4 p-6 md:p-10 3xl:p-12 4xl:p-16 border-b lg:border-b-0 lg:border-r border-primary/10 flex flex-col justify-between">
+                  <div className="space-y-6 3xl:space-y-10 4xl:space-y-12">
                     <div className="space-y-3">
                       <a
                         href="mailto:quannguyenhere@gmail.com"
@@ -205,8 +212,8 @@ export default function ContactsPage() {
                   </div>
                 </div>
 
-                <div className="lg:col-span-8 p-12 md:p-16 lg:p-20 3xl:p-24 4xl:p-28 flex flex-col justify-center items-center relative bg-primary/[0.01] group">
-                  <div className="relative w-full max-w-sm md:max-w-md lg:max-w-lg 3xl:max-w-xl 4xl:max-w-2xl aspect-square">
+                <div className="lg:col-span-8 p-8 md:p-12 lg:p-14 3xl:p-16 4xl:p-20 flex flex-col justify-center items-center relative bg-primary/[0.01] group">
+                  <div className="relative w-full max-w-xs md:max-w-md lg:max-w-lg 3xl:max-w-xl 4xl:max-w-2xl aspect-square">
                     <Image
                       src="/assets/portrait_sitting.jpg"
                       alt="Minh Quan Portrait"
@@ -221,11 +228,13 @@ export default function ContactsPage() {
 
             {/* BACK SIDE */}
             <div
-              className="backface-hidden absolute inset-0 w-full preserve-3d"
+              className="col-start-1 row-start-1 backface-hidden w-full preserve-3d"
               style={{
                 backfaceVisibility: "hidden",
                 transform: "rotateY(180deg)",
                 transformStyle: "preserve-3d",
+                pointerEvents: isFlipped ? "auto" : "none",
+                zIndex: isFlipped ? 1 : 0,
               }}
             >
               <div className="bg-primary/5 backdrop-blur-xl border border-primary/10 border-b-0 px-8 py-3 3xl:px-12 3xl:py-5 4xl:px-16 4xl:py-7 h-[50px] 3xl:h-[70px] 4xl:h-[90px] inline-flex items-center absolute top-0 right-0 -translate-y-full">
@@ -234,9 +243,9 @@ export default function ContactsPage() {
                 </h1>
               </div>
 
-              <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-0 border border-primary/10 bg-surface/95 backdrop-blur-2xl overflow-hidden min-h-[550px] 3xl:min-h-[700px] 4xl:min-h-[850px]">
-                <div className="lg:col-span-4 p-8 md:p-12 3xl:p-16 4xl:p-20 border-b lg:border-b-0 lg:border-r border-primary/10 flex flex-col justify-between">
-                  <div className="space-y-8 3xl:space-y-12 4xl:space-y-16">
+              <div className="w-full h-full grid grid-cols-1 lg:grid-cols-12 gap-0 border border-primary/10 bg-surface/95 backdrop-blur-2xl overflow-hidden min-h-[450px] 3xl:min-h-[580px] 4xl:min-h-[700px]">
+                <div className="lg:col-span-4 p-6 md:p-10 3xl:p-12 4xl:p-16 border-b lg:border-b-0 lg:border-r border-primary/10 flex flex-col justify-between">
+                  <div className="space-y-6 3xl:space-y-10 4xl:space-y-12">
                     <div className="space-y-2">
                       <h2 className="text-3xl 3xl:text-5xl 4xl:text-6xl font-display uppercase tracking-tighter leading-none italic">
                         Quan Nguyen
@@ -274,14 +283,14 @@ export default function ContactsPage() {
                   </div>
                 </div>
 
-                <div className="lg:col-span-8 p-12 md:p-16 lg:p-20 3xl:p-24 4xl:p-28 flex flex-col justify-center space-y-10 3xl:space-y-14 4xl:space-y-16 relative">
-                  <div className="space-y-8 3xl:space-y-10 4xl:space-y-12 relative z-10 max-w-3xl 3xl:max-w-4xl 4xl:max-w-5xl">
+                <div className="lg:col-span-8 p-8 md:p-12 lg:p-14 3xl:p-16 4xl:p-20 flex flex-col justify-center space-y-8 3xl:space-y-10 4xl:space-y-12 relative">
+                  <div className="space-y-6 3xl:space-y-8 4xl:space-y-10 relative z-10 max-w-2xl 3xl:max-w-3xl 4xl:max-w-4xl">
                     <p className="text-xl md:text-2xl 3xl:text-4xl 4xl:text-5xl font-display font-light leading-relaxed opacity-90 italic">
                       &ldquo;I&apos;m a Multimedia Communications creative obsessed with
                       telling stories with a purpose.&rdquo;
                     </p>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 3xl:gap-12 4xl:gap-16">
+                    <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-8 3xl:gap-12 4xl:gap-16">
                       <p className="text-[13px] 3xl:text-lg 4xl:text-xl font-sans font-light leading-relaxed opacity-60">
                         Since 2020, I&apos;ve been working as a Freelance Motion
                         Graphics Designer, bringing brands&apos; messages to life

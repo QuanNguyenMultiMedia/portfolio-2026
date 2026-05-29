@@ -8,13 +8,14 @@ import GlobalSideBar from "@/components/GlobalSideBar";
 import LoadingScreen from "@/components/LoadingScreen";
 import LogoMark from "@/components/LogoMark";
 import Navbar from "@/components/Navbar";
+import MobileNavbar from "@/components/MobileNavbar";
 import SmoothScroll from "@/components/SmoothScroll";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "Minh Quan | Motion Design & Creative Engineering",
   description:
-    "Portfolio of Minh Quan — Midweight Motion Designer exploring the intersection of cinematic motion, 3D engineering, and editorial design. Ho Chi Minh City based, globally available.",
+    "I'm Nguyen Minh Quan, a mid-level motion designer who loves to move things around. I work at the intersection of interaction design, creative engineering, and motion design. HCMC based, globally available.",
   keywords: [
     "Motion Design",
     "WebGL",
@@ -72,6 +73,7 @@ export default function RootLayout({
               <GlobalSideBar />
               {children}
               <Navbar />
+              <MobileNavbar />
             </div>
           </SmoothScroll>
         </ThemeProvider>

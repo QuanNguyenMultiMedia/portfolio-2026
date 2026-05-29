@@ -51,7 +51,16 @@ export default function WorksPage() {
     }
   }, []);
 
-  const activeProject = projects[activeIndex];
+  const activeProject = projects[activeIndex] || projects[0] || {
+    title: "",
+    slug: "",
+    year: "",
+    category: "",
+    id: "",
+    description: "",
+    colors: ["#000000", "#000000"],
+    screens: []
+  };
 
   const getCoverImage = (proj: (typeof projects)[0]) => {
     return proj.coverImage || proj.screens[0]?.src || "/projects/gom-men.png";
@@ -76,20 +85,46 @@ export default function WorksPage() {
       const ctx = audioCtxRef.current;
       if (!ctx) return;
 
+      const now = ctx.currentTime;
+
+      // 1. High-passed noise transient (the crisp latch snap impact)
+      const bufferSize = ctx.sampleRate * 0.008; // 8ms transient
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = "highpass";
+      filter.frequency.setValueAtTime(2000, now);
+
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.08, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.007);
+
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+      noise.start(now);
+
+      // 2. Resonant body oscillator (simulates dial lock chamber)
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(1100, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(140, ctx.currentTime + 0.04);
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(240, now);
+      osc.frequency.exponentialRampToValueAtTime(60, now + 0.03);
 
-      gain.gain.setValueAtTime(0.14, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.045);
+      osc.start(now);
+      osc.stop(now + 0.035);
     } catch {
       // Audio blocked
     }
@@ -106,17 +141,18 @@ export default function WorksPage() {
     const sectorSize = 360 / projects.length;
     
     // Scale projection parameters based on screen size
-    let R = 360;
-    let curveAmount = 140;
+    // Scale projection parameters based on screen size (reduced to prevent overlaps)
+    let R = 300;
+    let curveAmount = 110;
     
     if (typeof window !== "undefined") {
       const w = window.innerWidth;
       if (w >= 2560) {
-        R = 640;
-        curveAmount = 240;
-      } else if (w >= 1920) {
         R = 500;
         curveAmount = 180;
+      } else if (w >= 1920) {
+        R = 400;
+        curveAmount = 140;
       }
     }
 
@@ -342,29 +378,49 @@ export default function WorksPage() {
       }
       lastTickTimeRef.current = now;
 
+      // 1. Friction noise transient (simulates metal gear clicking)
+      const bufferSize = ctx.sampleRate * 0.004; // 4ms click
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = "highpass";
+      filter.frequency.setValueAtTime(3000, now);
+
+      const noiseGain = ctx.createGain();
+      const clickVolume = 0.03 + Math.min(velocity / 800, 0.03);
+      noiseGain.gain.setValueAtTime(clickVolume, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.003);
+
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+      noise.start(now);
+
+      // 2. High metallic click oscillator
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
-      // Dynamic frequency scaling (buzz pitch) based on rotational velocity
-      const baseFreq = 180 + Math.min(velocity * 18, 1000);
+      // Dynamic frequency pitch based on rotational velocity
+      const baseFreq = 480 + Math.min(velocity * 12, 600);
 
-      osc.type = "triangle";
-      osc.frequency.setValueAtTime(baseFreq, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(
-        baseFreq * 0.25,
-        ctx.currentTime + 0.015,
-      );
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(baseFreq, now);
+      osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.5, now + 0.008);
 
-      gain.gain.setValueAtTime(
-        0.06 + Math.min(velocity / 200, 0.08),
-        ctx.currentTime,
-      );
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.015);
+      const toneVolume = 0.04 + Math.min(velocity / 600, 0.04);
+      gain.gain.setValueAtTime(toneVolume, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.008);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.018);
+      osc.start(now);
+      osc.stop(now + 0.01);
     } catch {
       // Audio blocked
     }
@@ -406,21 +462,21 @@ export default function WorksPage() {
 
   const getTitleFontSizeClass = (title: string) => {
     if (title.length > 15) {
-      return "text-3xl md:text-5xl lg:text-[3.5rem] xl:text-[4rem] 3xl:text-[5rem] 4xl:text-[6.5rem]";
+      return "text-xl md:text-4xl lg:text-[2.5rem] xl:text-[3rem] 3xl:text-[4rem] 4xl:text-[5rem]";
     }
-    return "text-4xl md:text-6xl lg:text-[4.75rem] xl:text-[5.25rem] 3xl:text-[6.5rem] 4xl:text-[8.5rem]";
+    return "text-2xl md:text-5xl lg:text-[3.5rem] xl:text-[4rem] 3xl:text-[5rem] 4xl:text-[6.5rem]";
   };
 
   const getArrowSizeClass = (title: string) => {
     if (title.length > 15) {
-      return "text-4xl md:text-6xl lg:text-[4.5rem] xl:text-[5rem] 3xl:text-[6rem] 4xl:text-[7.5rem]";
+      return "text-xl md:text-4xl lg:text-[2.5rem] xl:text-[3rem] 3xl:text-[4rem] 4xl:text-[5rem]";
     }
-    return "text-5xl md:text-7xl lg:text-[6rem] xl:text-[6.5rem] 3xl:text-[7.5rem] 4xl:text-[9.5rem]";
+    return "text-2xl md:text-5xl lg:text-[3.5rem] xl:text-[4rem] 3xl:text-[5rem] 4xl:text-[6.5rem]";
   };
 
   return (
     <PageWrapper variant="hero">
-      <div className="relative w-full h-full flex flex-col justify-between pt-24 lg:pt-28 pb-28 lg:pb-36 px-8 lg:px-24 overflow-y-auto lg:overflow-hidden z-10">
+      <div className="relative w-full max-w-screen-2xl 3xl:max-w-[1720px] 4xl:max-w-[2200px] mx-auto h-full flex flex-col justify-start lg:justify-between gap-4 lg:gap-0 pt-16 md:pt-40 pb-28 lg:pb-36 px-8 md:px-24 3xl:px-32 4xl:px-48 overflow-hidden z-10">
         {/* Dynamic ambient backgrounds */}
         <div
           className="absolute -left-1/4 top-1/4 w-[600px] h-[600px] pointer-events-none opacity-[0.06] rounded-full transition-all duration-1000 ease-out z-0"
@@ -436,16 +492,28 @@ export default function WorksPage() {
             filter: "blur(90px)",
           }}
         />
+        {/* Ambient Mobile Background Image (Dynamic Cross-Fade) */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.05] lg:hidden z-0 overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={activeProject.slug}
+              src={getCoverImage(activeProject)}
+              alt=""
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.15 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8 }}
+              className="w-full h-full object-cover blur-xl scale-105"
+            />
+          </AnimatePresence>
+        </div>
 
         {/* Minimal SubHeader */}
-        <div className="w-full flex justify-between items-end border-b border-primary/10 pb-4 mb-4 lg:mb-6 shrink-0">
+        <div className="hidden md:flex w-full justify-between items-end border-b border-primary/10 pb-4 mb-4 lg:mb-6 shrink-0">
           <div className="flex flex-col gap-1">
             <span className="text-[10px] font-mono tracking-[0.4em] opacity-40 uppercase 3xl:text-xs 4xl:text-sm">
               Selected Works
             </span>
-            <h1 className="text-2xl md:text-3xl 3xl:text-4xl 4xl:text-5xl font-display uppercase tracking-tight font-bold">
-              DIRECTORY
-            </h1>
           </div>
         </div>
 
@@ -453,7 +521,7 @@ export default function WorksPage() {
         <div className="relative z-10 w-full max-w-none grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 3xl:gap-16 items-stretch flex-1 min-h-0">
           {/* Left Column: Widescreen Viewport & Details */}
           <div className="col-span-12 lg:col-span-5 flex flex-col justify-between h-full min-h-0 space-y-4 lg:space-y-6 3xl:space-y-10 items-end text-right pb-2">
-            <div className="relative w-full flex-1 min-h-[240px] lg:min-h-[300px] 3xl:min-h-[440px] 4xl:min-h-[580px] bg-transparent border border-primary/10 overflow-hidden group shadow-2xl transition-all duration-700 ml-auto mr-0">
+            <div className="relative -mx-8 w-[calc(100%+64px)] self-stretch lg:self-auto lg:mx-0 lg:w-full h-[120px] lg:h-auto lg:flex-1 min-h-0 lg:min-h-[300px] 3xl:min-h-[440px] 4xl:min-h-[580px] bg-transparent border-y lg:border border-primary/10 overflow-hidden group shadow-2xl transition-all duration-700 mb-4 lg:mb-0 block">
               <div
                 className="absolute inset-0 opacity-10 blur-xl group-hover:opacity-20 transition-opacity duration-700 pointer-events-none"
                 style={{
@@ -492,44 +560,46 @@ export default function WorksPage() {
               </AnimatePresence>
             </div>
 
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeProject.slug}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
-                className="flex flex-col gap-3 shrink-0 w-full items-end text-right"
-              >
-                <div className="flex flex-wrap items-center gap-3 shrink-0 justify-end w-full">
-                  <span className="tech-label 3xl:text-xs 3xl:tracking-[0.35em] 4xl:text-sm 4xl:tracking-[0.4em]">{activeProject.category}</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/20" />
-                  <span className="tech-label 3xl:text-xs 3xl:tracking-[0.35em] 4xl:text-sm 4xl:tracking-[0.4em]">{activeProject.year}</span>
+            <div className="w-full flex-shrink-0 h-[160px] md:h-auto overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeProject.slug}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
+                  className="flex flex-col gap-3 shrink-0 w-full items-end text-right"
+                >
+                  <div className="flex flex-wrap items-center gap-3 shrink-0 justify-end w-full">
+                    <span className="tech-label 3xl:text-xs 3xl:tracking-[0.35em] 4xl:text-sm 4xl:tracking-[0.4em]">{activeProject.category}</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary/20" />
+                    <span className="tech-label 3xl:text-xs 3xl:tracking-[0.35em] 4xl:text-sm 4xl:tracking-[0.4em]">{activeProject.year}</span>
 
-                  <div className="flex gap-1.5 ml-2 3xl:gap-2.5">
-                    <span className="px-2 py-0.5 bg-primary/5 rounded-none text-[8px] 3xl:text-[10px] 4xl:text-xs font-bold font-mono uppercase tracking-widest opacity-60">
-                      CASE_STUDY
-                    </span>
-                    <span className="px-2 py-0.5 bg-tech-blue/5 text-tech-blue rounded-none text-[8px] 3xl:text-[10px] 4xl:text-xs font-bold font-mono uppercase tracking-widest opacity-70">
-                      {activeProject.id}
-                    </span>
+                    <div className="flex gap-1.5 ml-2 3xl:gap-2.5">
+                      <span className="px-2 py-0.5 bg-primary/5 rounded-none text-[8px] 3xl:text-[10px] 4xl:text-xs font-bold font-mono uppercase tracking-widest opacity-60">
+                        CASE_STUDY
+                      </span>
+                      <span className="px-2 py-0.5 bg-tech-blue/5 text-tech-blue rounded-none text-[8px] 3xl:text-[10px] 4xl:text-xs font-bold font-mono uppercase tracking-widest opacity-70">
+                        {activeProject.id}
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <p className="text-body max-w-[480px] 3xl:text-xl 3xl:max-w-[620px] 4xl:text-2xl 4xl:max-w-[800px] text-right ml-auto">
-                  {activeProject.description}
-                </p>
-              </motion.div>
-            </AnimatePresence>
+                  <p className="text-body max-w-[480px] 3xl:text-xl 3xl:max-w-[620px] 4xl:text-2xl 4xl:max-w-[800px] text-right ml-auto">
+                    {activeProject.description}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* Right Column: Dynamic 3D Cylinder Scroll Wheel & Integrated Axle Dial */}
-          <div className="col-span-12 lg:col-span-7 flex flex-col justify-center relative min-h-[440px] lg:min-h-0 lg:h-full select-none pl-4">
-            <div className="relative w-full h-full flex items-center">
+          <div className="col-span-12 lg:col-span-7 flex flex-col justify-center relative min-h-[320px] md:min-h-0 lg:h-full select-none pl-4 pb-16 lg:pb-0">
+            <div className="relative w-full h-full flex items-center pb-10 md:pb-0">
               {/* Left Section: 3D Cylinder Scroll Container */}
-              <div className="relative flex-1 h-full pr-[120px] 3xl:pr-[180px] 4xl:pr-[240px] flex items-center justify-start overflow-hidden">
+              <div className="relative flex-1 h-full pr-[168px] md:pr-[120px] 3xl:pr-[180px] 4xl:pr-[240px] flex items-center justify-start overflow-hidden">
                 {/* Viewfinder Selection Frame - aligns perfectly to Bezel boundary */}
-                <div className="absolute left-0 right-[110px] 3xl:right-[170px] 4xl:right-[230px] h-[160px] 3xl:h-[220px] 4xl:h-[280px] border-y border-primary/10 bg-transparent pointer-events-none z-0">
+                <div className="absolute left-0 right-[158px] md:right-[110px] 3xl:right-[170px] 4xl:right-[230px] top-1/2 -translate-y-1/2 h-[120px] md:h-[160px] 3xl:h-[220px] 4xl:h-[280px] border-y border-primary/10 bg-transparent pointer-events-none z-0">
                   {/* Persistent, stationary vertical indicator on the left edge */}
                   <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary rounded-full z-10" />
                 </div>
@@ -545,7 +615,7 @@ export default function WorksPage() {
                   }}
                 >
                   <div
-                    className="relative w-full h-[160px] 3xl:h-[220px] 4xl:h-[280px] flex items-center justify-start"
+                    className="relative w-full h-[120px] md:h-[160px] 3xl:h-[220px] 4xl:h-[280px] flex items-center justify-start"
                     style={{ transformStyle: "preserve-3d" }}
                   >
                     {projects.map((project, i) => {
@@ -564,18 +634,14 @@ export default function WorksPage() {
                               handleItemClick(i);
                             }
                           }}
-                          className={`absolute left-0 w-[calc(100%-110px)] 3xl:w-[calc(100%-170px)] 4xl:w-[calc(100%-230px)] pl-8 pr-6 h-[160px] 3xl:h-[220px] 4xl:h-[280px] flex items-center cursor-pointer select-none group/wheel-item ${
-                            isActive
-                              ? "bg-foreground/[0.02]"
-                              : "hover:bg-foreground/[0.003]"
-                          }`}
+                          className="absolute left-0 w-[calc(100%-90px)] 3xl:w-[calc(100%-140px)] 4xl:w-[calc(100%-180px)] pl-8 pr-6 h-[120px] md:h-[160px] 3xl:h-[220px] 4xl:h-[280px] flex items-center cursor-pointer select-none group/wheel-item"
                           style={{
                             transformOrigin: "left center",
                             transformStyle: "preserve-3d",
                           }}
                         >
                           <div className="w-full h-full flex items-center justify-between">
-                            <h3 className={`font-display uppercase tracking-tighter leading-[0.85] font-bold transition-colors duration-500 ${
+                            <h3 className={`font-display uppercase tracking-tighter leading-[0.85] font-bold transition-all duration-300 origin-left inline-block group-hover/wheel-item:skew-x-[-10deg] ${
                               isActive
                                 ? "text-primary animate-pulse-subtle"
                                 : "text-foreground/15 group-hover/wheel-item:text-foreground/45"
@@ -597,11 +663,11 @@ export default function WorksPage() {
                 </div>
               </div>
 
-              {/* Integrated Dial Bezel (Pristine wireframe strokes only) */}
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[220px] h-[220px] 3xl:w-[320px] 3xl:h-[320px] 4xl:w-[420px] 4xl:h-[420px] flex items-center justify-center z-20">
+              {/* Integrated Dial Bezel (Pristine wireframe strokes only - scaled down) */}
+              <div className="absolute right-12 md:right-0 top-1/2 -translate-y-1/2 w-[120px] h-[120px] md:w-[160px] md:h-[160px] 3xl:w-[240px] 3xl:h-[240px] 4xl:w-[320px] 4xl:h-[320px] flex items-center justify-center z-20">
                 <div
                   ref={dialRef}
-                  className="relative w-[220px] h-[220px] 3xl:w-[320px] 3xl:h-[320px] 4xl:w-[420px] 4xl:h-[420px] rounded-full border border-primary/10 bg-transparent flex items-center justify-center select-none cursor-pointer"
+                  className="relative w-[120px] h-[120px] md:w-[160px] md:h-[160px] 3xl:w-[240px] 3xl:h-[240px] 4xl:w-[320px] 4xl:h-[320px] rounded-full border border-primary/10 bg-transparent flex items-center justify-center select-none cursor-pointer touch-none"
                   onMouseDown={(e) => {
                     e.preventDefault();
                     handleDialStart(e.clientX, e.clientY);
@@ -639,19 +705,19 @@ export default function WorksPage() {
                   {/* Rotatable Knob */}
                   <div
                     ref={knobRef}
-                    className="w-[156px] h-[156px] 3xl:w-[226px] 3xl:h-[226px] 4xl:w-[300px] 4xl:h-[300px] rounded-full bg-transparent border border-primary/20 flex items-center justify-center relative"
+                    className="w-[84px] h-[84px] md:w-[110px] md:h-[110px] 3xl:w-[170px] 3xl:h-[170px] 4xl:w-[226px] 4xl:h-[226px] rounded-full bg-transparent border border-primary/20 flex items-center justify-center relative"
                   >
                     {/* Concentric rings texture details */}
                     <div className="absolute inset-2 rounded-full border border-primary/[0.04] pointer-events-none" />
                     <div className="absolute inset-4 rounded-full border border-primary/[0.02] pointer-events-none" />
 
                     {/* Indicator Marker - hollow stroke ring */}
-                    <div className="absolute top-3 3xl:top-5 4xl:top-7 left-1/2 -translate-x-1/2 w-3 h-3 3xl:w-4.5 3xl:h-4.5 4xl:w-6 4xl:h-6 rounded-full border border-primary bg-transparent" />
+                    <div className="absolute top-1.5 md:top-2.5 left-1/2 -translate-x-1/2 w-2.5 h-2.5 md:w-3 md:h-3 3xl:w-4.5 3xl:h-4.5 4xl:w-6 4xl:h-6 rounded-full border border-primary bg-transparent" />
                   </div>
 
                   {/* Static Center Cap (Sibling - remains stationary and upright) */}
-                  <div className="absolute w-[66px] h-[66px] 3xl:w-[90px] 3xl:h-[90px] 4xl:w-[120px] 4xl:h-[120px] rounded-full bg-transparent backdrop-blur-[1px] border border-primary/15 flex items-center justify-center pointer-events-none z-30">
-                    <span className="text-sm 3xl:text-xl 4xl:text-3xl font-mono font-black text-primary/80 tracking-tighter">
+                  <div className="absolute w-[32px] h-[32px] md:w-[44px] md:h-[44px] 3xl:w-[66px] 3xl:h-[66px] 4xl:w-[90px] 4xl:h-[90px] rounded-full bg-transparent backdrop-blur-[1px] border border-primary/15 flex items-center justify-center pointer-events-none z-30">
+                    <span className="text-xs md:text-sm 3xl:text-xl 4xl:text-3xl font-mono font-black text-primary/80 tracking-tighter">
                       0{activeIndex + 1}
                     </span>
                   </div>

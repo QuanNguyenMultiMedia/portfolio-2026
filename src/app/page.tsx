@@ -15,13 +15,12 @@ import dynamic from "next/dynamic";
 
 import BalancedText from "@/components/BalancedText";
 import PageWrapper from "@/components/PageWrapper";
-import TechButton from "@/components/TechButton";
+import { GradientText } from "@/components/ui/gradient-text";
+import { VerticalCutReveal } from "@/components/VerticalCutReveal";
 
 const MuxPlayer = dynamic(() => import("@/components/MuxPlayerWrapper"), {
   ssr: false,
 });
-
-import { VerticalCutReveal } from "@/components/VerticalCutReveal";
 
 const TESTIMONIALS = [
   {
@@ -421,9 +420,9 @@ export default function Home() {
                 transformStyle: "preserve-3d",
                 visibility: visibilityHero,
               }}
-              className="absolute inset-0 pointer-events-none"
+              className="absolute inset-0"
             >
-              <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
                 <motion.div
                   className="absolute top-32 left-8 md:left-24 md:top-48 3xl:top-64 3xl:left-32 4xl:top-80 4xl:left-48 z-10"
                   style={{
@@ -431,20 +430,22 @@ export default function Home() {
                     opacity: opacityHero,
                   }}
                 >
-                  <div className="flex flex-col gap-0 select-none">
+                  <div className="flex flex-col gap-0">
                     <h1 className="font-display text-6xl md:text-7xl lg:text-[5.25rem] 3xl:text-[7.5rem] 4xl:text-[10rem] font-bold uppercase tracking-tighter leading-[0.85] text-primary whitespace-nowrap">
                       Minh Quan
                     </h1>
                     <div className="mt-5 3xl:mt-8">
                       <h2 className="font-display text-2xl md:text-3xl 3xl:text-4xl 4xl:text-5xl uppercase leading-tight tracking-tight text-primary">
-                        Midweight Motion Designer
+                        loves{" "}
+                        <GradientText>moving</GradientText>
+                        {" "}things around.
                       </h2>
                     </div>
                   </div>
                 </motion.div>
 
                 <motion.div
-                  className="absolute left-8 top-24 z-10 hidden aspect-[3/4] w-full max-w-[220px] md:right-[18%] md:left-auto md:top-48 md:block md:max-w-sm 3xl:right-[20%] 3xl:top-60 3xl:max-w-md 4xl:right-[22%] 4xl:top-72 4xl:max-w-lg pointer-events-auto"
+                  className="absolute right-8 top-[360px] z-10 aspect-[3/4] w-full max-w-[160px] md:right-[10%] md:left-auto md:top-48 md:max-w-sm 3xl:right-[12%] 3xl:top-60 3xl:max-w-md 4xl:right-[14%] 4xl:top-72 4xl:max-w-lg pointer-events-auto block"
                   style={{
                     transform: "translate3d(0px, 0px, 150px)",
                     opacity: opacityHero,
@@ -460,29 +461,6 @@ export default function Home() {
                     />
                   </div>
                 </motion.div>
-
-                <motion.div
-                  className="absolute bottom-12 left-8 w-[35vw] min-w-[320px] md:bottom-24 md:left-24 3xl:bottom-40 3xl:left-32 4xl:bottom-48 4xl:left-48 z-10"
-                  style={{
-                    transform: "translate3d(0px, 0px, -100px)",
-                    opacity: opacityHero,
-                  }}
-                >
-                  <BalancedText
-                    text="Orchestrating space, time, and identity into cinematic digital products. Scroll to explore the craft."
-                    className={
-                      screenSize === "4xl" ? "text-3xl leading-relaxed text-foreground/80 font-sans font-light" :
-                      screenSize === "3xl" ? "text-2xl leading-relaxed text-foreground/80 font-sans font-light" :
-                      "text-base font-light leading-relaxed text-foreground/80 font-sans"
-                    }
-                    maxWidth={Math.max(320, Math.floor(viewportWidth * 0.35))}
-                    font={
-                      screenSize === "4xl" ? "300 28px Inter" :
-                      screenSize === "3xl" ? "300 22px Inter" :
-                      "300 16px Inter"
-                    }
-                  />
-                </motion.div>
               </div>
             </motion.div>
 
@@ -492,7 +470,7 @@ export default function Home() {
                 pointerEvents: activeFrame === 1 ? "auto" : "none",
                 transformStyle: "preserve-3d",
               }}
-              className="absolute inset-0 pointer-events-none"
+              className="absolute inset-0"
             >
               <motion.div
                 className="absolute inset-0 flex items-center justify-center antialiased"
@@ -502,35 +480,23 @@ export default function Home() {
                   visibility: visibilityManifesto,
                 }}
               >
-                <div className="relative text-left max-w-3xl px-8 py-12 md:px-16 md:py-20 3xl:max-w-5xl 3xl:px-24 3xl:py-28 4xl:max-w-7xl 4xl:px-32 4xl:py-36 bg-surface/30 backdrop-blur-xl border border-border-neutral/20 select-none">
-                  {/* Subtle technical HUD corner markers */}
-                  <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-primary/30" />
-                  <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-primary/30" />
-                  <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-primary/30" />
-                  <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-primary/30" />
-
-                  <p className="font-mono text-[9px] tracking-[0.4em] text-tech-blue font-bold uppercase mb-8 3xl:text-xs 3xl:mb-12 4xl:text-sm 4xl:mb-16">
-                    // Visual Philosophy
-                  </p>
-                  <h2 className="font-display text-4xl md:text-6xl lg:text-7xl 3xl:text-[7rem] 4xl:text-[10rem] font-bold tracking-tighter uppercase leading-[0.9] text-primary antialiased flex flex-col items-start">
-                    <VerticalCutReveal splitBy="characters" staggerDuration={0.015} staggerFrom="first" autoStart={activeFrame === 1}>
-                      Motion Is The
+                <div className="relative text-left max-w-3xl 3xl:max-w-5xl 4xl:max-w-7xl">
+ 
+                  <div className="text-2xl md:text-3xl lg:text-4xl 3xl:text-5xl 4xl:text-6xl font-sans font-light leading-relaxed text-primary antialiased space-y-6">
+                    <VerticalCutReveal
+                      splitBy="words"
+                      staggerDuration={0.02}
+                      staggerFrom="first"
+                      transition={{
+                        type: "spring",
+                        stiffness: 150,
+                        damping: 25,
+                      }}
+                      autoStart={activeFrame === 1}
+                    >
+                      Welcome! I'm Quan, a motion design lover. My craft is in making people stay and rewind. I believe motion and interaction is the soul of each brand, product, and experience.
                     </VerticalCutReveal>
-                    <span className="inline-flex gap-x-3 items-center justify-start flex-wrap">
-                      <VerticalCutReveal splitBy="characters" staggerDuration={0.015} staggerFrom="first" autoStart={activeFrame === 1} transition={{ type: "spring", stiffness: 190, damping: 22, delay: 0.15 }} containerClassName="italic font-light text-tech-blue">
-                        Language
-                      </VerticalCutReveal>
-                      <VerticalCutReveal splitBy="characters" staggerDuration={0.015} staggerFrom="first" autoStart={activeFrame === 1} transition={{ type: "spring", stiffness: 190, damping: 22, delay: 0.25 }}>
-                        Of
-                      </VerticalCutReveal>
-                    </span>
-                    <VerticalCutReveal splitBy="characters" staggerDuration={0.015} staggerFrom="first" autoStart={activeFrame === 1} transition={{ type: "spring", stiffness: 190, damping: 22, delay: 0.35 }}>
-                      Intention.
-                    </VerticalCutReveal>
-                  </h2>
-                  <p className="mt-8 text-sm md:text-base font-light leading-relaxed text-foreground/60 max-w-md ml-0 mr-auto antialiased 3xl:text-xl 3xl:max-w-xl 3xl:mt-12 4xl:text-2xl 4xl:max-w-2xl 4xl:mt-16">
-                    Every transition, every curve, every frame exists because it serves the narrative. Nothing is ornamental.
-                  </p>
+                  </div>
                 </div>
               </motion.div>
             </motion.div>
@@ -541,7 +507,7 @@ export default function Home() {
                 pointerEvents: activeFrame === 2 ? "auto" : "none",
                 transformStyle: "preserve-3d",
               }}
-              className="absolute inset-0 pointer-events-none"
+              className="absolute inset-0"
             >
               <motion.div
                 className="absolute inset-0 flex items-center justify-center px-6 md:px-16"
@@ -569,20 +535,7 @@ export default function Home() {
                     </>
                   )}
 
-                  {/* HUD Status Bar (Top) — above video in standard, absolute overlay in fullscreen */}
-                  <div
-                    className={`flex justify-between items-center font-mono text-[9px] 3xl:text-xs 4xl:text-sm text-white/70 select-none tracking-wider bg-black/45 backdrop-blur-xs px-2.5 py-1 3xl:px-4 3xl:py-2 4xl:px-6 4xl:py-3 ${
-                      isFullscreen
-                        ? 'absolute top-3 left-4 right-4 z-10 3xl:top-5 3xl:left-6 3xl:right-6'
-                        : 'mb-1'
-                    }`}
-                  >
-                    <span className="flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                      LIVE_FEED // SHOWREEL_2026
-                    </span>
-                    <span>SRC: MUX_STREAM // 1080P</span>
-                  </div>
+
 
                   {/* Video Container */}
                   <div
@@ -691,7 +644,7 @@ export default function Home() {
                 pointerEvents: activeFrame === 3 ? "auto" : "none",
                 transformStyle: "preserve-3d",
               }}
-              className="absolute inset-0 pointer-events-none"
+              className="absolute inset-0"
             >
               {TESTIMONIALS.map((test, idx) => {
                 const depths = getDepths();
@@ -761,7 +714,7 @@ export default function Home() {
                 pointerEvents: activeFrame === 4 ? "auto" : "none",
                 transformStyle: "preserve-3d",
               }}
-              className="absolute inset-0 pointer-events-none"
+              className="absolute inset-0"
             >
               <motion.div
                 className="absolute left-1/2 top-1/2 w-[90vw] md:w-[75vw] max-w-6xl 3xl:max-w-7xl 4xl:max-w-[1600px] border border-border-neutral/20 p-6 md:p-14 3xl:p-20 4xl:p-28 bg-surface/50 backdrop-blur-xl pointer-events-auto"
@@ -787,7 +740,7 @@ export default function Home() {
                       </div>
                       <div className="border-b border-border-neutral/10 pb-4 3xl:pb-6">
                         <div className="font-display text-5xl md:text-6xl lg:text-7xl 3xl:text-8xl 4xl:text-9xl font-bold tracking-tighter text-primary leading-none">04+</div>
-                        <div className="font-mono text-sm 3xl:text-base 4xl:text-lg uppercase tracking-widest text-foreground/50 mt-3 3xl:mt-5">Years Active</div>
+                        <div className="font-mono text-sm 3xl:text-base 4xl:text-lg uppercase tracking-widest text-foreground/50 mt-3 3xl:mt-5">Years of Experience</div>
                       </div>
                       <div className="border-b border-border-neutral/10 pb-4 3xl:pb-6">
                         <div className="font-display text-3xl md:text-4xl lg:text-5xl 3xl:text-6xl 4xl:text-7xl font-bold tracking-tighter text-primary uppercase leading-none mt-1 3xl:mt-3">HCMC</div>
@@ -813,19 +766,7 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <div className="pt-8 space-y-5 3xl:pt-12 3xl:space-y-7">
-                      <TechButton href="/works" className="w-full text-sm md:text-base 3xl:text-lg 3xl:py-5 4xl:text-xl 4xl:py-6">
-                        Browse Archive // View Works
-                      </TechButton>
-                      <div className="text-center pt-1">
-                        <a
-                          href="/contacts"
-                          className="font-mono text-xs md:text-sm 3xl:text-base 4xl:text-lg uppercase tracking-widest text-foreground/50 hover:text-tech-blue hover:underline transition-all duration-300"
-                        >
-                          Initiate Contact // Connect
-                        </a>
-                      </div>
-                    </div>
+
                   </div>
                 </div>
               </motion.div>

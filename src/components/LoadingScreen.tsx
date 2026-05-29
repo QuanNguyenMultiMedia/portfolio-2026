@@ -9,11 +9,9 @@ export default function LoadingScreen() {
   const [progress, setProgress] = useState(0);
 
   const statusMessages = [
-    "Initializing Environment",
-    "Mounting Modules",
-    "Compiling Shaders",
-    "Calibrating Viewport",
-    "Establishing Connection",
+    "Loading",
+    "Preparing",
+    "Almost There",
     "Ready",
   ];
 

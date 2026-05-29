@@ -20,42 +20,26 @@ export default function GlobalSideBar() {
   const isHome = pathname === "/";
 
   let colors = ["#005f73", "#0a9396", "#94d2bd"];
-  let topic = "INDEX";
+  let topic = "";
 
   if (pathname === "/") {
     colors = ["#1e3a8a", "#1e40af", "#3b82f6"];
     topic = "HOME";
   } else if (segments[0] === "works") {
-    if (segments[1]) {
-      const project = projects.find((p) => p.slug === segments[1]);
-      if (project) {
-        colors = project.colors;
-        topic = project.category.toUpperCase();
-      }
-    } else {
-      colors = ["#ca6702", "#ee9b00", "#e9d8a6"];
-      topic = "ARCHIVE";
-    }
+    colors = ["#ca6702", "#ee9b00", "#e9d8a6"];
+    topic = "WORKS";
   } else if (segments[0] === "takes") {
-    if (segments[1]) {
-      const take = takes.find((t) => t.slug === segments[1]);
-      if (take) {
-        colors = take.colors;
-        topic = take.topic.toUpperCase();
-      }
-    } else {
-      colors = ["#4c1d95", "#6d28d9", "#8b5cf6"];
-      topic = "ESSAYS";
-    }
+    colors = ["#4c1d95", "#6d28d9", "#8b5cf6"];
+    topic = "TAKES";
   } else if (segments[0] === "freebies") {
     colors = ["#005f73", "#0a9396", "#94d2bd"];
-    topic = "BOUTIQUE";
+    topic = "FREEBIES";
   } else if (segments[0] === "play") {
     colors = ["#ca6702", "#bb3e03", "#ae2012"];
-    topic = "LABS";
+    topic = "PLAY";
   } else if (segments[0] === "contacts") {
     colors = ["#333333", "#444444", "#555555"];
-    topic = "CONNECT";
+    topic = "CONTACTS";
   }
 
   const toggleTheme = () => setTheme(isDark ? "light" : "dark");
