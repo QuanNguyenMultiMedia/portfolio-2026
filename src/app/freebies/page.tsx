@@ -6,10 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 import { freebies, FreebieItem } from "@/data/freebies";
 import HUDLabel from "@/components/HUDLabel";
-import SectionHeader from "@/components/SectionHeader";
 import TechButton from "@/components/TechButton";
 import LogoMark from "@/components/LogoMark";
 import Portal from "@/components/Portal";
+import SectionHeader from "@/components/SectionHeader";
+import { designSystem, motionSystem } from "@/lib/designSystem";
 
 export default function FreebiesPage() {
   const [selectedItem, setSelectedItem] = useState<FreebieItem | null>(null);
@@ -49,13 +50,16 @@ export default function FreebiesPage() {
 
   return (
     <>
-      <PageWrapper>
-        <div className="relative min-h-screen pb-64">
-          <SectionHeader
-            directory="Free Library // 01"
-            title="Boutique"
-            subtitle="Curated Downloads"
-          />
+      <PageWrapper slideDirection="none">
+        <div className={designSystem.spacing.pagePadding}>
+          <motion.div
+            {...motionSystem.variants.headerSlideIn}
+            className={designSystem.spacing.headerSpacing}
+          >
+            <h1 className={designSystem.typography.pageHeroTitle}>
+              Freebies
+            </h1>
+          </motion.div>
 
           {/* Minimal Staggered Grid */}
           <motion.div
@@ -65,7 +69,7 @@ export default function FreebiesPage() {
               scale: selectedItem ? 0.98 : 1,
             }}
             transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            className="grid grid-cols-1 md:grid-cols-12 gap-x-12 3xl:gap-x-20 4xl:gap-x-28 gap-y-32 md:gap-y-48 relative"
+            className={designSystem.spacing.gridMedium}
           >
             {freebies.map((item, idx) => {
               const layoutConfig = [
@@ -79,28 +83,33 @@ export default function FreebiesPage() {
               return (
                 <motion.div
                   key={item.id}
-                  layoutId={`container-${item.id}`}
-                  className={`${layoutConfig} group cursor-pointer`}
-                  onClick={() => setSelectedItem(item)}
+                  className={layoutConfig}
+                  {...motionSystem.variants.slideIn(idx)}
                 >
                   <motion.div
-                    layoutId={`thumb-${item.id}`}
-                    className="relative aspect-[4/5] overflow-hidden bg-primary/5 border border-primary/5 mb-4"
+                    layoutId={`container-${item.id}`}
+                    className="group cursor-pointer"
+                    onClick={() => setSelectedItem(item)}
                   >
-                    <Image
-                      src={item.image}
-                      alt={item.title}
-                      fill
-                      referrerPolicy="no-referrer"
-                      className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out opacity-60 group-hover:opacity-100"
-                    />
-                  </motion.div>
+                    <motion.div
+                      layoutId={`thumb-${item.id}`}
+                      className={designSystem.components.frameThumbnailMedium}
+                    >
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        fill
+                        referrerPolicy="no-referrer"
+                        className={designSystem.components.imgThumbnailMedium}
+                      />
+                    </motion.div>
 
-                  <div className="px-1 mt-6">
-                    <h3 className="text-3xl md:text-4xl lg:text-5xl 3xl:text-6xl 4xl:text-7xl font-display uppercase tracking-tighter leading-[0.85] text-primary font-bold transition-all duration-500 group-hover:text-primary">
-                      {item.title}
-                    </h3>
-                  </div>
+                    <div className="px-1 mt-6">
+                      <h3 className={designSystem.typography.titleMedium}>
+                        {item.title}
+                      </h3>
+                    </div>
+                  </motion.div>
                 </motion.div>
               );
             })}
@@ -214,9 +223,9 @@ export default function FreebiesPage() {
                     <div className="h-px w-8 bg-primary/20" />
                   </div>
 
-                  <div className="space-y-4 max-w-sm 3xl:max-w-md 4xl:max-w-xl">
+                  <div className="space-y-4 max-w-md 3xl:max-w-lg 4xl:max-w-2xl">
                     {selectedItem.description.split("\n\n").map((para, i) => (
-                      <p key={i} className="text-base md:text-lg 3xl:text-xl 4xl:text-2xl font-light leading-relaxed opacity-70">
+                      <p key={i} className={designSystem.typography.bodyStatic}>
                         {para}
                       </p>
                     ))}

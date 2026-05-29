@@ -8,6 +8,11 @@
   --tech-blue: #0029ff;
   --border-neutral: rgba(0, 0, 0, 0.08);
   --surface: #ffffff;
+  --color-1: 330 100% 40%;
+  --color-2: 140 100% 55%;
+  --color-3: 210 100% 30%;
+  --color-4: 60 100% 70%;
+  --color-5: 295 100% 45%;
 }
 
 .dark {
@@ -17,6 +22,11 @@
   --tech-blue: #0029ff;
   --border-neutral: rgba(255, 255, 255, 0.1);
   --surface: #111111;
+  --color-1: 330 100% 40%;
+  --color-2: 140 100% 55%;
+  --color-3: 210 100% 30%;
+  --color-4: 60 100% 70%;
+  --color-5: 295 100% 45%;
 }
 
 @theme {
@@ -68,15 +78,8 @@
 }
 
 @layer components {
-  .text-subhead {
-    @apply text-xl md:text-2xl font-light leading-snug opacity-80 font-sans;
-  }
   .text-body {
     @apply text-base font-light text-foreground/80 leading-relaxed font-sans;
-  }
-
-  .sharp-card {
-    @apply bg-surface/10 backdrop-blur-md border border-border-neutral rounded-none;
   }
 
   .tech-label {
@@ -96,14 +99,6 @@
 
   .horizontal-slide {
     @apply flex-shrink-0 w-full h-full relative border-r border-border-neutral;
-  }
-
-  .editorial-main {
-    @apply md:col-span-8 space-y-8;
-  }
-
-  .editorial-side {
-    @apply md:col-span-4 space-y-8 sticky top-24 h-fit;
   }
 }
 
@@ -165,5 +160,62 @@
   }
   .animate-scanline {
     animation: scanline 8s linear infinite;
+  }
+
+  @keyframes gradient-border {
+    0%, 100% {
+      transform: rotate(0deg) scale(1);
+    }
+    50% {
+      transform: rotate(180deg) scale(1.05);
+    }
+  }
+
+  @keyframes gradient-1 {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(15%, 15%) scale(1.1);
+    }
+  }
+
+  @keyframes gradient-2 {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(-15%, -15%) scale(1.15);
+    }
+  }
+
+  @keyframes gradient-3 {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(20%, -20%) scale(1.08);
+    }
+  }
+
+  @keyframes gradient-4 {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(-20%, 20%) scale(1.12);
+    }
+  }
+
+  @keyframes gradient-shift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 }

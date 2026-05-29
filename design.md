@@ -36,3 +36,20 @@ The interface feels like a premium technical manual or a luxury automotive confi
 - **Don't**: Let the tech elements clutter the editorial whitespace; they should be "whisper-quiet".
 - **Do**: Use GSAP for "mechanical" transitions—snappy, precise, and calculated.
 - **Don't**: Use "bouncy" or playful easing functions.
+- **Do**: Centralize layout spacing, typography, and motion variants in a shared config file (`src/lib/designSystem.ts`) to avoid bloated inline class redundancy.
+- **Don't**: Apply horizontal translation and scale zoom animations to parent page containers (`PageWrapper.tsx`) if child elements are already sliding stagger-in. This causes opposing animation forces that look unrefined.
+- **Don't**: Include ornamental labels or purely cosmetic, non-functional text elements (such as fake mock titles or decoration-only text markings like "MQ_RADIAL") that serve no informational or routing purpose. Every piece of copy must correspond to real context or functional state.
+
+## Learned Lessons & Development Best Practices
+
+### 1. Motion & Transition Cohesion
+- **Staggered Item Entries**: Standard default pages should load statically in terms of position and scale (simply fading in and unblurring) while the inner elements slide horizontally from the right with a staggered delay. This draws the user's eye sequentially.
+- **TypeScript Tuple Easing**: Framer Motion's `transition.ease` expects an explicit `[number, number, number, number]` tuple for custom cubic-bezier curves. Always type or cast easing arrays as a tuple to avoid compilation errors due to compiler array inference (`number[]`).
+
+### 2. High-Performance Interactions
+- **Bypass React Reconciliation**: For 120 FPS interactions (e.g., dial scroll wheels, drag sliders), directly mutate DOM styles (`element.style.transform`) using refs. Only trigger React state updates for visible text/metadata changes when the interaction settles.
+- **Audio Context Recycling**: Eagerly instantiate a single global `AudioContext` on mount instead of instantiating on every click or tick. This avoids browser audio queue bottlenecks.
+
+### 3. Layout Stacking & Portals
+- **Preserve-3D Stacking Contexts**: Elements with `will-change: transform` or `transform-style: preserve-3d` spawn new stacking contexts, trapping elements. Use a custom `<Portal>` component to render details panels, drawer overlays, or modals under `document.body` to preserve correct layout positions.
+- **Isolate Entrance Animations**: When using shared layout animations (`layoutId`), wrap the shared component inside a plain motion container that handles mount entrance fades/slides. This separates initial page load animation from the shared layout interpolation.

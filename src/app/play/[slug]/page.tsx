@@ -95,16 +95,7 @@ export default function PlayPage({
         </Link>
       </motion.div>
 
-      {/* HUD Header Info - Left top edge (Title / Status) (Hidden in fullscreen) */}
-      {!isFullscreen && (
-        <div className="absolute top-16 right-16 md:top-24 md:right-24 3xl:top-32 3xl:right-32 4xl:top-40 4xl:right-40 z-40 hidden md:flex items-center gap-8 font-mono text-[9px] 3xl:text-xs 4xl:text-sm tracking-[0.2em] uppercase opacity-40">
-          <div>SYS_LOC: LOCAL_STATIC_MIRROR</div>
-          <div className="flex items-center gap-2">
-            <span className={`w-1.5 h-1.5 rounded-full ${isLoading ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
-            STATUS: {isLoading ? 'INITIALIZING' : 'RUNNING'}
-          </div>
-        </div>
-      )}
+
 
       {/* Main Screen Area - Viewfinder Frame */}
       <motion.div
@@ -128,18 +119,10 @@ export default function PlayPage({
 
         {/* TOP BAR: Sits above the frame normally, drops inside during fullscreen */}
         <div
-          className={`absolute w-full flex justify-between items-end pointer-events-none transition-all duration-700 ease-[0.23,1,0.32,1] z-30 ${
+          className={`absolute w-full flex justify-end items-end pointer-events-none transition-all duration-700 ease-[0.23,1,0.32,1] z-30 ${
             isFullscreen ? "top-6 px-6" : "bottom-[calc(100%+24px)] left-0"
           }`}
         >
-          {/* Top Left: Metadata */}
-          <div className="flex flex-col gap-1 pointer-events-auto">
-            <span className="font-mono text-[9px] 3xl:text-xs 4xl:text-sm tracking-[0.2em] text-foreground/50">DATA_VIZ // {project.slug.toUpperCase()}</span>
-            <span className="font-mono text-[10px] 3xl:text-sm 4xl:text-base opacity-80 font-bold uppercase">
-              {project.title}
-            </span>
-          </div>
-
           {/* Top Right: Fullscreen Toggle */}
           <button
             onClick={() => {
@@ -174,7 +157,7 @@ export default function PlayPage({
 
         {/* BOTTOM BAR: Sits below the frame normally, rises inside during fullscreen */}
         <div
-          className={`absolute w-full flex justify-between items-start pointer-events-none transition-all duration-700 ease-[0.23,1,0.32,1] z-30 ${
+          className={`absolute w-full flex justify-start items-start pointer-events-none transition-all duration-700 ease-[0.23,1,0.32,1] z-30 ${
             isFullscreen ? "bottom-6 px-6" : "top-[calc(100%+24px)] left-0"
           }`}
         >
@@ -186,12 +169,6 @@ export default function PlayPage({
             <span className="font-mono text-[9px] 3xl:text-xs 4xl:text-sm tracking-[0.2em] mb-[1px] opacity-44">
               / {playItems.length.toString().padStart(2, "0")}
             </span>
-          </div>
-
-          {/* Bottom Right: Status */}
-          <div className="pointer-events-auto flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-red-500/80 animate-pulse" />
-            <span className="font-mono text-[9px] 3xl:text-xs 4xl:text-sm tracking-[0.2em] opacity-80">INTERACTIVE</span>
           </div>
         </div>
 
@@ -325,21 +302,7 @@ export default function PlayPage({
                     </div>
                   </div>
 
-                  {/* Tech-luxe visual status logs */}
-                  <div className="w-full border-t border-foreground/10 pt-4 mt-2 space-y-1 text-left text-[8px] tracking-[0.1em] text-foreground/45">
-                    <div className="flex justify-between">
-                      <span>LOAD_METHOD</span>
-                      <span className="text-foreground/75">LOCAL_MIRROR_IFRAME</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>RESOURCE_PATH</span>
-                      <span className="text-foreground/75 truncate max-w-[200px]" title={project.url}>{project.url}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>SECURE_SANDBOX</span>
-                      <span className="text-emerald-500">SAME_ORIGIN_OK</span>
-                    </div>
-                  </div>
+
                 </div>
               </motion.div>
             ) : null}
@@ -435,17 +398,7 @@ export default function PlayPage({
         </div>
       </motion.div>
 
-      {/* Decorative background grid and metadata labels */}
-      {!isFullscreen && (
-        <>
-          <div className="absolute bottom-8 left-8 md:bottom-16 md:left-16 z-0 hidden md:block font-mono text-[8px] tracking-[0.2em] uppercase opacity-30 select-none">
-            {`${project.tech.join(" // ")} // PORTFOLIO_PLAY_V1`}
-          </div>
-          <div className="absolute bottom-8 right-8 md:bottom-16 md:right-16 z-0 hidden md:block font-mono text-[8px] tracking-[0.2em] uppercase opacity-30 select-none">
-            FRAME_LATENCY: 0.00ms // LOCAL_ENV_OK
-          </div>
-        </>
-      )}
+
     </div>
   );
 }

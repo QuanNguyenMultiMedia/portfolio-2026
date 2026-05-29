@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import HUDLabel from "./HUDLabel";
+import { designSystem } from "@/lib/designSystem";
 
 interface SectionHeaderProps {
   directory: string;
@@ -17,7 +18,7 @@ export default function SectionHeader({
   className = "",
 }: SectionHeaderProps) {
   return (
-    <header className={`mb-24 md:mb-32 ${className}`}>
+    <header className={`${designSystem.spacing.headerMargin} ${className}`}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -25,7 +26,7 @@ export default function SectionHeader({
         className="flex flex-col gap-4"
       >
         <HUDLabel text={directory} />
-        <h1 className="text-6xl md:text-8xl font-display uppercase leading-none tracking-tighter">
+        <h1 className={designSystem.typography.pageHeaderTitle}>
           {title}
           {subtitle && (
             <>

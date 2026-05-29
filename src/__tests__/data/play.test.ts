@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { playItems } from "@/data/play";
 
 describe("play data", () => {
-  it("has 5 play items", () => {
-    expect(playItems).toHaveLength(5);
+  it("has 4 play items", () => {
+    expect(playItems).toHaveLength(4);
   });
 
   it("each play item has required fields", () => {

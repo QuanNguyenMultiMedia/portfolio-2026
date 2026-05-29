@@ -60,7 +60,7 @@ export default function Navbar() {
   }, [pathname]);
 
   // Determine current directory and title for the HUD Notch
-  let directory = "DIRECTORY";
+  let directory = "MINHQUAN";
   let title = "HOME";
 
   if (pathname === "/") {
@@ -70,23 +70,21 @@ export default function Navbar() {
       (item) => item.path !== "/" && pathname.startsWith(item.path)
     );
     if (activeItem) {
-      title = activeItem.name.toUpperCase();
+      const section = activeItem.name.toUpperCase();
 
-      // Special handling for dynamic routes or specific sections
-      if (pathname.startsWith("/takes/")) {
-        directory = "ESSAYS";
-        title =
-          pathname.split("/").pop()?.toUpperCase().replace(/-/g, "_") || title;
-      } else if (pathname.startsWith("/works/")) {
-        directory = "ARCHIVE";
-        title =
-          pathname.split("/").pop()?.toUpperCase().replace(/-/g, "_") || title;
+      // Build breadcrumbs: MINHQUAN // WORKS or MINHQUAN // WORKS // SLUG
+      const segments = pathname.split("/").filter(Boolean);
+      if (segments.length > 1) {
+        const slug = segments[1].toUpperCase().replace(/-/g, "_");
+        title = `${section} // ${slug}`;
+      } else {
+        title = section;
       }
     }
   }
 
   return (
-    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex flex-col items-end w-max">
+    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 hidden md:flex flex-col items-end w-max">
       {/* Physical HUD Notch */}
       <motion.div
         initial={{ opacity: 0, y: 5 }}

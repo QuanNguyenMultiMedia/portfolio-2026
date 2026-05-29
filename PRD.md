@@ -640,6 +640,16 @@ interface Project {
 | **Hover-driven state changes** | Grayscale→color, underline reveal, tilt parallax, label opacity | Multiple files |
 | **Loading sequence** | Animated boot screen with percentage progress | `LoadingScreen.tsx` |
 
+### Motion System Guidelines & Lessons Learned
+
+#### 1. Page-Level vs. Element-Level Isolation
+- **Rule**: Standard page routes should never zoom, translate, or scale on enter. PageWrapper should handle static transitions (fade and blur only).
+- **Rule**: Horizontal/vertical motion and staggered entry effects must be isolated to individual page elements (e.g. headers and grid/list items) to avoid visual clashes or opposing movement forces.
+- **Rule**: Staggered delays on item entries should utilize a standard step duration (e.g., `delay: 0.05 + index * 0.05`) with cubic-bezier curves like `[0.16, 1, 0.3, 1]` for a premium, unified feel.
+
+#### 2. Easing Curve Declarations in TypeScript
+- **Rule**: Custom cubic-bezier easing arrays (like `[0.16, 1, 0.3, 1]`) in Framer Motion should always be typed as a four-number tuple `[number, number, number, number]` (either inline or via reusable variables). Default typescript inference treats array brackets as a generic `number[]` which breaks type checking in `<motion.div>` transition properties.
+
 ---
 
 ## 10. Technical Architecture
@@ -728,6 +738,17 @@ The `<Portal>` component solves a specific problem: when a detail panel needs to
 - Sets `mounted = true` in useEffect
 - Returns `null` during SSR to avoid server/client mismatch
 - Only renders portal content after hydration
+
+### 10.6 Architecture Best Practices & Lessons Learned
+
+#### 1. Centralized Styling & Motion Config
+- **Rule**: Avoid ad-hoc inline Tailwind padding, typography sizes, and motion transitions on items. Always define layout properties, typography, component styles, and motion variants in a centralized, customizable theme configuration file (`src/lib/designSystem.ts`). This ensures visual consistency and high-speed maintenance when tweaking layouts or animations.
+
+#### 2. High-FPS DOM Bypass
+- **Rule**: When building complex interactive layouts (like dial scrollers, drag sliders, or kinetic cards) that require 120 FPS performance, completely bypass React state triggers during the active interaction. Direct DOM style mutations via `useRef` prevent virtual DOM layout bottlenecks. Only trigger React state reconciliation when the animation completes or active index data changes.
+
+#### 3. Stacking Context & Portal Isolation
+- **Rule**: Elements promoting GPU layers via `will-change` or `transform-style: preserve-3d` create isolated stacking contexts, clipping absolute/fixed overlay children. Always mount overlays or fullscreen modal components outside the parent scroller using a `<Portal>` component mapped to `document.body` to avoid clipping.
 
 ---
 
