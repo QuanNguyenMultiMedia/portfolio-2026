@@ -6,7 +6,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 import { projects } from "@/data/projects";
-import { t, layout } from "@/lib/designSystem";
+import { t, layout, fx } from "@/lib/designSystem";
 
 export default function WorksPage() {
   const router = useRouter();
@@ -501,18 +501,24 @@ export default function WorksPage() {
         </div>
 
         {/* Minimal SubHeader */}
-        <div className="hidden md:flex w-full justify-between items-end border-b border-primary/10 pb-3 mb-3 lg:mb-4 shrink-0">
+        <motion.div
+          {...fx.headerSlideIn}
+          className="hidden md:flex w-full justify-between items-end border-b border-primary/10 pb-3 mb-3 lg:mb-4 shrink-0"
+        >
           <div className="flex flex-col gap-1">
             <span className={`${t.meta} tracking-[0.4em] opacity-40 group-hover:opacity-40`}>
               Selected Works
             </span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Main Grid conformed to viewport */}
         <div className="relative z-10 w-full max-w-none grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 3xl:gap-24 4xl:gap-32 items-stretch flex-1 min-h-0">
           {/* Left Column: Widescreen Viewport & Details */}
-          <div className="col-span-12 lg:col-span-5 flex flex-col justify-between h-full min-h-0 space-y-6 lg:space-y-8 3xl:space-y-12 items-end text-right pb-2">
+          <motion.div
+            {...fx.slideIn(0)}
+            className="col-span-12 lg:col-span-5 flex flex-col justify-between h-full min-h-0 space-y-6 lg:space-y-8 3xl:space-y-12 items-end text-right pb-2"
+          >
             <div className="relative -mx-8 w-[calc(100%+64px)] self-stretch lg:self-auto lg:mx-0 lg:w-full h-[120px] lg:h-auto lg:flex-1 min-h-0 lg:min-h-[260px] 3xl:min-h-[380px] 4xl:min-h-[480px] bg-transparent border-y lg:border border-primary/10 overflow-hidden group transition-all duration-700 mb-6 lg:mb-0 block">
               <div
                 className="absolute inset-0 opacity-10 blur-xl group-hover:opacity-20 transition-opacity duration-700 pointer-events-none"
@@ -568,7 +574,7 @@ export default function WorksPage() {
                 </motion.div>
               </AnimatePresence>
             </div>
-          </div>
+          </motion.div>
 
           {/* Right Column: Dynamic 3D Cylinder Scroll Wheel & Integrated Axle Dial */}
           <div className="col-span-12 lg:col-span-7 flex flex-col justify-center relative min-h-[320px] md:min-h-0 lg:h-full select-none pl-4 pb-16 lg:pb-0">
