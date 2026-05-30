@@ -31,6 +31,8 @@ export default function WorksPage() {
   const dialRef = useRef<HTMLDivElement>(null);
   const knobRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const scrollContainerParentRef = useRef<HTMLDivElement>(null);
+  const dialContainerParentRef = useRef<HTMLDivElement>(null);
 
   const rotationRef = useRef<number>(0);
   const activeIndexRef = useRef<number>(0);
@@ -577,23 +579,23 @@ export default function WorksPage() {
           </motion.div>
 
           {/* Right Column: Dynamic 3D Cylinder Scroll Wheel & Integrated Axle Dial */}
-          <motion.div
-            initial={{ opacity: 0, x: 32 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.85, ease: fx.ease, delay: 0.05 }}
-            onAnimationComplete={() => {
-              const el = dialRef.current?.closest('.col-span-12') as HTMLElement | null;
-              if (el) {
-                el.style.transform = '';
-                el.style.filter = '';
-              }
-              updateItemStyles(rotationRef.current);
-            }}
-            className="col-span-12 lg:col-span-7 flex flex-col justify-center relative min-h-[320px] md:min-h-0 lg:h-full select-none pl-4 pb-16 lg:pb-0"
-          >
+          <div className="col-span-12 lg:col-span-7 flex flex-col justify-center relative min-h-[320px] md:min-h-0 lg:h-full select-none pl-4 pb-16 lg:pb-0">
             <div className="relative w-full h-full flex items-center md:pb-0">
               {/* Left Section: 3D Cylinder Scroll Container */}
-              <div className="relative flex-1 h-full pr-[168px] md:pr-[220px] 3xl:pr-[320px] 4xl:pr-[420px] flex items-center justify-start overflow-hidden">
+              <motion.div
+                ref={scrollContainerParentRef}
+                initial={{ opacity: 0, x: 32 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.85, ease: fx.ease, delay: 0.10 }}
+                onAnimationComplete={() => {
+                  if (scrollContainerParentRef.current) {
+                    scrollContainerParentRef.current.style.transform = '';
+                    scrollContainerParentRef.current.style.filter = '';
+                  }
+                  updateItemStyles(rotationRef.current);
+                }}
+                className="relative flex-1 h-full pr-[168px] md:pr-[220px] 3xl:pr-[320px] 4xl:pr-[420px] flex items-center justify-start overflow-hidden"
+              >
                 {/* Viewfinder Selection Frame - aligns perfectly to Bezel boundary */}
                 <div className="absolute left-0 right-[158px] md:right-[210px] 3xl:right-[310px] 4xl:right-[410px] top-1/2 -translate-y-1/2 h-[60px] md:h-[80px] 3xl:h-[110px] 4xl:h-[140px] border-y border-primary/10 bg-transparent pointer-events-none z-0">
                   {/* Persistent, stationary vertical indicator on the left edge */}
@@ -657,10 +659,22 @@ export default function WorksPage() {
                     })}
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Integrated Dial Bezel (Pristine wireframe strokes only - scaled down) */}
-              <div className="absolute right-12 md:right-0 top-1/2 -translate-y-1/2 w-[120px] h-[120px] md:w-[160px] md:h-[160px] 3xl:w-[240px] 3xl:h-[240px] 4xl:w-[320px] 4xl:h-[320px] flex items-center justify-center z-20">
+              <motion.div
+                ref={dialContainerParentRef}
+                initial={{ opacity: 0, x: 32 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.85, ease: fx.ease, delay: 0.15 }}
+                onAnimationComplete={() => {
+                  if (dialContainerParentRef.current) {
+                    dialContainerParentRef.current.style.transform = '';
+                    dialContainerParentRef.current.style.filter = '';
+                  }
+                }}
+                className="absolute right-12 md:right-0 top-1/2 -translate-y-1/2 w-[120px] h-[120px] md:w-[160px] md:h-[160px] 3xl:w-[240px] 3xl:h-[240px] 4xl:w-[320px] 4xl:h-[320px] flex items-center justify-center z-20"
+              >
                 <div
                   ref={dialRef}
                   className="relative w-[120px] h-[120px] md:w-[160px] md:h-[160px] 3xl:w-[240px] 3xl:h-[240px] 4xl:w-[320px] 4xl:h-[320px] rounded-full border border-primary/10 bg-transparent flex items-center justify-center select-none cursor-pointer touch-none"
@@ -718,9 +732,9 @@ export default function WorksPage() {
                     </span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </PageWrapper>
