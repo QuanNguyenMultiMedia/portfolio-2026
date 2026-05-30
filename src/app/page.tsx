@@ -17,7 +17,7 @@ import BalancedText from "@/components/BalancedText";
 import PageWrapper from "@/components/PageWrapper";
 import { GradientText } from "@/components/ui/gradient-text";
 import { VerticalCutReveal } from "@/components/VerticalCutReveal";
-import { t, motion as motionTokens } from "@/lib/designSystem";
+import { t, motion as motionTokens, fx } from "@/lib/designSystem";
 
 const MuxPlayer = dynamic(() => import("@/components/MuxPlayerWrapper"), {
   ssr: false,
@@ -425,6 +425,7 @@ export default function Home() {
             >
               <div className="absolute inset-0" style={{ transformStyle: "preserve-3d" }}>
                 <motion.div
+                  {...fx.headerSlideIn}
                   className="absolute top-32 left-8 md:left-24 md:top-48 3xl:top-64 3xl:left-32 4xl:top-80 4xl:left-48 z-10"
                   style={{
                     transform: "translate3d(0px, 0px, 0px)",
@@ -446,6 +447,7 @@ export default function Home() {
                 </motion.div>
 
                 <motion.div
+                  {...fx.slideIn(1)}
                   className="absolute right-8 top-[360px] z-10 aspect-[3/4] w-full max-w-[130px] md:right-[10%] md:left-auto md:top-48 md:max-w-[280px] 3xl:right-[12%] 3xl:top-60 3xl:max-w-[340px] 4xl:right-[14%] 4xl:top-72 4xl:max-w-[400px] pointer-events-auto block"
                   style={{
                     transform: "translate3d(0px, 0px, 150px)",
