@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import LogoMark from "./LogoMark";
 
 const navItems = [
   { name: "Home", path: "/" },
@@ -102,6 +103,11 @@ export default function Navbar() {
         ref={navRef}
         className="relative z-10 flex items-center gap-1 p-1 bg-background/95 backdrop-blur-2xl border border-primary/10 rounded-none"
       >
+        {/* Logo Mark on the left side of desktop navbar */}
+        <div className="flex items-center pl-4 pr-2 h-7 w-24 flex-shrink-0">
+          <LogoMark fixed={false} variant="auto" animate={false} className="w-full h-full" />
+        </div>
+
         {/* Active Pill Highlighter */}
         <div
           className={`absolute bg-tech-blue -z-10 ${

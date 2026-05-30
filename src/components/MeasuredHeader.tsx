@@ -82,7 +82,8 @@ export default function MeasuredHeader({
 
     setLines(lineData);
     setIsReady(false);
-    setTimeout(() => setIsReady(true), 100);
+    const timer = setTimeout(() => setIsReady(true), 100);
+    return () => clearTimeout(timer);
   }, [prepared, maxWidth, text, fontsLoaded]);
 
   return (

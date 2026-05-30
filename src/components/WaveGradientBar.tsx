@@ -144,16 +144,15 @@ export default function WaveGradientBar({
   const centerY = 0.0;
   const zoom = 0.9;
 
-  // Use refs for dynamic colors to avoid re-initializing the renderer
-  const color1Ref = useRef(color1);
-  const color2Ref = useRef(color2);
-  const color3Ref = useRef(color3);
+  // Pre-parse the hex values to RGB arrays initially to avoid RAF GC allocation overhead
+  const color1Ref = useRef<number[]>([]);
+  const color2Ref = useRef<number[]>([]);
+  const color3Ref = useRef<number[]>([]);
 
-  useEffect(() => {
-    color1Ref.current = color1;
-    color2Ref.current = color2;
-    color3Ref.current = color3;
-  }, [color1, color2, color3]);
+  // Update refs synchronously during render, preventing race conditions or delay on page transitions
+  color1Ref.current = hexToRgb(color1);
+  color2Ref.current = hexToRgb(color2);
+  color3Ref.current = hexToRgb(color3);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -232,10 +231,10 @@ export default function WaveGradientBar({
     const loop = (t: number) => {
       program.uniforms.iTime.value = (t - t0) * 0.001;
 
-      // Target colors from refs (updated outside the effect)
-      const targetRgb1 = hexToRgb(color1Ref.current);
-      const targetRgb2 = hexToRgb(color2Ref.current);
-      const targetRgb3 = hexToRgb(color3Ref.current);
+      // Target colors from refs (already pre-parsed, avoiding string/regex operations on every frame)
+      const targetRgb1 = color1Ref.current;
+      const targetRgb2 = color2Ref.current;
+      const targetRgb3 = color3Ref.current;
 
       // Lerp current colors towards targets
       const lerpFactor = 0.08;
@@ -261,6 +260,13 @@ export default function WaveGradientBar({
         container.removeChild(canvas);
       } catch {
         // Ignore
+      }
+      // Properly release WebGL buffers and programs from VRAM on unmount safely
+      try {
+        geometry.remove();
+        program.remove();
+      } catch (e) {
+        console.warn("OGL WebGL resource disposal failed:", e);
       }
     };
   }, []);

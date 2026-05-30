@@ -13,14 +13,24 @@ export default function WorksPage() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDialDragging, setIsDialDragging] = useState(false);
   const [screenSize, setScreenSize] = useState<"mobile" | "laptop" | "3xl" | "4xl">("laptop");
+  const screenParamsRef = useRef({ R: 200, curveAmount: 120, angleStep: 24 });
 
   useEffect(() => {
     const handleResize = () => {
       const w = window.innerWidth;
-      if (w < 768) setScreenSize("mobile");
-      else if (w >= 2560) setScreenSize("4xl");
-      else if (w >= 1920) setScreenSize("3xl");
-      else setScreenSize("laptop");
+      if (w < 768) {
+        setScreenSize("mobile");
+        screenParamsRef.current = { R: 120, curveAmount: 60, angleStep: 18 };
+      } else if (w >= 2560) {
+        setScreenSize("4xl");
+        screenParamsRef.current = { R: 320, curveAmount: 200, angleStep: 24 };
+      } else if (w >= 1920) {
+        setScreenSize("3xl");
+        screenParamsRef.current = { R: 260, curveAmount: 150, angleStep: 24 };
+      } else {
+        setScreenSize("laptop");
+        screenParamsRef.current = { R: 200, curveAmount: 120, angleStep: 24 };
+      }
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -142,27 +152,7 @@ export default function WorksPage() {
   // Direct DOM Mutator for 3D wheel styling (by-passing React render cycle for 120 FPS performance)
   const updateItemStyles = (currentRot: number) => {
     const sectorSize = 360 / projects.length;
-    
-    let R = 200;          // Decreased to wrap items more tightly around cylinder
-    let curveAmount = 120; // Increased horizontal sweep to emphasize cylinder wrapping
-    let angleStep = 24;    // Match radius scale for snug visual flow
-    
-    if (typeof window !== "undefined") {
-      const w = window.innerWidth;
-      if (w >= 2560) {
-        R = 320;
-        curveAmount = 200;
-        angleStep = 24;
-      } else if (w >= 1920) {
-        R = 260;
-        curveAmount = 150;
-        angleStep = 24;
-      } else if (w < 768) {
-        R = 120;
-        curveAmount = 60;
-        angleStep = 18;
-      }
-    }
+    const { R, curveAmount, angleStep } = screenParamsRef.current;
 
     projects.forEach((_, i) => {
       const itemEl = itemRefs.current[i];

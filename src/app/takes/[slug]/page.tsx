@@ -1,18 +1,15 @@
-"use client";
-
-import { use } from "react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { takes } from "@/data/takes";
 import Link from "next/link";
 import { layout, ui, t } from "@/lib/designSystem";
 
-export default function PostPage({
+export default async function PostPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = use(params);
+  const { slug } = await params;
   const post = takes.find((t) => t.slug === slug);
 
   if (!post) {
