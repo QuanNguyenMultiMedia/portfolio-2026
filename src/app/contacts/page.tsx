@@ -248,6 +248,7 @@ const experience = [
 export default function ContactsPage() {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isEntered, setIsEntered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const mouseX = useMotionValue(0);
@@ -327,15 +328,38 @@ export default function ContactsPage() {
           onMouseLeave={handleMouseLeave}
           onClick={handleCardClick}
           className="relative w-full cursor-pointer preserve-3d"
-          initial={{ y: 50, opacity: 0 }}
-          animate={{
-            y: isFlipped ? 0 : [0, -15, 0],
-            opacity: 1,
+          initial={{ y: 900, rotate: -15, rotateX: 35, opacity: 0 }}
+          animate={isEntered
+            ? {
+                y: isFlipped ? 0 : [0, -15, 0],
+                rotate: 0,
+                rotateX: 0,
+                opacity: 1,
+              }
+            : {
+                y: 0,
+                rotate: 0,
+                rotateX: 0,
+                opacity: 1,
+              }
+          }
+          onAnimationComplete={() => {
+            if (!isEntered) setIsEntered(true);
           }}
-          transition={{
-            y: { repeat: isFlipped ? 0 : Infinity, duration: 6, ease: "easeInOut" },
-            opacity: { duration: 1.2 },
-          }}
+          transition={isEntered
+            ? {
+                y: { repeat: isFlipped ? 0 : Infinity, duration: 6, ease: "easeInOut" },
+                rotate: { duration: 0.5 },
+                rotateX: { duration: 0.5 },
+              }
+            : {
+                type: "spring",
+                stiffness: 90,
+                damping: 13,
+                mass: 0.8,
+                opacity: { duration: 0.5 },
+              }
+          }
           style={{
             x: springX,
             y: springY,
