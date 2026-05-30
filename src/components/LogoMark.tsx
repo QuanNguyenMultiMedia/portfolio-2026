@@ -10,12 +10,14 @@ interface LogoMarkProps {
   variant?: "default" | "inverted" | "auto";
   className?: string;
   animate?: boolean;
+  fixed?: boolean;
 }
 
 export default function LogoMark({
   variant = "auto",
   className = "",
   animate = true,
+  fixed = true,
 }: LogoMarkProps) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -34,8 +36,8 @@ export default function LogoMark({
         : "/assets/Logo_Full_LightMode.svg";
 
   const content = (
-    <Link href="/" className="group flex items-center">
-      <div className="relative w-32 h-16 overflow-hidden">
+    <Link href="/" className="group flex items-center w-full h-full">
+      <div className="relative w-full h-full min-w-[60px] overflow-hidden">
         {mounted ? (
           <Image
             src={logoSrc}
@@ -51,9 +53,13 @@ export default function LogoMark({
     </Link>
   );
 
+  const containerClasses = fixed
+    ? `fixed top-16 right-16 md:top-24 md:right-24 z-[60] hidden md:block ${className}`
+    : className;
+
   if (!animate) {
     return (
-      <div className={`fixed top-16 right-16 md:top-24 md:right-24 z-[60] hidden md:block ${className}`}>
+      <div className={containerClasses}>
         {content}
       </div>
     );
@@ -64,7 +70,7 @@ export default function LogoMark({
       initial={shouldAnimate ? { opacity: 0, y: -10 } : { opacity: 1, y: 0 }}
       animate={shouldAnimate ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
       transition={{ delay: 0.1, duration: 0.8, ease: "easeOut" }}
-      className={`fixed top-16 right-16 md:top-24 md:right-24 z-[60] hidden md:block ${className}`}
+      className={containerClasses}
     >
       {content}
     </motion.div>

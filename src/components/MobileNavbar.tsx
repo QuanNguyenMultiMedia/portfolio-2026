@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import LogoMark from "./LogoMark";
 
 const navItems = [
   { name: "Home", path: "/" },
@@ -240,6 +241,9 @@ export default function MobileNavbar() {
       <div className="fixed bottom-10 left-6 right-6 z-50 md:hidden pointer-events-none">
         <div className="w-full bg-surface/50 backdrop-blur-xl border border-primary/10 px-5 py-4 flex items-center justify-between pointer-events-auto">
           <div className="flex items-center gap-3">
+            <div className="w-16 h-8 flex-shrink-0">
+              <LogoMark fixed={false} variant="auto" animate={false} className="w-full h-full" />
+            </div>
             <span className="font-mono text-[8px] tracking-[0.2em] opacity-60 uppercase">{breadcrumb}</span>
           </div>
 
@@ -365,6 +369,11 @@ export default function MobileNavbar() {
               }}
             >
               <div className="w-2.5 h-2.5 bg-tech-blue rounded-full animate-ping" />
+            </div>
+
+            {/* Logo on the top right of the hover modal overlay */}
+            <div className="absolute top-6 right-6 z-[110] pointer-events-auto w-24 h-12">
+              <LogoMark fixed={false} variant="auto" animate={false} className="w-full h-full" />
             </div>
 
             {/* Gesture Tip Overlay */}

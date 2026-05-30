@@ -45,7 +45,7 @@ export const t = {
   // H1: primary content headings
   h1:       "text-2xl md:text-4xl lg:text-5xl 3xl:text-6xl 4xl:text-7xl font-display uppercase leading-none tracking-tighter",
   // H2: card titles, section sub-headers
-  h2:       "text-lg md:text-xl lg:text-2xl 3xl:text-3xl 4xl:text-4xl font-display uppercase tracking-tighter leading-[0.85] font-bold",
+  h2:       "text-lg md:text-xl lg:text-2xl 3xl:text-3xl 4xl:text-4xl font-display tracking-tighter leading-[0.85] font-bold",
   // H3: nav items, small labels
   h3:       "font-display text-xs md:text-sm 3xl:text-base 4xl:text-lg uppercase tracking-wider",
   // Subtitle: mono eyebrow / section indicators

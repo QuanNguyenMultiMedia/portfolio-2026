@@ -37,15 +37,15 @@ export default function PageWrapper({
 
   const initialProps = isStory
     ? { opacity: 0 }
-    : { opacity: 0, filter: "blur(8px)" };
+    : { opacity: 0, y: 16 };
 
   const animateProps = isStory
     ? { opacity: 1 }
-    : { opacity: 1, filter: "blur(0px)" };
+    : { opacity: 1, y: 0 };
 
   const styleProps = isStory
     ? { willChange: "opacity" }
-    : { willChange: "opacity, filter" };
+    : { willChange: "opacity, transform" };
 
   return (
     <motion.main

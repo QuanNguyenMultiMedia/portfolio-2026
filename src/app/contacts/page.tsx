@@ -34,6 +34,16 @@ function GooeyText({
     const currentChars = () => charsRef.current.filter((ch): ch is HTMLSpanElement => ch !== null);
     const filterWrap = textEl.querySelector('.goo-filter-wrap') as HTMLElement | null;
 
+    let cachedTextRect: DOMRect | null = null;
+    let cachedParentRect: DOMRect | null = null;
+
+    function updateRects() {
+      if (!textEl) return;
+      cachedTextRect = textEl.getBoundingClientRect();
+      const parentEl = textEl.parentElement;
+      cachedParentRect = parentEl ? parentEl.getBoundingClientRect() : cachedTextRect;
+    }
+
     function cacheOffsets() {
       const chars = currentChars();
       if (chars.length === 0) return;
@@ -56,6 +66,8 @@ function GooeyText({
 
         initialOffsets[idx] = { x, y };
       });
+
+      updateRects();
     }
 
     function update() {
@@ -63,14 +75,18 @@ function GooeyText({
       const chars = currentChars();
       if (chars.length === 0 || initialOffsets.length === 0) return;
 
-      const r = textEl!.getBoundingClientRect();
+      if (!cachedTextRect || !cachedParentRect) {
+        updateRects();
+      }
+
+      const r = cachedTextRect!;
+      const hr = cachedParentRect!;
       const cardPanel = textEl!.closest('.backface-hidden') as HTMLElement | null;
-      const isPanelActive = cardPanel ? window.getComputedStyle(cardPanel).pointerEvents !== 'none' : true;
+      // Direct DOM attribute check bypassing layout-triggering getComputedStyle
+      const isPanelActive = cardPanel ? cardPanel.style.pointerEvents !== 'none' : true;
 
       let isHovered = false;
       if (mouse && isPanelActive) {
-        const parentEl = textEl!.parentElement;
-        const hr = parentEl ? parentEl.getBoundingClientRect() : r;
         if (
           mouse.x >= hr.left &&
           mouse.x <= hr.right &&
@@ -120,10 +136,24 @@ function GooeyText({
     }
 
     const handleMouseMove = (e: MouseEvent) => {
+      const cardPanel = textEl!.closest('.backface-hidden') as HTMLElement | null;
+      const isPanelActive = cardPanel ? cardPanel.style.pointerEvents !== 'none' : true;
+      if (!isPanelActive) {
+        if (mouse !== null) {
+          mouse = null;
+          schedule();
+        }
+        return;
+      }
+
+      const wasNull = mouse === null;
       mouse = {
         x: e.clientX,
         y: e.clientY
       };
+      if (wasNull) {
+        updateRects();
+      }
       schedule();
     };
 
@@ -327,7 +357,7 @@ export default function ContactsPage() {
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           onClick={handleCardClick}
-          className="relative w-full cursor-pointer preserve-3d"
+          className="relative w-full cursor-pointer preserve-3d will-change-transform"
           initial={{ y: 900, rotate: -15, rotateX: 35, opacity: 0 }}
           animate={isEntered
             ? {
@@ -366,6 +396,7 @@ export default function ContactsPage() {
             rotateX: springTiltX,
             rotateY: springTiltY,
             transformStyle: "preserve-3d",
+            willChange: "transform",
           }}
         >
           <motion.div
@@ -401,7 +432,6 @@ export default function ContactsPage() {
                 <div className="lg:col-span-5 p-5 md:p-8 3xl:p-10 4xl:p-12 border-b lg:border-b-0 lg:border-r border-primary/10 flex flex-col justify-between">
                   <div className="space-y-6 3xl:space-y-10 4xl:space-y-12">
                     <div className="space-y-2">
-                      <span className={`${t.subtitle} opacity-50 block`}>CONTACT</span>
                       <a
                         href="mailto:quannguyenhere@gmail.com"
                         className="pointer-events-auto flex flex-col gap-1.5 py-8 -my-5 group"
@@ -415,7 +445,6 @@ export default function ContactsPage() {
                     </div>
 
                     <div className="space-y-4 pt-4">
-                      <span className={`${t.subtitle} opacity-50 block`}>SOCIAL CONNECTIONS</span>
                       <div className="flex flex-col gap-4 3xl:gap-5">
                         {socialLinks.map((link) => (
                           <a
@@ -438,7 +467,6 @@ export default function ContactsPage() {
                   </div>
 
                   <div className="pt-8 space-y-3">
-                    <span className={`${t.subtitle} opacity-50 block`}>SYNOPSIS</span>
                     <p className={`${t.body} max-w-[240px] 3xl:max-w-[320px] opacity-80`}>
                       Multimedia creative designer at the intersection of
                       architecture, motion, and code.
@@ -481,7 +509,6 @@ export default function ContactsPage() {
                 <div className="lg:col-span-5 p-5 md:p-8 3xl:p-10 4xl:p-12 border-b lg:border-b-0 lg:border-r border-primary/10 flex flex-col justify-between">
                   <div className="space-y-6 3xl:space-y-10 4xl:space-y-12">
                     <div className="space-y-2">
-                      <span className={`${t.subtitle} opacity-50 block`}>CREATIVE PROFILE</span>
                       <a
                         href="mailto:quannguyenhere@gmail.com"
                         className="pointer-events-auto flex flex-col gap-1.5 py-8 -my-5 group"
@@ -498,7 +525,6 @@ export default function ContactsPage() {
                     </div>
 
                     <div className="space-y-4 pt-4">
-                      <span className={`${t.subtitle} opacity-50 block`}>EXPERIENCE</span>
                       <div className="space-y-4 3xl:space-y-6">
                         {experience.map((exp, i) => (
                           <div key={i} className="space-y-1 group">
@@ -520,8 +546,7 @@ export default function ContactsPage() {
                   </div>
 
                   <div className="pt-8 space-y-2">
-                    <span className={`${t.subtitle} opacity-50 block`}>EDUCATION</span>
-                    <p className="text-[8px] 3xl:text-[10px] 4xl:text-xs font-mono tracking-widest uppercase opacity-75 leading-relaxed max-w-[240px]">
+                    <p className={`${t.body} max-w-[240px] 3xl:max-w-[320px] opacity-80`}>
                       FPT University // BBA Multimedia Communications
                     </p>
                   </div>
@@ -530,7 +555,6 @@ export default function ContactsPage() {
                 <div className="lg:col-span-7 p-6 md:p-8 lg:p-10 3xl:p-12 4xl:p-16 flex flex-col justify-center space-y-6 3xl:space-y-8 relative">
                   <div className="space-y-6 3xl:space-y-8 4xl:space-y-10 relative z-10 max-w-2xl 3xl:max-w-3xl 4xl:max-w-4xl">
                     <div className="space-y-3">
-                      <span className={`${t.subtitle} opacity-50 block`}>MANIFESTO</span>
                       <p className={`${t.h2} font-light leading-relaxed opacity-95 italic`}>
                         &ldquo;I&apos;m a Multimedia Communications creative obsessed with
                         telling stories with a purpose.&rdquo;

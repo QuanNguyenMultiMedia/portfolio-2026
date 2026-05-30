@@ -9,6 +9,7 @@ import LoadingScreen from "@/components/LoadingScreen";
 import LogoMark from "@/components/LogoMark";
 import Navbar from "@/components/Navbar";
 import MobileNavbar from "@/components/MobileNavbar";
+import MobileTopBar from "@/components/MobileTopBar";
 import SmoothScroll from "@/components/SmoothScroll";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
@@ -47,6 +48,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <head>
+        <link
+          rel="preload"
+          href="/assets/portrait_sitting.jpg"
+          as="image"
+          type="image/jpeg"
+        />
         <script dangerouslySetInnerHTML={{
           __html: `
             (function() {
@@ -71,7 +78,10 @@ export default function RootLayout({
             <div className="relative">
               <LogoMark />
               <GlobalSideBar />
-              {children}
+              <MobileTopBar />
+              <div className="pt-9 md:pt-0">
+                {children}
+              </div>
               <Navbar />
               <MobileNavbar />
             </div>

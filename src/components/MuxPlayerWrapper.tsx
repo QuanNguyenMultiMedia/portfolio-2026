@@ -59,7 +59,11 @@ export default function MuxPlayerWrapper({
       el.setAttribute("disable-cookies", "true");
       el.className = className ?? "";
       containerRef.current.appendChild(el);
-      onVideoReadyRef.current?.(el);
+      customElements.whenDefined("mux-video").then(() => {
+        if (el) {
+          onVideoReadyRef.current?.(el);
+        }
+      });
     });
   }, [playbackId, className]);
 

@@ -35,13 +35,15 @@ export default function BalancedText({
       return;
     }
 
+    let timeoutId: NodeJS.Timeout | null = null;
+
     const checkFonts = () => {
       try {
         if (fonts.check(font)) {
           setFontsLoaded(true);
         } else {
           // Retry if not yet loaded
-          setTimeout(checkFonts, 150);
+          timeoutId = setTimeout(checkFonts, 150);
         }
       } catch (e) {
         setFontsLoaded(true);
@@ -58,6 +60,9 @@ export default function BalancedText({
 
     return () => {
       fonts.removeEventListener("loadingdone", checkFonts);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
     };
   }, [font]);
 

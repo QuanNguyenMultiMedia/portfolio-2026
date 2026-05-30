@@ -312,41 +312,91 @@ export default function Home() {
     }
   };
 
-  // Direct DOM Timecode and Video Status Raf Loop
+  // Direct DOM Timecode and Video Status Raf Loop (Optimized to run ONLY when playing)
   useEffect(() => {
-    let rafId: number;
+    const video = videoRef.current;
+    if (!video) return;
+
+    let rafId: number | null = null;
+
     const updateVideoStatus = () => {
-      const video = videoRef.current;
-      if (video) {
-        const curTime = video.currentTime ?? 0;
-        const duration = video.duration || 1;
+      const curTime = video.currentTime ?? 0;
+      const duration = video.duration || 1;
 
-        // 1. Update Timecode Text
-        if (timecodeRef.current) {
-          const minutes = Math.floor(curTime / 60).toString().padStart(2, "0");
-          const seconds = Math.floor(curTime % 60).toString().padStart(2, "0");
-          const frames = Math.floor((curTime % 1) * 30).toString().padStart(2, "0");
-          timecodeRef.current.textContent = `00:${minutes}:${seconds}:${frames}`;
-        }
-
-        // 2. Update Progress Bar & Knob
-        const pct = (curTime / duration) * 100;
-        if (progressBarRef.current) {
-          progressBarRef.current.style.width = `${pct}%`;
-        }
-        if (progressKnobRef.current) {
-          progressKnobRef.current.style.left = `${pct}%`;
-        }
-
-        // 3. Update Play/Pause Button Icon
-        if (playButtonRef.current) {
-          playButtonRef.current.textContent = video.paused ? "▶" : "‖";
-        }
+      // 1. Update Timecode Text
+      if (timecodeRef.current) {
+        const minutes = Math.floor(curTime / 60).toString().padStart(2, "0");
+        const seconds = Math.floor(curTime % 60).toString().padStart(2, "0");
+        const frames = Math.floor((curTime % 1) * 30).toString().padStart(2, "0");
+        timecodeRef.current.textContent = `00:${minutes}:${seconds}:${frames}`;
       }
-      rafId = requestAnimationFrame(updateVideoStatus);
+
+      // 2. Update Progress Bar & Knob
+      const pct = (curTime / duration) * 100;
+      if (progressBarRef.current) {
+        progressBarRef.current.style.width = `${pct}%`;
+      }
+      if (progressKnobRef.current) {
+        progressKnobRef.current.style.left = `${pct}%`;
+      }
+
+      // 3. Update Play/Pause Button Icon
+      if (playButtonRef.current) {
+        playButtonRef.current.textContent = video.paused ? "▶" : "‖";
+      }
+
+      // Continue loop only if video is actively playing
+      if (!video.paused && !video.ended) {
+        rafId = requestAnimationFrame(updateVideoStatus);
+      } else {
+        rafId = null;
+      }
     };
-    rafId = requestAnimationFrame(updateVideoStatus);
-    return () => cancelAnimationFrame(rafId);
+
+    const startLoop = () => {
+      if (rafId === null) {
+        rafId = requestAnimationFrame(updateVideoStatus);
+      }
+    };
+
+    const stopLoop = () => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      // Ensure one last sync to show correct paused icon and final timecode
+      updateVideoStatus();
+    };
+
+    // Listen to video events to start and stop RAF updates
+    video.addEventListener("play", startLoop);
+    video.addEventListener("playing", startLoop);
+    video.addEventListener("pause", stopLoop);
+    video.addEventListener("ended", stopLoop);
+    video.addEventListener("seeking", updateVideoStatus);
+    video.addEventListener("seeked", updateVideoStatus);
+    video.addEventListener("timeupdate", updateVideoStatus);
+
+    // Initial sync
+    updateVideoStatus();
+
+    // Start loop if already playing (e.g. autoplay)
+    if (!video.paused && !video.ended) {
+      startLoop();
+    }
+
+    return () => {
+      video.removeEventListener("play", startLoop);
+      video.removeEventListener("playing", startLoop);
+      video.removeEventListener("pause", stopLoop);
+      video.removeEventListener("ended", stopLoop);
+      video.removeEventListener("seeking", updateVideoStatus);
+      video.removeEventListener("seeked", updateVideoStatus);
+      video.removeEventListener("timeupdate", updateVideoStatus);
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+    };
   }, []);
 
   useEffect(() => {
