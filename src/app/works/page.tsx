@@ -577,7 +577,20 @@ export default function WorksPage() {
           </motion.div>
 
           {/* Right Column: Dynamic 3D Cylinder Scroll Wheel & Integrated Axle Dial */}
-          <div className="col-span-12 lg:col-span-7 flex flex-col justify-center relative min-h-[320px] md:min-h-0 lg:h-full select-none pl-4 pb-16 lg:pb-0">
+          <motion.div
+            initial={{ opacity: 0, x: 32 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.85, ease: fx.ease, delay: 0.05 }}
+            onAnimationComplete={() => {
+              const el = dialRef.current?.closest('.col-span-12') as HTMLElement | null;
+              if (el) {
+                el.style.transform = '';
+                el.style.filter = '';
+              }
+              updateItemStyles(rotationRef.current);
+            }}
+            className="col-span-12 lg:col-span-7 flex flex-col justify-center relative min-h-[320px] md:min-h-0 lg:h-full select-none pl-4 pb-16 lg:pb-0"
+          >
             <div className="relative w-full h-full flex items-center md:pb-0">
               {/* Left Section: 3D Cylinder Scroll Container */}
               <div className="relative flex-1 h-full pr-[168px] md:pr-[220px] 3xl:pr-[320px] 4xl:pr-[420px] flex items-center justify-start overflow-hidden">
@@ -707,7 +720,7 @@ export default function WorksPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </PageWrapper>
