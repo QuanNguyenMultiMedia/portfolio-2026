@@ -87,7 +87,7 @@ export default function LoadingScreen() {
               </div>
               <div className="h-[1px] w-full bg-primary/10 relative overflow-hidden">
                 <motion.div
-                  className="absolute top-0 left-0 h-full bg-primary shadow-[0_0_10px_rgba(0,0,0,0.2)]"
+                  className="absolute top-0 left-0 h-full bg-primary"
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
                 />

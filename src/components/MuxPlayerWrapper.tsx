@@ -18,6 +18,26 @@ export default function MuxPlayerWrapper({
     onVideoReadyRef.current = onVideoReady;
   }, [onVideoReady]);
 
+  // Intercept and silence non-fatal Hls.js/Mux buffer update logs to avoid Next.js dev overlay triggers
+  useEffect(() => {
+    const originalConsoleError = console.error;
+    console.error = (...args) => {
+      const msg = args.map(arg => typeof arg === "object" ? JSON.stringify(arg) : String(arg)).join(" ");
+      if (
+        msg.includes("getErrorFromHlsErrorData") ||
+        msg.includes("hls.js") ||
+        msg.includes("BufferController") ||
+        msg.includes("onSBUpdateError")
+      ) {
+        return;
+      }
+      originalConsoleError.apply(console, args);
+    };
+    return () => {
+      console.error = originalConsoleError;
+    };
+  }, []);
+
   useEffect(() => {
     import("@mux/mux-video").then(() => {
       if (!containerRef.current) return;

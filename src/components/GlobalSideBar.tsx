@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import WaveGradientBar from "./WaveGradientBar";
 import { projects } from "@/data/projects";
 import { takes } from "@/data/takes";
@@ -18,6 +19,7 @@ export default function GlobalSideBar() {
 
   const isDark = theme === "dark";
   const isHome = pathname === "/";
+  const isIndividualItem = segments.length >= 2;
 
   let colors = ["#005f73", "#0a9396", "#94d2bd"];
   let topic = "";
@@ -61,6 +63,29 @@ export default function GlobalSideBar() {
             }}
             className="absolute top-0 right-0 bottom-0 w-[1px] bg-foreground/5 z-[70]"
           />
+
+          {/* 0.5. Back Button (only shown inside individual items) */}
+          <AnimatePresence>
+            {isIndividualItem && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 48, opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+                className="relative w-full flex-shrink-0 pointer-events-auto overflow-hidden border-b border-foreground/5 flex items-center justify-center"
+              >
+                <Link
+                  href={`/${segments[0]}`}
+                  className="w-full h-full flex items-center justify-center text-foreground/40 hover:text-foreground transition-colors group"
+                  aria-label="Go Back"
+                >
+                  <span className="text-[14px] font-sans group-hover:-translate-y-0.5 transition-transform">
+                    ↑
+                  </span>
+                </Link>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* 1. Integrated Theme Toggle (TOP) */}
           <div className="relative h-12 w-full flex-shrink-0 pointer-events-auto">

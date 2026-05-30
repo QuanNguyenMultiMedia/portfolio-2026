@@ -100,7 +100,7 @@ export default function Navbar() {
       {/* Main Navigation Bar */}
       <nav
         ref={navRef}
-        className="relative z-10 flex items-center gap-1 p-1 bg-background/95 backdrop-blur-2xl border border-primary/10 rounded-none shadow-[0_-8px_20px_-10px_rgba(0,0,0,0.15)]"
+        className="relative z-10 flex items-center gap-1 p-1 bg-background/95 backdrop-blur-2xl border border-primary/10 rounded-none"
       >
         {/* Active Pill Highlighter */}
         <div

@@ -650,6 +650,9 @@ interface Project {
 #### 2. Easing Curve Declarations in TypeScript
 - **Rule**: Custom cubic-bezier easing arrays (like `[0.16, 1, 0.3, 1]`) in Framer Motion should always be typed as a four-number tuple `[number, number, number, number]` (either inline or via reusable variables). Default typescript inference treats array brackets as a generic `number[]` which breaks type checking in `<motion.div>` transition properties.
 
+#### 3. Mouse Coordinate Tracking inside 3D-Transformed Containers
+- **Rule**: When using interactive elements with mouse hover effects inside 3D-transformed layouts (such as card panels rotated by `rotateY(180deg)`), standard browser hit-testing for transparent elements can fail or behave erratically, only triggering mouse events when directly over non-transparent pixels (characters). To resolve this, bind `mousemove` events to the `window` (global viewport space coordinates) and test the cursor position against the target element's (or its parent link wrapper's) screen-space `getBoundingClientRect()`. This avoids coordinate space mirroring and resolves flickering issues caused by false `mouseleave` triggers.
+
 ---
 
 ## 10. Technical Architecture

@@ -78,10 +78,6 @@
 }
 
 @layer components {
-  .text-body {
-    @apply text-base font-light text-foreground/80 leading-relaxed font-sans;
-  }
-
   .tech-label {
     @apply font-mono text-[9px] tracking-[0.3em] uppercase font-medium opacity-60;
   }

@@ -64,36 +64,17 @@ export default function PlayPage({
 
   const frameWidth = isFullscreen
     ? "100vw"
-    : (screenSize === "4xl" ? "78vw" : screenSize === "3xl" ? "75vw" : "70vw");
+    : (screenSize === "4xl" ? "82vw" : screenSize === "3xl" ? "78vw" : "74vw");
   const frameHeight = isFullscreen
     ? "100vh"
-    : (screenSize === "4xl" ? "78vh" : screenSize === "3xl" ? "75vh" : "70vh");
+    : (screenSize === "4xl" ? "74vh" : screenSize === "3xl" ? "70vh" : "66vh");
 
   return (
     <div className="bg-background h-screen w-full overflow-hidden relative flex items-center justify-center font-sans text-foreground selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black">
       
       <div className="absolute inset-0 pointer-events-none opacity-[0.02] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_4px,3px_100%]" />
 
-      {/* Back Button */}
-      <motion.div
-        animate={{
-          opacity: isFullscreen ? 0 : 1,
-          pointerEvents: isFullscreen ? "none" : "auto",
-        }}
-        className="absolute top-16 left-16 md:top-24 md:left-24 3xl:top-32 3xl:left-32 4xl:top-40 4xl:left-40 z-50"
-      >
-        <Link href="/play" className="group flex items-center gap-4 py-2">
-          <div className="relative w-8 h-8 3xl:w-12 3xl:h-12 4xl:w-16 4xl:h-16 flex items-center justify-center">
-            <div className="absolute inset-0 border border-foreground/20 group-hover:border-foreground/60 transition-colors" />
-            <span className="text-[10px] 3xl:text-xs 4xl:text-sm font-sans group-hover:-translate-x-1 transition-transform">
-              ←
-            </span>
-          </div>
-          <span className="text-[10px] 3xl:text-xs 4xl:text-sm font-sans tracking-[0.4em] uppercase opacity-40 group-hover:opacity-100 transition-opacity">
-            Return_Archive
-          </span>
-        </Link>
-      </motion.div>
+
 
 
 
@@ -103,7 +84,7 @@ export default function PlayPage({
         animate={{
           width: frameWidth,
           height: frameHeight,
-          marginTop: isFullscreen ? 0 : "3rem", // mt-12 approx
+          marginTop: isFullscreen ? 0 : "1.5rem",
         }}
         transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
 
@@ -112,15 +93,15 @@ export default function PlayPage({
         }`}
       >
         {/* Viewfinder Corners (Glued to the Frame) */}
-        <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-foreground/40 z-20 pointer-events-none -translate-x-[1px] -translate-y-[1px]" />
-        <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-foreground/40 z-20 pointer-events-none translate-x-[1px] -translate-y-[1px]" />
-        <div className="absolute bottom-0 left-0 w-8 h-8 border-b border-l border-foreground/40 z-20 pointer-events-none -translate-x-[1px] translate-y-[1px]" />
-        <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-foreground/40 z-20 pointer-events-none translate-x-[1px] translate-y-[1px]" />
+        <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-foreground/15 group-hover:border-foreground/40 z-20 pointer-events-none -translate-x-[1px] -translate-y-[1px] transition-colors duration-300" />
+        <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-foreground/15 group-hover:border-foreground/40 z-20 pointer-events-none translate-x-[1px] -translate-y-[1px] transition-colors duration-300" />
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-foreground/15 group-hover:border-foreground/40 z-20 pointer-events-none -translate-x-[1px] translate-y-[1px] transition-colors duration-300" />
+        <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-foreground/15 group-hover:border-foreground/40 z-20 pointer-events-none translate-x-[1px] translate-y-[1px] transition-colors duration-300" />
 
         {/* TOP BAR: Sits above the frame normally, drops inside during fullscreen */}
         <div
-          className={`absolute w-full flex justify-end items-end pointer-events-none transition-all duration-700 ease-[0.23,1,0.32,1] z-30 ${
-            isFullscreen ? "top-6 px-6" : "bottom-[calc(100%+24px)] left-0"
+          className={`absolute w-full flex justify-end items-end pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-300 z-30 ${
+            isFullscreen ? "top-6 px-6" : "bottom-[calc(100%+8px)] left-0"
           }`}
         >
           {/* Top Right: Fullscreen Toggle */}
@@ -134,7 +115,7 @@ export default function PlayPage({
             }}
             className={`pointer-events-auto flex items-center gap-3 group/btn transition-all duration-300 ${
               isFullscreen
-                ? "bg-background/80 backdrop-blur-xl border border-foreground/15 rounded-sm px-3 py-1.5 hover:bg-foreground/10"
+                ? "bg-background/80 backdrop-blur-xl border border-foreground/15 rounded-none px-3 py-1.5 hover:bg-foreground/10"
                 : ""
             }`}
           >
@@ -157,8 +138,8 @@ export default function PlayPage({
 
         {/* BOTTOM BAR: Sits below the frame normally, rises inside during fullscreen */}
         <div
-          className={`absolute w-full flex justify-start items-start pointer-events-none transition-all duration-700 ease-[0.23,1,0.32,1] z-30 ${
-            isFullscreen ? "bottom-6 px-6" : "top-[calc(100%+24px)] left-0"
+          className={`absolute w-full flex justify-start items-start pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-300 z-30 ${
+            isFullscreen ? "bottom-6 px-6" : "top-[calc(100%+8px)] left-0"
           }`}
         >
           {/* Bottom Left: Counter */}
@@ -174,8 +155,8 @@ export default function PlayPage({
 
         {/* LEFT NAV: Sits to the left normally, slides inside during fullscreen */}
         <div
-          className={`absolute top-1/2 -translate-y-1/2 pointer-events-auto transition-all duration-700 ease-[0.23,1,0.32,1] z-30 ${
-            isFullscreen ? "left-6" : "right-[calc(100%+32px)] 3xl:right-[calc(100%+48px)] 4xl:right-[calc(100%+64px)]"
+          className={`absolute top-1/2 -translate-y-1/2 pointer-events-auto opacity-0 group-hover:opacity-100 transition-all duration-300 z-30 ${
+            isFullscreen ? "left-6" : "right-[calc(100%+16px)] 3xl:right-[calc(100%+24px)] 4xl:right-[calc(100%+32px)]"
           }`}
         >
           <Link
@@ -188,8 +169,8 @@ export default function PlayPage({
 
         {/* RIGHT NAV: Sits to the right normally, slides inside during fullscreen */}
         <div
-          className={`absolute top-1/2 -translate-y-1/2 pointer-events-auto transition-all duration-700 ease-[0.23,1,0.32,1] z-30 ${
-            isFullscreen ? "right-6" : "left-[calc(100%+32px)] 3xl:left-[calc(100%+48px)] 4xl:left-[calc(100%+64px)]"
+          className={`absolute top-1/2 -translate-y-1/2 pointer-events-auto opacity-0 group-hover:opacity-100 transition-all duration-300 z-30 ${
+            isFullscreen ? "right-6" : "left-[calc(100%+16px)] 3xl:left-[calc(100%+24px)] 4xl:left-[calc(100%+32px)]"
           }`}
         >
           <Link
@@ -310,7 +291,7 @@ export default function PlayPage({
         </div>
 
         {/* HUD Bottom Control Panel */}
-        <div className="flex flex-wrap justify-between items-center gap-4 mt-3 font-mono text-[9px] 3xl:text-xs 4xl:text-sm tracking-[0.15em] uppercase z-20">
+        <div className="flex flex-wrap justify-between items-center gap-4 mt-3 font-mono text-[9px] 3xl:text-xs 4xl:text-sm tracking-[0.15em] uppercase z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           {/* Tech stack metadata tags */}
           <div className="flex items-center gap-2 opacity-50">
             <span>TECH:</span>

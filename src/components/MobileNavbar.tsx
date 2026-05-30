@@ -238,7 +238,7 @@ export default function MobileNavbar() {
     <>
       {/* Floating Status Notch / Trigger Button */}
       <div className="fixed bottom-10 left-6 right-6 z-50 md:hidden pointer-events-none">
-        <div className="w-full bg-surface/50 backdrop-blur-xl border border-primary/10 px-5 py-4 flex items-center justify-between pointer-events-auto shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
+        <div className="w-full bg-surface/50 backdrop-blur-xl border border-primary/10 px-5 py-4 flex items-center justify-between pointer-events-auto">
           <div className="flex items-center gap-3">
             <span className="font-mono text-[8px] tracking-[0.2em] opacity-60 uppercase">{breadcrumb}</span>
           </div>
