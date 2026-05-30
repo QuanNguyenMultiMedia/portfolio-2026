@@ -4,6 +4,7 @@ import { useRef, use, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { projects } from "@/data/projects";
+import { layout, ui, t, fx } from "@/lib/designSystem";
 import { notFound } from "next/navigation";
 import useLenis from "@/hooks/useLenis";
 
@@ -63,21 +64,7 @@ export default function ProjectPage({
       data-lenis-prevent
       className="relative bg-background h-screen w-full overflow-hidden select-none cursor-grab active:cursor-grabbing"
     >
-      {/* Editorial Header */}
-      <div className="fixed top-8 left-8 md:top-12 md:left-12 3xl:top-16 3xl:left-16 4xl:top-20 4xl:left-20 z-50 pointer-events-auto flex items-center gap-12">
-        <Link href="/works" className="group flex items-center gap-4">
-          <div className="w-8 h-8 3xl:w-12 3xl:h-12 4xl:w-16 4xl:h-16 flex items-center justify-center border border-foreground/10 group-hover:border-foreground/40 transition-colors">
-            <span className="text-[10px] 3xl:text-xs 4xl:text-sm font-mono group-hover:-translate-x-1 transition-transform">
-              ←
-            </span>
-          </div>
-        </Link>
-        <div className="hidden md:flex flex-col gap-0.5">
-          <span className="text-[10px] 3xl:text-xs 4xl:text-sm font-mono tracking-[0.4em] uppercase opacity-60">
-            {project.title}
-          </span>
-        </div>
-      </div>
+
 
       <div className="lenis-content h-screen w-fit flex items-stretch">
         {/* Typographic Hero Section - 375.studio inspired */}
@@ -91,11 +78,11 @@ export default function ProjectPage({
                   transition={{ duration: 0.8 }}
                   className="flex items-center gap-4"
                 >
-                  <span className="text-[10px] 3xl:text-xs 4xl:text-sm font-mono tracking-[0.5em] uppercase">
+                  <span className={`${t.meta} tracking-[0.5em] opacity-100`}>
                     {project.category}
                   </span>
                   <div className="h-px w-8 bg-foreground/20" />
-                  <span className="text-[10px] 3xl:text-xs 4xl:text-sm font-mono tracking-[0.5em] uppercase">
+                  <span className={`${t.meta} tracking-[0.5em] opacity-100`}>
                     {project.year}
                   </span>
                 </motion.div>
@@ -108,14 +95,14 @@ export default function ProjectPage({
                     delay: 0.2,
                     ease: [0.23, 1, 0.32, 1],
                   }}
-                  className="text-8xl md:text-[14rem] 3xl:text-[18rem] 4xl:text-[24rem] font-display uppercase leading-[0.75] tracking-tighter"
+                  className={t.hero}
                 >
                   {project.title.split(" ").map((word, i) => (
                     <span
                       key={i}
                       className={
                         i % 2 === 1
-                          ? "italic font-light block ml-12 md:ml-32 3xl:ml-48 4xl:ml-64 text-primary"
+                          ? "italic font-light block ml-6 md:ml-16 3xl:ml-24 4xl:ml-32 text-primary"
                           : "block"
                       }
                     >
@@ -129,10 +116,10 @@ export default function ProjectPage({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8 }}
-                className="max-w-2xl 3xl:max-w-3xl 4xl:max-w-4xl"
+                className="max-w-xl 3xl:max-w-2xl 4xl:max-w-3xl"
               >
-                <div className="h-px w-16 3xl:w-24 4xl:w-32 bg-primary/40 mb-8 3xl:mb-12" />
-                <p className="text-lg 3xl:text-2xl 4xl:text-3xl font-light leading-relaxed opacity-70">
+                <div className="h-px w-12 3xl:w-16 4xl:w-20 bg-primary/40 mb-6 3xl:mb-8" />
+                <p className={t.body}>
                   {project.description}
                 </p>
               </motion.div>
@@ -158,7 +145,7 @@ export default function ProjectPage({
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
-                  className="col-span-8 h-[60vh] 3xl:h-[65vh] relative overflow-hidden group shadow-2xl"
+                  className="col-span-8 h-[60vh] 3xl:h-[65vh] relative overflow-hidden group border border-primary/10"
                 >
                   <img
                     src={screen.images?.[0]}
@@ -210,7 +197,7 @@ export default function ProjectPage({
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 1.5, ease: [0.23, 1, 0.32, 1] }}
-                  className="w-full h-full relative overflow-hidden group shadow-2xl"
+                  className="w-full h-full relative overflow-hidden group border border-primary/10"
                 >
                   <img
                     src={screen.src}
@@ -229,7 +216,7 @@ export default function ProjectPage({
             {screen.type === "details" && (
               <div className="max-w-[576px] 3xl:max-w-3xl 4xl:max-w-4xl space-y-8 3xl:space-y-12">
                 <div className="h-px w-16 3xl:w-24 bg-primary" />
-                <h3 className="text-4xl md:text-6xl 3xl:text-7xl 4xl:text-8xl font-display uppercase leading-tight tracking-tight">
+                <h3 className={t.display}>
                   {screen.content}
                 </h3>
               </div>
@@ -244,15 +231,15 @@ export default function ProjectPage({
             className="relative z-10 flex flex-col gap-12 3xl:gap-16"
           >
             <div className="space-y-4">
-              <span className="text-[10px] 3xl:text-xs 4xl:text-sm font-mono tracking-[0.8em] uppercase opacity-40 group-hover:text-primary transition-colors">
+              <span className={`${t.meta} tracking-[0.8em] opacity-40 group-hover:text-primary transition-colors`}>
                 Want to see more?
               </span>
-              <h3 className="text-7xl md:text-[10rem] 3xl:text-[12rem] 4xl:text-[16rem] font-display uppercase tracking-tighter leading-none group-hover:italic transition-all duration-700">
+              <h3 className={`${t.display} group-hover:italic transition-all duration-700`}>
                 Next Project
               </h3>
             </div>
 
-            <div className="relative w-full aspect-video md:aspect-[21/9] overflow-hidden shadow-2xl">
+            <div className="relative w-full aspect-video md:aspect-[21/9] overflow-hidden border border-primary/10">
               <motion.img
                 src={
                   projects[
@@ -265,7 +252,7 @@ export default function ProjectPage({
               />
               <div className="absolute inset-0 bg-background/20 group-hover:bg-transparent transition-colors" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-4xl md:text-8xl 3xl:text-[6rem] 4xl:text-[8rem] font-display uppercase text-white drop-shadow-2xl opacity-0 group-hover:opacity-100 translate-y-8 group-hover:translate-y-0 transition-all duration-700">
+                <span className={`${t.h1} text-white opacity-0 group-hover:opacity-100 translate-y-8 group-hover:translate-y-0 transition-all duration-700`}>
                   {
                     projects[
                       (projects.findIndex((p) => p.slug === slug) + 1) %

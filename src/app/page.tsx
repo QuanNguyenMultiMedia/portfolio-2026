@@ -17,6 +17,7 @@ import BalancedText from "@/components/BalancedText";
 import PageWrapper from "@/components/PageWrapper";
 import { GradientText } from "@/components/ui/gradient-text";
 import { VerticalCutReveal } from "@/components/VerticalCutReveal";
+import { t, motion as motionTokens } from "@/lib/designSystem";
 
 const MuxPlayer = dynamic(() => import("@/components/MuxPlayerWrapper"), {
   ssr: false,
@@ -431,11 +432,11 @@ export default function Home() {
                   }}
                 >
                   <div className="flex flex-col gap-0">
-                    <h1 className="font-display text-6xl md:text-7xl lg:text-[5.25rem] 3xl:text-[7.5rem] 4xl:text-[10rem] font-bold uppercase tracking-tighter leading-[0.85] text-primary whitespace-nowrap">
+                    <h1 className={t.display}>
                       Minh Quan
                     </h1>
-                    <div className="mt-5 3xl:mt-8">
-                      <h2 className="font-display text-2xl md:text-3xl 3xl:text-4xl 4xl:text-5xl uppercase leading-tight tracking-tight text-primary">
+                    <div className="mt-3 3xl:mt-5">
+                      <h2 className={`${t.h2} font-light leading-relaxed opacity-90 italic ${motionTokens.skewHover}`}>
                         loves{" "}
                         <GradientText>moving</GradientText>
                         {" "}things around.
@@ -445,7 +446,7 @@ export default function Home() {
                 </motion.div>
 
                 <motion.div
-                  className="absolute right-8 top-[360px] z-10 aspect-[3/4] w-full max-w-[160px] md:right-[10%] md:left-auto md:top-48 md:max-w-sm 3xl:right-[12%] 3xl:top-60 3xl:max-w-md 4xl:right-[14%] 4xl:top-72 4xl:max-w-lg pointer-events-auto block"
+                  className="absolute right-8 top-[360px] z-10 aspect-[3/4] w-full max-w-[130px] md:right-[10%] md:left-auto md:top-48 md:max-w-[280px] 3xl:right-[12%] 3xl:top-60 3xl:max-w-[340px] 4xl:right-[14%] 4xl:top-72 4xl:max-w-[400px] pointer-events-auto block"
                   style={{
                     transform: "translate3d(0px, 0px, 150px)",
                     opacity: opacityHero,
@@ -482,7 +483,7 @@ export default function Home() {
               >
                 <div className="relative text-left max-w-3xl 3xl:max-w-5xl 4xl:max-w-7xl">
  
-                  <div className="text-2xl md:text-3xl lg:text-4xl 3xl:text-5xl 4xl:text-6xl font-sans font-light leading-relaxed text-primary antialiased space-y-6">
+                  <div className={`${t.h2} font-light leading-relaxed opacity-90 italic space-y-4`}>
                     <VerticalCutReveal
                       splitBy="words"
                       staggerDuration={0.02}
@@ -579,7 +580,7 @@ export default function Home() {
                     onClick={(e) => e.stopPropagation()}
                   >
                     <div className="absolute top-0 left-0 h-full bg-tech-blue/80 group-hover/scrub:bg-tech-blue transition-colors duration-200" ref={progressBarRef} style={{ width: "0%" }} />
-                    <div className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-none bg-white opacity-0 group-hover/scrub:opacity-100 transition-opacity border border-black shadow" ref={progressKnobRef} style={{ left: "0%" }} />
+                    <div className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-none bg-white opacity-0 group-hover/scrub:opacity-100 transition-opacity border border-black" ref={progressKnobRef} style={{ left: "0%" }} />
                   </div>
 
                   {/* Bottom Controls — below in standard, absolute overlay in fullscreen */}
@@ -680,26 +681,26 @@ export default function Home() {
                 return (
                   <motion.div
                     key={test.brand}
-                    className="absolute left-1/2 top-1/2 w-[85vw] md:w-[34vw] 3xl:w-[28vw] 4xl:w-[24vw] border border-border-neutral/20 p-6 md:p-8 3xl:p-12 4xl:p-16 bg-surface/50 backdrop-blur-xl pointer-events-auto"
+                    className="absolute left-1/2 top-1/2 w-[80vw] md:w-[28vw] 3xl:w-[24vw] 4xl:w-[20vw] border border-border-neutral/20 p-5 md:p-6 3xl:p-8 4xl:p-10 bg-surface/50 backdrop-blur-xl pointer-events-auto"
                     style={{
                       transform: `translate3d(${x}, ${y}, ${z}px) translate(-50%, -50%)`,
                       opacity: testimonialOpacityCurves[idx],
                       visibility: testimonialVisibilityCurves[idx],
                     }}
                   >
-                    <div className="flex items-center border-b border-border-neutral/10 pb-3 mb-4">
-                      <span className="font-mono text-xs 3xl:text-sm 4xl:text-base text-tech-blue font-bold tracking-wider">
+                    <div className="flex items-center border-b border-border-neutral/10 pb-2 mb-3">
+                      <span className={t.subtitle}>
                         {test.brand}
                       </span>
                     </div>
-                    <p className="font-sans text-sm md:text-lg 3xl:text-xl 4xl:text-2xl italic font-light text-foreground/90 leading-relaxed">
+                    <p className={t.body}>
                       &ldquo;{test.quote}&rdquo;
                     </p>
-                    <div className="border-t border-border-neutral/10 pt-3 mt-4 flex flex-col gap-1">
-                      <span className="font-display text-xs md:text-sm 3xl:text-base 4xl:text-lg font-bold uppercase tracking-wider text-primary">
+                    <div className="border-t border-border-neutral/10 pt-2 mt-3 flex flex-col gap-0.5">
+                      <span className={`${t.h3} ${motionTokens.skewHover}`}>
                         {test.author}
                       </span>
-                      <span className="font-mono text-[10px] md:text-xs 3xl:text-xs 4xl:text-sm text-foreground/45 uppercase tracking-widest">
+                      <span className={t.meta}>
                         {test.role}
                       </span>
                     </div>
@@ -717,56 +718,54 @@ export default function Home() {
               className="absolute inset-0"
             >
               <motion.div
-                className="absolute left-1/2 top-1/2 w-[90vw] md:w-[75vw] max-w-6xl 3xl:max-w-7xl 4xl:max-w-[1600px] border border-border-neutral/20 p-6 md:p-14 3xl:p-20 4xl:p-28 bg-surface/50 backdrop-blur-xl pointer-events-auto"
+                className="absolute left-1/2 top-1/2 w-[90vw] md:w-[75vw] max-w-5xl 3xl:max-w-6xl 4xl:max-w-[1400px] border border-border-neutral/20 p-5 md:p-10 3xl:p-16 4xl:p-20 bg-surface/50 backdrop-blur-xl pointer-events-auto"
                 style={{
                   transform: `translate3d(0px, 0px, ${-getDepths()[4]}px) translate(-50%, -50%)`,
                   opacity: opacityStats,
                   visibility: visibilityStats,
                 }}
               >
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-14 3xl:gap-20">
-                  <div className="md:col-span-6 space-y-8 3xl:space-y-12">
-                    <p className="font-mono text-xs md:text-sm 3xl:text-base 4xl:text-lg text-tech-blue font-bold tracking-widest">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 3xl:gap-14">
+                  <div className="md:col-span-6 space-y-6 3xl:space-y-10">
+                    <p className={t.subtitle}>
                       Key Metrics
                     </p>
-                    <div className="grid grid-cols-2 gap-x-8 gap-y-8 3xl:gap-x-12 3xl:gap-y-12">
-                      <div className="border-b border-border-neutral/10 pb-4 3xl:pb-6">
-                        <div className="font-display text-5xl md:text-6xl lg:text-7xl 3xl:text-8xl 4xl:text-9xl font-bold tracking-tighter text-primary leading-none">50+</div>
-                        <div className="font-mono text-sm 3xl:text-base 4xl:text-lg uppercase tracking-widest text-foreground/50 mt-3 3xl:mt-5">Projects Completed</div>
+                    <div className="grid grid-cols-2 gap-x-6 gap-y-6 3xl:gap-x-10 3xl:gap-y-10">
+                      <div className="border-b border-border-neutral/10 pb-3 3xl:pb-4">
+                        <div className={t.display}>50+</div>
+                        <div className={`${t.meta} mt-2 3xl:mt-3`}>Projects Completed</div>
                       </div>
-                      <div className="border-b border-border-neutral/10 pb-4 3xl:pb-6">
-                        <div className="font-display text-5xl md:text-6xl lg:text-7xl 3xl:text-8xl 4xl:text-9xl font-bold tracking-tighter text-primary leading-none">100%</div>
-                        <div className="font-mono text-sm 3xl:text-base 4xl:text-lg uppercase tracking-widest text-foreground/50 mt-3 3xl:mt-5">Client Rating</div>
+                      <div className="border-b border-border-neutral/10 pb-3 3xl:pb-4">
+                        <div className={t.display}>100%</div>
+                        <div className={`${t.meta} mt-2 3xl:mt-3`}>Client Rating</div>
                       </div>
-                      <div className="border-b border-border-neutral/10 pb-4 3xl:pb-6">
-                        <div className="font-display text-5xl md:text-6xl lg:text-7xl 3xl:text-8xl 4xl:text-9xl font-bold tracking-tighter text-primary leading-none">04+</div>
-                        <div className="font-mono text-sm 3xl:text-base 4xl:text-lg uppercase tracking-widest text-foreground/50 mt-3 3xl:mt-5">Years of Experience</div>
+                      <div className="border-b border-border-neutral/10 pb-3 3xl:pb-4">
+                        <div className={t.display}>04+</div>
+                        <div className={`${t.meta} mt-2 3xl:mt-3`}>Years of Experience</div>
                       </div>
-                      <div className="border-b border-border-neutral/10 pb-4 3xl:pb-6">
-                        <div className="font-display text-3xl md:text-4xl lg:text-5xl 3xl:text-6xl 4xl:text-7xl font-bold tracking-tighter text-primary uppercase leading-none mt-1 3xl:mt-3">HCMC</div>
-                        <div className="font-mono text-sm 3xl:text-base 4xl:text-lg uppercase tracking-widest text-foreground/50 mt-3 3xl:mt-5">VN // Global Base</div>
+                      <div className="border-b border-border-neutral/10 pb-3 3xl:pb-4">
+                        <div className={`${t.h1} mt-1 3xl:mt-2`}>HCMC</div>
+                        <div className={`${t.meta} mt-2 3xl:mt-3`}>VN // Global Base</div>
                       </div>
                     </div>
                   </div>
-
-                  <div className="md:col-span-6 flex flex-col justify-between border-t md:border-t-0 md:border-l border-border-neutral/15 pt-8 md:pt-0 md:pl-10 3xl:pl-16">
+ 
+                  <div className="md:col-span-6 flex flex-col justify-between border-t md:border-t-0 md:border-l border-border-neutral/15 pt-6 md:pt-0 md:pl-8 3xl:pl-12">
                     <div>
-                      <p className="font-mono text-xs md:text-sm 3xl:text-base 4xl:text-lg text-tech-blue font-bold tracking-widest mb-5 3xl:mb-8 4xl:mb-10">
+                      <p className={`${t.subtitle} mb-4 3xl:mb-6 4xl:mb-8`}>
                         Trusted Collaborators
                       </p>
-                      <div className="grid grid-cols-2 gap-3 3xl:gap-5">
+                      <div className="grid grid-cols-2 gap-2.5 3xl:gap-4">
                         {BRANDS.map((brand) => (
                           <div
                             key={brand}
-                            className="border border-border-neutral/20 p-3 3xl:p-5 4xl:p-6 bg-surface/10 flex items-center justify-center font-display text-xs md:text-sm 3xl:text-base 4xl:text-lg font-semibold uppercase tracking-wider text-foreground/75 hover:text-tech-blue hover:border-tech-blue/30 hover:bg-surface/30 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
+                            className={`border border-border-neutral/20 p-2 3xl:p-3.5 4xl:p-4 bg-surface/10 flex items-center justify-center ${t.h3} ${motionTokens.skewHover} hover:text-tech-blue hover:border-tech-blue/30 hover:bg-surface/30 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer`}
                           >
                             {brand}
                           </div>
                         ))}
                       </div>
                     </div>
-
-
                   </div>
                 </div>
               </motion.div>

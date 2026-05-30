@@ -28,9 +28,9 @@ export default function PageWrapper({
 
   const paddingStyles =
     variant === "default"
-      ? "pt-32 md:pt-40 pb-32 px-8 md:px-24 max-w-screen-2xl 3xl:max-w-[1720px] 3xl:px-32 4xl:max-w-[2200px] 4xl:px-48 mx-auto"
+      ? "pt-28 pb-20 px-6 md:pt-36 md:pb-28 md:px-16 max-w-screen-xl 3xl:max-w-[1500px] 3xl:px-24 4xl:max-w-[1800px] 4xl:px-32 mx-auto"
       : variant === "full"
-        ? "pt-32 md:pt-40 pb-32 px-0"
+        ? "pt-28 pb-20 px-0 md:pt-36 md:pb-28"
         : "p-0"; // Hero and Story handle their own internal layout/padding
 
   const isStory = variant === "story";

@@ -9,8 +9,7 @@ import HUDLabel from "@/components/HUDLabel";
 import TechButton from "@/components/TechButton";
 import LogoMark from "@/components/LogoMark";
 import Portal from "@/components/Portal";
-import SectionHeader from "@/components/SectionHeader";
-import { designSystem, motionSystem } from "@/lib/designSystem";
+import { layout, t, ui, fx, motion as motionTokens } from "@/lib/designSystem";
 
 export default function FreebiesPage() {
   const [selectedItem, setSelectedItem] = useState<FreebieItem | null>(null);
@@ -51,12 +50,12 @@ export default function FreebiesPage() {
   return (
     <>
       <PageWrapper slideDirection="none">
-        <div className={designSystem.spacing.pagePadding}>
+        <div className={layout.page}>
           <motion.div
-            {...motionSystem.variants.headerSlideIn}
-            className={designSystem.spacing.headerSpacing}
+            {...fx.headerSlideIn}
+            className="mb-16 space-y-4 3xl:space-y-6"
           >
-            <h1 className={designSystem.typography.pageHeroTitle}>
+            <h1 className={t.display}>
               Freebies
             </h1>
           </motion.div>
@@ -69,7 +68,7 @@ export default function FreebiesPage() {
               scale: selectedItem ? 0.98 : 1,
             }}
             transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            className={designSystem.spacing.gridMedium}
+            className={layout.gridMd}
           >
             {freebies.map((item, idx) => {
               const layoutConfig = [
@@ -84,7 +83,7 @@ export default function FreebiesPage() {
                 <motion.div
                   key={item.id}
                   className={layoutConfig}
-                  {...motionSystem.variants.slideIn(idx)}
+                  {...fx.slideIn(idx)}
                 >
                   <motion.div
                     layoutId={`container-${item.id}`}
@@ -93,19 +92,19 @@ export default function FreebiesPage() {
                   >
                     <motion.div
                       layoutId={`thumb-${item.id}`}
-                      className={designSystem.components.frameThumbnailMedium}
+                      className="relative aspect-[4/5] overflow-hidden bg-primary/5 border border-primary/5 mb-4"
                     >
                       <Image
                         src={item.image}
                         alt={item.title}
                         fill
                         referrerPolicy="no-referrer"
-                        className={designSystem.components.imgThumbnailMedium}
+                        className={ui.imgFade}
                       />
                     </motion.div>
 
                     <div className="px-1 mt-6">
-                      <h3 className={designSystem.typography.titleMedium}>
+                      <h3 className={`${t.h2} ${motionTokens.skewHover}`}>
                         {item.title}
                       </h3>
                     </div>
@@ -139,7 +138,7 @@ export default function FreebiesPage() {
               >
                 <motion.div
                   layoutId={`thumb-${selectedItem.id}`}
-                  className="relative w-[45vw] max-w-[55vh] h-[65vh] overflow-hidden bg-foreground/5 shadow-2xl"
+                  className="relative w-[45vw] max-w-[55vh] h-[65vh] overflow-hidden bg-foreground/5 border border-primary/10"
                   transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
                 >
                   <Image
@@ -177,7 +176,7 @@ export default function FreebiesPage() {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-                className="fixed top-0 right-0 bottom-0 bg-background/85 backdrop-blur-2xl border-l border-primary/10 z-[101] flex flex-col shadow-[-20px_0_40px_rgba(0,0,0,0.1)] pointer-events-auto"
+                className="fixed top-0 right-0 bottom-0 bg-background/85 backdrop-blur-2xl border-l border-primary/10 z-[101] flex flex-col pointer-events-auto"
                 style={{ width: screenSize === "mobile" ? "100%" : `${panelWidth}px` }}
               >
                 {/* Tech corner accents */}
@@ -217,7 +216,7 @@ export default function FreebiesPage() {
                   </div>
 
                   <div className="space-y-4">
-                    <h2 className="text-3xl md:text-5xl lg:text-6xl 3xl:text-7xl 4xl:text-8xl font-display uppercase tracking-tighter leading-[0.85] text-primary font-bold">
+                    <h2 className={`${t.display} font-bold text-primary`}>
                       {selectedItem.title}
                     </h2>
                     <div className="h-px w-8 bg-primary/20" />
@@ -225,14 +224,14 @@ export default function FreebiesPage() {
 
                   <div className="space-y-4 max-w-md 3xl:max-w-lg 4xl:max-w-2xl">
                     {selectedItem.description.split("\n\n").map((para, i) => (
-                      <p key={i} className={designSystem.typography.bodyStatic}>
+                      <p key={i} className={t.body}>
                         {para}
                       </p>
                     ))}
                   </div>
 
                   <div className="space-y-2">
-                    <span className="text-[8px] 3xl:text-[10px] 4xl:text-xs font-mono opacity-20 tracking-widest block">
+                    <span className={`${t.meta} block opacity-20`}>
                       COLOR PALETTE // SPEC_2026
                     </span>
                     <div className="flex gap-2">

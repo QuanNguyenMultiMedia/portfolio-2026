@@ -4,62 +4,62 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 import { playItems } from "@/data/play";
-import { designSystem, motionSystem } from "@/lib/designSystem";
+import { layout, t, ui, fx, motion as motionTokens } from "@/lib/designSystem";
 
 export default function PlayPage() {
   return (
     <PageWrapper slideDirection="none">
-      <div className={designSystem.spacing.pagePadding}>
+      <div className={layout.page}>
         {/* Section title / header */}
         <motion.div
-          {...motionSystem.variants.headerSlideIn}
-          className={designSystem.spacing.headerSpacing}
+          {...fx.headerSlideIn}
+          className="mb-16 space-y-4 3xl:space-y-6"
         >
-          <h1 className={designSystem.typography.pageHeroTitle}>
+          <h1 className={t.display}>
             PLAY
           </h1>
         </motion.div>
 
-        <div className={designSystem.spacing.gridSmall}>
+        <div className={layout.gridSm}>
           {playItems.map((exp, idx) => (
             <motion.div
               key={exp.slug}
-              {...motionSystem.variants.slideIn(idx)}
+              {...fx.slideIn(idx)}
             >
               <Link
                 href={`/play/${exp.slug}`}
                 className="group block w-full"
               >
                 {/* Top Frame: Thumbnail */}
-                <div className={designSystem.components.frameThumbnailSmall}>
+                <div className={ui.card}>
                   <div className="relative w-full aspect-video overflow-hidden bg-surface/5">
                     <img
                       src={exp.src}
                       alt={exp.title}
                       referrerPolicy="no-referrer"
-                      className={designSystem.components.imgThumbnailSmall}
+                      className={ui.img}
                     />
                   </div>
                 </div>
 
                 {/* Bottom Frame: Name (connected immediately) */}
-                <div className={designSystem.components.frameDetailsSmall}>
+                <div className={ui.cardFooter}>
                   <div className="space-y-1 3xl:space-y-2">
-                    <h2 className={designSystem.typography.titleSmall}>
+                    <h2 className={`${t.h3} ${motionTokens.skewHover}`}>
                       {exp.title}
                     </h2>
                     <div className="flex gap-2">
-                      {exp.tech.map((t) => (
+                      {exp.tech.map((techItem) => (
                         <span
-                          key={t}
-                          className={designSystem.typography.tag}
+                          key={techItem}
+                          className={`${t.meta} opacity-40 group-hover:opacity-75`}
                         >
-                          {t}
+                          {techItem}
                         </span>
                       ))}
                     </div>
                   </div>
-                  <span className={designSystem.components.arrowSmall}>
+                  <span className={`${ui.arrow} text-xl 3xl:text-2xl 4xl:text-3xl`}>
                     →
                   </span>
                 </div>

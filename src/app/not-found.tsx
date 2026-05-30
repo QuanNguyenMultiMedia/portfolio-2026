@@ -7,7 +7,7 @@ export default function NotFound() {
         <div className="font-mono text-[9px] tracking-[0.4em] uppercase opacity-40">
           ERROR // 404
         </div>
-        <h1 className="font-display text-6xl md:text-8xl font-bold uppercase tracking-tighter leading-none">
+        <h1 className="font-display text-4xl md:text-6xl font-bold uppercase tracking-tighter leading-none">
           Not Found
         </h1>
         <p className="font-sans text-base font-light text-foreground/60 leading-relaxed">
