@@ -7,14 +7,12 @@ export interface PageWrapperProps {
   children: ReactNode;
   className?: string;
   variant?: "default" | "hero" | "full" | "story";
-  slideDirection?: "left" | "right" | "none";
 }
 
 export default function PageWrapper({
   children,
   className = "",
   variant = "default",
-  slideDirection,
 }: PageWrapperProps) {
   // variant "hero" is for the non-scrolling home page
   // variant "default" is for standard content pages

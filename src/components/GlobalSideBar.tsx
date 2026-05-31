@@ -6,8 +6,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import WaveGradientBar from "./WaveGradientBar";
-import { projects } from "@/data/projects";
-import { takes } from "@/data/takes";
+import { getPathColors } from "@/lib/navigation";
 
 export default function GlobalSideBar() {
   const pathname = usePathname();
@@ -20,29 +19,7 @@ export default function GlobalSideBar() {
   const isDark = resolvedTheme === "dark";
   const isHome = pathname === "/";
   const isIndividualItem = segments.length >= 2;
-
-  let colors = ["#005f73", "#0a9396", "#94d2bd"];
-  let topic = "";
-
-  if (pathname === "/") {
-    colors = ["#1e3a8a", "#1e40af", "#3b82f6"];
-    topic = "HOME";
-  } else if (segments[0] === "works") {
-    colors = ["#ca6702", "#ee9b00", "#e9d8a6"];
-    topic = "WORKS";
-  } else if (segments[0] === "takes") {
-    colors = ["#4c1d95", "#6d28d9", "#8b5cf6"];
-    topic = "TAKES";
-  } else if (segments[0] === "freebies") {
-    colors = ["#005f73", "#0a9396", "#94d2bd"];
-    topic = "FREEBIES";
-  } else if (segments[0] === "play") {
-    colors = ["#ca6702", "#bb3e03", "#ae2012"];
-    topic = "PLAY";
-  } else if (segments[0] === "contacts") {
-    colors = ["#333333", "#444444", "#555555"];
-    topic = "CONTACTS";
-  }
+  const { colors, topic } = getPathColors(pathname);
 
   const toggleTheme = () => setTheme(isDark ? "light" : "dark");
 

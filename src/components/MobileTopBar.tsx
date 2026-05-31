@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import WaveGradientBar from "./WaveGradientBar";
+import { getPathColors } from "@/lib/navigation";
 
 export default function MobileTopBar() {
   const pathname = usePathname();
@@ -17,22 +18,7 @@ export default function MobileTopBar() {
 
   const isDark = resolvedTheme === "dark";
   const isIndividualItem = segments.length >= 2;
-
-  let colors = ["#005f73", "#0a9396", "#94d2bd"];
-
-  if (pathname === "/") {
-    colors = ["#1e3a8a", "#1e40af", "#3b82f6"];
-  } else if (segments[0] === "works") {
-    colors = ["#ca6702", "#ee9b00", "#e9d8a6"];
-  } else if (segments[0] === "takes") {
-    colors = ["#4c1d95", "#6d28d9", "#8b5cf6"];
-  } else if (segments[0] === "freebies") {
-    colors = ["#005f73", "#0a9396", "#94d2bd"];
-  } else if (segments[0] === "play") {
-    colors = ["#ca6702", "#bb3e03", "#ae2012"];
-  } else if (segments[0] === "contacts") {
-    colors = ["#333333", "#444444", "#555555"];
-  }
+  const { colors } = getPathColors(pathname);
 
   const toggleTheme = () => setTheme(isDark ? "light" : "dark");
 

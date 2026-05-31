@@ -4,15 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import LogoMark from "./LogoMark";
-
-const navItems = [
-  { name: "Home", path: "/" },
-  { name: "Works", path: "/works" },
-  { name: "Takes", path: "/takes" },
-  { name: "Play", path: "/play" },
-  { name: "Freebies", path: "/freebies" },
-  { name: "Contacts", path: "/contacts" },
-];
+import { NAV_ITEMS, getBreadcrumb } from "@/lib/navigation";
 
 export default function MobileNavbar() {
   const router = useRouter();
@@ -44,34 +36,14 @@ export default function MobileNavbar() {
     };
   }, [isOpen]);
 
-  // Compute active item label matching the desktop breadcrumbs exactly
-  const directory = "MINHQUAN";
-  let title = "HOME";
-
-  if (pathname === "/") {
-    title = "HOME";
-  } else {
-    const activeItem = navItems.find(
-      (item) => item.path !== "/" && pathname.startsWith(item.path)
-    );
-    if (activeItem) {
-      const section = activeItem.name.toUpperCase();
-      const segments = pathname.split("/").filter(Boolean);
-      if (segments.length > 1) {
-        const slug = segments[1].toUpperCase().replace(/-/g, "_");
-        title = `${section} // ${slug}`;
-      } else {
-        title = section;
-      }
-    }
-  }
+  const { directory, title } = getBreadcrumb(pathname);
   const breadcrumb = `${directory} // ${title}`;
 
   // Spreading 6 items in an arc from 180 degrees (straight left) to 270 degrees (straight up)
-  const radius = 175; // Radius in pixels
+  const radius = 175;
   const startAngle = 180;
   const endAngle = 270;
-  const angleStep = (endAngle - startAngle) / (navItems.length - 1); // 18 degrees per step
+  const angleStep = (endAngle - startAngle) / (NAV_ITEMS.length - 1);
 
   const getCoordinates = (index: number) => {
     const angle = startAngle + index * angleStep;
@@ -113,11 +85,10 @@ export default function MobileNavbar() {
       let angle = (Math.atan2(dy, dx) * 180) / Math.PI;
       if (angle < 0) angle += 360;
 
-      // Map drag angle to nearest menu item index
       let targetIndex = null;
       let minDiff = Infinity;
 
-      navItems.forEach((_, i) => {
+      NAV_ITEMS.forEach((_, i) => {
         const itemAngle = startAngle + i * angleStep;
         let diff = Math.abs(angle - itemAngle);
         if (diff > 180) diff = 360 - diff;
@@ -144,7 +115,7 @@ export default function MobileNavbar() {
   const handleEnd = () => {
     if (!isOpen) return;
     if (activeIndex !== null) {
-      const target = navItems[activeIndex];
+      const target = NAV_ITEMS[activeIndex];
       router.push(target.path);
       playSuccess();
       localStorage.setItem("mq_menu_interacted", "true");
@@ -311,8 +282,7 @@ export default function MobileNavbar() {
               />
             </svg>
 
-            {/* Radial Arc Options */}
-            {navItems.map((item, i) => {
+            {NAV_ITEMS.map((item, i) => {
               const coords = getCoordinates(i);
               const isCurrent = pathname === item.path || (item.path !== "/" && pathname.startsWith(item.path));
               const isSelected = activeIndex === i;

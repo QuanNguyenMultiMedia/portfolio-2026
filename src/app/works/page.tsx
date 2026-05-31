@@ -6,36 +6,27 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 import { projects } from "@/data/projects";
+import { useScreenSize } from "@/hooks/useScreenSize";
 import { t, layout, fx } from "@/lib/designSystem";
 
 export default function WorksPage() {
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDialDragging, setIsDialDragging] = useState(false);
-  const [screenSize, setScreenSize] = useState<"mobile" | "laptop" | "3xl" | "4xl">("laptop");
+  const screenSize = useScreenSize();
   const screenParamsRef = useRef({ R: 200, curveAmount: 120, angleStep: 24 });
 
   useEffect(() => {
-    const handleResize = () => {
-      const w = window.innerWidth;
-      if (w < 768) {
-        setScreenSize("mobile");
-        screenParamsRef.current = { R: 120, curveAmount: 60, angleStep: 18 };
-      } else if (w >= 2560) {
-        setScreenSize("4xl");
-        screenParamsRef.current = { R: 320, curveAmount: 200, angleStep: 24 };
-      } else if (w >= 1920) {
-        setScreenSize("3xl");
-        screenParamsRef.current = { R: 260, curveAmount: 150, angleStep: 24 };
-      } else {
-        setScreenSize("laptop");
-        screenParamsRef.current = { R: 200, curveAmount: 120, angleStep: 24 };
-      }
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    if (screenSize === "mobile") {
+      screenParamsRef.current = { R: 120, curveAmount: 60, angleStep: 18 };
+    } else if (screenSize === "4xl") {
+      screenParamsRef.current = { R: 320, curveAmount: 200, angleStep: 24 };
+    } else if (screenSize === "3xl") {
+      screenParamsRef.current = { R: 260, curveAmount: 150, angleStep: 24 };
+    } else {
+      screenParamsRef.current = { R: 200, curveAmount: 120, angleStep: 24 };
+    }
+  }, [screenSize]);
 
   // Refs for extreme performance (no React state renders during dragging)
   const dialRef = useRef<HTMLDivElement>(null);

@@ -5,15 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import LogoMark from "./LogoMark";
-
-const navItems = [
-  { name: "Home", path: "/" },
-  { name: "Works", path: "/works" },
-  { name: "Takes", path: "/takes" },
-  { name: "Play", path: "/play" },
-  { name: "Freebies", path: "/freebies" },
-  { name: "Contacts", path: "/contacts" },
-];
+import { NAV_ITEMS, getBreadcrumb } from "@/lib/navigation";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -60,29 +52,7 @@ export default function Navbar() {
     };
   }, [pathname]);
 
-  // Determine current directory and title for the HUD Notch
-  let directory = "MINHQUAN";
-  let title = "HOME";
-
-  if (pathname === "/") {
-    title = "HOME";
-  } else {
-    const activeItem = navItems.find(
-      (item) => item.path !== "/" && pathname.startsWith(item.path)
-    );
-    if (activeItem) {
-      const section = activeItem.name.toUpperCase();
-
-      // Build breadcrumbs: MINHQUAN // WORKS or MINHQUAN // WORKS // SLUG
-      const segments = pathname.split("/").filter(Boolean);
-      if (segments.length > 1) {
-        const slug = segments[1].toUpperCase().replace(/-/g, "_");
-        title = `${section} // ${slug}`;
-      } else {
-        title = section;
-      }
-    }
-  }
+  const { directory, title } = getBreadcrumb(pathname);
 
   return (
     <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 hidden md:flex flex-col items-end w-max">
@@ -122,7 +92,7 @@ export default function Navbar() {
           }}
         />
 
-        {navItems.map((item) => {
+        {NAV_ITEMS.map((item) => {
           const isActive =
             pathname === item.path ||
             (item.path !== "/" && pathname.startsWith(item.path));

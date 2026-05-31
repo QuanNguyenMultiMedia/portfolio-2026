@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { playItems } from "@/data/play";
 import { notFound } from "next/navigation";
+import { useScreenSize } from "@/hooks/useScreenSize";
 
 export default function PlayPageClient({
   params,
@@ -19,21 +20,8 @@ export default function PlayPageClient({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const [zoom, setZoom] = useState<number>(0.75);
-  const [screenSize, setScreenSize] = useState<"mobile" | "laptop" | "3xl" | "4xl">("laptop");
+  const screenSize = useScreenSize();
   const iframeRef = useRef<HTMLIFrameElement>(null);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const w = window.innerWidth;
-      if (w < 768) setScreenSize("mobile");
-      else if (w >= 2560) setScreenSize("4xl");
-      else if (w >= 1920) setScreenSize("3xl");
-      else setScreenSize("laptop");
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const currentIndex = playItems.findIndex((p) => p.slug === slug);
   const project = playItems[currentIndex];
