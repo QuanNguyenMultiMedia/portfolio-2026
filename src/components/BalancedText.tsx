@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { prepareWithSegments, walkLineRanges } from "@chenglou/pretext";
+import { useFontsLoaded } from "@/hooks/useFontsLoaded";
 
 export interface BalancedTextProps {
   text: string;
@@ -22,49 +23,10 @@ export default function BalancedText({
 }: BalancedTextProps) {
   const [balancedWidth, setBalancedWidth] = useState<number | null>(null);
   const [isReady, setIsReady] = useState(false);
-  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const fontsLoaded = useFontsLoaded(font);
   const [lines, setLines] = useState<
     { width: number; height: number; y: number }[]
   >([]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const fonts = (document as any).fonts;
-    if (!fonts) {
-      setFontsLoaded(true);
-      return;
-    }
-
-    let timeoutId: NodeJS.Timeout | null = null;
-
-    const checkFonts = () => {
-      try {
-        if (fonts.check(font)) {
-          setFontsLoaded(true);
-        } else {
-          // Retry if not yet loaded
-          timeoutId = setTimeout(checkFonts, 150);
-        }
-      } catch (e) {
-        setFontsLoaded(true);
-      }
-    };
-
-    checkFonts();
-    fonts.ready.then(() => {
-      setFontsLoaded(true);
-    }).catch(() => {
-      setFontsLoaded(true);
-    });
-    fonts.addEventListener("loadingdone", checkFonts);
-
-    return () => {
-      fonts.removeEventListener("loadingdone", checkFonts);
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, [font]);
 
   const prepared = useMemo(() => {
     if (!text || typeof window === "undefined") return null;

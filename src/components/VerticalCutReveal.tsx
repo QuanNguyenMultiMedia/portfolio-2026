@@ -10,10 +10,7 @@ import {
   useState,
 } from "react";
 import { Transition, motion } from "framer-motion";
-
-const cn = (...classes: (string | undefined | null | false)[]) => {
-  return classes.filter(Boolean).join(" ");
-};
+import { cn } from "@/lib/utils";
 
 interface TextProps {
   children: React.ReactNode;

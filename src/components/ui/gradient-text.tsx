@@ -2,10 +2,7 @@
 
 import React from "react";
 import { motion, MotionProps } from "framer-motion";
-
-const cn = (...classes: (string | undefined | null | false)[]) => {
-  return classes.filter(Boolean).join(" ");
-};
+import { cn } from "@/lib/utils";
 
 interface GradientTextProps
   extends Omit<React.HTMLAttributes<HTMLElement>, keyof MotionProps> {

@@ -6,6 +6,7 @@ import {
   walkLineRanges,
   materializeLineRange,
 } from "@chenglou/pretext";
+import { useFontsLoaded } from "@/hooks/useFontsLoaded";
 
 export interface MeasuredHeaderProps {
   text: string;
@@ -22,41 +23,8 @@ export default function MeasuredHeader({
 }: MeasuredHeaderProps) {
   const [lines, setLines] = useState<{ text: string; width: number }[]>([]);
   const [isReady, setIsReady] = useState(false);
-  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const fontsLoaded = useFontsLoaded(font);
   const [prepared, setPrepared] = useState<any>(null);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const fonts = (document as any).fonts;
-    if (!fonts) {
-      setFontsLoaded(true);
-      return;
-    }
-
-    const checkFonts = () => {
-      try {
-        if (fonts.check(font)) {
-          setFontsLoaded(true);
-        } else {
-          setTimeout(checkFonts, 150);
-        }
-      } catch (e) {
-        setFontsLoaded(true);
-      }
-    };
-
-    checkFonts();
-    fonts.ready.then(() => {
-      setFontsLoaded(true);
-    }).catch(() => {
-      setFontsLoaded(true);
-    });
-    fonts.addEventListener("loadingdone", checkFonts);
-
-    return () => {
-      fonts.removeEventListener("loadingdone", checkFonts);
-    };
-  }, [font]);
 
   useEffect(() => {
     if (!text) return;

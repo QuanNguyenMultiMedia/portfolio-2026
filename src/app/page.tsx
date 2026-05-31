@@ -17,6 +17,7 @@ import BalancedText from "@/components/BalancedText";
 import PageWrapper from "@/components/PageWrapper";
 import { GradientText } from "@/components/ui/gradient-text";
 import { VerticalCutReveal } from "@/components/VerticalCutReveal";
+import { useScreenSize } from "@/hooks/useScreenSize";
 import { t, motion as motionTokens, fx } from "@/lib/designSystem";
 
 const MuxPlayer = dynamic(() => import("@/components/MuxPlayerWrapper"), {
@@ -78,7 +79,7 @@ export default function Home() {
 
   const [activeFrame, setActiveFrame] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const [screenSize, setScreenSize] = useState<"mobile" | "laptop" | "3xl" | "4xl">("laptop");
+  const screenSize = useScreenSize();
   const [isMuted, setIsMuted] = useState(true);
   const [viewportWidth, setViewportWidth] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -107,13 +108,8 @@ export default function Home() {
   // 2. Responsive Device Detection
   useEffect(() => {
     const handleResize = () => {
-      const w = window.innerWidth;
-      if (w < 768) setScreenSize("mobile");
-      else if (w >= 2560) setScreenSize("4xl");
-      else if (w >= 1920) setScreenSize("3xl");
-      else setScreenSize("laptop");
-      setIsMobile(w < 768);
-      setViewportWidth(w);
+      setIsMobile(window.innerWidth < 768);
+      setViewportWidth(window.innerWidth);
     };
     handleResize();
     window.addEventListener("resize", handleResize);

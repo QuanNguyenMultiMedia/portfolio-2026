@@ -8,7 +8,7 @@ import { layout, t, ui, fx, motion as motionTokens } from "@/lib/designSystem";
 
 export default function PlayPage() {
   return (
-    <PageWrapper slideDirection="none">
+    <PageWrapper>
       <div className={layout.page}>
         {/* Section title / header */}
         <motion.div

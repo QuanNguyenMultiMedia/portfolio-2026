@@ -9,24 +9,12 @@ import HUDLabel from "@/components/HUDLabel";
 import TechButton from "@/components/TechButton";
 import LogoMark from "@/components/LogoMark";
 import Portal from "@/components/Portal";
+import { useScreenSize } from "@/hooks/useScreenSize";
 import { layout, t, ui, fx, motion as motionTokens } from "@/lib/designSystem";
 
 export default function FreebiesPage() {
   const [selectedItem, setSelectedItem] = useState<FreebieItem | null>(null);
-  const [screenSize, setScreenSize] = useState<"mobile" | "laptop" | "3xl" | "4xl">("laptop");
-
-  useEffect(() => {
-    const handleResize = () => {
-      const w = window.innerWidth;
-      if (w < 768) setScreenSize("mobile");
-      else if (w >= 2560) setScreenSize("4xl");
-      else if (w >= 1920) setScreenSize("3xl");
-      else setScreenSize("laptop");
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const screenSize = useScreenSize();
 
   // Disable scrolling when popover is open
   useEffect(() => {
@@ -49,7 +37,7 @@ export default function FreebiesPage() {
 
   return (
     <>
-      <PageWrapper slideDirection="none">
+      <PageWrapper>
         <div className={layout.page}>
           <motion.div
             {...fx.headerSlideIn}
