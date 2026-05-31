@@ -13,6 +13,9 @@ import MobileTopBar from "@/components/MobileTopBar";
 import SmoothScroll from "@/components/SmoothScroll";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
+// Analytics
+import { Analytics } from "@vercel/analytics/next";
+
 export const metadata: Metadata = {
   title: "Minh Quan | Motion Design & Creative Engineering",
   description:
@@ -87,6 +90,7 @@ export default function RootLayout({
             </div>
           </SmoothScroll>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
