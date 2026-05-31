@@ -9,13 +9,13 @@ import WaveGradientBar from "./WaveGradientBar";
 
 export default function MobileTopBar() {
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const segments = pathname.split("/").filter(Boolean);
 
   useEffect(() => setMounted(true), []);
 
-  const isDark = theme === "dark";
+  const isDark = resolvedTheme === "dark";
   const isIndividualItem = segments.length >= 2;
 
   let colors = ["#005f73", "#0a9396", "#94d2bd"];

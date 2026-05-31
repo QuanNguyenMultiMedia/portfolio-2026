@@ -4,6 +4,12 @@ import { takes } from "@/data/takes";
 import Link from "next/link";
 import { layout, ui, t } from "@/lib/designSystem";
 
+export async function generateStaticParams() {
+  return takes.map((t) => ({
+    slug: t.slug,
+  }));
+}
+
 export default async function PostPage({
   params,
 }: {
