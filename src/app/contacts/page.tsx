@@ -414,12 +414,14 @@ export default function ContactsPage() {
           >
             {/* FRONT SIDE */}
             <div
-              className="col-start-1 row-start-1 backface-hidden w-full preserve-3d"
+              className="col-start-1 row-start-1 backface-hidden w-full preserve-3d transition-all duration-700"
               style={{
                 backfaceVisibility: "hidden",
                 transformStyle: "preserve-3d",
                 pointerEvents: isFlipped ? "none" : "auto",
                 zIndex: isFlipped ? 0 : 1,
+                opacity: isFlipped ? 0 : 1,
+                visibility: isFlipped ? "hidden" : "visible",
               }}
             >
               <div className="bg-primary/5 backdrop-blur-xl border border-primary/10 border-b-0 px-6 py-2 h-[40px] 3xl:px-10 3xl:py-4 3xl:h-[54px] 4xl:px-14 4xl:py-5 4xl:h-[68px] inline-flex items-center absolute top-0 right-0 -translate-y-full">
@@ -428,7 +430,7 @@ export default function ContactsPage() {
                 </h1>
               </div>
 
-              <div className="w-full h-full grid grid-cols-1 lg:grid-cols-12 gap-0 border border-primary/10 bg-surface/20 backdrop-blur-xl overflow-hidden min-h-[400px] 3xl:min-h-[520px] 4xl:min-h-[620px]">
+              <div className="w-full h-full grid grid-cols-1 lg:grid-cols-12 gap-0 border border-primary/10 bg-background/95 md:bg-surface/20 backdrop-blur-3xl md:backdrop-blur-xl overflow-hidden min-h-[400px] 3xl:min-h-[520px] 4xl:min-h-[620px]">
                 <div className="lg:col-span-5 p-5 md:p-8 3xl:p-10 4xl:p-12 border-b lg:border-b-0 lg:border-r border-primary/10 flex flex-col justify-between">
                   <div className="space-y-6 3xl:space-y-10 4xl:space-y-12">
                     <div className="space-y-2">
@@ -490,13 +492,15 @@ export default function ContactsPage() {
 
             {/* BACK SIDE */}
             <div
-              className="col-start-1 row-start-1 backface-hidden w-full preserve-3d"
+              className="col-start-1 row-start-1 backface-hidden w-full preserve-3d transition-all duration-700"
               style={{
                 backfaceVisibility: "hidden",
                 transform: "rotateY(180deg)",
                 transformStyle: "preserve-3d",
                 pointerEvents: isFlipped ? "auto" : "none",
                 zIndex: isFlipped ? 1 : 0,
+                opacity: isFlipped ? 1 : 0,
+                visibility: isFlipped ? "visible" : "hidden",
               }}
             >
               <div className="bg-primary/5 backdrop-blur-xl border border-primary/10 border-b-0 px-6 py-2 h-[40px] 3xl:px-10 3xl:py-4 3xl:h-[54px] 4xl:px-14 4xl:py-5 4xl:h-[68px] inline-flex items-center absolute top-0 right-0 -translate-y-full">
@@ -505,7 +509,7 @@ export default function ContactsPage() {
                 </h1>
               </div>
 
-              <div className="w-full h-full grid grid-cols-1 lg:grid-cols-12 gap-0 border border-primary/10 bg-surface/20 backdrop-blur-xl overflow-hidden min-h-[400px] 3xl:min-h-[520px] 4xl:min-h-[620px]">
+              <div className="w-full h-full grid grid-cols-1 lg:grid-cols-12 gap-0 border border-primary/10 bg-background/95 md:bg-surface/20 backdrop-blur-3xl md:backdrop-blur-xl overflow-hidden min-h-[400px] 3xl:min-h-[520px] 4xl:min-h-[620px]">
                 <div className="lg:col-span-5 p-5 md:p-8 3xl:p-10 4xl:p-12 border-b lg:border-b-0 lg:border-r border-primary/10 flex flex-col justify-between">
                   <div className="space-y-6 3xl:space-y-10 4xl:space-y-12">
                     <div className="space-y-2">

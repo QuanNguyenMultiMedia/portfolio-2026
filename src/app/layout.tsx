@@ -79,9 +79,7 @@ export default function RootLayout({
               <LogoMark />
               <GlobalSideBar />
               <MobileTopBar />
-              <div className="pt-9 md:pt-0">
-                {children}
-              </div>
+              {children}
               <Navbar />
               <MobileNavbar />
             </div>

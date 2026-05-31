@@ -11,13 +11,13 @@ import { takes } from "@/data/takes";
 
 export default function GlobalSideBar() {
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const segments = pathname.split("/").filter(Boolean);
 
   useEffect(() => setMounted(true), []);
 
-  const isDark = theme === "dark";
+  const isDark = resolvedTheme === "dark";
   const isHome = pathname === "/";
   const isIndividualItem = segments.length >= 2;
 

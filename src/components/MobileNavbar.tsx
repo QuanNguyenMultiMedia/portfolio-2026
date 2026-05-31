@@ -213,6 +213,9 @@ export default function MobileNavbar() {
     if (!isOpen) return;
 
     const handleTouchMoveGlobal = (e: TouchEvent) => {
+      if (isOpen && e.cancelable) {
+        e.preventDefault();
+      }
       if (e.touches.length > 0) {
         handleMove(e.touches[0].clientX, e.touches[0].clientY);
       }
@@ -222,7 +225,7 @@ export default function MobileNavbar() {
       handleMove(e.clientX, e.clientY);
     };
 
-    window.addEventListener("touchmove", handleTouchMoveGlobal, { passive: true });
+    window.addEventListener("touchmove", handleTouchMoveGlobal, { passive: false });
     window.addEventListener("mousemove", handleMouseMoveGlobal);
     window.addEventListener("touchend", handleEnd);
     window.addEventListener("mouseup", handleEnd);
