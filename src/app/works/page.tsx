@@ -662,7 +662,7 @@ export default function WorksPage() {
                     dialContainerParentRef.current.style.filter = '';
                   }
                 }}
-                className="absolute right-6 md:right-0 top-[40%] md:top-1/2 -translate-y-1/2 w-[120px] h-[120px] md:w-[160px] md:h-[160px] 3xl:w-[240px] 3xl:h-[240px] 4xl:w-[320px] 4xl:h-[320px] flex items-center justify-center z-20"
+                className="absolute right-[19px] md:right-[25px] 3xl:right-[35px] 4xl:right-[45px] top-[40%] md:top-1/2 -translate-y-1/2 w-[120px] h-[120px] md:w-[160px] md:h-[160px] 3xl:w-[240px] 3xl:h-[240px] 4xl:w-[320px] 4xl:h-[320px] flex items-center justify-center z-20"
               >
                 <div
                   ref={dialRef}
