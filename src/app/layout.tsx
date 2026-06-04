@@ -26,6 +26,9 @@ export const metadata: Metadata = {
     "Branding",
     "Minh Quan",
   ],
+  alternates: {
+    canonical: "https://portfolio-2026.vercel.app",
+  },
   openGraph: {
     title: "Minh Quan | Motion Design & Creative Engineering",
     description:
@@ -38,6 +41,33 @@ export const metadata: Metadata = {
     icon: "/assets/favicon white.png",
     apple: "/assets/favicon white.png",
   },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Nguyen Minh Quan",
+  "alternateName": "Minh Quan",
+  "url": "https://portfolio-2026.vercel.app",
+  "image": "https://portfolio-2026.vercel.app/assets/portrait_sitting.jpg",
+  "jobTitle": "Motion Designer & Creative Engineer",
+  "knowsAbout": [
+    "Motion Design",
+    "WebGL",
+    "Three.js",
+    "Creative Developer",
+    "UI Animation",
+    "Branding",
+    "Interaction Design"
+  ],
+  "sameAs": [
+    "https://www.linkedin.com/in/quannguyenhere/",
+    "https://github.com/quannguyenhere"
+  ],
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Herond Labs"
+  }
 };
 
 export default function RootLayout({
@@ -67,6 +97,10 @@ export default function RootLayout({
             })();
           `,
         }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body
         className="bg-background text-foreground min-h-full"
