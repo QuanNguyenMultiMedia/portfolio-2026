@@ -4,10 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import PageWrapper from "@/components/PageWrapper";
 import { projects } from "@/data/projects";
 import { useScreenSize } from "@/hooks/useScreenSize";
 import { t, layout, fx } from "@/lib/designSystem";
+
+const MotionImage = motion.create(Image);
 
 export default function WorksPage() {
   const router = useRouter();
@@ -470,15 +473,18 @@ export default function WorksPage() {
         {/* Ambient Mobile Background Image (Dynamic Cross-Fade) */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.05] lg:hidden z-0 overflow-hidden">
           <AnimatePresence mode="wait">
-            <motion.img
+            <MotionImage
               key={activeProject.slug}
               src={getCoverImage(activeProject)}
               alt=""
+              fill
+              sizes="10vw"
+              priority
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.15 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.8 }}
-              className="w-full h-full object-cover blur-xl scale-105"
+              className="object-cover blur-xl scale-105"
             />
           </AnimatePresence>
         </div>
@@ -530,11 +536,13 @@ export default function WorksPage() {
                   transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
                   className="w-full h-full absolute inset-0"
                 >
-                  <img
+                  <Image
                     src={getCoverImage(activeProject)}
                     alt={activeProject.title}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    priority
+                    className="object-cover transition-transform duration-[2s] group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-transparent to-transparent pointer-events-none" />
                 </motion.div>

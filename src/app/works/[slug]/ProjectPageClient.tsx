@@ -3,11 +3,14 @@
 import { useRef, use, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { projects } from "@/data/projects";
 import { layout, ui, t, fx } from "@/lib/designSystem";
 import { notFound } from "next/navigation";
 import useLenis from "@/hooks/useLenis";
 import { useScreenSize } from "@/hooks/useScreenSize";
+
+const MotionImage = motion.create(Image);
 
 export default function ProjectPageClient({
   params,
@@ -162,11 +165,12 @@ export default function ProjectPageClient({
                     ? "w-full aspect-[16/10] relative overflow-hidden group border border-primary/10"
                     : "col-span-8 h-[60vh] 3xl:h-[65vh] relative overflow-hidden group border border-primary/10"}
                 >
-                  <img
-                    src={screen.images?.[0]}
+                  <Image
+                    src={screen.images?.[0] || ""}
                     alt={project.title}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-[2000ms] group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                   
@@ -192,11 +196,12 @@ export default function ProjectPageClient({
                     transition={{ duration: 0.8, delay: 0.3 }}
                     className="aspect-square relative overflow-hidden border border-foreground/5 group"
                   >
-                    <img
-                      src={screen.images?.[1]}
+                    <Image
+                      src={screen.images?.[1] || ""}
                       alt={`${project.title} detail`}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                      fill
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                      className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
                     />
                     
                     {/* Viewfinder overlay */}
@@ -214,11 +219,12 @@ export default function ProjectPageClient({
                     transition={{ duration: 0.8, delay: 0.5 }}
                     className="aspect-[4/3] relative overflow-hidden border border-foreground/5 group"
                   >
-                    <img
-                      src={screen.images?.[2]}
+                    <Image
+                      src={screen.images?.[2] || ""}
                       alt={`${project.title} detail secondary`}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                      fill
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                      className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
                     />
                     
                     {/* Viewfinder overlay */}
@@ -243,11 +249,12 @@ export default function ProjectPageClient({
                   transition={{ duration: 1.5, ease: [0.23, 1, 0.32, 1] }}
                   className="w-full h-full relative overflow-hidden group border border-primary/10"
                 >
-                  <img
-                    src={screen.src}
+                  <Image
+                    src={screen.src || ""}
                     alt={screen.caption || project.title}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[3000ms]"
+                    fill
+                    sizes="100vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-[3000ms]"
                   />
                   <div className="absolute bottom-8 right-8 3xl:bottom-12 3xl:right-12 text-[8px] 3xl:text-[10px] 4xl:text-xs font-mono tracking-widest opacity-30 uppercase pointer-events-none">
                     IMG_REF // {i + 1}
@@ -299,15 +306,17 @@ export default function ProjectPageClient({
             </div>
 
             <div className="relative w-full aspect-video md:aspect-[21/9] overflow-hidden border border-primary/10">
-              <motion.img
+              <MotionImage
                 src={
                   projects[
                     (projects.findIndex((p) => p.slug === slug) + 1) %
                       projects.length
-                  ].coverImage
+                  ].coverImage || ""
                 }
                 alt="Next project preview"
-                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-background/20 group-hover:bg-transparent transition-colors" />
               <div className="absolute inset-0 flex items-center justify-center">
