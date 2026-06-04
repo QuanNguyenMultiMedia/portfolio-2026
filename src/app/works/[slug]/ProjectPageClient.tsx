@@ -280,7 +280,7 @@ export default function ProjectPageClient({
                 ? "w-full space-y-6"
                 : "max-w-[576px] 3xl:max-w-3xl 4xl:max-w-4xl space-y-8 3xl:space-y-12"}>
                 <div className="h-px w-16 3xl:w-24 bg-primary" />
-                <h3 className={isMobile ? "text-lg md:text-xl font-light leading-relaxed text-left" : t.sectionHeaderDisplay}>
+                <h3 className={isMobile ? "text-lg md:text-xl font-light leading-relaxed text-left" : t.heroTagline}>
                   {screen.content}
                 </h3>
               </div>
