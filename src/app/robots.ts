@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://portfolio-2026.vercel.app/sitemap.xml",
+    sitemap: "https://minhquan.works/sitemap.xml",
   };
 }
