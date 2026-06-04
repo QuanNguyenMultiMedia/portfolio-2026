@@ -204,7 +204,7 @@ export default function FreebiesPage() {
                   </div>
 
                   <div className="space-y-4">
-                    <h2 className={`${t.sectionHeaderDisplay} font-bold text-primary`}>
+                    <h2 className={`${t.workItemName} font-bold text-primary`}>
                       {selectedItem.title}
                     </h2>
                     <div className="h-px w-8 bg-primary/20" />
