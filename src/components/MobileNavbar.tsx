@@ -36,8 +36,8 @@ export default function MobileNavbar() {
     };
   }, [isOpen]);
 
-  const { directory, title } = getBreadcrumb(pathname);
-  const breadcrumb = `${directory} // ${title}`;
+  const { title } = getBreadcrumb(pathname);
+  const breadcrumb = `// ${title}`;
 
   // Spreading 6 items in an arc from 180 degrees (straight left) to 270 degrees (straight up)
   const radius = 175;

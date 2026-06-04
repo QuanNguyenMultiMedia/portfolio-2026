@@ -26,7 +26,7 @@ export default function SectionHeader({
         className="flex flex-col gap-4"
       >
         <HUDLabel text={directory} />
-        <h1 className={t.h1}>
+        <h1 className={t.pageTitle}>
           {title}
           {subtitle && (
             <>

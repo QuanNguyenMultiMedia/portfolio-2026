@@ -489,7 +489,7 @@ export default function WorksPage() {
           className="hidden md:flex w-full justify-between items-end border-b border-primary/10 pb-3 mb-3 lg:mb-4 shrink-0"
         >
           <div className="flex flex-col gap-1">
-            <span className={`${t.meta} tracking-[0.4em] opacity-40 group-hover:opacity-40`}>
+            <span className={`${t.metaDataLabel} tracking-[0.4em] opacity-40 group-hover:opacity-40`}>
               Selected Works
             </span>
           </div>
@@ -551,7 +551,7 @@ export default function WorksPage() {
                   transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
                   className="flex flex-col gap-3 md:gap-4 shrink-0 w-full items-end text-right"
                 >
-                  <p className={`${t.body} max-w-[420px] 3xl:max-w-[540px] 4xl:max-w-[680px] text-right ml-auto`}>
+                  <p className={`${t.bodyProse} max-w-[420px] 3xl:max-w-[540px] 4xl:max-w-[680px] text-right ml-auto`}>
                     {activeProject.description}
                   </p>
                 </motion.div>

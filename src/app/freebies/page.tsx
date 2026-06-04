@@ -43,7 +43,7 @@ export default function FreebiesPage() {
             {...fx.headerSlideIn}
             className="mb-16 space-y-4 3xl:space-y-6"
           >
-            <h1 className={t.display}>
+            <h1 className={t.sectionHeaderDisplay}>
               Freebies
             </h1>
           </motion.div>
@@ -92,7 +92,7 @@ export default function FreebiesPage() {
                     </motion.div>
 
                     <div className="px-1 mt-6">
-                      <h3 className={`${t.h2} ${motionTokens.skewHover}`}>
+                      <h3 className={`${t.workItemName} ${motionTokens.skewHover}`}>
                         {item.title}
                       </h3>
                     </div>
@@ -204,7 +204,7 @@ export default function FreebiesPage() {
                   </div>
 
                   <div className="space-y-4">
-                    <h2 className={`${t.display} font-bold text-primary`}>
+                    <h2 className={`${t.sectionHeaderDisplay} font-bold text-primary`}>
                       {selectedItem.title}
                     </h2>
                     <div className="h-px w-8 bg-primary/20" />
@@ -212,14 +212,14 @@ export default function FreebiesPage() {
 
                   <div className="space-y-4 max-w-md 3xl:max-w-lg 4xl:max-w-2xl">
                     {selectedItem.description.split("\n\n").map((para, i) => (
-                      <p key={i} className={t.body}>
+                      <p key={i} className={t.bodyProse}>
                         {para}
                       </p>
                     ))}
                   </div>
 
                   <div className="space-y-2">
-                    <span className={`${t.meta} block opacity-20`}>
+                    <span className={`${t.metaDataLabel} block opacity-20`}>
                       COLOR PALETTE // SPEC_2026
                     </span>
                     <div className="flex gap-2">

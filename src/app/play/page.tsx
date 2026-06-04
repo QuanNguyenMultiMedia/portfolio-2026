@@ -15,7 +15,7 @@ export default function PlayPage() {
           {...fx.headerSlideIn}
           className="mb-16 space-y-4 3xl:space-y-6"
         >
-          <h1 className={t.display}>
+          <h1 className={t.sectionHeaderDisplay}>
             PLAY
           </h1>
         </motion.div>
@@ -45,14 +45,14 @@ export default function PlayPage() {
                 {/* Bottom Frame: Name (connected immediately) */}
                 <div className={ui.cardFooter}>
                   <div className="space-y-1 3xl:space-y-2">
-                    <h2 className={`${t.h3} ${motionTokens.skewHover}`}>
+                    <h2 className={`${t.playItemName} ${motionTokens.skewHover}`}>
                       {exp.title}
                     </h2>
                     <div className="flex gap-2">
                       {exp.tech.map((techItem) => (
                         <span
                           key={techItem}
-                          className={`${t.meta} opacity-40 group-hover:opacity-75`}
+                          className={`${t.metaDataLabel} opacity-40 group-hover:opacity-75`}
                         >
                           {techItem}
                         </span>

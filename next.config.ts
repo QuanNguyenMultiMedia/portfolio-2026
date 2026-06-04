@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   output: "export",
@@ -30,6 +31,16 @@ const nextConfig: NextConfig = {
 
   turbopack: {
     resolveExtensions: [".mdx", ".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"],
+  },
+
+  webpack: (config, { dev }) => {
+    if (!dev) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        [path.resolve(__dirname, "src/app/design-system/page.tsx")]: path.resolve(__dirname, "src/app/design-system/page.dummy.tsx"),
+      };
+    }
+    return config;
   },
 };
 

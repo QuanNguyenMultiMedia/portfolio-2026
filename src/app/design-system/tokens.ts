@@ -12,6 +12,8 @@ export interface TypographyParams {
   weight: number;
   leading: number;
   opacity: number;
+  casing?: "uppercase" | "lowercase" | "normal-case";
+  italic?: boolean;
 }
 
 export interface EditableState {
@@ -22,6 +24,21 @@ export interface EditableState {
     techBlue: string;
     borderNeutral: string;
     surface: string;
+    color1: string;
+    color2: string;
+    color3: string;
+    color4: string;
+    color5: string;
+  };
+  colorTokens: {
+    bg: string;
+    surface: string;
+    surfaceGlass: string;
+    textMuted: string;
+    textDisabled: string;
+    accent: string;
+    borderMuted: string;
+    borderHover: string;
   };
   spacing: {
     tight: number;
@@ -31,6 +48,24 @@ export interface EditableState {
     sectionTop: number;
   };
   typography: Record<string, TypographyParams>;
+  layout: {
+    page: string;
+    detail: string;
+    gridSm: string;
+    gridMd: string;
+    listRow: string;
+    editorial: string;
+    mediaCol: string;
+    textCol: string;
+  };
+  ui: {
+    card: string;
+    cardFooter: string;
+    img: string;
+    imgFade: string;
+    arrow: string;
+    backButton: string;
+  };
   motion: {
     ease: { cx1: number; cy1: number; cx2: number; cy2: number };
     easeSharp: { cx1: number; cy1: number; cx2: number; cy2: number };
@@ -43,10 +78,16 @@ function fmtRem(v: number): string {
 
 export function typeClass(key: string, p: TypographyParams): string {
   const s = p.sizes;
-  const isMono = key === "subtitle" || key === "meta";
-  const font = isMono ? "font-mono" : key === "body" ? "font-light" : key === "h2" ? "font-bold" : "font-display";
-  const upper = ["hero", "display", "h1", "h3", "subtitle", "meta"].includes(key) ? "uppercase" : "";
-  const techBlue = key === "subtitle" ? "text-tech-blue" : "";
+  const isMono = key === "monoEyebrow" || key === "metaDataLabel";
+  const font = isMono ? "font-mono" : key === "bodyProse" ? "font-light" : ["workItemName", "takesTitle", "playItemName"].includes(key) ? "font-display font-bold" : "font-display";
+  
+  const defaultCasing = ["mainHeroTitle", "sectionHeaderDisplay", "pageTitle", "navItemLabel", "monoEyebrow", "metaDataLabel"].includes(key) ? "uppercase" : "normal-case";
+  const casingClass = p.casing || defaultCasing;
+  
+  const techBlue = key === "monoEyebrow" ? "text-tech-blue" : "";
+  const isItalic = p.italic !== undefined ? p.italic : (key === "heroTagline");
+  const italicClass = isItalic ? "italic" : "";
+
   const parts = [
     `text-[${fmtRem(s.base)}rem]`,
     `md:text-[${fmtRem(s.md)}rem]`,
@@ -54,41 +95,87 @@ export function typeClass(key: string, p: TypographyParams): string {
     `3xl:text-[${fmtRem(s.xl3)}rem]`,
     `4xl:text-[${fmtRem(s.xl4)}rem]`,
     font,
-    upper,
+    casingClass,
     techBlue,
     `font-[${p.weight}]`,
     `leading-[${fmtRem(p.leading)}]`,
   ];
   if (Math.abs(p.tracking) > 0.001) parts.push(`tracking-[${p.tracking < 0 ? "" : ""}${fmtRem(p.tracking)}em]`);
   if (p.opacity < 0.99) parts.push(`opacity-${Math.round(p.opacity * 100)}`);
+  if (italicClass) parts.push(italicClass);
   return parts.filter(Boolean).join(" ");
 }
 
-export const TYPE_KEYS = ["hero", "display", "h1", "h2", "h3", "subtitle", "body", "meta"];
+export const TYPE_KEYS = [
+  "mainHeroTitle",
+  "heroTagline",
+  "sectionHeaderDisplay",
+  "pageTitle",
+  "workItemName",
+  "takesTitle",
+  "playItemName",
+  "navItemLabel",
+  "monoEyebrow",
+  "bodyProse",
+  "metaDataLabel"
+];
 
 const INITIAL_TYPOGRAPHY: Record<string, TypographyParams> = {
-  hero:     { sizes: { base: 3, md: 4.5, lg: 6.5, xl3: 8.5, xl4: 11 }, tracking: -0.02, weight: 800, leading: 0.75, opacity: 1 },
-  display:  { sizes: { base: 1.875, md: 3, lg: 3.75, xl3: 4.5, xl4: 6.5 }, tracking: -0.02, weight: 700, leading: 0.85, opacity: 1 },
-  h1:       { sizes: { base: 1.5, md: 2.25, lg: 3, xl3: 3.75, xl4: 4.5 }, tracking: -0.02, weight: 700, leading: 1, opacity: 1 },
-  h2:       { sizes: { base: 1.125, md: 1.25, lg: 1.5, xl3: 1.875, xl4: 2.25 }, tracking: -0.02, weight: 700, leading: 0.85, opacity: 1 },
-  h3:       { sizes: { base: 0.75, md: 0.875, lg: 1, xl3: 1, xl4: 1.125 }, tracking: 0.05, weight: 500, leading: 1.2, opacity: 1 },
-  subtitle: { sizes: { base: 0.5625, md: 0.5625, lg: 0.5625, xl3: 0.6875, xl4: 0.75 }, tracking: 0.4, weight: 700, leading: 1.2, opacity: 0.6 },
-  body:     { sizes: { base: 0.8125, md: 0.875, lg: 1, xl3: 1.125, xl4: 1.25 }, tracking: 0, weight: 300, leading: 1.75, opacity: 0.7 },
-  meta:     { sizes: { base: 0.5, md: 0.5, lg: 0.5, xl3: 0.625, xl4: 0.75 }, tracking: 0.2, weight: 400, leading: 1.2, opacity: 0.3 },
+  mainHeroTitle:        { sizes: { base: 3, md: 4.5, lg: 6.5, xl3: 8.5, xl4: 11 }, tracking: -0.02, weight: 800, leading: 0.75, opacity: 1, casing: "uppercase", italic: false },
+  heroTagline:          { sizes: { base: 1.125, md: 1.25, lg: 1.5, xl3: 1.875, xl4: 2.25 }, tracking: -0.02, weight: 300, leading: 1.625, opacity: 0.9, casing: "normal-case", italic: true },
+  sectionHeaderDisplay: { sizes: { base: 1.875, md: 3, lg: 3.75, xl3: 4.5, xl4: 6.5 }, tracking: -0.02, weight: 700, leading: 0.85, opacity: 1, casing: "uppercase", italic: false },
+  pageTitle:            { sizes: { base: 1.5, md: 2.25, lg: 3, xl3: 3.75, xl4: 4.5 }, tracking: -0.02, weight: 700, leading: 1, opacity: 1, casing: "uppercase", italic: false },
+  workItemName:         { sizes: { base: 1.125, md: 1.25, lg: 1.5, xl3: 1.875, xl4: 2.25 }, tracking: -0.02, weight: 700, leading: 0.85, opacity: 1, casing: "normal-case", italic: false },
+  takesTitle:           { sizes: { base: 1.125, md: 1.25, lg: 1.5, xl3: 1.875, xl4: 2.25 }, tracking: -0.02, weight: 700, leading: 0.85, opacity: 1, casing: "normal-case", italic: false },
+  playItemName:         { sizes: { base: 1.125, md: 1.25, lg: 1.5, xl3: 1.875, xl4: 2.25 }, tracking: -0.02, weight: 700, leading: 0.85, opacity: 1, casing: "normal-case", italic: false },
+  navItemLabel:         { sizes: { base: 0.75, md: 0.875, lg: 1, xl3: 1, xl4: 1.125 }, tracking: 0.05, weight: 500, leading: 1.2, opacity: 1, casing: "uppercase", italic: false },
+  monoEyebrow:          { sizes: { base: 0.5625, md: 0.5625, lg: 0.5625, xl3: 0.6875, xl4: 0.75 }, tracking: 0.4, weight: 700, leading: 1.2, opacity: 0.6, casing: "uppercase", italic: false },
+  bodyProse:            { sizes: { base: 0.8125, md: 0.875, lg: 1, xl3: 1.125, xl4: 1.25 }, tracking: 0, weight: 300, leading: 1.75, opacity: 0.7, casing: "normal-case", italic: false },
+  metaDataLabel:        { sizes: { base: 0.5, md: 0.5, lg: 0.5, xl3: 0.625, xl4: 0.75 }, tracking: 0.2, weight: 400, leading: 1.2, opacity: 0.3, casing: "uppercase", italic: false },
 };
 
 export const DEFAULT_EDITABLE: EditableState = {
   colors: {
     background: "#f5f5f5", foreground: "#111111", primary: "#000000",
     techBlue: "#0029ff", borderNeutral: "rgba(0,0,0,0.08)", surface: "#ffffff",
+    color1: "330 100% 40%", color2: "140 100% 55%", color3: "210 100% 30%",
+    color4: "60 100% 70%", color5: "295 100% 45%",
+  },
+  colorTokens: {
+    bg: "bg-background text-foreground",
+    surface: "bg-surface",
+    surfaceGlass: "bg-surface/30 backdrop-blur-md border border-border-neutral",
+    textMuted: "text-foreground/60",
+    textDisabled: "text-foreground/30",
+    accent: "text-tech-blue border-tech-blue/30",
+    borderMuted: "border-primary/10",
+    borderHover: "group-hover:border-primary/30",
   },
   spacing: { tight: 24, normal: 48, wide: 112, xl: 140, sectionTop: 96 },
   typography: TYPE_KEYS.reduce((acc, k) => ({ ...acc, [k]: { ...INITIAL_TYPOGRAPHY[k], sizes: { ...INITIAL_TYPOGRAPHY[k].sizes } } }), {} as Record<string, TypographyParams>),
+  layout: {
+    page: "pb-32 pr-8 md:pr-24 lg:pr-32 3xl:pb-48 3xl:pr-48 4xl:pb-64 4xl:pr-64",
+    detail: "pt-36 pb-28 px-10 md:pr-48 3xl:pt-48 3xl:pb-36 3xl:px-20 3xl:pr-64 4xl:pt-60 4xl:pb-48 4xl:px-32 4xl:pr-80",
+    gridSm: "grid grid-cols-1 md:grid-cols-2 3xl:grid-cols-3 gap-12 md:gap-16 3xl:gap-20 4xl:gap-28",
+    gridMd: "grid grid-cols-1 md:grid-cols-12 gap-x-10 3xl:gap-x-18 4xl:gap-x-26 gap-y-28 md:gap-y-40 relative",
+    listRow: "group grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-14 3xl:gap-20 4xl:gap-28 items-center border-b border-primary/5 py-14 md:py-24 3xl:py-36 4xl:py-48 transition-all duration-700",
+    editorial: "grid grid-cols-12 gap-x-8",
+    mediaCol: "col-span-4 col-start-2 3xl:col-span-5 3xl:col-start-2 4xl:col-span-6 4xl:col-start-2",
+    textCol: "col-span-4 col-start-8 3xl:col-span-5 3xl:col-start-7 4xl:col-span-5 4xl:col-start-7",
+  },
+  ui: {
+    card: "border border-primary/10 bg-surface/30 p-2.5 3xl:p-4 4xl:p-6 transition-colors duration-500 group-hover:border-primary/30",
+    cardFooter: "border-x border-b border-primary/10 bg-surface/10 px-6 py-5 3xl:px-8 3xl:py-7 4xl:px-10 4xl:py-9 transition-colors duration-500 group-hover:border-primary/30 flex justify-between items-center",
+    img: "w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-[1.03] transition-all duration-700 ease-[0.23,1,0.32,1]",
+    imgFade: "object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out opacity-60 group-hover:opacity-100",
+    arrow: "opacity-40 group-hover:opacity-100 group-hover:translate-x-1.5 transition-all duration-500 ease-[0.23,1,0.32,1]",
+    backButton: "fixed top-16 left-16 md:top-24 md:left-24 3xl:top-32 3xl:left-32 4xl:top-40 4xl:left-40 z-50",
+  },
   motion: { ease: { cx1: 0.16, cy1: 1, cx2: 0.3, cy2: 1 }, easeSharp: { cx1: 0.23, cy1: 1, cx2: 0.32, cy2: 1 } },
 };
 
 export function generateFileContent(state: EditableState): string {
-  const { colors, spacing, motion, typography } = state;
+  const { colors, colorTokens, spacing, motion, typography, layout, ui } = state;
 
   const typeLines = TYPE_KEYS.map(k => {
     const p = typography[k];
@@ -115,14 +202,14 @@ const entrance = {
 // ─── Colors ──────────────────────────────────────────────────────────────────
 
 export const colors = {
-  bg:           "bg-background text-foreground",
-  surface:      "bg-surface",
-  surfaceGlass: "bg-surface/30 backdrop-blur-md border border-border-neutral",
-  textMuted:    "text-foreground/60",
-  textDisabled: "text-foreground/30",
-  accent:       "text-tech-blue border-tech-blue/30",
-  borderMuted:  "border-primary/10",
-  borderHover:  "group-hover:border-primary/30",
+  bg:           "${colorTokens.bg}",
+  surface:      "${colorTokens.surface}",
+  surfaceGlass: "${colorTokens.surfaceGlass}",
+  textMuted:    "${colorTokens.textMuted}",
+  textDisabled: "${colorTokens.textDisabled}",
+  accent:       "${colorTokens.accent}",
+  borderMuted:  "${colorTokens.borderMuted}",
+  borderHover:  "${colorTokens.borderHover}",
 };
 
 // ─── Motion ──────────────────────────────────────────────────────────────────
@@ -131,7 +218,7 @@ export const motion = {
   skewHover: "transition-transform duration-300 origin-left inline-block group-hover:skew-x-[-10deg]",
 };
 
-// ─── Typography — 8 hierarchy levels ─────────────────────────────────────────
+// ─── Typography — Semantic Visual Roles ──────────────────────────────────────
 
 export const t = {
 ${typeLines}
@@ -140,25 +227,25 @@ ${typeLines}
 // ─── Layout ──────────────────────────────────────────────────────────────────
 
 export const layout = {
-  page:       "pb-32 pr-8 md:pr-24 lg:pr-32 3xl:pb-48 3xl:pr-48 4xl:pb-64 4xl:pr-64",
-  detail:     "pt-36 pb-28 px-10 md:pr-48 3xl:pt-48 3xl:pb-36 3xl:px-20 3xl:pr-64 4xl:pt-60 4xl:pb-48 4xl:px-32 4xl:pr-80",
-  gridSm:     "grid grid-cols-1 md:grid-cols-2 3xl:grid-cols-3 gap-12 md:gap-16 3xl:gap-20 4xl:gap-28",
-  gridMd:     "grid grid-cols-1 md:grid-cols-12 gap-x-10 3xl:gap-x-18 4xl:gap-x-26 gap-y-28 md:gap-y-40 relative",
-  listRow:    "group grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-14 3xl:gap-20 4xl:gap-28 items-center border-b border-primary/5 py-14 md:py-24 3xl:py-36 4xl:py-48 transition-all duration-700",
-  editorial:  "grid grid-cols-12 gap-x-8",
-  mediaCol:   "col-span-4 col-start-2 3xl:col-span-5 3xl:col-start-2 4xl:col-span-6 4xl:col-start-2",
-  textCol:    "col-span-4 col-start-8 3xl:col-span-5 3xl:col-start-7 4xl:col-span-5 4xl:col-start-7",
+  page:       "${layout.page}",
+  detail:     "${layout.detail}",
+  gridSm:     "${layout.gridSm}",
+  gridMd:     "${layout.gridMd}",
+  listRow:    "${layout.listRow}",
+  editorial:  "${layout.editorial}",
+  mediaCol:   "${layout.mediaCol}",
+  textCol:    "${layout.textCol}",
 };
 
 // ─── UI elements ─────────────────────────────────────────────────────────────
 
 export const ui = {
-  card:        "border border-primary/10 bg-surface/30 p-2.5 3xl:p-4 4xl:p-6 transition-colors duration-500 group-hover:border-primary/30",
-  cardFooter:  "border-x border-b border-primary/10 bg-surface/10 px-6 py-5 3xl:px-8 3xl:py-7 4xl:px-10 4xl:py-9 transition-colors duration-500 group-hover:border-primary/30 flex justify-between items-center",
-  img:         "w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-[1.03] transition-all duration-700 ease-[0.23,1,0.32,1]",
-  imgFade:     "object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out opacity-60 group-hover:opacity-100",
-  arrow:       "opacity-40 group-hover:opacity-100 group-hover:translate-x-1.5 transition-all duration-500 ease-[0.23,1,0.32,1]",
-  backButton:  "fixed top-16 left-16 md:top-24 md:left-24 3xl:top-32 3xl:left-32 4xl:top-40 4xl:left-40 z-50",
+  card:        "${ui.card}",
+  cardFooter:  "${ui.cardFooter}",
+  img:         "${ui.img}",
+  imgFade:     "${ui.imgFade}",
+  arrow:       "${ui.arrow}",
+  backButton:  "${ui.backButton}",
 };
 
 // ─── Motion Presets ──────────────────────────────────────────────────────────
@@ -166,7 +253,7 @@ export const ui = {
 export const fx = {
   ease,
   easeSharp,
-  slideIn: (index = 0) => ({ ...entrance, transition: { duration: 0.85, ease, delay: 0.05 + index * 0.05 } }),
+  slideIn: (index = 0) => ({ ...entrance, transition: { duration: 0.85, ease, delay: BASE_DELAY + index * STAGGER } }),
   headerSlideIn: { ...entrance, transition: { duration: 0.85, ease, delay: 0 } },
   fade:    { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.85, ease } },
   scaleIn: { initial: { opacity: 0, scale: 0.98 }, animate: { opacity: 1, scale: 1 }, transition: { duration: 0.85, ease } },
