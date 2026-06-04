@@ -27,13 +27,13 @@ export const metadata: Metadata = {
     "Minh Quan",
   ],
   alternates: {
-    canonical: "https://portfolio-2026.vercel.app",
+    canonical: "https://minhquan.works",
   },
   openGraph: {
     title: "Minh Quan | Motion Design & Creative Engineering",
     description:
       "Cinematic motion, 3D engineering, and editorial design portfolio.",
-    url: "https://portfolio-2026.vercel.app",
+    url: "https://minhquan.works",
     siteName: "Minh Quan Portfolio",
     type: "website",
   },
@@ -48,8 +48,8 @@ const jsonLd = {
   "@type": "Person",
   "name": "Nguyen Minh Quan",
   "alternateName": "Minh Quan",
-  "url": "https://portfolio-2026.vercel.app",
-  "image": "https://portfolio-2026.vercel.app/assets/portrait_sitting.jpg",
+  "url": "https://minhquan.works",
+  "image": "https://minhquan.works/assets/portrait_sitting.jpg",
   "jobTitle": "Motion Designer & Creative Engineer",
   "knowsAbout": [
     "Motion Design",

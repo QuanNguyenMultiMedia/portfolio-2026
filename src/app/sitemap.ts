@@ -6,7 +6,7 @@ import { playItems } from "@/data/play";
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://portfolio-2026.vercel.app";
+  const baseUrl = "https://minhquan.works";
 
   const staticRoutes = [
     "",
