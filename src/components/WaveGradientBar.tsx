@@ -161,7 +161,7 @@ export default function WaveGradientBar({
       webgl: 2,
       alpha: true,
       antialias: false,
-      dpr: Math.min(window.devicePixelRatio || 1, 2),
+      dpr: 1.0,
     });
 
     const gl = renderer.gl;
@@ -211,10 +211,13 @@ export default function WaveGradientBar({
     const currentRgb2 = new Float32Array(hexToRgb(color2));
     const currentRgb3 = new Float32Array(hexToRgb(color3));
 
+    let isIntersecting = false;
+
     const setSize = () => {
       const rect = container.getBoundingClientRect();
-      const width = Math.max(1, Math.floor(rect.width));
-      const height = Math.max(1, Math.floor(rect.height));
+      const scale = 0.25; // Blurry wave gradient does not need high-res; 0.25x scale saves ~16x pixels
+      const width = Math.max(1, Math.floor(rect.width * scale));
+      const height = Math.max(1, Math.floor(rect.height * scale));
       renderer.setSize(width, height);
       const res = program.uniforms.iResolution.value;
       res[0] = gl.drawingBufferWidth;
@@ -229,6 +232,7 @@ export default function WaveGradientBar({
     let raf = 0;
     const t0 = performance.now();
     const loop = (t: number) => {
+      if (!isIntersecting) return;
       program.uniforms.iTime.value = (t - t0) * 0.001;
 
       // Target colors from refs (already pre-parsed, avoiding string/regex operations on every frame)
@@ -251,11 +255,29 @@ export default function WaveGradientBar({
       renderer.render({ scene: mesh });
       raf = requestAnimationFrame(loop);
     };
-    raf = requestAnimationFrame(loop);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const wasIntersecting = isIntersecting;
+        isIntersecting = entry.isIntersecting;
+        if (isIntersecting && !wasIntersecting) {
+          if (raf) cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(loop);
+        } else if (!isIntersecting && wasIntersecting) {
+          if (raf) {
+            cancelAnimationFrame(raf);
+            raf = 0;
+          }
+        }
+      },
+      { threshold: 0.01 }
+    );
+    observer.observe(container);
 
     return () => {
-      cancelAnimationFrame(raf);
+      if (raf) cancelAnimationFrame(raf);
       ro.disconnect();
+      observer.disconnect();
       try {
         container.removeChild(canvas);
       } catch {
