@@ -53,3 +53,8 @@ The interface feels like a premium technical manual or a luxury automotive confi
 ### 3. Layout Stacking & Portals
 - **Preserve-3D Stacking Contexts**: Elements with `will-change: transform` or `transform-style: preserve-3d` spawn new stacking contexts, trapping elements. Use a custom `<Portal>` component to render details panels, drawer overlays, or modals under `document.body` to preserve correct layout positions.
 - **Isolate Entrance Animations**: When using shared layout animations (`layoutId`), wrap the shared component inside a plain motion container that handles mount entrance fades/slides. This separates initial page load animation from the shared layout interpolation.
+
+### 4. GPU & Image Performance Safeguards
+- **WebGL Fill-Rate Optimization**: Limit DPR of blurry, smooth procedural gradients (like `WaveGradientBar`) to `1.0` and downscale the rendering resolution (e.g., `0.25x` scale). This saves ~93.75% of pixel calculations while maintaining high visual quality.
+- **Visibility-Aware Render Loops**: Use an `IntersectionObserver` on WebGL canvas containers. Pause and cancel the `requestAnimationFrame` loop when the container is off-screen or hidden via `display: none` (common when using responsive display classes like `hidden md:flex`), and resume immediately upon visibility.
+- **Native Image Optimization**: Use the Next.js `<Image>` component instead of raw `<img>` tags in combination with Vercel's hybrid serverless hosting. This automatically re-encodes images to modern, fast formats (WebP/AVIF) and uses the `sizes` attribute to serve scaled-down image assets depending on the screen size.
