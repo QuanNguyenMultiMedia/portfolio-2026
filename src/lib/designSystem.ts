@@ -34,26 +34,20 @@ export const motion = {
   skewHover: "transition-transform duration-300 origin-left inline-block group-hover:skew-x-[-10deg]",
 };
 
-// ─── Typography — 8 hierarchy levels ─────────────────────────────────────────
-// Each token = a visual role. Compose modifiers (italic, opacity, etc.) at the call site.
+// ─── Typography — Semantic Visual Roles ──────────────────────────────────────
 
 export const t = {
-  // Hero: full-bleed page titles, project openers
-  hero:     "text-5xl md:text-7xl lg:text-[6.5rem] 3xl:text-[8.5rem] 4xl:text-[11rem] font-display uppercase leading-[0.75] tracking-tighter",
-  // Display: section headers, page-level titles
-  display:  "text-3xl md:text-5xl lg:text-6xl 3xl:text-7xl 4xl:text-[6.5rem] font-display uppercase tracking-tighter leading-[0.85]",
-  // H1: primary content headings
-  h1:       "text-2xl md:text-4xl lg:text-5xl 3xl:text-6xl 4xl:text-7xl font-display uppercase leading-none tracking-tighter",
-  // H2: card titles, section sub-headers
-  h2:       "text-lg md:text-xl lg:text-2xl 3xl:text-3xl 4xl:text-4xl font-display tracking-tighter leading-[0.85] font-bold",
-  // H3: nav items, small labels
-  h3:       "font-display text-xs md:text-sm 3xl:text-base 4xl:text-lg uppercase tracking-wider",
-  // Subtitle: mono eyebrow / section indicators
-  subtitle: "font-mono text-[9px] 3xl:text-[11px] 4xl:text-xs tracking-[0.4em] text-tech-blue font-bold uppercase",
-  // Body: prose, descriptions
-  body:     "text-[13px] md:text-sm lg:text-base 3xl:text-lg 4xl:text-xl font-light leading-relaxed opacity-70",
-  // Meta: mono metadata, tags, timestamps
-  meta:     "text-[8px] 3xl:text-[10px] 4xl:text-xs font-mono tracking-widest uppercase opacity-30 group-hover:opacity-60 transition-opacity",
+  mainHeroTitle:     "text-[3rem] md:text-[4.5rem] lg:text-[6.5rem] 3xl:text-[8.5rem] 4xl:text-[11.0rem] font-display uppercase font-[800] leading-[0.75] tracking-[-0.02em]",
+  heroTagline:     "text-[1.125rem] md:text-[1.25rem] lg:text-[1.5rem] 3xl:text-[1.875rem] 4xl:text-[2.25rem] font-display normal-case font-[300] leading-[1.625] tracking-[-0.02em] opacity-90 italic",
+  sectionHeaderDisplay:     "text-[1.875rem] md:text-[3rem] lg:text-[3.75rem] 3xl:text-[4.5rem] 4xl:text-[6.5rem] font-display uppercase font-[700] leading-[0.85] tracking-[-0.02em]",
+  pageTitle:     "text-[1.5rem] md:text-[2.25rem] lg:text-[3rem] 3xl:text-[3.75rem] 4xl:text-[4.5rem] font-display uppercase font-[700] leading-[1] tracking-[-0.02em]",
+  workItemName:     "text-[1.125rem] md:text-[1.25rem] lg:text-[1.5rem] 3xl:text-[1.875rem] 4xl:text-[2.25rem] font-display font-bold normal-case font-[700] leading-[0.85] tracking-[-0.02em]",
+  takesTitle:     "text-[1.125rem] md:text-[1.25rem] lg:text-[1.5rem] 3xl:text-[1.875rem] 4xl:text-[2.25rem] font-display font-bold normal-case font-[700] leading-[0.85] tracking-[-0.02em]",
+  playItemName:     "text-[1.125rem] md:text-[1.25rem] lg:text-[1.5rem] 3xl:text-[1.875rem] 4xl:text-[2.25rem] font-display font-bold normal-case font-[700] leading-[0.85] tracking-[-0.02em]",
+  navItemLabel:     "text-[0.75rem] md:text-[0.875rem] lg:text-[1rem] 3xl:text-[1rem] 4xl:text-[1.125rem] font-display uppercase font-[500] leading-[1.2] tracking-[0.05em]",
+  monoEyebrow:     "text-[0.563rem] md:text-[0.563rem] lg:text-[0.563rem] 3xl:text-[0.688rem] 4xl:text-[0.75rem] font-mono uppercase text-tech-blue font-[700] leading-[1.2] tracking-[0.4em] opacity-60",
+  bodyProse:     "text-[0.813rem] md:text-[0.875rem] lg:text-[1rem] 3xl:text-[1.125rem] 4xl:text-[1.25rem] font-light normal-case font-[300] leading-[1.75] opacity-70",
+  metaDataLabel:     "text-[0.5rem] md:text-[0.5rem] lg:text-[0.5rem] 3xl:text-[0.625rem] 4xl:text-[0.75rem] font-mono uppercase font-[400] leading-[1.2] tracking-[0.2em] opacity-30",
 };
 
 // ─── Layout ──────────────────────────────────────────────────────────────────
@@ -64,7 +58,6 @@ export const layout = {
   gridSm:     "grid grid-cols-1 md:grid-cols-2 3xl:grid-cols-3 gap-12 md:gap-16 3xl:gap-20 4xl:gap-28",
   gridMd:     "grid grid-cols-1 md:grid-cols-12 gap-x-10 3xl:gap-x-18 4xl:gap-x-26 gap-y-28 md:gap-y-40 relative",
   listRow:    "group grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-14 3xl:gap-20 4xl:gap-28 items-center border-b border-primary/5 py-14 md:py-24 3xl:py-36 4xl:py-48 transition-all duration-700",
-  // Asymmetric editorial split
   editorial:  "grid grid-cols-12 gap-x-8",
   mediaCol:   "col-span-4 col-start-2 3xl:col-span-5 3xl:col-start-2 4xl:col-span-6 4xl:col-start-2",
   textCol:    "col-span-4 col-start-8 3xl:col-span-5 3xl:col-start-7 4xl:col-span-5 4xl:col-start-7",

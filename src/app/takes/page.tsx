@@ -14,7 +14,7 @@ export default function TakesPage() {
           {...fx.headerSlideIn}
           className="mb-16 space-y-4 3xl:space-y-6"
         >
-          <h1 className={t.display}>
+          <h1 className={t.sectionHeaderDisplay}>
             Takes
           </h1>
         </motion.div>
@@ -31,15 +31,15 @@ export default function TakesPage() {
                   idx % 2 === 1 ? "md:pl-24 3xl:pl-36 4xl:pl-48" : ""
                 }`}
               >
-                <div className={`md:col-span-2 ${t.meta}`}>
+                <div className={`md:col-span-2 ${t.metaDataLabel}`}>
                   {`ESSAY_${String(idx + 1).padStart(2, "0")} // ${post.topic} // ${post.date.split(" ").pop()}`}
                 </div>
 
                 <div className="md:col-span-7 space-y-6 3xl:space-y-8">
-                  <h2 className={`${t.h1} ${motionTokens.skewHover}`}>
+                  <h2 className={`${t.takesTitle} ${motionTokens.skewHover}`}>
                     {post.title}
                   </h2>
-                  <p className={`${t.body} max-w-[420px] 3xl:max-w-[560px] 4xl:max-w-[700px] line-clamp-2 group-hover:opacity-100 transition-opacity`}>
+                  <p className={`${t.bodyProse} max-w-[420px] 3xl:max-w-[560px] 4xl:max-w-[700px] line-clamp-2 group-hover:opacity-100 transition-opacity`}>
                     {post.excerpt}
                   </p>
                 </div>

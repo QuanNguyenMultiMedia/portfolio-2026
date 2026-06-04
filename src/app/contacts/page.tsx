@@ -10,10 +10,12 @@ function GooeyText({
   lines,
   textClassName,
   className,
+  isFlipped = false,
 }: {
   lines: string[];
   textClassName?: string;
   className?: string;
+  isFlipped?: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const charsRef = useRef<(HTMLSpanElement | null)[]>([]);
@@ -146,14 +148,11 @@ function GooeyText({
         return;
       }
 
-      const wasNull = mouse === null;
       mouse = {
         x: e.clientX,
         y: e.clientY
       };
-      if (wasNull) {
-        updateRects();
-      }
+      updateRects();
       schedule();
     };
 
@@ -174,7 +173,7 @@ function GooeyText({
       document.removeEventListener('mouseleave', handleMouseLeave);
       window.removeEventListener('resize', cacheOffsets);
     };
-  }, [lines]);
+  }, [lines.join('|'), isFlipped]);
 
   charsRef.current = [];
   let charIndex = 0;
@@ -425,7 +424,7 @@ export default function ContactsPage() {
               }}
             >
               <div className="bg-primary/5 backdrop-blur-xl border border-primary/10 border-b-0 px-6 py-2 h-[40px] 3xl:px-10 3xl:py-4 3xl:h-[54px] 4xl:px-14 4xl:py-5 4xl:h-[68px] inline-flex items-center absolute top-0 right-0 -translate-y-full">
-                <h1 className={`${t.h2} italic leading-none whitespace-nowrap`}>
+                <h1 className={`${t.workItemName} italic leading-none whitespace-nowrap`}>
                   Contact
                 </h1>
               </div>
@@ -441,7 +440,8 @@ export default function ContactsPage() {
                       >
                         <GooeyText
                           lines={["@QUANNGUYENHERE"]}
-                          textClassName={`${t.h2} italic leading-none whitespace-nowrap`}
+                          textClassName={`${t.workItemName} italic leading-none whitespace-nowrap`}
+                          isFlipped={isFlipped}
                         />
                       </a>
                     </div>
@@ -454,7 +454,7 @@ export default function ContactsPage() {
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`group flex items-center justify-between ${t.meta} transition-colors duration-300 pointer-events-auto py-2 px-4 -my-2 -mx-4`}
+                            className={`group flex items-center justify-between ${t.metaDataLabel} transition-colors duration-300 pointer-events-auto py-2 px-4 -my-2 -mx-4`}
                             onClick={(e) => e.stopPropagation()}
                           >
                             <span className="group-hover:text-tech-blue transition-colors">
@@ -469,7 +469,7 @@ export default function ContactsPage() {
                   </div>
 
                   <div className="pt-8 space-y-3">
-                    <p className={`${t.body} max-w-[240px] 3xl:max-w-[320px] opacity-80`}>
+                    <p className={`${t.bodyProse} max-w-[240px] 3xl:max-w-[320px] opacity-80`}>
                       Multimedia creative designer at the intersection of
                       architecture, motion, and code.
                     </p>
@@ -504,7 +504,7 @@ export default function ContactsPage() {
               }}
             >
               <div className="bg-primary/5 backdrop-blur-xl border border-primary/10 border-b-0 px-6 py-2 h-[40px] 3xl:px-10 3xl:py-4 3xl:h-[54px] 4xl:px-14 4xl:py-5 4xl:h-[68px] inline-flex items-center absolute top-0 right-0 -translate-y-full">
-                <h1 className={`${t.h2} italic leading-none whitespace-nowrap`}>
+                <h1 className={`${t.workItemName} italic leading-none whitespace-nowrap`}>
                   About
                 </h1>
               </div>
@@ -520,27 +520,28 @@ export default function ContactsPage() {
                       >
                         <GooeyText
                           lines={["@QUANNGUYENHERE"]}
-                          textClassName={`${t.h2} italic leading-none whitespace-nowrap`}
+                          textClassName={`${t.workItemName} italic leading-none whitespace-nowrap`}
+                          isFlipped={isFlipped}
                         />
                       </a>
-                      <p className="text-[9px] 3xl:text-[11px] 4xl:text-xs font-mono tracking-widest uppercase opacity-50 mt-1">
+                      <p className={`${t.metaDataLabel} opacity-50 mt-1`}>
                         Multimedia Designer
                       </p>
                     </div>
-
+ 
                     <div className="space-y-4 pt-4">
                       <div className="space-y-4 3xl:space-y-6">
                         {experience.map((exp, i) => (
                           <div key={i} className="space-y-1 group">
                             <div className="flex justify-between items-baseline">
-                              <span className={`${t.h3} ${motionTokens.skewHover}`}>
+                              <span className={`${t.navItemLabel} ${motionTokens.skewHover}`}>
                                 {exp.company}
                               </span>
-                              <span className="text-[8px] 3xl:text-[10px] 4xl:text-xs font-mono tracking-widest uppercase opacity-40">
+                              <span className={`${t.metaDataLabel} opacity-40`}>
                                 {exp.period}
                               </span>
                             </div>
-                            <p className="text-[8px] 3xl:text-[10px] 4xl:text-xs font-mono tracking-widest uppercase opacity-75 tracking-wide">
+                            <p className={`${t.metaDataLabel} opacity-75`}>
                               {exp.role}
                             </p>
                           </div>
@@ -548,44 +549,44 @@ export default function ContactsPage() {
                       </div>
                     </div>
                   </div>
-
+ 
                   <div className="pt-8 space-y-2">
-                    <p className={`${t.body} max-w-[240px] 3xl:max-w-[320px] opacity-80`}>
+                    <p className={`${t.bodyProse} max-w-[240px] 3xl:max-w-[320px] opacity-80`}>
                       FPT University // BBA Multimedia Communications
                     </p>
                   </div>
                 </div>
-
+ 
                 <div className="lg:col-span-7 p-6 md:p-8 lg:p-10 3xl:p-12 4xl:p-16 flex flex-col justify-center space-y-6 3xl:space-y-8 relative">
                   <div className="space-y-6 3xl:space-y-8 4xl:space-y-10 relative z-10 max-w-2xl 3xl:max-w-3xl 4xl:max-w-4xl">
                     <div className="space-y-3">
-                      <p className={`${t.h2} font-light leading-relaxed opacity-95 italic`}>
+                      <p className={`${t.heroTagline} font-light leading-relaxed opacity-95 italic`}>
                         &ldquo;I&apos;m a Multimedia Communications creative obsessed with
                         telling stories with a purpose.&rdquo;
                       </p>
                     </div>
-
+ 
                     <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-8 3xl:gap-12 4xl:gap-16">
-                      <p className={`${t.body} opacity-85`}>
+                      <p className={`${t.bodyProse} opacity-85`}>
                         Since 2020, I&apos;ve been working as a Freelance Motion
                         Graphics Designer, bringing brands&apos; messages to life
                         with dynamic and bold visuals.
                       </p>
-                      <p className={`${t.body} opacity-85`}>
+                      <p className={`${t.bodyProse} opacity-85`}>
                         My approach combines strategic communications with
                         high-end aesthetic execution. I believe that every frame
                         should serve a narrative.
                       </p>
                     </div>
                   </div>
-
+ 
                   <div className="pt-6 3xl:pt-8 flex flex-col gap-2 relative z-10">
-                    <span className={`${t.subtitle} opacity-50 block`}>DISCIPLINES</span>
+                    <span className={`${t.monoEyebrow} opacity-50 block`}>DISCIPLINES</span>
                     <div className="flex gap-3">
-                      <span className="border border-primary/10 px-3 py-1 text-[8px] 3xl:text-[10px] 4xl:text-xs font-mono tracking-widest uppercase opacity-75">
+                      <span className={`border border-primary/10 px-3 py-1 ${t.metaDataLabel} opacity-75`}>
                         Motion Graphics
                       </span>
-                      <span className="border border-primary/10 px-3 py-1 text-[8px] 3xl:text-[10px] 4xl:text-xs font-mono tracking-widest uppercase opacity-75">
+                      <span className={`border border-primary/10 px-3 py-1 ${t.metaDataLabel} opacity-75`}>
                         Visual Systems
                       </span>
                     </div>

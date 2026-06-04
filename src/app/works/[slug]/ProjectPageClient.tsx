@@ -7,6 +7,7 @@ import { projects } from "@/data/projects";
 import { layout, ui, t, fx } from "@/lib/designSystem";
 import { notFound } from "next/navigation";
 import useLenis from "@/hooks/useLenis";
+import { useScreenSize } from "@/hooks/useScreenSize";
 
 export default function ProjectPageClient({
   params,
@@ -14,12 +15,15 @@ export default function ProjectPageClient({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
+  const screenSize = useScreenSize();
+  const isMobile = screenSize === "mobile";
+  
   const scrollRef = useRef<HTMLDivElement>(null);
   const lenisRef = useLenis({
-    wrapperRef: scrollRef,
-    contentQuery: ".lenis-content",
-    orientation: "horizontal",
-    gestureOrientation: "both",
+    wrapperRef: isMobile ? undefined : scrollRef,
+    contentQuery: isMobile ? undefined : ".lenis-content",
+    orientation: isMobile ? "vertical" : "horizontal",
+    gestureOrientation: isMobile ? "vertical" : "both",
     wheelMultiplier: 0.7,
     lerp: 0.11,
     autoAssign: false,
@@ -57,16 +61,22 @@ export default function ProjectPageClient({
   return (
     <div
       ref={scrollRef}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseLeave}
-      data-lenis-prevent
-      className="relative bg-background h-screen w-full overflow-hidden select-none cursor-grab active:cursor-grabbing"
+      onMouseDown={isMobile ? undefined : handleMouseDown}
+      onMouseMove={isMobile ? undefined : handleMouseMove}
+      onMouseUp={isMobile ? undefined : handleMouseUp}
+      onMouseLeave={isMobile ? undefined : handleMouseLeave}
+      data-lenis-prevent={isMobile ? undefined : ""}
+      className={isMobile 
+        ? "relative bg-background w-full min-h-screen overflow-y-auto" 
+        : "relative bg-background h-screen w-full overflow-hidden select-none cursor-grab active:cursor-grabbing"}
     >
-      <div className="lenis-content h-screen w-fit flex items-stretch">
+      <div className={isMobile 
+        ? "lenis-content w-full h-auto flex flex-col items-stretch px-6 py-16 gap-12" 
+        : "lenis-content h-screen w-fit flex items-stretch"}>
         {/* Typographic Hero Section - 375.studio inspired */}
-        <section className="flex-shrink-0 w-[100vw] md:w-[85vw] 3xl:w-[70vw] 4xl:w-[65vw] relative flex flex-col justify-center px-12 md:px-24 3xl:px-40 4xl:px-48 overflow-hidden border-r border-foreground/5">
+        <section className={isMobile 
+          ? "w-full relative flex flex-col justify-center py-8 overflow-hidden border-b border-foreground/5" 
+          : "flex-shrink-0 w-[100vw] md:w-[85vw] 3xl:w-[70vw] 4xl:w-[65vw] relative flex flex-col justify-center px-12 md:px-24 3xl:px-40 4xl:px-48 overflow-hidden border-r border-foreground/5"}>
           <div className="relative z-10">
             <div className="flex flex-col gap-8 md:gap-16 3xl:gap-24">
               <div className="space-y-4">
@@ -76,11 +86,11 @@ export default function ProjectPageClient({
                   transition={{ duration: 0.8 }}
                   className="flex items-center gap-4"
                 >
-                  <span className={`${t.meta} tracking-[0.5em] opacity-100`}>
+                  <span className={`${t.metaDataLabel} tracking-[0.5em] opacity-100`}>
                     {project.category}
                   </span>
                   <div className="h-px w-8 bg-foreground/20" />
-                  <span className={`${t.meta} tracking-[0.5em] opacity-100`}>
+                  <span className={`${t.metaDataLabel} tracking-[0.5em] opacity-100`}>
                     {project.year}
                   </span>
                 </motion.div>
@@ -93,7 +103,7 @@ export default function ProjectPageClient({
                     delay: 0.2,
                     ease: [0.23, 1, 0.32, 1],
                   }}
-                  className={t.hero}
+                  className={t.mainHeroTitle}
                 >
                   {project.title.split(" ").map((word, i) => (
                     <span
@@ -117,7 +127,7 @@ export default function ProjectPageClient({
                 className="max-w-xl 3xl:max-w-2xl 4xl:max-w-3xl"
               >
                 <div className="h-px w-12 3xl:w-16 4xl:w-20 bg-primary/40 mb-6 3xl:mb-8" />
-                <p className={t.body}>
+                <p className={t.bodyProse}>
                   {project.description}
                 </p>
               </motion.div>
@@ -129,21 +139,28 @@ export default function ProjectPageClient({
         {screens.map((screen, i) => (
           <section
             key={i}
-            className={`flex-shrink-0 h-screen flex items-center justify-center relative px-12 md:px-24 3xl:px-40 4xl:px-48 border-r border-foreground/5
-              ${screen.type === "image" ? "min-w-[80vw] md:min-w-[100vw] 3xl:min-w-[90vw]" : ""}
-              ${screen.type === "bento" ? "min-w-[100vw] md:min-w-[120vw] 3xl:min-w-[110vw]" : ""}
-              ${screen.type === "details" ? "min-w-[50vw] md:min-w-[40vw] 3xl:min-w-[35vw]" : ""}
-            `}
+            className={isMobile 
+              ? "w-full flex items-center justify-center relative py-4 border-b border-foreground/5 last:border-b-0"
+              : `flex-shrink-0 h-screen flex items-center justify-center relative px-12 md:px-24 3xl:px-40 4xl:px-48 border-r border-foreground/5
+                ${screen.type === "image" ? "min-w-[80vw] md:min-w-[100vw] 3xl:min-w-[90vw]" : ""}
+                ${screen.type === "bento" ? "min-w-[100vw] md:min-w-[120vw] 3xl:min-w-[110vw]" : ""}
+                ${screen.type === "details" ? "min-w-[50vw] md:min-w-[40vw] 3xl:min-w-[35vw]" : ""}
+              `
+            }
           >
             {/* Editorial Grid Module */}
             {screen.type === "bento" && (
-              <div className="w-full h-full py-24 md:py-32 3xl:py-40 4xl:py-48 grid grid-cols-12 gap-6 md:gap-12 3xl:gap-16 4xl:gap-24 items-center">
+              <div className={isMobile 
+                ? "w-full grid grid-cols-1 gap-6 items-center"
+                : "w-full h-full py-24 md:py-32 3xl:py-40 4xl:py-48 grid grid-cols-12 gap-6 md:gap-12 3xl:gap-16 4xl:gap-24 items-center"}>
                 <motion.div
                   initial={{ opacity: 0, scale: 1.1 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
-                  className="col-span-8 h-[60vh] 3xl:h-[65vh] relative overflow-hidden group border border-primary/10"
+                  className={isMobile 
+                    ? "w-full aspect-[16/10] relative overflow-hidden group border border-primary/10"
+                    : "col-span-8 h-[60vh] 3xl:h-[65vh] relative overflow-hidden group border border-primary/10"}
                 >
                   <img
                     src={screen.images?.[0]}
@@ -152,15 +169,28 @@ export default function ProjectPageClient({
                     className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  
+                  {/* Viewfinder overlay */}
+                  <div className="absolute inset-0 pointer-events-none z-20">
+                    <div className="absolute top-4 left-4 w-3 h-3 border-t border-l border-primary/30 group-hover:border-primary transition-colors duration-500" />
+                    <div className="absolute top-4 right-4 w-3 h-3 border-t border-r border-primary/30 group-hover:border-primary transition-colors duration-500" />
+                    <div className="absolute bottom-4 left-4 w-3 h-3 border-b border-l border-primary/30 group-hover:border-primary transition-colors duration-500" />
+                    <div className="absolute bottom-4 right-4 w-3 h-3 border-b border-r border-primary/30 group-hover:border-primary transition-colors duration-500" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 border border-primary/10 group-hover:border-primary/30 rounded-full flex items-center justify-center transition-all duration-700 group-hover:scale-110">
+                      <div className="w-1 h-1 bg-primary/20 group-hover:bg-primary/40 rounded-full" />
+                    </div>
+                  </div>
                 </motion.div>
 
-                <div className="col-span-4 space-y-12 3xl:space-y-16">
+                <div className={isMobile 
+                  ? "w-full grid grid-cols-2 gap-4"
+                  : "col-span-4 space-y-12 3xl:space-y-16"}>
                   <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8, delay: 0.3 }}
-                    className="aspect-square relative overflow-hidden border border-foreground/5"
+                    className="aspect-square relative overflow-hidden border border-foreground/5 group"
                   >
                     <img
                       src={screen.images?.[1]}
@@ -168,13 +198,21 @@ export default function ProjectPageClient({
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                     />
+                    
+                    {/* Viewfinder overlay */}
+                    <div className="absolute inset-0 pointer-events-none z-20">
+                      <div className="absolute top-3 left-3 w-2 h-2 border-t border-l border-primary/20 group-hover:border-primary transition-colors duration-500" />
+                      <div className="absolute top-3 right-3 w-2 h-2 border-t border-r border-primary/20 group-hover:border-primary transition-colors duration-500" />
+                      <div className="absolute bottom-3 left-3 w-2 h-2 border-b border-l border-primary/20 group-hover:border-primary transition-colors duration-500" />
+                      <div className="absolute bottom-3 right-3 w-2 h-2 border-b border-r border-primary/20 group-hover:border-primary transition-colors duration-500" />
+                    </div>
                   </motion.div>
                   <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8, delay: 0.5 }}
-                    className="aspect-[4/3] relative overflow-hidden border border-foreground/5"
+                    className="aspect-[4/3] relative overflow-hidden border border-foreground/5 group"
                   >
                     <img
                       src={screen.images?.[2]}
@@ -182,6 +220,14 @@ export default function ProjectPageClient({
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                     />
+                    
+                    {/* Viewfinder overlay */}
+                    <div className="absolute inset-0 pointer-events-none z-20">
+                      <div className="absolute top-3 left-3 w-2 h-2 border-t border-l border-primary/20 group-hover:border-primary transition-colors duration-500" />
+                      <div className="absolute top-3 right-3 w-2 h-2 border-t border-r border-primary/20 group-hover:border-primary transition-colors duration-500" />
+                      <div className="absolute bottom-3 left-3 w-2 h-2 border-b border-l border-primary/20 group-hover:border-primary transition-colors duration-500" />
+                      <div className="absolute bottom-3 right-3 w-2 h-2 border-b border-r border-primary/20 group-hover:border-primary transition-colors duration-500" />
+                    </div>
                   </motion.div>
                 </div>
               </div>
@@ -189,7 +235,7 @@ export default function ProjectPageClient({
 
             {/* High-Impact Single Image */}
             {screen.type === "image" && (
-              <div className="w-full h-[75vh] 3xl:h-[80vh] flex items-center justify-center">
+              <div className={isMobile ? "w-full aspect-[16/10] flex items-center justify-center" : "w-full h-[75vh] 3xl:h-[80vh] flex items-center justify-center"}>
                 <motion.div
                   initial={{ opacity: 0, scale: 0.98 }}
                   whileInView={{ opacity: 1, scale: 1 }}
@@ -206,15 +252,28 @@ export default function ProjectPageClient({
                   <div className="absolute bottom-8 right-8 3xl:bottom-12 3xl:right-12 text-[8px] 3xl:text-[10px] 4xl:text-xs font-mono tracking-widest opacity-30 uppercase pointer-events-none">
                     IMG_REF // {i + 1}
                   </div>
+                  
+                  {/* Viewfinder overlay */}
+                  <div className="absolute inset-0 pointer-events-none z-20">
+                    <div className="absolute top-4 left-4 w-3 h-3 border-t border-l border-primary/30 group-hover:border-primary transition-colors duration-500" />
+                    <div className="absolute top-4 right-4 w-3 h-3 border-t border-r border-primary/30 group-hover:border-primary transition-colors duration-500" />
+                    <div className="absolute bottom-4 left-4 w-3 h-3 border-b border-l border-primary/30 group-hover:border-primary transition-colors duration-500" />
+                    <div className="absolute bottom-4 right-4 w-3 h-3 border-b border-r border-primary/30 group-hover:border-primary transition-colors duration-500" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 border border-primary/10 group-hover:border-primary/30 rounded-full flex items-center justify-center transition-all duration-700 group-hover:scale-110">
+                      <div className="w-1 h-1 bg-primary/20 group-hover:bg-primary/40 rounded-full" />
+                    </div>
+                  </div>
                 </motion.div>
               </div>
             )}
 
             {/* Editorial Content */}
             {screen.type === "details" && (
-              <div className="max-w-[576px] 3xl:max-w-3xl 4xl:max-w-4xl space-y-8 3xl:space-y-12">
+              <div className={isMobile 
+                ? "w-full space-y-6"
+                : "max-w-[576px] 3xl:max-w-3xl 4xl:max-w-4xl space-y-8 3xl:space-y-12"}>
                 <div className="h-px w-16 3xl:w-24 bg-primary" />
-                <h3 className={t.display}>
+                <h3 className={isMobile ? "text-lg md:text-xl font-light leading-relaxed text-left" : t.sectionHeaderDisplay}>
                   {screen.content}
                 </h3>
               </div>
@@ -223,16 +282,18 @@ export default function ProjectPageClient({
         ))}
 
         {/* Conclusion / Next Project - High Impact Offmenu Style */}
-        <section className="flex-shrink-0 w-[100vw] md:w-[80vw] 3xl:w-[70vw] 4xl:w-[65vw] relative flex flex-col justify-center px-12 md:px-24 3xl:px-40 4xl:px-48 overflow-hidden group">
+        <section className={isMobile 
+          ? "w-full py-12 relative flex flex-col justify-center overflow-hidden border-t border-foreground/5 mt-4"
+          : "flex-shrink-0 w-[100vw] md:w-[80vw] 3xl:w-[70vw] 4xl:w-[65vw] relative flex flex-col justify-center px-12 md:px-24 3xl:px-40 4xl:px-48 overflow-hidden group"}>
           <Link
             href={`/works/${projects[(projects.findIndex((p) => p.slug === slug) + 1) % projects.length].slug}`}
-            className="relative z-10 flex flex-col gap-12 3xl:gap-16"
+            className="relative z-10 flex flex-col gap-12 3xl:gap-16 w-full"
           >
             <div className="space-y-4">
-              <span className={`${t.meta} tracking-[0.8em] opacity-40 group-hover:text-primary transition-colors`}>
+              <span className={`${t.metaDataLabel} tracking-[0.8em] opacity-40 group-hover:text-primary transition-colors`}>
                 Want to see more?
               </span>
-              <h3 className={`${t.display} group-hover:italic transition-all duration-700`}>
+              <h3 className={`${t.sectionHeaderDisplay} group-hover:italic transition-all duration-700`}>
                 Next Project
               </h3>
             </div>
@@ -250,7 +311,7 @@ export default function ProjectPageClient({
               />
               <div className="absolute inset-0 bg-background/20 group-hover:bg-transparent transition-colors" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className={`${t.h1} text-white opacity-0 group-hover:opacity-100 translate-y-8 group-hover:translate-y-0 transition-all duration-700`}>
+                <span className={`${t.pageTitle} text-white opacity-0 group-hover:opacity-100 translate-y-8 group-hover:translate-y-0 transition-all duration-700`}>
                   {
                     projects[
                       (projects.findIndex((p) => p.slug === slug) + 1) %

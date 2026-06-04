@@ -73,7 +73,7 @@
   h4,
   h5,
   h6 {
-    @apply font-display font-bold tracking-tight uppercase;
+    @apply font-display tracking-tight;
   }
 }
 

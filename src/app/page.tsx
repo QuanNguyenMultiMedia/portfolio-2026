@@ -479,11 +479,11 @@ export default function Home() {
                   }}
                 >
                   <div className="flex flex-col gap-0">
-                    <h1 className={t.display}>
+                    <h1 className={t.sectionHeaderDisplay}>
                       Minh Quan
                     </h1>
                     <div className="mt-3 3xl:mt-5">
-                      <h2 className={`${t.h2} font-light leading-relaxed opacity-90 italic ${motionTokens.skewHover}`}>
+                      <h2 className={`${t.heroTagline} ${motionTokens.skewHover}`}>
                         loves{" "}
                         <GradientText>moving</GradientText>
                         {" "}things around.
@@ -531,7 +531,7 @@ export default function Home() {
               >
                 <div className="relative text-left max-w-3xl 3xl:max-w-5xl 4xl:max-w-7xl">
  
-                  <div className={`${t.h2} font-light leading-relaxed opacity-90 italic space-y-4`}>
+                  <div className={`${t.bodyProse} italic space-y-4`}>
                     <VerticalCutReveal
                       splitBy="words"
                       staggerDuration={0.02}
@@ -737,18 +737,18 @@ export default function Home() {
                     }}
                   >
                     <div className="flex items-center border-b border-border-neutral/10 pb-2 mb-3">
-                      <span className={t.subtitle}>
+                      <span className={t.monoEyebrow}>
                         {test.brand}
                       </span>
                     </div>
-                    <p className={t.body}>
+                    <p className={t.bodyProse}>
                       &ldquo;{test.quote}&rdquo;
                     </p>
                     <div className="border-t border-border-neutral/10 pt-2 mt-3 flex flex-col gap-0.5">
-                      <span className={`${t.h3} ${motionTokens.skewHover}`}>
+                      <span className={`${t.navItemLabel} ${motionTokens.skewHover}`}>
                         {test.author}
                       </span>
-                      <span className={t.meta}>
+                      <span className={t.metaDataLabel}>
                         {test.role}
                       </span>
                     </div>
@@ -775,39 +775,39 @@ export default function Home() {
               >
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 3xl:gap-14">
                   <div className="md:col-span-6 space-y-6 3xl:space-y-10">
-                    <p className={t.subtitle}>
+                    <p className={t.monoEyebrow}>
                       Key Metrics
                     </p>
                     <div className="grid grid-cols-2 gap-x-6 gap-y-6 3xl:gap-x-10 3xl:gap-y-10">
                       <div className="border-b border-border-neutral/10 pb-3 3xl:pb-4">
-                        <div className={t.display}>50+</div>
-                        <div className={`${t.meta} mt-2 3xl:mt-3`}>Projects Completed</div>
+                        <div className={t.sectionHeaderDisplay}>50+</div>
+                        <div className={`${t.metaDataLabel} mt-2 3xl:mt-3`}>Projects Completed</div>
                       </div>
                       <div className="border-b border-border-neutral/10 pb-3 3xl:pb-4">
-                        <div className={t.display}>100%</div>
-                        <div className={`${t.meta} mt-2 3xl:mt-3`}>Client Rating</div>
+                        <div className={t.sectionHeaderDisplay}>100%</div>
+                        <div className={`${t.metaDataLabel} mt-2 3xl:mt-3`}>Client Rating</div>
                       </div>
                       <div className="border-b border-border-neutral/10 pb-3 3xl:pb-4">
-                        <div className={t.display}>04+</div>
-                        <div className={`${t.meta} mt-2 3xl:mt-3`}>Years of Experience</div>
+                        <div className={t.sectionHeaderDisplay}>04+</div>
+                        <div className={`${t.metaDataLabel} mt-2 3xl:mt-3`}>Years of Experience</div>
                       </div>
                       <div className="border-b border-border-neutral/10 pb-3 3xl:pb-4">
-                        <div className={`${t.h1} mt-1 3xl:mt-2`}>HCMC</div>
-                        <div className={`${t.meta} mt-2 3xl:mt-3`}>VN // Global Base</div>
+                        <div className={`${t.sectionHeaderDisplay} mt-1 3xl:mt-2`}>HCMC</div>
+                        <div className={`${t.metaDataLabel} mt-2 3xl:mt-3`}>VN // Global Base</div>
                       </div>
                     </div>
                   </div>
  
                   <div className="md:col-span-6 flex flex-col justify-between border-t md:border-t-0 md:border-l border-border-neutral/15 pt-6 md:pt-0 md:pl-8 3xl:pl-12">
                     <div>
-                      <p className={`${t.subtitle} mb-4 3xl:mb-6 4xl:mb-8`}>
+                      <p className={`${t.monoEyebrow} mb-4 3xl:mb-6 4xl:mb-8`}>
                         Trusted Collaborators
                       </p>
                       <div className="grid grid-cols-2 gap-2.5 3xl:gap-4">
                         {BRANDS.map((brand) => (
                           <div
                             key={brand}
-                            className={`border border-border-neutral/20 p-2 3xl:p-3.5 4xl:p-4 bg-surface/10 flex items-center justify-center ${t.h3} ${motionTokens.skewHover} hover:text-tech-blue hover:border-tech-blue/30 hover:bg-surface/30 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer`}
+                            className={`border border-border-neutral/20 p-2 3xl:p-3.5 4xl:p-4 bg-surface/10 flex items-center justify-center ${t.navItemLabel} ${motionTokens.skewHover} hover:text-tech-blue hover:border-tech-blue/30 hover:bg-surface/30 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer`}
                           >
                             {brand}
                           </div>

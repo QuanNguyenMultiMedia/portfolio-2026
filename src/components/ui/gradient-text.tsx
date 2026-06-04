@@ -15,8 +15,9 @@ export function GradientText({
   className,
   children,
   as: Component = "span",
+  style,
   ...props
-}: GradientTextProps) {
+}: GradientTextProps & { style?: React.CSSProperties }) {
   const MotionComponent = motion.create(Component);
 
   return (
@@ -26,6 +27,12 @@ export function GradientText({
         className
       )}
       {...props}
+      style={{
+        ...style,
+        WebkitTextFillColor: "transparent",
+        WebkitBackgroundClip: "text",
+        backgroundClip: "text",
+      }}
     >
       {children}
     </MotionComponent>

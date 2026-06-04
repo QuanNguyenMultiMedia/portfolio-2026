@@ -55,8 +55,8 @@ export default async function PostPage({
           <div className={layout.editorial}>
             <div className={layout.textCol}>
               <header>
-                 <h1 className={t.h1}>{post.title}</h1>
-                <div className={`mt-4 ${t.meta} opacity-40`}>
+                 <h1 className={t.takesTitle}>{post.title}</h1>
+                <div className={`mt-4 ${t.metaDataLabel} opacity-40`}>
                   {post.date}
                 </div>
               </header>
@@ -65,7 +65,7 @@ export default async function PostPage({
 
           <div className={layout.editorial}>
             <div className={layout.textCol}>
-               <p className={`italic opacity-60 ${t.body}`}>
+               <p className={`italic opacity-60 ${t.bodyProse}`}>
                 ( {post.excerpt} )
               </p>
             </div>
@@ -73,7 +73,7 @@ export default async function PostPage({
 
           {paragraphs.map((p, idx) => (
             <div key={idx} className={layout.editorial}>
-               <div className={`${layout.textCol} ${t.body} 3xl:text-xl 3xl:leading-relaxed 4xl:text-2xl 4xl:leading-relaxed`}>
+               <div className={`${layout.textCol} ${t.bodyProse} 3xl:text-xl 3xl:leading-relaxed 4xl:text-2xl 4xl:leading-relaxed`}>
                 <p>{p}</p>
               </div>
             </div>
