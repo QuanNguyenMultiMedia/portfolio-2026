@@ -21,74 +21,166 @@ function DeliverableCarousel({
   screenSize: string;
 }) {
   const carouselRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [constraints, setConstraints] = useState({ left: 0, right: 0 });
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [positionX, setPositionX] = useState(0);
 
   useEffect(() => {
-    if (!carouselRef.current) return;
+    if (!carouselRef.current || !containerRef.current) return;
     const scrollWidth = carouselRef.current.scrollWidth;
-    const offsetWidth = carouselRef.current.offsetWidth;
+    const offsetWidth = containerRef.current.offsetWidth;
     setConstraints({
       left: -Math.max(0, scrollWidth - offsetWidth),
       right: 0,
     });
   }, [images, screenSize]);
 
+  // Center a slide in the viewport
+  const getStep = () => {
+    if (!carouselRef.current || !containerRef.current || images.length <= 1) return 0;
+    const scrollWidth = carouselRef.current.scrollWidth;
+    const offsetWidth = containerRef.current.offsetWidth;
+    return (scrollWidth - offsetWidth) / (images.length - 1);
+  };
+
+  const handleNext = () => {
+    const step = getStep();
+    if (step === 0) return;
+    const nextIndex = Math.min(images.length - 1, currentSlide + 1);
+    setPositionX(-nextIndex * step);
+    setCurrentSlide(nextIndex);
+  };
+
+  const handlePrev = () => {
+    const step = getStep();
+    if (step === 0) return;
+    const prevIndex = Math.max(0, currentSlide - 1);
+    setPositionX(-prevIndex * step);
+    setCurrentSlide(prevIndex);
+  };
+
+  const handleDragEnd = (event: any, info: any) => {
+    const step = getStep();
+    if (step === 0) return;
+    // Calculate ending position based on drag offset
+    const currentX = positionX + info.offset.x;
+    const nearestIndex = Math.min(
+      images.length - 1,
+      Math.max(0, Math.round(-currentX / step))
+    );
+    setPositionX(-nearestIndex * step);
+    setCurrentSlide(nearestIndex);
+  };
+
   const isMobile = screenSize === "mobile";
 
   if (isMobile) {
     return (
-      <div className="w-full overflow-x-auto flex gap-4 pr-6 pb-2 scrollbar-none snap-x snap-mandatory">
-        {images.map((img, idx) => (
-          <div
-            key={idx}
-            className="relative aspect-[16/10] w-[75vw] flex-shrink-0 border border-primary/10 bg-surface/5 snap-center"
-          >
-            <Image
-              src={img}
-              alt=""
-              fill
-              sizes="75vw"
-              className="object-cover"
-            />
-          </div>
-        ))}
+      <div className="w-full space-y-4">
+        <div className="w-full overflow-x-auto flex gap-4 pr-6 pb-2 scrollbar-none snap-x snap-mandatory">
+          {images.map((img, idx) => (
+            <div
+              key={idx}
+              className="relative aspect-[16/10] w-[75vw] flex-shrink-0 border border-primary/10 p-3 bg-surface/5 snap-center"
+            >
+              <div className="relative w-full h-full overflow-hidden">
+                <Image
+                  src={img}
+                  alt=""
+                  fill
+                  sizes="75vw"
+                  className="object-cover"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="text-[10px] font-mono opacity-40 tracking-wider text-right pr-6">
+          SWIPE FOR MORE // 01 OF {images.length}
+        </div>
       </div>
     );
   }
 
   return (
-    <div
-      ref={carouselRef}
-      onMouseDown={(e) => e.stopPropagation()}
-      onTouchStart={(e) => e.stopPropagation()}
-      className="w-full h-full overflow-hidden flex items-center"
-    >
-      <motion.div
-        drag="x"
-        dragConstraints={constraints}
-        dragElastic={0.15}
-        className="flex gap-8 cursor-grab active:cursor-grabbing w-max select-none py-4"
+    <div ref={containerRef} className="w-full flex flex-col gap-6 select-none">
+      <div
+        ref={carouselRef}
+        onMouseDown={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
+        className="w-full overflow-hidden flex items-center"
       >
-        {images.map((img, idx) => (
-          <div
-            key={idx}
-            className="relative aspect-[16/10] h-[35vh] md:h-[45vh] 3xl:h-[50vh] 4xl:h-[55vh] border border-primary/10 bg-surface/5 select-none pointer-events-none flex-shrink-0 group"
-          >
-            <Image
-              src={img}
-              alt=""
-              fill
-              sizes="(max-width: 768px) 100vw, 40vw"
-              className="object-cover pointer-events-none grayscale group-hover:grayscale-0 transition-all duration-700"
-            />
-            {/* Viewfinder ticks */}
-            <div className="absolute top-2 left-2 w-2 h-2 border-t border-l border-primary/20" />
-            <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-primary/20" />
-            <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-primary/20" />
-            <div className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-primary/20" />
+        <motion.div
+          drag="x"
+          dragConstraints={constraints}
+          dragElastic={0.15}
+          animate={{ x: positionX }}
+          onDragEnd={handleDragEnd}
+          className="flex gap-8 cursor-grab active:cursor-grabbing w-max select-none py-4"
+        >
+          {images.map((img, idx) => (
+            <div
+              key={idx}
+              className="relative aspect-[16/10] h-[35vh] md:h-[45vh] 3xl:h-[50vh] 4xl:h-[55vh] border border-primary/10 bg-surface/5 p-4 md:p-6 select-none pointer-events-none flex-shrink-0 group transition-colors duration-500 hover:border-primary/20"
+            >
+              <div className="relative w-full h-full overflow-hidden">
+                <Image
+                  src={img}
+                  alt=""
+                  fill
+                  sizes="(max-width: 768px) 100vw, 40vw"
+                  className="object-cover pointer-events-none grayscale group-hover:grayscale-0 transition-all duration-[1.2s] group-hover:scale-105"
+                />
+              </div>
+              {/* Viewfinder corner lines */}
+              <div className="absolute top-2 left-2 w-2 h-2 border-t border-l border-primary/20 group-hover:border-primary/40 transition-colors" />
+              <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-primary/20 group-hover:border-primary/40 transition-colors" />
+              <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-primary/20 group-hover:border-primary/40 transition-colors" />
+              <div className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-primary/20 group-hover:border-primary/40 transition-colors" />
+            </div>
+          ))}
+        </motion.div>
+      </div>
+
+      {/* Interactive Controls & Progress Indicators */}
+      {images.length > 1 && (
+        <div className="flex items-center justify-between border-t border-primary/10 pt-4 pr-4">
+          <div className="flex items-center gap-4 text-[10px] font-mono tracking-widest text-primary/70">
+            <button
+              onClick={handlePrev}
+              disabled={currentSlide === 0}
+              className="hover:text-primary transition-colors cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed select-none"
+            >
+              [ ← PREV ]
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={currentSlide === images.length - 1}
+              className="hover:text-primary transition-colors cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed select-none"
+            >
+              [ NEXT → ]
+            </button>
           </div>
-        ))}
-      </motion.div>
+
+          <div className="flex items-center gap-6">
+            {/* Visual Progress Line */}
+            <div className="w-24 md:w-36 h-px bg-primary/10 relative overflow-hidden">
+              <motion.div
+                className="absolute left-0 top-0 bottom-0 bg-primary/60"
+                animate={{
+                  width: `${((currentSlide + 1) / images.length) * 100}%`,
+                }}
+                transition={{ type: "spring", stiffness: 100, damping: 15 }}
+              />
+            </div>
+
+            <span className="text-[10px] font-mono tracking-widest text-foreground/40 select-none">
+              SLIDE_0{currentSlide + 1} // 0{images.length}
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -172,7 +264,7 @@ export default function ProjectPageClient({
                 ? "w-full flex items-center justify-center relative py-8 border-b border-foreground/5 last:border-b-0"
                 : `flex-shrink-0 h-screen flex items-center justify-center relative px-12 md:px-24 3xl:px-40 4xl:px-48 border-r border-foreground/5
                 ${screen.type === "zine-cover" ? "min-w-[85vw] md:min-w-[85vw] 3xl:min-w-[80vw]" : ""}
-                ${screen.type === "editorial-text" ? "min-w-[50vw] md:min-w-[50vw] 3xl:min-w-[45vw]" : ""}
+                ${screen.type === "editorial-text" ? "min-w-[65vw] md:min-w-[65vw] 3xl:min-w-[60vw]" : ""}
                 ${screen.type === "deliverable-breakdown" ? "min-w-[90vw] md:min-w-[90vw] 3xl:min-w-[85vw]" : ""}
                 ${screen.type === "zine-outro" ? "min-w-[85vw] md:min-w-[85vw] 3xl:min-w-[80vw]" : ""}
                 ${screen.type === "image" ? "min-w-[80vw] md:min-w-[100vw] 3xl:min-w-[90vw]" : ""}
@@ -245,29 +337,31 @@ export default function ProjectPageClient({
                   <p className={t.bodyProse}>{project.description}</p>
                 </div>
 
-                {/* Tall image frame */}
+                {/* Tall image frame - inset matted print border */}
                 <div
                   className={
                     isMobile
-                      ? "w-full aspect-[4/5] relative border border-primary/10 overflow-hidden"
-                      : "col-span-3 h-[60vh] relative border border-primary/10 overflow-hidden group"
+                      ? "w-full aspect-[4/5] relative border border-primary/10 p-3 bg-surface/5 overflow-hidden"
+                      : "col-span-3 h-[60vh] relative border border-primary/10 p-4 md:p-6 bg-surface/5 overflow-hidden group transition-colors duration-500 hover:border-primary/20"
                   }
                 >
                   {project.coverImage && (
-                    <Image
-                      src={project.coverImage}
-                      alt={project.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 25vw"
-                      priority
-                      className="object-cover grayscale hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
-                    />
+                    <div className="relative w-full h-full overflow-hidden">
+                      <Image
+                        src={project.coverImage}
+                        alt={project.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                        priority
+                        className="object-cover grayscale hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
+                      />
+                    </div>
                   )}
                   {/* Viewfinder corner lines */}
-                  <div className="absolute top-3 left-3 w-2.5 h-2.5 border-t border-l border-primary/30" />
-                  <div className="absolute top-3 right-3 w-2.5 h-2.5 border-t border-r border-primary/30" />
-                  <div className="absolute bottom-3 left-3 w-2.5 h-2.5 border-b border-l border-primary/30" />
-                  <div className="absolute bottom-3 right-3 w-2.5 h-2.5 border-b border-r border-primary/30" />
+                  <div className="absolute top-2 left-2 w-2 h-2 border-t border-l border-primary/20 group-hover:border-primary/40 transition-colors" />
+                  <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-primary/20 group-hover:border-primary/40 transition-colors" />
+                  <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-primary/20 group-hover:border-primary/40 transition-colors" />
+                  <div className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-primary/20 group-hover:border-primary/40 transition-colors" />
                 </div>
               </div>
             )}
@@ -278,22 +372,26 @@ export default function ProjectPageClient({
                 className={
                   isMobile
                     ? "w-full flex flex-col gap-4"
-                    : "w-full h-full py-24 flex flex-col justify-center max-w-xl 3xl:max-w-2xl 4xl:max-w-3xl"
+                    : "w-full h-full py-24 flex flex-col justify-center max-w-2xl 3xl:max-w-3xl 4xl:max-w-4xl"
                 }
               >
                 <div className="border-t border-primary/15 pt-8 space-y-6">
                   <div className={`${t.monoEyebrow} opacity-40`}>
                     [ NARRATIVE_FOCUS ] // {project.id}
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 3xl:gap-12">
-                    <p className={`${t.heroTagline} leading-relaxed text-left text-primary`}>
-                      {screen.content}
-                    </p>
-                    <div className="space-y-4 font-mono text-[9px] 3xl:text-[10px] 4xl:text-[11px] tracking-widest text-foreground/45">
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-8 3xl:gap-12">
+                    <div className="md:col-span-8 columns-2 gap-8 text-[11px] md:text-xs 3xl:text-sm leading-relaxed font-light text-foreground/75 space-y-4">
+                      {screen.content?.split("\n\n").map((para, pIdx) => (
+                        <p key={pIdx} className="mb-4 inline-block w-full break-inside-avoid">
+                          {para}
+                        </p>
+                      ))}
+                    </div>
+                    <div className="md:col-span-4 space-y-4 font-mono text-[9px] 3xl:text-[10px] tracking-widest text-foreground/45 border-l border-primary/10 pl-6 h-full flex flex-col justify-start">
                       <div className="border-b border-primary/5 pb-2">
                         // THE OBJECTIVE WAS TO DEFINE STRUCTURAL MOVEMENT WITH AN EDITORIAL WHITE SPACE BIAS.
                       </div>
-                      <div className="border-b border-primary/5 pb-2">
+                      <div className="border-b border-primary/5 pb-2 border-dashed">
                         // DYNAMICS GOVERNED BY CUSTOM SPRING EQUATIONS IN REAL-TIME.
                       </div>
                     </div>
@@ -328,7 +426,13 @@ export default function ProjectPageClient({
                   <h3 className={`${t.workItemName} text-primary`}>
                     {screen.title}
                   </h3>
-                  <p className={t.bodyProse}>{screen.description}</p>
+                  <div className="text-[11px] md:text-xs 3xl:text-sm leading-relaxed font-light text-foreground/75 space-y-4">
+                    {screen.description?.split("\n\n").map((para, pIdx) => (
+                      <p key={pIdx} className="mb-2">
+                        {para}
+                      </p>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Right Carousel Column */}
@@ -382,7 +486,7 @@ export default function ProjectPageClient({
                   </div>
                 </div>
 
-                {/* Desktop Right Link */}
+                {/* Desktop Right Link - inset matted print border */}
                 <div
                   className={
                     isMobile
@@ -397,13 +501,14 @@ export default function ProjectPageClient({
                           projects.length
                       ].slug
                     }`}
-                    className="relative w-full h-full group border border-primary/10 overflow-hidden block"
+                    className="relative w-full h-full group border border-primary/10 p-4 md:p-6 bg-surface/5 overflow-hidden block transition-colors duration-500 hover:border-primary/20"
                   >
-                    <Image
-                      src={
-                        projects[
-                          (projects.findIndex((p) => p.slug === slug) + 1) %
-                            projects.length
+                    <div className="relative w-full h-full overflow-hidden">
+                      <Image
+                        src={
+                          projects[
+                            (projects.findIndex((p) => p.slug === slug) + 1) %
+                              projects.length
                         ].coverImage || ""
                       }
                       alt="Next project preview"
@@ -429,15 +534,16 @@ export default function ProjectPageClient({
                         }
                       </h4>
                     </div>
-                    {/* Viewfinder borders */}
-                    <div className="absolute top-4 left-4 w-3.5 h-3.5 border-t border-l border-white/40 group-hover:border-primary transition-colors" />
-                    <div className="absolute top-4 right-4 w-3.5 h-3.5 border-t border-r border-white/40 group-hover:border-primary transition-colors" />
-                    <div className="absolute bottom-4 left-4 w-3.5 h-3.5 border-b border-l border-white/40 group-hover:border-primary transition-colors" />
-                    <div className="absolute bottom-4 right-4 w-3.5 h-3.5 border-b border-r border-white/40 group-hover:border-primary transition-colors" />
-                  </Link>
-                </div>
+                  </div>
+                  {/* Viewfinder borders */}
+                  <div className="absolute top-2 left-2 w-2 h-2 border-t border-l border-white/40 group-hover:border-primary/40 transition-colors" />
+                  <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-white/40 group-hover:border-primary/40 transition-colors" />
+                  <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-white/40 group-hover:border-primary/40 transition-colors" />
+                  <div className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-white/40 group-hover:border-primary/40 transition-colors" />
+                </Link>
               </div>
-            )}
+            </div>
+          )}
 
             {/* --- BACKWARD COMPATIBILITY FALLBACKS --- */}
 
