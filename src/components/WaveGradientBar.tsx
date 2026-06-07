@@ -295,9 +295,9 @@ export default function WaveGradientBar({
 
   return (
     <div
-      className={`overflow-hidden relative ${className || "w-6 md:w-8 h-full z-40"}`}
+      className={`overflow-hidden ${className || "relative w-6 md:w-8 h-full z-40"}`}
     >
-      <div ref={containerRef} className="absolute inset-0 w-full h-full" />
+      <div ref={containerRef} className="w-full h-full" />
     </div>
   );
 }
