@@ -9,6 +9,8 @@ import {
   useMotionValue,
   useSpring,
   useScroll,
+  useTime,
+  animate,
 } from "framer-motion";
 import Image from "next/image";
 import dynamic from "next/dynamic";
@@ -19,8 +21,14 @@ import { GradientText } from "@/components/ui/gradient-text";
 import { VerticalCutReveal } from "@/components/VerticalCutReveal";
 import { useScreenSize } from "@/hooks/useScreenSize";
 import { t, motion as motionTokens, fx } from "@/lib/designSystem";
+import StarField from "@/components/StarField";
+import MobileTestimonials from "@/components/MobileTestimonials";
 
 const MuxPlayer = dynamic(() => import("@/components/MuxPlayerWrapper"), {
+  ssr: false,
+});
+
+const Globe = dynamic(() => import("@/components/Globe"), {
   ssr: false,
 });
 
@@ -67,6 +75,170 @@ function interpolateDepth(z: number, input: number[], output: number[]) {
   return output[output.length - 1];
 }
 
+function TestimonialCard({
+  test,
+  idx,
+  orbitAngle,
+  depths,
+  screenSize,
+  opacity,
+  visibility,
+}: {
+  test: typeof TESTIMONIALS[0];
+  idx: number;
+  orbitAngle: any;
+  depths: number[];
+  screenSize: string;
+  opacity: any;
+  visibility: any;
+}) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const radius =
+    screenSize === "mobile"
+      ? 130
+      : screenSize === "3xl"
+      ? 310
+      : screenSize === "4xl"
+      ? 380
+      : 250;
+
+  // Stagger height to avoid overlap
+  const yOffset =
+    screenSize === "mobile"
+      ? idx % 2 === 0
+        ? -110
+        : 110
+      : idx === 0
+      ? -110
+      : idx === 1
+      ? 110
+      : idx === 2
+      ? -90
+      : 90;
+
+  const baseAngleOffset = idx * (Math.PI / 2);
+  const angleOffsetValue = useMotionValue(baseAngleOffset);
+  const zMix = useMotionValue(0);
+
+  // When hovered, keep total angle constant (freeze orbit)
+  useEffect(() => {
+    if (!isHovered) return;
+
+    const startOrbitAngle = orbitAngle.get();
+    const startOffset = angleOffsetValue.get();
+    const targetTotalAngle = startOrbitAngle + startOffset;
+
+    const unsubscribe = orbitAngle.on("change", (latest: number) => {
+      angleOffsetValue.set(targetTotalAngle - latest);
+    });
+
+    return unsubscribe;
+  }, [isHovered, orbitAngle, angleOffsetValue]);
+
+  // When hover exits, animate offset back to baseAngleOffset smoothly
+  useEffect(() => {
+    if (isHovered) return;
+
+    const controls = animate(angleOffsetValue, baseAngleOffset, {
+      type: "spring",
+      damping: 25,
+      stiffness: 60,
+      mass: 1.2,
+    });
+    return () => controls.stop();
+  }, [isHovered, angleOffsetValue, baseAngleOffset]);
+
+  // Animate hover Z mix value
+  useEffect(() => {
+    const controls = animate(zMix, isHovered ? 1 : 0, {
+      type: "spring",
+      damping: 25,
+      stiffness: 80,
+    });
+    return () => controls.stop();
+  }, [isHovered, zMix]);
+
+  // Calculate X relative coordinate
+  const x = useTransform([orbitAngle, angleOffsetValue], ([angle, offset]) => {
+    const curAngle = (angle as number) + (offset as number);
+    return Math.sin(curAngle) * radius;
+  });
+
+  // Calculate Z relative coordinate: interpolate between dynamic orbit Z and constant front-plane target Z
+  const z = useTransform([orbitAngle, angleOffsetValue, zMix], ([angle, offset, mix]) => {
+    const curAngle = (angle as number) + (offset as number);
+    const baseZ = -depths[3];
+    const orbitZ = baseZ + Math.cos(curAngle) * radius;
+    // Set a constant Z plane when hovered (just slightly in front of the orbit)
+    const targetZ = baseZ + radius + 20;
+    return (1 - (mix as number)) * orbitZ + (mix as number) * targetZ;
+  });
+
+  // Combine transforms
+  const transform = useMotionTemplate`translate3d(${x}px, ${yOffset}px, ${z}px) translate(-50%, -50%)`;
+
+  return (
+    <motion.div
+      className="absolute left-1/2 top-1/2 pointer-events-auto flex items-center justify-center"
+      style={{
+        transform,
+        opacity,
+        visibility,
+        zIndex: isHovered ? 50 : 10,
+        transformStyle: "preserve-3d",
+      }}
+    >
+      <motion.div
+        layout
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={`border border-border-neutral bg-surface/75 backdrop-blur-md flex gap-3 md:gap-4 text-left transition-colors duration-300 origin-center select-none ${
+          isHovered
+            ? "w-[82vw] md:w-[32vw] 3xl:w-[28vw] 4xl:w-[24vw] p-3 md:p-4 3xl:p-5 4xl:p-6 flex-col md:flex-row shadow-2xl"
+            : "w-[120px] md:w-[150px] p-2 justify-center items-center rounded-none cursor-pointer shadow-md"
+        }`}
+      >
+        {isHovered ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2, delay: 0.15 }}
+            className="flex flex-col md:flex-row gap-3 md:gap-4 w-full"
+          >
+            {/* Left Column: Brand & Author */}
+            <div className="flex flex-col justify-between shrink-0 md:w-[35%] border-b md:border-b-0 md:border-r border-border-neutral/10 pb-2 md:pb-0 md:pr-3">
+              <span className={`${t.monoEyebrow} dark:text-foreground mb-1 block`}>{test.brand}</span>
+              <div className="mt-1">
+                <span className={`${t.metaDataLabel} block text-[9px] font-bold text-foreground opacity-90`}>
+                  {test.author}
+                </span>
+                <span className={`${t.metaDataLabel} block mt-0.5`}>{test.role}</span>
+              </div>
+            </div>
+
+            {/* Right Column: Quote */}
+            <div className="flex-1 flex items-center">
+              <p className={`${t.bodyProse} text-xs md:text-[13px] 3xl:text-sm leading-relaxed italic text-foreground/80`}>
+                &ldquo;{test.quote}&rdquo;
+              </p>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.15 }}
+            className={`${t.monoEyebrow} dark:text-foreground tracking-widest text-center block w-full`}
+          >
+            {test.brand}
+          </motion.span>
+        )}
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -83,6 +255,7 @@ export default function Home() {
   const [isMuted, setIsMuted] = useState(true);
   const [viewportWidth, setViewportWidth] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isQuanHovered, setIsQuanHovered] = useState(false);
 
   // 1. Framer Motion Scroll Progress Refactor
   const { scrollYProgress } = useScroll({
@@ -92,13 +265,23 @@ export default function Home() {
 
   // Attach easing configs to Lenis on mount
   useEffect(() => {
-    const lenis = (window as any).lenis || (window as any).__lenisInstance;
-    if (lenis) {
-      lenis.options.wheelMultiplier = 0.7;
-      lenis.options.duration = 0.9;
-    }
+    let rafId: number;
+    const checkAndSetLenis = () => {
+      const lenis = (window as any).lenis || (window as any).__lenisInstance;
+      if (lenis && lenis.options) {
+        lenis.options.wheelMultiplier = 0.7;
+        lenis.options.duration = 0.9;
+      } else {
+        rafId = requestAnimationFrame(checkAndSetLenis);
+      }
+    };
+
+    checkAndSetLenis();
+
     return () => {
-      if (lenis) {
+      cancelAnimationFrame(rafId);
+      const lenis = (window as any).lenis || (window as any).__lenisInstance;
+      if (lenis && lenis.options) {
         lenis.options.wheelMultiplier = 0.75;
         lenis.options.duration = 1.0;
       }
@@ -181,7 +364,7 @@ export default function Home() {
     const video = videoRef.current;
     if (!video) return;
     if (activeFrame === 2) {
-      video.play().catch(() => {});
+      video.play().catch(() => { });
     } else {
       video.pause();
     }
@@ -249,7 +432,7 @@ export default function Home() {
       const s = depths[2] ?? 3500; // showreel
       const t = depths[3] ?? 5000; // testimonials
       const st = depths[4] ?? 6200; // stats
- 
+
       if (isMobile) {
         // Sequentially space out cards on mobile
         const cardTargetZ = t + idx * 250;
@@ -281,6 +464,22 @@ export default function Home() {
     return interpolateDepth(zVal as number, [fadeInStart, fadeInEnd, st], [0, 1, 1]);
   });
   const visibilityStats = useTransform(opacityStats, (op) => (op as number) > 0.01 ? "visible" : "hidden");
+
+  const globeOpacity = useTransform(zWorld, (zVal) => {
+    const depths = getDepths();
+    const s = depths[2] ?? 3500;
+    const t = depths[3] ?? 5000;
+    const st = depths[4] ?? 6200;
+    const fadeInStart = s + (t - s) * 0.4;
+    const fadeInEnd = s + (t - s) * 0.8;
+    const fadeOutStart = t + (st - t) * 0.15;
+    const fadeOutEnd = t + (st - t) * 0.45;
+    return interpolateDepth(zVal as number, [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd], [0, 1, 1, 0]);
+  });
+  const globeVisibility = useTransform(globeOpacity, (op) => (op as number) > 0.01 ? "visible" : "hidden");
+
+  const time = useTime();
+  const orbitAngle = useTransform(time, (tVal) => (tVal / 25000) * Math.PI * 2);
 
   const perspectiveVal = useTransform(scrollYProgress, (progress) => {
     let start = 1400;
@@ -419,7 +618,7 @@ export default function Home() {
     e.stopPropagation();
     const video = videoRef.current;
     if (!video) return;
-    
+
     const element = e.currentTarget;
     const updateTime = (clientX: number) => {
       const rect = element.getBoundingClientRect();
@@ -453,6 +652,13 @@ export default function Home() {
             perspectiveOrigin: "50% 50%",
           }}
         >
+          <StarField
+            zWorld={zWorld}
+            translateX={translateX}
+            translateY={translateY}
+            rotateX={rotateX}
+            rotateY={rotateY}
+          />
           <motion.div
             style={{
               transform: transformWorld,
@@ -529,22 +735,105 @@ export default function Home() {
                   visibility: visibilityManifesto,
                 }}
               >
-                <div className="relative text-left max-w-3xl 3xl:max-w-5xl 4xl:max-w-7xl">
- 
-                  <div className={`${t.bodyProse} italic space-y-4`}>
-                    <VerticalCutReveal
-                      splitBy="words"
-                      staggerDuration={0.02}
-                      staggerFrom="first"
-                      transition={{
-                        type: "spring",
-                        stiffness: 150,
-                        damping: 25,
-                      }}
-                      autoStart={activeFrame === 1}
-                    >
-                      Welcome! I'm Quan, a motion design lover. My craft is in making people stay and rewind. I believe motion and interaction is the soul of each brand, product, and experience.
-                    </VerticalCutReveal>
+                <div className="relative text-left max-w-4xl 3xl:max-w-6xl 4xl:max-w-[1400px]">
+                  <div className="flex flex-col gap-3 md:gap-4">
+                    <div className={t.sectionHeaderDisplay}>
+                      <VerticalCutReveal
+                        splitBy="words"
+                        staggerDuration={0.02}
+                        staggerFrom="first"
+                        transition={{
+                          type: "spring",
+                          stiffness: 150,
+                          damping: 25,
+                        }}
+                        autoStart={activeFrame === 1}
+                        wordLevelClassName="pb-4 md:pb-6 -mb-4 md:-mb-6"
+                      >
+                        Welcome! I'm
+                      </VerticalCutReveal>
+                    </div>
+
+                    <div className="flex items-stretch w-full gap-4 md:gap-6 min-w-0">
+                      <h2 className={`${t.sectionHeaderDisplay} shrink-0 select-none pb-2`}>
+                        <VerticalCutReveal
+                          splitBy="words"
+                          staggerDuration={0.02}
+                          staggerFrom="first"
+                          transition={{
+                            type: "spring",
+                            stiffness: 150,
+                            damping: 25,
+                            delay: 0.1,
+                          }}
+                          autoStart={activeFrame === 1}
+                          wordLevelClassName="pb-4 md:pb-6 -mb-4 md:-mb-6"
+                        >
+                          Quan,
+                        </VerticalCutReveal>
+                      </h2>
+
+                      {/* Sliding image container - Always On (Reveals on slide activation) */}
+                      <motion.div
+                        initial={{ width: 0, opacity: 0 }}
+                        animate={activeFrame === 1 ? {
+                          width: "100%",
+                          opacity: 1
+                        } : {
+                          width: 0,
+                          opacity: 0
+                        }}
+                        transition={{ type: "spring", stiffness: 80, damping: 18, delay: 0.2 }}
+                        className="relative overflow-hidden bg-surface/5 flex-1 self-stretch border-y border-tech-blue/20"
+                      >
+                        <Image
+                          src="/assets/portrait_standing.jpg"
+                          alt="Quan's Eyes Zoom"
+                          fill
+                          className="object-cover object-[60%_21%] scale-[2.7] origin-[60%_21%] grayscale"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-tech-blue/10 to-transparent pointer-events-none" />
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 font-mono text-[9px] tracking-[0.25em] text-tech-blue/50 uppercase hidden md:block select-none">
+                          EYE_DETECTION // SYS_ZOOM_500%
+                        </div>
+                      </motion.div>
+                    </div>
+
+                    <div className={`${t.sectionHeaderDisplay} pb-2`}>
+                      <VerticalCutReveal
+                        splitBy="words"
+                        staggerDuration={0.02}
+                        staggerFrom="first"
+                        transition={{
+                          type: "spring",
+                          stiffness: 150,
+                          damping: 25,
+                          delay: 0.16,
+                        }}
+                        autoStart={activeFrame === 1}
+                        wordLevelClassName="pb-4 md:pb-6 -mb-4 md:-mb-6"
+                      >
+                        a motion design lover.
+                      </VerticalCutReveal>
+                    </div>
+
+                    <p className={`${t.heroTagline} pb-1 mt-4 md:mt-6`}>
+                      <VerticalCutReveal
+                        splitBy="words"
+                        staggerDuration={0.02}
+                        staggerFrom="first"
+                        transition={{
+                          type: "spring",
+                          stiffness: 150,
+                          damping: 25,
+                          delay: 0.3,
+                        }}
+                        autoStart={activeFrame === 1}
+                        wordLevelClassName="pb-3 md:pb-4 -mb-3 md:-mb-4"
+                      >
+                        My craft is in making people stay and rewind. I believe motion and interaction is the soul of each brand, product, and experience.
+                      </VerticalCutReveal>
+                    </p>
                   </div>
                 </div>
               </motion.div>
@@ -566,13 +855,12 @@ export default function Home() {
                   visibility: visibilityShowreel,
                 }}
               >
-                <div 
+                <div
                   ref={videoContainerRef}
-                  className={`relative bg-surface/5 border border-border-neutral/30 backdrop-blur-sm transition-all duration-300 ${
-                    isFullscreen
-                      ? 'fixed inset-0 z-50 max-w-none bg-black border-0 p-0'
-                      : 'w-full max-w-4xl p-2 md:p-3 3xl:max-w-6xl 3xl:p-4 4xl:max-w-[1600px] 4xl:p-6'
-                  }`}
+                  className={`relative bg-surface/5 border border-border-neutral/30 backdrop-blur-sm transition-all duration-300 ${isFullscreen
+                    ? 'fixed inset-0 z-50 max-w-none bg-black border-0 p-0'
+                    : 'w-full max-w-4xl p-2 md:p-3 3xl:max-w-6xl 3xl:p-4 4xl:max-w-[1600px] 4xl:p-6'
+                    }`}
                 >
                   {/* Outer Technical HUD viewfinders (standard view only) */}
                   {!isFullscreen && (
@@ -592,15 +880,14 @@ export default function Home() {
                       if (videoRef.current) {
                         const video = videoRef.current as unknown as HTMLVideoElement;
                         if (video.paused) {
-                          video.play().catch(() => {});
+                          video.play().catch(() => { });
                         } else {
                           video.pause();
                         }
                       }
                     }}
-                    className={`relative w-full overflow-hidden bg-black cursor-pointer group ${
-                      isFullscreen ? 'h-full' : 'aspect-video'
-                    }`}
+                    className={`relative w-full overflow-hidden bg-black cursor-pointer group ${isFullscreen ? 'h-full' : 'aspect-video'
+                      }`}
                   >
                     <MuxPlayer
                       playbackId="SIBtpHN00huNJBdr01O00pcO02kjQElwnZFgWODBciieRg8"
@@ -609,7 +896,7 @@ export default function Home() {
                         videoRef.current = el as any;
                         // Play if slide is already active when loaded
                         if (activeFrame === 2) {
-                          (el as HTMLVideoElement).play().catch(() => {});
+                          (el as HTMLVideoElement).play().catch(() => { });
                         } else {
                           (el as HTMLVideoElement).pause();
                         }
@@ -618,12 +905,11 @@ export default function Home() {
                   </div>
 
                   {/* Progress Bar Container — below video in standard, absolute bottom overlay in fullscreen */}
-                  <div 
-                    className={`relative h-1 bg-white/10 hover:h-2 hover:bg-white/20 transition-all duration-200 cursor-pointer pointer-events-auto group/scrub ${
-                      isFullscreen
-                        ? 'absolute bottom-16 3xl:bottom-24 left-4 right-4 z-10'
-                        : 'mt-1'
-                    }`}
+                  <div
+                    className={`relative h-1 bg-white/10 hover:h-2 hover:bg-white/20 transition-all duration-200 cursor-pointer pointer-events-auto group/scrub ${isFullscreen
+                      ? 'absolute bottom-16 3xl:bottom-24 left-4 right-4 z-10'
+                      : 'mt-1'
+                      }`}
                     onMouseDown={handleScrubMouseDown}
                     onClick={(e) => e.stopPropagation()}
                   >
@@ -633,11 +919,10 @@ export default function Home() {
 
                   {/* Bottom Controls — below in standard, absolute overlay in fullscreen */}
                   <div
-                    className={`flex justify-between items-center select-none pointer-events-auto ${
-                      isFullscreen
-                        ? 'absolute bottom-3 left-4 right-4 z-10 3xl:bottom-6 3xl:left-6 3xl:right-6'
-                        : 'mt-1'
-                    }`}
+                    className={`flex justify-between items-center select-none pointer-events-auto ${isFullscreen
+                      ? 'absolute bottom-3 left-4 right-4 z-10 3xl:bottom-6 3xl:left-6 3xl:right-6'
+                      : 'mt-1'
+                      }`}
                     onClick={(e) => e.stopPropagation()}
                   >
                     {/* Left: Play/Pause and Timecode */}
@@ -648,7 +933,7 @@ export default function Home() {
                           if (videoRef.current) {
                             const video = videoRef.current;
                             if (video.paused) {
-                              video.play().catch(() => {});
+                              video.play().catch(() => { });
                             } else {
                               video.pause();
                             }
@@ -658,7 +943,7 @@ export default function Home() {
                       >
                         ▶
                       </button>
-                      
+
                       <div className="flex flex-col gap-0.5 font-mono text-[8px] 3xl:text-[10px] 4xl:text-xs text-white/50 text-left">
                         <div>TIME: <span ref={timecodeRef} className="text-white font-medium text-[9px] 3xl:text-xs 4xl:text-sm">00:00:00:00</span></div>
                         <div>ENC: H.264 // FPS: 60.0</div>
@@ -695,66 +980,55 @@ export default function Home() {
               }}
               className="absolute inset-0"
             >
-              {TESTIMONIALS.map((test, idx) => {
-                const depths = getDepths();
-                
-                const getOffsets = () => {
-                  if (screenSize === "mobile") return { x: "0vw", y: "0vh", zOffset: idx * 250 };
-                  if (screenSize === "4xl") {
-                    return {
-                      x: idx % 2 === 0 ? "-16vw" : "16vw",
-                      y: idx < 2 ? "-13vh" : "13vh",
-                      zOffset: idx * 100,
-                    };
-                  }
-                  if (screenSize === "3xl") {
-                    return {
-                      x: idx % 2 === 0 ? "-15vw" : "15vw",
-                      y: idx < 2 ? "-11vh" : "11vh",
-                      zOffset: idx * 80,
-                    };
-                  }
-                  return {
-                    x: idx % 2 === 0 ? "-13vw" : "13vw",
-                    y: idx < 2 ? "-9vh" : "9vh",
-                    zOffset: idx * 50,
-                  };
-                };
-
-                const offsets = getOffsets();
-                const x = offsets.x;
-                const y = offsets.y;
-                const z = screenSize === "mobile" ? (-depths[3] - offsets.zOffset) : (-depths[3] + offsets.zOffset);
-
-                return (
+              {!isMobile ? (
+                <>
+                  {/* Globe in the center */}
                   <motion.div
-                    key={test.brand}
-                    className="absolute left-1/2 top-1/2 w-[80vw] md:w-[28vw] 3xl:w-[24vw] 4xl:w-[20vw] border border-border-neutral/20 p-5 md:p-6 3xl:p-8 4xl:p-10 bg-surface/50 backdrop-blur-xl pointer-events-auto"
                     style={{
-                      transform: `translate3d(${x}, ${y}, ${z}px) translate(-50%, -50%)`,
-                      opacity: testimonialOpacityCurves[idx],
-                      visibility: testimonialVisibilityCurves[idx],
+                      transform: `translate3d(0px, 0px, ${-getDepths()[3]}px) translate(-50%, -50%)`,
+                      opacity: globeOpacity,
+                      visibility: globeVisibility,
+                      transformStyle: "preserve-3d",
                     }}
+                    className="absolute left-1/2 top-1/2 pointer-events-auto"
                   >
-                    <div className="flex items-center border-b border-border-neutral/10 pb-2 mb-3">
-                      <span className={t.monoEyebrow}>
-                        {test.brand}
-                      </span>
-                    </div>
-                    <p className={t.bodyProse}>
-                      &ldquo;{test.quote}&rdquo;
-                    </p>
-                    <div className="border-t border-border-neutral/10 pt-2 mt-3 flex flex-col gap-0.5">
-                      <span className={`${t.navItemLabel} ${motionTokens.skewHover}`}>
-                        {test.author}
-                      </span>
-                      <span className={t.metaDataLabel}>
-                        {test.role}
-                      </span>
-                    </div>
+                    <Globe
+                      size={
+                        screenSize === "3xl"
+                          ? 400
+                          : screenSize === "4xl"
+                          ? 480
+                          : 340
+                      }
+                    />
                   </motion.div>
-                );
-              })}
+
+                  {TESTIMONIALS.map((test, idx) => (
+                    <TestimonialCard
+                      key={test.brand}
+                      test={test}
+                      idx={idx}
+                      orbitAngle={orbitAngle}
+                      depths={getDepths()}
+                      screenSize={screenSize}
+                      opacity={testimonialOpacityCurves[idx]}
+                      visibility={testimonialVisibilityCurves[idx]}
+                    />
+                  ))}
+                </>
+              ) : (
+                <motion.div
+                  style={{
+                    transform: `translate3d(0px, 0px, ${-getDepths()[3]}px)`,
+                    opacity: globeOpacity,
+                    visibility: globeVisibility,
+                    transformStyle: "preserve-3d",
+                  }}
+                  className="absolute inset-0"
+                >
+                  <MobileTestimonials testimonials={TESTIMONIALS} />
+                </motion.div>
+              )}
             </motion.div>
 
             {/* FRAME 4: STATS */}
@@ -797,7 +1071,7 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
- 
+
                   <div className="md:col-span-6 flex flex-col justify-between border-t md:border-t-0 md:border-l border-border-neutral/15 pt-6 md:pt-0 md:pl-8 3xl:pl-12">
                     <div>
                       <p className={`${t.monoEyebrow} mb-4 3xl:mb-6 4xl:mb-8`}>

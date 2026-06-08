@@ -48,3 +48,10 @@ next-env.d.ts
 
 # Local Netlify folder
 .netlify
+
+# Cursor settings
+.cursor/
+
+# Temporary scratch scripts
+scratch/test-mobile.js
+

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import gsap from "gsap";
 import PageWrapper from "@/components/PageWrapper";
 import { projects } from "@/data/projects";
 import { useScreenSize } from "@/hooks/useScreenSize";
@@ -191,6 +192,8 @@ export default function WorksPage() {
   const handleDialStart = (clientX: number, clientY: number) => {
     setIsDialDragging(true);
     initAudioContext();
+
+    gsap.killTweensOf(rotationRef);
 
     // Set continuous transition speed for dragging weight
     if (knobRef.current) {
@@ -421,8 +424,6 @@ export default function WorksPage() {
 
   const handleItemClick = (i: number) => {
     initAudioContext();
-    setActiveIndex(i);
-    activeIndexRef.current = i;
 
     const sectorSize = 360 / projects.length;
     const currentRev = Math.floor(rotationRef.current / 360);
@@ -432,23 +433,51 @@ export default function WorksPage() {
     if (diff > 180) targetRotation -= 360;
     if (diff < -180) targetRotation += 360;
 
-    rotationRef.current = targetRotation;
-
+    // Reset styles transition to avoid fighting GSAP
     if (knobRef.current) {
-      knobRef.current.style.transition =
-        "transform 0.75s cubic-bezier(0.19, 1, 0.22, 1)";
-      knobRef.current.style.transform = `rotate(${targetRotation}deg)`;
+      knobRef.current.style.transition = "none";
     }
-
     projects.forEach((_, index) => {
       const itemEl = itemRefs.current[index];
       if (itemEl) {
-        itemEl.style.transition =
-          "transform 0.75s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.75s, filter 0.75s";
+        itemEl.style.transition = "none";
       }
     });
 
-    updateItemStyles(targetRotation);
+    gsap.killTweensOf(rotationRef);
+    gsap.to(rotationRef, {
+      current: targetRotation,
+      duration: 0.75,
+      ease: "power4.out",
+      onUpdate: () => {
+        if (knobRef.current) {
+          knobRef.current.style.transform = `rotate(${rotationRef.current}deg)`;
+        }
+        updateItemStyles(rotationRef.current);
+
+        // Dynamically update active index as the wheel rotates
+        const normalizedRotation = ((rotationRef.current % 360) + 360) % 360;
+        const nearestIndex =
+          Math.round(normalizedRotation / sectorSize) % projects.length;
+
+        if (
+          nearestIndex !== activeIndexRef.current &&
+          nearestIndex >= 0 &&
+          nearestIndex < projects.length
+        ) {
+          activeIndexRef.current = nearestIndex;
+          setActiveIndex(nearestIndex);
+          triggerVibration();
+        }
+      },
+      onComplete: () => {
+        rotationRef.current = targetRotation;
+        activeIndexRef.current = i;
+        setActiveIndex(i);
+        updateItemStyles(targetRotation);
+      }
+    });
+
     playDirectClickSound();
     triggerVibration();
   };
@@ -627,7 +656,7 @@ export default function WorksPage() {
                               handleItemClick(i);
                             }
                           }}
-                          className="absolute left-0 w-[calc(100%-140px)] md:w-[calc(100%-200px)] 3xl:w-[calc(100%-300px)] 4xl:w-[calc(100%-400px)] pl-8 pr-6 h-[60px] md:h-[80px] 3xl:h-[110px] 4xl:h-[140px] flex items-center cursor-pointer select-none group/wheel-item"
+                          className="absolute left-0 w-full pl-8 pr-6 h-[60px] md:h-[80px] 3xl:h-[110px] 4xl:h-[140px] flex items-center cursor-pointer select-none group/wheel-item"
                           style={{
                             transformOrigin: "left center",
                             transformStyle: "preserve-3d",

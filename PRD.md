@@ -137,6 +137,7 @@ The visitor should feel they are exploring a **private studio archive** — not 
 - Headlines use extreme size contrast (`10rem` hero vs `5rem` section)
 - Monospace is always small and wide-tracked — it should feel like printed telemetry
 - No weight below 300 (light); no weight above 800 (extra bold)
+- **Text Truncation Prohibition:** Text truncation, clipping, or ellipsis (`text-overflow: ellipsis`) is strictly forbidden on the site. All text and titles must wrap naturally, and layouts must be designed to accommodate the full content.
 
 ### 3.3 Spacing & Layout
 
@@ -752,6 +753,9 @@ The `<Portal>` component solves a specific problem: when a detail panel needs to
 
 #### 3. Stacking Context & Portal Isolation
 - **Rule**: Elements promoting GPU layers via `will-change` or `transform-style: preserve-3d` create isolated stacking contexts, clipping absolute/fixed overlay children. Always mount overlays or fullscreen modal components outside the parent scroller using a `<Portal>` component mapped to `document.body` to avoid clipping.
+
+#### 4. Text Truncation and Clipping
+- **Rule**: Never use `text-overflow: ellipsis` or other visual clipping mechanisms on titles or key content. Lay out components to wrap naturally and ensure parent containers support dynamic height adjusting or are sufficiently sized to avoid clipping content.
 
 ---
 
