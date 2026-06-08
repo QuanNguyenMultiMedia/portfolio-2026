@@ -2,9 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, animate } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 import { t, motion as motionTokens } from "@/lib/designSystem";
+import StarField from "@/components/StarField";
 
 function GooeyText({
   lines,
@@ -304,6 +305,17 @@ export default function ContactsPage() {
     ([x, y]) => `${x}% ${y}%`,
   );
 
+  const zWorld = useMotionValue(0);
+
+  useEffect(() => {
+    const controls = animate(zWorld, 100000, {
+      duration: 1000,
+      ease: "linear",
+      repeat: Infinity,
+    });
+    return () => controls.stop();
+  }, [zWorld]);
+
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
@@ -349,7 +361,14 @@ export default function ContactsPage() {
   };
 
   return (
-    <PageWrapper className="h-screen overflow-hidden flex flex-col justify-center py-0">
+    <PageWrapper variant="hero" className="flex flex-col justify-center py-0">
+      <StarField
+        zWorld={zWorld}
+        translateX={springX}
+        translateY={springY}
+        rotateX={springTiltX}
+        rotateY={springTiltY}
+      />
       <div className="max-w-[800px] 3xl:max-w-[1080px] 4xl:max-w-[1300px] mx-auto px-8 3xl:px-16 4xl:px-24 w-full perspective-[3000px]">
         <motion.div
           ref={containerRef}

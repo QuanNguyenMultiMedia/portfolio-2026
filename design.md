@@ -39,6 +39,7 @@ The interface feels like a premium technical manual or a luxury automotive confi
 - **Do**: Centralize layout spacing, typography, and motion variants in a shared config file (`src/lib/designSystem.ts`) to avoid bloated inline class redundancy.
 - **Don't**: Apply horizontal translation and scale zoom animations to parent page containers (`PageWrapper.tsx`) if child elements are already sliding stagger-in. This causes opposing animation forces that look unrefined.
 - **Don't**: Include ornamental labels or purely cosmetic, non-functional text elements (such as fake mock titles or decoration-only text markings like "MQ_RADIAL") that serve no informational or routing purpose. Every piece of copy must correspond to real context or functional state.
+- **Don't**: Use text truncation, text clipping, or ellipsis (`text-overflow: ellipsis`, `truncate`) anywhere on the site. All text and titles must wrap naturally, and layout spacing must be designed to accommodate the full content without artificial truncation.
 
 ## Learned Lessons & Development Best Practices
 

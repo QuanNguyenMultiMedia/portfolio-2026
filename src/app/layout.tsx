@@ -13,6 +13,7 @@ import MobileNavbar from "@/components/MobileNavbar";
 import MobileTopBar from "@/components/MobileTopBar";
 import SmoothScroll from "@/components/SmoothScroll";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import Portal from "@/components/Portal";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -133,15 +134,17 @@ export default function RootLayout({
         <ThemeProvider>
           <LoadingScreen />
           <SmoothScroll>
-            <div className="relative">
-              <LogoMark />
-              <GlobalSideBar />
+              <div className="relative">
+                <LogoMark />
+                <GlobalSideBar />
+                {children}
+              </div>
+            </SmoothScroll>
+            <Portal>
               <MobileTopBar />
-              {children}
               <Navbar />
               <MobileNavbar />
-            </div>
-          </SmoothScroll>
+            </Portal>
         </ThemeProvider>
       </body>
     </html>

@@ -57,6 +57,7 @@ export default function MuxPlayerWrapper({
       el.setAttribute("preload", "auto");
       el.setAttribute("disable-tracking", "true");
       el.setAttribute("disable-cookies", "true");
+      el.setAttribute("disable-remote-playback", "true");
       el.className = className ?? "";
       containerRef.current.appendChild(el);
       customElements.whenDefined("mux-video").then(() => {
