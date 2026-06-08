@@ -22,6 +22,8 @@ export interface Project {
       | "editorial-text"
       | "split-gallery"
       | "bento-moodboard"
+      | "interactive-preview"
+      | "timeline-sequence"
       | "deliverable-breakdown"
       | "zine-outro";
     // Standard properties
@@ -76,12 +78,11 @@ export const projects: Project[] = [
         images: [IMAGES.NIGHT_WATCH, IMAGES.WANDERER, IMAGES.THE_KISS],
       },
       {
-        type: "deliverable-breakdown",
-        number: "02",
+        type: "timeline-sequence",
         title: "Kinetic Typography Showcase",
         description:
           "Experimental typography sequences where Vietnamese letterforms are treated as physical spatial objects.\n\nDesigned for maximum narrative readability and high visual impact, these typographic systems represent how language can become an active visual protagonist in video branding.",
-        images: [IMAGES.STARRY_NIGHT, IMAGES.GREAT_WAVE, IMAGES.COMPOSITION_8],
+        images: [IMAGES.STARRY_NIGHT, IMAGES.GREAT_WAVE, IMAGES.COMPOSITION_8, IMAGES.WANDERER],
       },
       {
         type: "zine-outro",
@@ -116,16 +117,11 @@ export const projects: Project[] = [
           "Working in-house at Herond Labs allowed me to explore the intersection of Web3 capability and Web2 design systems. My focus was designing the motion patterns for Herond Browser, an all-in-one privacy browser with integrated crypto wallets.\n\nThe objective was to make advanced privacy mechanics feel approachable, fluid, and premium. Design coordinates were conformed to high aesthetic standards to respect the users' workflow and cognitive load.",
       },
       {
-        type: "deliverable-breakdown",
-        number: "01",
+        type: "interactive-preview",
         title: "Gesture-Mapping & Tab Transitions",
         description:
           "Designed the fluid tab-switching dynamics, workspace transition animations, and wallet verification gesture states.\n\nEvery interface transition is mathematically calculated using custom spring physics, reducing user perceived latencies and layout shifts.",
-        images: [
-          IMAGES.THE_KISS,
-          IMAGES.GIRL_WITH_PEARL_EARRING,
-          IMAGES.AMERICAN_GOTHIC,
-        ],
+        src: IMAGES.THE_KISS,
       },
       {
         type: "deliverable-breakdown",
@@ -176,8 +172,7 @@ export const projects: Project[] = [
           "Defrasoft required a cohesive identity and interface motion system to launch their B2B SaaS analytics platform.\n\nWe designed a motion guidelines booklet and implemented real-time dashboard visualization dynamics, helping corporate clients interact with complex data streams without friction. Standard margins and responsive behaviors were built directly into the foundations.",
       },
       {
-        type: "deliverable-breakdown",
-        number: "01",
+        type: "split-gallery",
         title: "Grid-Aligned Component Motion",
         description:
           "Established a strict component layout and transition hierarchy.\n\nEvery tooltip fade, side panel slide, and table row insertion follows the same spatial geometry and duration curves, establishing a coherent UX signature.",
@@ -196,8 +191,7 @@ export const projects: Project[] = [
         images: [IMAGES.SCHOOL_OF_ATHENS, IMAGES.CREATION_OF_ADAM, IMAGES.MONA_LISA],
       },
       {
-        type: "deliverable-breakdown",
-        number: "03",
+        type: "bento-moodboard",
         title: "Edge-Lit Dark Mode Thematics",
         description:
           "Designed the dark-mode layout parameters.\n\nInjected high-blur glassmorphic panels and razor-thin border highlights to provide high depth contrast and clear technical visual hierarchies under dim ambient lighting.",

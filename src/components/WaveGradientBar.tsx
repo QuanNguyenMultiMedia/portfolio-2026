@@ -19,14 +19,14 @@ const hexToRgb = (hex: string) => {
   ];
 };
 
-const vertex = `#version 300 es
-in vec2 position;
+const vertex = `
+attribute vec2 position;
 void main() {
   gl_Position = vec4(position, 0.0, 1.0);
 }
 `;
 
-const fragment = `#version 300 es
+const fragment = `
 precision highp float;
 uniform vec2 iResolution;
 uniform float iTime;
@@ -51,7 +51,8 @@ uniform float uZoom;
 uniform vec3 uColor1;
 uniform vec3 uColor2;
 uniform vec3 uColor3;
-out vec4 fragColor;
+uniform vec2 uMouse;
+
 #define S(a,b,t) smoothstep(a,b,t)
 mat2 Rot(float a){float s=sin(a),c=cos(a);return mat2(c,-s,s,c);} 
 vec2 hash(vec2 p){p=vec2(dot(p,vec2(2127.1,81.17)),dot(p,vec2(1269.5,283.37)));return fract(sin(p)*43758.5453);} 
@@ -62,6 +63,14 @@ void mainImage(out vec4 o, vec2 C){
   float ratio=iResolution.x/iResolution.y;
   vec2 tuv=uv-0.5+uCenterOffset;
   tuv/=max(uZoom,0.001);
+
+  // Smooth liquid push from mouse interaction (branchless and division-by-zero safe)
+  vec2 mouseDist = uv - uMouse;
+  mouseDist.x *= ratio; // Correct aspect ratio for circular wave
+  float dist = length(mouseDist);
+  float mouseForce = smoothstep(0.35, 0.0, dist);
+  vec2 dir = mouseDist / (dist + 0.0001);
+  tuv += dir * sin(dist * 20.0 - t * 4.0) * 0.05 * mouseForce;
 
   float degree=noise(vec2(t*0.1,tuv.x*tuv.y)*uNoiseScale);
   tuv.y*=1.0/ratio;
@@ -106,7 +115,7 @@ void mainImage(out vec4 o, vec2 C){
 void main(){
   vec4 o=vec4(0.0);
   mainImage(o,gl_FragCoord.xy);
-  fragColor=o;
+  gl_FragColor=o;
 }
 `;
 
@@ -157,12 +166,28 @@ export default function WaveGradientBar({
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const renderer = new Renderer({
-      webgl: 2,
-      alpha: true,
-      antialias: false,
-      dpr: 1.0,
-    });
+    let renderer: Renderer;
+    try {
+      renderer = new Renderer({
+        webgl: 2,
+        alpha: true,
+        antialias: false,
+        dpr: Math.min(typeof window !== "undefined" ? window.devicePixelRatio : 1, 2),
+      });
+    } catch (e) {
+      console.warn("WebGL 2 not supported, falling back to WebGL 1:", e);
+      try {
+        renderer = new Renderer({
+          webgl: 1,
+          alpha: true,
+          antialias: false,
+          dpr: Math.min(typeof window !== "undefined" ? window.devicePixelRatio : 1, 2),
+        });
+      } catch (err) {
+        console.error("WebGL initialization failed:", err);
+        return;
+      }
+    }
 
     const gl = renderer.gl;
     const canvas = gl.canvas;
@@ -201,6 +226,7 @@ export default function WaveGradientBar({
         uColor1: { value: new Float32Array(hexToRgb(color1)) },
         uColor2: { value: new Float32Array(hexToRgb(color2)) },
         uColor3: { value: new Float32Array(hexToRgb(color3)) },
+        uMouse: { value: new Float32Array([-10.0, -10.0]) },
       },
     });
 
@@ -211,14 +237,46 @@ export default function WaveGradientBar({
     const currentRgb2 = new Float32Array(hexToRgb(color2));
     const currentRgb3 = new Float32Array(hexToRgb(color3));
 
+    // Mouse tracking variables
+    let targetMouseX = -10.0;
+    let targetMouseY = -10.0;
+    let currentMouseX = -10.0;
+    let currentMouseY = -10.0;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      targetMouseX = (e.clientX - rect.left) / rect.width;
+      targetMouseY = 1.0 - (e.clientY - rect.top) / rect.height;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        const rect = container.getBoundingClientRect();
+        targetMouseX = (e.touches[0].clientX - rect.left) / rect.width;
+        targetMouseY = 1.0 - (e.touches[0].clientY - rect.top) / rect.height;
+      }
+    };
+
+    const handleMouseLeave = () => {
+      // Send mouse offscreen smoothly when it leaves the window
+      targetMouseX = -10.0;
+      targetMouseY = -10.0;
+    };
+
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    document.addEventListener("mouseleave", handleMouseLeave, { passive: true });
+
     let isIntersecting = false;
 
     const setSize = () => {
       const rect = container.getBoundingClientRect();
-      const scale = 0.25; // Blurry wave gradient does not need high-res; 0.25x scale saves ~16x pixels
+      const scale = 1.0; // Render at native layout dimensions to keep noise/grain sharp
       const width = Math.max(1, Math.floor(rect.width * scale));
       const height = Math.max(1, Math.floor(rect.height * scale));
       renderer.setSize(width, height);
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
       const res = program.uniforms.iResolution.value;
       res[0] = gl.drawingBufferWidth;
       res[1] = gl.drawingBufferHeight;
@@ -248,6 +306,13 @@ export default function WaveGradientBar({
         currentRgb3[i] += (targetRgb3[i] - currentRgb3[i]) * lerpFactor;
       }
 
+      // Lerp mouse coordinates to smooth out cursor movements
+      const mouseLerp = 0.08;
+      currentMouseX += (targetMouseX - currentMouseX) * mouseLerp;
+      currentMouseY += (targetMouseY - currentMouseY) * mouseLerp;
+      program.uniforms.uMouse.value[0] = currentMouseX;
+      program.uniforms.uMouse.value[1] = currentMouseY;
+
       program.uniforms.uColor1.value = currentRgb1;
       program.uniforms.uColor2.value = currentRgb2;
       program.uniforms.uColor3.value = currentRgb3;
@@ -276,6 +341,9 @@ export default function WaveGradientBar({
 
     return () => {
       if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("mouseleave", handleMouseLeave);
       ro.disconnect();
       observer.disconnect();
       try {

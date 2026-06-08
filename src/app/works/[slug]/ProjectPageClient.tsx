@@ -185,6 +185,386 @@ function DeliverableCarousel({
   );
 }
 
+function SplitGallery({
+  screen,
+  isMobile,
+}: {
+  screen: any;
+  isMobile: boolean;
+}) {
+  const [activeImage, setActiveImage] = useState(screen.images?.[0] || "");
+
+  if (isMobile) {
+    return (
+      <div className="w-full flex flex-col gap-6">
+        <h3 className={`${t.workItemName} text-primary`}>{screen.title}</h3>
+        <p className={t.bodyProse}>{screen.description}</p>
+        <div className="relative aspect-[16/10] w-full border border-primary/10 p-3 bg-surface/5">
+          <div className="relative w-full h-full overflow-hidden">
+            <Image src={activeImage} fill alt="" className="object-cover" />
+          </div>
+        </div>
+        <div className="flex gap-2 overflow-x-auto py-2">
+          {screen.images?.map((img: string, idx: number) => (
+            <button
+              key={idx}
+              onClick={() => setActiveImage(img)}
+              className={`relative w-20 aspect-video flex-shrink-0 border transition-all ${
+                activeImage === img ? "border-primary" : "border-primary/15 opacity-60"
+              }`}
+            >
+              <Image src={img} fill alt="" className="object-cover" />
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full h-full py-16 grid grid-cols-12 gap-12 items-center">
+      {/* Left Preview Box */}
+      <div className="col-span-7 h-[60vh] relative border border-primary/10 p-6 bg-surface/5 flex items-center justify-center overflow-hidden group">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeImage}
+            initial={{ opacity: 0, scale: 1.02 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.4 }}
+            className="relative w-full h-full"
+          >
+            <Image src={activeImage} fill alt="" className="object-cover" />
+          </motion.div>
+        </AnimatePresence>
+        {/* Tech crosshairs */}
+        <div className="absolute inset-0 pointer-events-none z-20">
+          <div className="absolute top-4 left-4 w-3.5 h-3.5 border-t border-l border-primary/30" />
+          <div className="absolute top-4 right-4 w-3.5 h-3.5 border-t border-r border-primary/30" />
+          <div className="absolute bottom-4 left-4 w-3.5 h-3.5 border-b border-l border-primary/30" />
+          <div className="absolute bottom-4 right-4 w-3.5 h-3.5 border-b border-r border-primary/30" />
+          <div className="absolute top-1/2 left-4 right-4 h-px bg-primary/[0.03]" />
+          <div className="absolute left-1/2 top-4 bottom-4 w-px bg-primary/[0.03]" />
+        </div>
+      </div>
+
+      {/* Right Content & Interactive List */}
+      <div className="col-span-5 h-[60vh] flex flex-col justify-between pl-6 border-l border-primary/10">
+        <div className="space-y-6">
+          <HUDLabel text="INTERACTIVE_SHOWCASE" />
+          <h3 className={t.workItemName}>{screen.title}</h3>
+          <p className={t.bodyProse}>{screen.description}</p>
+        </div>
+
+        <div className="space-y-3">
+          <span className={`${t.monoEyebrow} block opacity-30`}>SELECT_FRAME // INTERACTIVE</span>
+          <div className="flex flex-col gap-2">
+            {screen.images?.map((img: string, idx: number) => {
+              const isActive = activeImage === img;
+              return (
+                <div
+                  key={idx}
+                  onMouseEnter={() => setActiveImage(img)}
+                  className={`flex items-center justify-between border p-3 cursor-pointer transition-all duration-300 ${
+                    isActive 
+                      ? "border-primary bg-primary/5 text-primary pl-5" 
+                      : "border-primary/10 text-foreground/55 hover:border-primary/30 hover:text-foreground"
+                  }`}
+                >
+                  <span className="font-mono text-[10px] tracking-widest uppercase">
+                    FRAME_0{idx + 1} // SRC_VALUE
+                  </span>
+                  <span className="text-xs transition-transform duration-300">
+                    {isActive ? "● ACTIVE" : "○ HOVER_TO_VIEW"}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BentoMoodboard({
+  screen,
+  isMobile,
+}: {
+  screen: any;
+  isMobile: boolean;
+}) {
+  const [copiedHex, setCopiedHex] = useState<string | null>(null);
+
+  const colorsList = ["#0029FF", "#0A0A0A", "#F5F5F5", "#FF4D00"];
+
+  const handleCopy = (hex: string) => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(hex);
+      setCopiedHex(hex);
+      setTimeout(() => setCopiedHex(null), 1500);
+    }
+  };
+
+  if (isMobile) {
+    return (
+      <div className="w-full flex flex-col gap-6">
+        <h3 className={`${t.workItemName} text-primary`}>{screen.title}</h3>
+        <p className={t.bodyProse}>{screen.description}</p>
+        <div className="relative aspect-[16/10] w-full border border-primary/10 p-3 bg-surface/5">
+          <Image src={screen.images?.[0] || ""} fill alt="" className="object-cover" />
+        </div>
+        <div className="grid grid-cols-4 gap-2">
+          {colorsList.map((hex) => (
+            <div key={hex} className="flex flex-col gap-1 border border-primary/10 p-2">
+              <div className="w-full h-8" style={{ backgroundColor: hex }} />
+              <span className="font-mono text-[8px] tracking-wider text-center">{hex}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full h-full py-16 grid grid-cols-12 gap-8 items-stretch">
+      {/* Box 1: Large Image */}
+      <div className="col-span-7 border border-primary/10 p-4 bg-surface/5 flex flex-col justify-between group">
+        <div className="relative w-full h-[45vh] overflow-hidden">
+          <Image
+            src={screen.images?.[0] || ""}
+            fill
+            alt=""
+            className="object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-102"
+          />
+        </div>
+        <div className="flex justify-between items-center mt-4 border-t border-primary/5 pt-3">
+          <h3 className={t.workItemName}>{screen.title}</h3>
+          <span className="font-mono text-[9px] opacity-40">IMAGE_REF_01</span>
+        </div>
+      </div>
+
+      {/* Right Grid */}
+      <div className="col-span-5 grid grid-rows-3 gap-8">
+        {/* Row 1: Content/Specs */}
+        <div className="border border-primary/10 p-6 bg-surface/5 flex flex-col justify-between">
+          <HUDLabel text="LAYOUT_SPECIFICATIONS" />
+          <p className="text-[11px] md:text-xs leading-relaxed font-light text-foreground/75 mt-2">
+            {screen.description}
+          </p>
+          <div className="flex gap-4 border-t border-primary/10 pt-3 mt-3 font-mono text-[8px] opacity-50">
+            <span>COORDS: X:42, Y:19</span>
+            <span>SYSTEM: SECURE_ON_LOAD</span>
+          </div>
+        </div>
+
+        {/* Row 2: Secondary Image */}
+        <div className="border border-primary/10 p-4 bg-surface/5 flex items-center justify-between group overflow-hidden relative">
+          <Image
+            src={screen.images?.[1] || screen.images?.[0] || ""}
+            fill
+            alt=""
+            className="object-cover grayscale hover:scale-105 transition-all duration-700 pointer-events-none opacity-40 group-hover:opacity-80"
+          />
+          <div className="relative z-10 p-2 bg-background/80 backdrop-blur-sm border border-primary/10 font-mono text-[8px] tracking-widest">
+            SECONDARY_SPEC_GRID
+          </div>
+        </div>
+
+        {/* Row 3: Colors */}
+        <div className="border border-primary/10 p-6 bg-surface/5 flex flex-col justify-between">
+          <span className={`${t.monoEyebrow} block opacity-40`}>CHROMATIC_SYSTEM // CLICK_TO_COPY</span>
+          <div className="grid grid-cols-4 gap-4 mt-2">
+            {colorsList.map((hex) => (
+              <button
+                key={hex}
+                onClick={() => handleCopy(hex)}
+                className="group/swatch relative flex flex-col gap-2 items-stretch text-left border border-primary/15 p-1.5 hover:border-primary transition-colors cursor-pointer"
+              >
+                <div className="h-8 w-full border border-primary/10" style={{ backgroundColor: hex }} />
+                <span className="font-mono text-[9px] tracking-tighter text-center group-hover/swatch:text-primary">
+                  {copiedHex === hex ? "✓ COPIED" : hex}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function InteractivePreview({
+  screen,
+  isMobile,
+}: {
+  screen: any;
+  isMobile: boolean;
+}) {
+  const codeLines = [
+    `const motion = {`,
+    `  stiffness: 180,`,
+    `  damping: 14,`,
+    `  mass: 1.25,`,
+    `  restSpeed: 0.005`,
+    `};`,
+    `// Spring interpolation`,
+    `const value = useSpring(x, motion);`,
+  ];
+
+  if (isMobile) {
+    return (
+      <div className="w-full flex flex-col gap-6">
+        <h3 className={`${t.workItemName} text-primary`}>{screen.title}</h3>
+        <div className="relative aspect-[16/10] w-full border border-primary/10 p-3 bg-surface/5">
+          <Image src={screen.src || ""} fill alt="" className="object-cover" />
+        </div>
+        <p className={t.bodyProse}>{screen.description}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full h-full py-16 grid grid-cols-12 gap-8 items-stretch">
+      {/* Left Code Editor Panel */}
+      <div className="col-span-4 border border-primary/10 p-6 bg-surface/5 flex flex-col justify-between font-mono text-[9px] md:text-[10px] 3xl:text-xs">
+        <div className="space-y-4">
+          <div className="flex justify-between items-center border-b border-primary/10 pb-2.5">
+            <span className="text-primary font-bold">ANIMATION_LOGIC.ts</span>
+            <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+          </div>
+          <div className="space-y-1.5 opacity-70">
+            {codeLines.map((line, idx) => (
+              <div key={idx} className="flex gap-4">
+                <span className="opacity-30 select-none w-4">0{idx + 1}</span>
+                <span className="text-foreground">{line}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="border-t border-primary/10 pt-4 space-y-2">
+          <HUDLabel text="INTERPOLATION_METRICS" />
+          <div className="space-y-1 text-foreground/45 text-[8px] tracking-wider">
+            <div>INTEGRATOR: RUNGE_KUTTA_4</div>
+            <div>FPS_LOCK: 120_VSYNC</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Browser Viewport */}
+      <div className="col-span-8 border border-primary/10 bg-surface/5 p-4 flex flex-col justify-between group">
+        <div className="flex items-center justify-between border-b border-primary/10 pb-3 mb-3">
+          <div className="flex gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full border border-primary/20" />
+            <div className="w-2.5 h-2.5 rounded-full border border-primary/20" />
+            <div className="w-2.5 h-2.5 rounded-full border border-primary/20" />
+          </div>
+          <div className="border border-primary/15 px-6 py-0.5 text-[8px] font-mono tracking-widest opacity-60 bg-background/50">
+            https://sandbox.works/preview/{screen.title?.toLowerCase().replace(/\s+/g, "-")}
+          </div>
+          <div className="w-8 h-px bg-primary/25" />
+        </div>
+
+        <div className="relative w-full h-[45vh] overflow-hidden">
+          <Image
+            src={screen.src || ""}
+            fill
+            alt=""
+            className="object-cover grayscale group-hover:grayscale-0 transition-all duration-[1.5s] group-hover:scale-102"
+          />
+          <div className="absolute inset-x-0 h-0.5 bg-primary/20 animate-scanline pointer-events-none" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TimelineSequence({
+  screen,
+  isMobile,
+}: {
+  screen: any;
+  isMobile: boolean;
+}) {
+  const [activeFrame, setActiveFrame] = useState(0);
+
+  const keyframes = [
+    { time: "00:00:00", value: "x: 0.0, opacity: 0.0" },
+    { time: "00:00:15", value: "x: 15.2, opacity: 0.3" },
+    { time: "00:00:30", value: "x: 48.9, opacity: 0.7" },
+    { time: "00:01:00", value: "x: 100.0, opacity: 1.0" },
+  ];
+
+  if (isMobile) {
+    return (
+      <div className="w-full flex flex-col gap-6">
+        <h3 className={`${t.workItemName} text-primary`}>{screen.title}</h3>
+        <p className={t.bodyProse}>{screen.description}</p>
+        <div className="w-full flex gap-3 overflow-x-auto py-2">
+          {screen.images?.map((img: string, idx: number) => (
+            <div key={idx} className="relative w-44 aspect-video flex-shrink-0 border border-primary/10 p-1.5 animate-pulse">
+              <Image src={img} fill alt="" className="object-cover" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full h-full py-16 flex flex-col justify-between">
+      <div className="flex justify-between items-baseline border-b border-primary/10 pb-4">
+        <div>
+          <HUDLabel text="TIMELINE_SEQUENCE_CHOREOGRAPHY" />
+          <h3 className={`${t.workItemName} mt-2`}>{screen.title}</h3>
+        </div>
+        <span className="font-mono text-[9px] tracking-widest opacity-40">
+          FRAME_COUNT: 0{screen.images?.length || 4} // TYPE: KEYFRAME_LAYERS
+        </span>
+      </div>
+
+      <div className="grid grid-cols-4 gap-6 my-6">
+        {screen.images?.map((img: string, idx: number) => {
+          const isActive = activeFrame === idx;
+          return (
+            <div
+              key={idx}
+              onMouseEnter={() => setActiveFrame(idx)}
+              className={`border transition-all duration-300 p-2.5 bg-surface/5 flex flex-col gap-3 relative cursor-pointer ${
+                isActive ? "border-primary scale-[1.01]" : "border-primary/10 opacity-70 hover:opacity-100 hover:border-primary/30"
+              }`}
+            >
+              <div className="relative aspect-[16/10] overflow-hidden">
+                <Image src={img} fill alt="" className="object-cover" />
+              </div>
+              <div className="flex justify-between items-center font-mono text-[8px] opacity-65">
+                <span>INDEX // 0{idx + 1}</span>
+                <span>{keyframes[idx]?.time || "00:00:00"}</span>
+              </div>
+              {isActive && (
+                <div className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-primary rounded-full animate-ping" />
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="border border-primary/10 p-5 bg-surface/5 font-mono text-[9px] tracking-widest flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <span className="text-primary font-bold">STATE_MONITOR //</span>
+          <span className="opacity-70">
+            ACTIVE_FRAME: 0{activeFrame + 1} &rarr; {keyframes[activeFrame]?.value || ""}
+          </span>
+        </div>
+        <div className="flex gap-2 items-center opacity-40">
+          <span>RULER:</span>
+          <span>├─────┼─────┼─────┼─────┤</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ProjectPageClient({
   params,
 }: {
@@ -266,6 +646,10 @@ export default function ProjectPageClient({
                 ${screen.type === "zine-cover" ? "min-w-[85vw] md:min-w-[85vw] 3xl:min-w-[80vw]" : ""}
                 ${screen.type === "editorial-text" ? "min-w-[65vw] md:min-w-[65vw] 3xl:min-w-[60vw]" : ""}
                 ${screen.type === "deliverable-breakdown" ? "min-w-[90vw] md:min-w-[90vw] 3xl:min-w-[85vw]" : ""}
+                ${screen.type === "split-gallery" ? "min-w-[95vw] md:min-w-[95vw] 3xl:min-w-[90vw]" : ""}
+                ${screen.type === "bento-moodboard" ? "min-w-[115vw] md:min-w-[115vw] 3xl:min-w-[110vw]" : ""}
+                ${screen.type === "interactive-preview" ? "min-w-[95vw] md:min-w-[95vw] 3xl:min-w-[90vw]" : ""}
+                ${screen.type === "timeline-sequence" ? "min-w-[100vw] md:min-w-[100vw] 3xl:min-w-[95vw]" : ""}
                 ${screen.type === "zine-outro" ? "min-w-[85vw] md:min-w-[85vw] 3xl:min-w-[80vw]" : ""}
                 ${screen.type === "image" ? "min-w-[80vw] md:min-w-[100vw] 3xl:min-w-[90vw]" : ""}
                 ${screen.type === "bento" ? "min-w-[100vw] md:min-w-[120vw] 3xl:min-w-[110vw]" : ""}
@@ -544,6 +928,26 @@ export default function ProjectPageClient({
               </div>
             </div>
           )}
+
+            {/* Split Gallery Component */}
+            {screen.type === "split-gallery" && (
+              <SplitGallery screen={screen} isMobile={isMobile} />
+            )}
+
+            {/* Bento Moodboard Component */}
+            {screen.type === "bento-moodboard" && (
+              <BentoMoodboard screen={screen} isMobile={isMobile} />
+            )}
+
+            {/* Interactive Preview Component */}
+            {screen.type === "interactive-preview" && (
+              <InteractivePreview screen={screen} isMobile={isMobile} />
+            )}
+
+            {/* Timeline Sequence Component */}
+            {screen.type === "timeline-sequence" && (
+              <TimelineSequence screen={screen} isMobile={isMobile} />
+            )}
 
             {/* --- BACKWARD COMPATIBILITY FALLBACKS --- */}
 

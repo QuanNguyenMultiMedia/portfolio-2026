@@ -28,7 +28,7 @@ export default function PlayPage() {
             >
               <Link
                 href={`/play/${exp.slug}`}
-                className="group block w-full"
+                className="group flex flex-col w-full self-start transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
               >
                 {/* Top Frame: Thumbnail */}
                 <div className={ui.card}>
@@ -43,12 +43,17 @@ export default function PlayPage() {
                 </div>
 
                 {/* Bottom Frame: Name (connected immediately) */}
-                <div className={ui.cardFooter}>
-                  <div className="space-y-1 3xl:space-y-2">
-                    <h2 className={`${t.playItemName} ${motionTokens.skewHover}`}>
-                      {exp.title}
-                    </h2>
-                    <div className="flex gap-2">
+                <div className={`${ui.cardFooter} flex-1 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]`}>
+                  <div className="space-y-3 min-w-0 flex-1 mr-4">
+                    <div className="relative w-full overflow-hidden py-1 min-h-[2.8em] max-h-[2.8em] group-hover:max-h-[20rem] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+                      <h2 
+                        className={`${t.playItemName} ${motionTokens.skewHover} leading-[1.2] block line-clamp-2 group-hover:line-clamp-none px-4`}
+                        title={exp.title}
+                      >
+                        {exp.title}
+                      </h2>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
                       {exp.tech.map((techItem) => (
                         <span
                           key={techItem}
@@ -59,7 +64,7 @@ export default function PlayPage() {
                       ))}
                     </div>
                   </div>
-                  <span className={`${ui.arrow} text-xl 3xl:text-2xl 4xl:text-3xl`}>
+                  <span className={`${ui.arrow} text-xl 3xl:text-2xl 4xl:text-3xl shrink-0`}>
                     →
                   </span>
                 </div>
