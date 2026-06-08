@@ -197,7 +197,7 @@ function SplitGallery({
   if (isMobile) {
     return (
       <div className="w-full flex flex-col gap-6">
-        <h3 className={`${t.workItemName} text-primary`}>{screen.title}</h3>
+        <h3 className={`${t.cardTitle} text-primary`}>{screen.title}</h3>
         <p className={t.bodyProse}>{screen.description}</p>
         <div className="relative aspect-[16/10] w-full border border-primary/10 p-3 bg-surface/5">
           <div className="relative w-full h-full overflow-hidden">
@@ -252,7 +252,7 @@ function SplitGallery({
       <div className="col-span-5 h-[60vh] flex flex-col justify-between pl-6 border-l border-primary/10">
         <div className="space-y-6">
           <HUDLabel text="INTERACTIVE_SHOWCASE" />
-          <h3 className={t.workItemName}>{screen.title}</h3>
+          <h3 className={t.cardTitle}>{screen.title}</h3>
           <p className={t.bodyProse}>{screen.description}</p>
         </div>
 
@@ -309,7 +309,7 @@ function BentoMoodboard({
   if (isMobile) {
     return (
       <div className="w-full flex flex-col gap-6">
-        <h3 className={`${t.workItemName} text-primary`}>{screen.title}</h3>
+        <h3 className={`${t.cardTitle} text-primary`}>{screen.title}</h3>
         <p className={t.bodyProse}>{screen.description}</p>
         <div className="relative aspect-[16/10] w-full border border-primary/10 p-3 bg-surface/5">
           <Image src={screen.images?.[0] || ""} fill alt="" className="object-cover" />
@@ -339,7 +339,7 @@ function BentoMoodboard({
           />
         </div>
         <div className="flex justify-between items-center mt-4 border-t border-primary/5 pt-3">
-          <h3 className={t.workItemName}>{screen.title}</h3>
+          <h3 className={t.cardTitle}>{screen.title}</h3>
           <span className="font-mono text-[9px] opacity-40">IMAGE_REF_01</span>
         </div>
       </div>
@@ -415,7 +415,7 @@ function InteractivePreview({
   if (isMobile) {
     return (
       <div className="w-full flex flex-col gap-6">
-        <h3 className={`${t.workItemName} text-primary`}>{screen.title}</h3>
+        <h3 className={`${t.cardTitle} text-primary`}>{screen.title}</h3>
         <div className="relative aspect-[16/10] w-full border border-primary/10 p-3 bg-surface/5">
           <Image src={screen.src || ""} fill alt="" className="object-cover" />
         </div>
@@ -498,7 +498,7 @@ function TimelineSequence({
   if (isMobile) {
     return (
       <div className="w-full flex flex-col gap-6">
-        <h3 className={`${t.workItemName} text-primary`}>{screen.title}</h3>
+        <h3 className={`${t.cardTitle} text-primary`}>{screen.title}</h3>
         <p className={t.bodyProse}>{screen.description}</p>
         <div className="w-full flex gap-3 overflow-x-auto py-2">
           {screen.images?.map((img: string, idx: number) => (
@@ -516,7 +516,7 @@ function TimelineSequence({
       <div className="flex justify-between items-baseline border-b border-primary/10 pb-4">
         <div>
           <HUDLabel text="TIMELINE_SEQUENCE_CHOREOGRAPHY" />
-          <h3 className={`${t.workItemName} mt-2`}>{screen.title}</h3>
+          <h3 className={`${t.cardTitle} mt-2`}>{screen.title}</h3>
         </div>
         <span className="font-mono text-[9px] tracking-widest opacity-40">
           FRAME_COUNT: 0{screen.images?.length || 4} // TYPE: KEYFRAME_LAYERS
@@ -807,7 +807,7 @@ export default function ProjectPageClient({
                     </span>
                     <HUDLabel text="DELIVERABLE_SPEC" className="opacity-60" />
                   </div>
-                  <h3 className={`${t.workItemName} text-primary`}>
+                  <h3 className={`${t.cardTitle} text-primary`}>
                     {screen.title}
                   </h3>
                   <div className="text-[11px] md:text-xs 3xl:text-sm leading-relaxed font-light text-foreground/75 space-y-4">

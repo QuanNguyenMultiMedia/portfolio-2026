@@ -92,7 +92,7 @@ export default function FreebiesPage() {
                     </motion.div>
 
                     <div className="px-1 mt-6">
-                      <h3 className={`${t.workItemName} ${motionTokens.skewHover}`}>
+                      <h3 className={`${t.cardTitle} ${motionTokens.skewHover}`}>
                         {item.title}
                       </h3>
                     </div>
@@ -204,7 +204,7 @@ export default function FreebiesPage() {
                   </div>
 
                   <div className="space-y-4">
-                    <h2 className={`${t.workItemName} font-bold text-primary`}>
+                    <h2 className={`${t.cardTitle} font-bold text-primary`}>
                       {selectedItem.title}
                     </h2>
                     <div className="h-px w-8 bg-primary/20" />

@@ -55,7 +55,7 @@ export default async function PostPage({
           <div className={layout.editorial}>
             <div className={layout.textCol}>
               <header>
-                 <h1 className={t.takesTitle}>{post.title}</h1>
+                 <h1 className={t.cardTitle}>{post.title}</h1>
                 <div className={`mt-4 ${t.metaDataLabel} opacity-40`}>
                   {post.date}
                 </div>

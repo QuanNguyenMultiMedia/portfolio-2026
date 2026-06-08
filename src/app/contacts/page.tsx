@@ -369,7 +369,7 @@ export default function ContactsPage() {
         rotateX={springTiltX}
         rotateY={springTiltY}
       />
-      <div className="max-w-[800px] 3xl:max-w-[1080px] 4xl:max-w-[1300px] mx-auto px-8 3xl:px-16 4xl:px-24 w-full perspective-[3000px]">
+      <div className="max-w-[900px] 3xl:max-w-[1180px] 4xl:max-w-[1400px] mx-auto px-8 3xl:px-16 4xl:px-24 w-full perspective-[3000px]">
         <motion.div
           ref={containerRef}
           onMouseMove={handleMouseMove}
@@ -443,7 +443,7 @@ export default function ContactsPage() {
               }}
             >
               <div className="bg-primary/5 backdrop-blur-xl border border-primary/10 border-b-0 px-6 py-2 h-[40px] 3xl:px-10 3xl:py-4 3xl:h-[54px] 4xl:px-14 4xl:py-5 4xl:h-[68px] inline-flex items-center absolute top-0 right-0 -translate-y-full">
-                <h1 className={`${t.workItemName} italic leading-none whitespace-nowrap`}>
+                <h1 className={`${t.cardTitle} italic leading-none whitespace-nowrap`}>
                   Contact
                 </h1>
               </div>
@@ -459,7 +459,7 @@ export default function ContactsPage() {
                       >
                         <GooeyText
                           lines={["@QUANNGUYENHERE"]}
-                          textClassName={`${t.workItemName} italic leading-none whitespace-nowrap`}
+                          textClassName={`${t.cardTitle} italic leading-none whitespace-nowrap`}
                           isFlipped={isFlipped}
                         />
                       </a>
@@ -523,7 +523,7 @@ export default function ContactsPage() {
               }}
             >
               <div className="bg-primary/5 backdrop-blur-xl border border-primary/10 border-b-0 px-6 py-2 h-[40px] 3xl:px-10 3xl:py-4 3xl:h-[54px] 4xl:px-14 4xl:py-5 4xl:h-[68px] inline-flex items-center absolute top-0 right-0 -translate-y-full">
-                <h1 className={`${t.workItemName} italic leading-none whitespace-nowrap`}>
+                <h1 className={`${t.cardTitle} italic leading-none whitespace-nowrap`}>
                   About
                 </h1>
               </div>
@@ -539,7 +539,7 @@ export default function ContactsPage() {
                       >
                         <GooeyText
                           lines={["@QUANNGUYENHERE"]}
-                          textClassName={`${t.workItemName} italic leading-none whitespace-nowrap`}
+                          textClassName={`${t.cardTitle} italic leading-none whitespace-nowrap`}
                           isFlipped={isFlipped}
                         />
                       </a>

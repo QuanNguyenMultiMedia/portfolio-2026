@@ -7,11 +7,6 @@
   --tech-blue: #0029ff;
   --border-neutral: rgba(0, 0, 0, 0.08);
   --surface: #ffffff;
-  --color-1: 330 100% 40%;
-  --color-2: 140 100% 55%;
-  --color-3: 210 100% 30%;
-  --color-4: 60 100% 70%;
-  --color-5: 295 100% 45%;
 }
 
 .dark {
@@ -21,11 +16,6 @@
   --tech-blue: #0029ff;
   --border-neutral: rgba(255, 255, 255, 0.1);
   --surface: #111111;
-  --color-1: 330 100% 40%;
-  --color-2: 140 100% 55%;
-  --color-3: 210 100% 30%;
-  --color-4: 60 100% 70%;
-  --color-5: 295 100% 45%;
 }
 
 @theme {
