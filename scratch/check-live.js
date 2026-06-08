@@ -15,7 +15,8 @@ async function run() {
   console.log("Navigating to https://minhquan.works...");
   try {
     await page.goto("https://minhquan.works", { waitUntil: "load", timeout: 15000 });
-    console.log("Page loaded successfully.");
+    console.log("Page loaded successfully. Waiting 4 seconds for loading screen to clear...");
+    await page.waitForTimeout(4000);
     await page.screenshot({ path: "scratch/live_screenshot.png" });
     console.log("Screenshot saved to scratch/live_screenshot.png");
   } catch (e) {

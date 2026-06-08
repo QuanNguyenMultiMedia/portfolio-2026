@@ -43,15 +43,24 @@ export default function PlayPage() {
                 </div>
 
                 {/* Bottom Frame: Name (connected immediately) */}
-                <div className={`${ui.cardFooter} flex-1 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]`}>
-                  <div className="space-y-3 min-w-0 flex-1 mr-4">
-                    <div className="relative w-full overflow-hidden py-1 min-h-[2.8em] max-h-[2.8em] group-hover:max-h-[20rem] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+                <div className={`${ui.cardFooter} relative pr-12 md:pr-16 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]`}>
+                  <div className="space-y-3 min-w-0 flex-1">
+                    <div>
                       <h2 
-                        className={`${t.playItemName} ${motionTokens.skewHover} leading-[1.2] block line-clamp-2 group-hover:line-clamp-none px-4`}
+                        className={`${t.playItemName} ${motionTokens.skewHover} leading-[1.2] block`}
                         title={exp.title}
                       >
                         {exp.title}
                       </h2>
+                      
+                      {/* Expandable description container */}
+                      <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] opacity-0 group-hover:opacity-100">
+                        <div className="overflow-hidden">
+                          <p className="text-xs md:text-sm text-foreground/50 pt-2 leading-relaxed font-light">
+                            {exp.description}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {exp.tech.map((techItem) => (
@@ -64,7 +73,7 @@ export default function PlayPage() {
                       ))}
                     </div>
                   </div>
-                  <span className={`${ui.arrow} text-xl 3xl:text-2xl 4xl:text-3xl shrink-0`}>
+                  <span className={`${ui.arrow} text-xl 3xl:text-2xl 4xl:text-3xl absolute right-6 top-[22px] 3xl:right-8 3xl:top-[30px] 4xl:right-10 4xl:top-[38px]`}>
                     →
                   </span>
                 </div>
