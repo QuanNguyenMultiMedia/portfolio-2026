@@ -71,7 +71,7 @@ export default function Navbar() {
       {/* Main Navigation Bar */}
       <nav
         ref={navRef}
-        className="relative z-10 flex items-center gap-1 p-1 bg-background/95 backdrop-blur-2xl border border-primary/10 rounded-none"
+        className="relative z-10 flex items-center gap-1 p-1 bg-background/75 backdrop-blur-2xl border border-primary/10 rounded-none"
       >
         {/* Logo Mark on the left side of desktop navbar */}
         <div className="flex items-center pl-4 pr-2 h-7 w-24 flex-shrink-0">

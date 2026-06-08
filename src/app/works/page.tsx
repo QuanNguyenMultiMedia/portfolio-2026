@@ -585,6 +585,12 @@ export default function WorksPage() {
                 }}
                 className="relative flex-1 h-full pr-[168px] md:pr-[220px] 3xl:pr-[320px] 4xl:pr-[420px] flex items-center justify-start overflow-hidden"
               >
+                {/* Top Fade & Blur Overlay */}
+                <div className="absolute top-0 left-0 right-[158px] md:right-[210px] 3xl:right-[310px] 4xl:right-[410px] h-20 md:h-28 3xl:h-36 4xl:h-44 bg-gradient-to-b from-background via-background/90 to-transparent pointer-events-none z-20" />
+
+                {/* Bottom Fade & Blur Overlay */}
+                <div className="absolute bottom-0 left-0 right-[158px] md:right-[210px] 3xl:right-[310px] 4xl:right-[410px] h-20 md:h-28 3xl:h-36 4xl:h-44 bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none z-20" />
+
                 {/* Viewfinder Selection Frame - aligns perfectly to Bezel boundary */}
                 <div className="absolute left-0 right-[158px] md:right-[210px] 3xl:right-[310px] 4xl:right-[410px] top-1/2 -translate-y-1/2 h-[60px] md:h-[80px] 3xl:h-[110px] 4xl:h-[140px] border-y border-primary/10 bg-transparent pointer-events-none z-0">
                   {/* Persistent, stationary vertical indicator on the left edge */}

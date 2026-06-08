@@ -54,7 +54,7 @@ server.listen(PORT, "127.0.0.1", () => {
 // 2. Spawn Next.js dev server
 const next = spawn("npx", ["next", "dev", "--hostname", "127.0.0.1"], {
   stdio: "inherit",
-  shell: true
+  shell: process.platform === "win32"
 });
 
 next.on("close", (code) => {
