@@ -12,9 +12,9 @@ async function run() {
     console.error("[PAGE ERROR]", err.message);
   });
 
-  console.log("Navigating to https://minhquan.works...");
+  console.log("Navigating to https://minhquan.works/play...");
   try {
-    await page.goto("https://minhquan.works", { waitUntil: "load", timeout: 15000 });
+    await page.goto("https://minhquan.works/play", { waitUntil: "load", timeout: 15000 });
     console.log("Page loaded successfully. Waiting 4 seconds for loading screen to clear...");
     await page.waitForTimeout(4000);
     await page.screenshot({ path: "scratch/live_screenshot.png" });

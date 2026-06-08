@@ -25,10 +25,11 @@ export default function PlayPage() {
             <motion.div
               key={exp.slug}
               {...fx.slideIn(idx)}
+              className="w-fit self-start"
             >
               <Link
                 href={`/play/${exp.slug}`}
-                className="group flex flex-col w-full self-start transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                className="group flex flex-col w-fit self-start transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] max-w-full md:max-w-[340px] 3xl:max-w-[400px]"
               >
                 {/* Top Frame: Thumbnail */}
                 <div className={ui.card}>
@@ -43,26 +44,15 @@ export default function PlayPage() {
                 </div>
 
                 {/* Bottom Frame: Name (connected immediately) */}
-                <div className={`${ui.cardFooter} relative pr-12 md:pr-16 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]`}>
-                  <div className="space-y-3 min-w-0 flex-1">
-                    <div>
-                      <h2 
-                        className={`${t.playItemName} ${motionTokens.skewHover} leading-[1.2] block`}
-                        title={exp.title}
-                      >
-                        {exp.title}
-                      </h2>
-                      
-                      {/* Expandable description container */}
-                      <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] opacity-0 group-hover:opacity-100">
-                        <div className="overflow-hidden">
-                          <p className="text-xs md:text-sm text-foreground/50 pt-2 leading-relaxed font-light">
-                            {exp.description}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
+                <div className={`${ui.cardFooter} flex items-center justify-between gap-6 w-full min-h-[4.5rem] 3xl:min-h-[5.5rem] 4xl:min-h-[6.5rem] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]`}>
+                  <div className="min-w-0 flex-1">
+                    <h2 
+                      className={`${t.playItemName} ${motionTokens.skewHover} leading-[1.2] block`}
+                      title={exp.title}
+                    >
+                      {exp.title}
+                    </h2>
+                    <div className="flex flex-wrap gap-2 mt-2">
                       {exp.tech.map((techItem) => (
                         <span
                           key={techItem}
@@ -73,7 +63,7 @@ export default function PlayPage() {
                       ))}
                     </div>
                   </div>
-                  <span className={`${ui.arrow} text-xl 3xl:text-2xl 4xl:text-3xl absolute right-6 top-[22px] 3xl:right-8 3xl:top-[30px] 4xl:right-10 4xl:top-[38px]`}>
+                  <span className={`${ui.arrow} text-xl 3xl:text-2xl 4xl:text-3xl shrink-0`}>
                     →
                   </span>
                 </div>
