@@ -37,16 +37,14 @@ export const motion = {
 // ─── Typography — Semantic Visual Roles ──────────────────────────────────────
 
 export const t = {
-  mainHeroTitle:     "text-[3rem] md:text-[4.5rem] lg:text-[6.5rem] 3xl:text-[8.5rem] 4xl:text-[11.0rem] font-display uppercase font-[800] leading-[0.75] tracking-[-0.02em]",
+  mainHeroTitle:     "text-[3rem] md:text-[4.5rem] lg:text-[6.5rem] 3xl:text-[8.5rem] 4xl:text-[11.0rem] font-display uppercase font-[800] leading-[1] tracking-[-0.02em]",
   heroTagline:     "text-[1.125rem] md:text-[1.25rem] lg:text-[1.5rem] 3xl:text-[1.875rem] 4xl:text-[2.25rem] font-display normal-case font-[300] leading-[1.625] tracking-[-0.02em] opacity-90 italic",
   sectionHeaderDisplay:     "text-[1.875rem] md:text-[3rem] lg:text-[3.75rem] 3xl:text-[4.5rem] 4xl:text-[6.5rem] font-display uppercase font-[700] leading-[0.85] tracking-[-0.02em]",
   pageTitle:     "text-[1.5rem] md:text-[2.25rem] lg:text-[3rem] 3xl:text-[3.75rem] 4xl:text-[4.5rem] font-display uppercase font-[700] leading-[1] tracking-[-0.02em]",
-  workItemName:     "text-[1.125rem] md:text-[1.25rem] lg:text-[1.5rem] 3xl:text-[1.875rem] 4xl:text-[2.25rem] font-display font-bold normal-case font-[700] leading-[0.85] tracking-[-0.02em]",
-  takesTitle:     "text-[1.125rem] md:text-[1.25rem] lg:text-[1.5rem] 3xl:text-[1.875rem] 4xl:text-[2.25rem] font-display font-bold normal-case font-[700] leading-[0.85] tracking-[-0.02em]",
-  playItemName:     "text-[1.125rem] md:text-[1.25rem] lg:text-[1.5rem] 3xl:text-[1.875rem] 4xl:text-[2.25rem] font-display font-bold normal-case font-[700] leading-[0.85] tracking-[-0.02em]",
+  cardTitle:     "text-[1.75rem] md:text-[1.875rem] lg:text-[2rem] 3xl:text-[2.25rem] 4xl:text-[2.5rem] font-display font-bold lowercase font-[100] leading-[1] tracking-[0.03em]",
   navItemLabel:     "text-[0.75rem] md:text-[0.875rem] lg:text-[1rem] 3xl:text-[1rem] 4xl:text-[1.125rem] font-display uppercase font-[500] leading-[1.2] tracking-[0.05em]",
   monoEyebrow:     "text-[0.563rem] md:text-[0.563rem] lg:text-[0.563rem] 3xl:text-[0.688rem] 4xl:text-[0.75rem] font-mono uppercase text-tech-blue font-[700] leading-[1.2] tracking-[0.4em] opacity-60",
-  bodyProse:     "text-[0.813rem] md:text-[0.875rem] lg:text-[1rem] 3xl:text-[1.125rem] 4xl:text-[1.25rem] font-light normal-case font-[300] leading-[1.75] opacity-70",
+  bodyProse:     "text-[0.813rem] md:text-[0.875rem] lg:text-[1rem] 3xl:text-[1.125rem] 4xl:text-[1.25rem] font-light lowercase font-[100] leading-[1.85] tracking-[-0.02em] opacity-45",
   metaDataLabel:     "text-[0.5rem] md:text-[0.5rem] lg:text-[0.5rem] 3xl:text-[0.625rem] 4xl:text-[0.75rem] font-mono uppercase font-[400] leading-[1.2] tracking-[0.2em] opacity-30",
 };
 

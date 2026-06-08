@@ -24,11 +24,6 @@ export interface EditableState {
     techBlue: string;
     borderNeutral: string;
     surface: string;
-    color1: string;
-    color2: string;
-    color3: string;
-    color4: string;
-    color5: string;
   };
   colorTokens: {
     bg: string;
@@ -79,7 +74,7 @@ function fmtRem(v: number): string {
 export function typeClass(key: string, p: TypographyParams): string {
   const s = p.sizes;
   const isMono = key === "monoEyebrow" || key === "metaDataLabel";
-  const font = isMono ? "font-mono" : key === "bodyProse" ? "font-light" : ["workItemName", "takesTitle", "playItemName"].includes(key) ? "font-display font-bold" : "font-display";
+  const font = isMono ? "font-mono" : key === "bodyProse" ? "font-light" : key === "cardTitle" ? "font-display font-bold" : "font-display";
   
   const defaultCasing = ["mainHeroTitle", "sectionHeaderDisplay", "pageTitle", "navItemLabel", "monoEyebrow", "metaDataLabel"].includes(key) ? "uppercase" : "normal-case";
   const casingClass = p.casing || defaultCasing;
@@ -111,9 +106,7 @@ export const TYPE_KEYS = [
   "heroTagline",
   "sectionHeaderDisplay",
   "pageTitle",
-  "workItemName",
-  "takesTitle",
-  "playItemName",
+  "cardTitle",
   "navItemLabel",
   "monoEyebrow",
   "bodyProse",
@@ -125,9 +118,7 @@ const INITIAL_TYPOGRAPHY: Record<string, TypographyParams> = {
   heroTagline:          { sizes: { base: 1.125, md: 1.25, lg: 1.5, xl3: 1.875, xl4: 2.25 }, tracking: -0.02, weight: 300, leading: 1.625, opacity: 0.9, casing: "normal-case", italic: true },
   sectionHeaderDisplay: { sizes: { base: 1.875, md: 3, lg: 3.75, xl3: 4.5, xl4: 6.5 }, tracking: -0.02, weight: 700, leading: 0.85, opacity: 1, casing: "uppercase", italic: false },
   pageTitle:            { sizes: { base: 1.5, md: 2.25, lg: 3, xl3: 3.75, xl4: 4.5 }, tracking: -0.02, weight: 700, leading: 1, opacity: 1, casing: "uppercase", italic: false },
-  workItemName:         { sizes: { base: 1.125, md: 1.25, lg: 1.5, xl3: 1.875, xl4: 2.25 }, tracking: -0.02, weight: 700, leading: 0.85, opacity: 1, casing: "normal-case", italic: false },
-  takesTitle:           { sizes: { base: 1.125, md: 1.25, lg: 1.5, xl3: 1.875, xl4: 2.25 }, tracking: -0.02, weight: 700, leading: 0.85, opacity: 1, casing: "normal-case", italic: false },
-  playItemName:         { sizes: { base: 1.125, md: 1.25, lg: 1.5, xl3: 1.875, xl4: 2.25 }, tracking: -0.02, weight: 700, leading: 0.85, opacity: 1, casing: "normal-case", italic: false },
+  cardTitle:            { sizes: { base: 1.125, md: 1.25, lg: 1.5, xl3: 1.875, xl4: 2.25 }, tracking: -0.02, weight: 700, leading: 0.85, opacity: 1, casing: "normal-case", italic: false },
   navItemLabel:         { sizes: { base: 0.75, md: 0.875, lg: 1, xl3: 1, xl4: 1.125 }, tracking: 0.05, weight: 500, leading: 1.2, opacity: 1, casing: "uppercase", italic: false },
   monoEyebrow:          { sizes: { base: 0.5625, md: 0.5625, lg: 0.5625, xl3: 0.6875, xl4: 0.75 }, tracking: 0.4, weight: 700, leading: 1.2, opacity: 0.6, casing: "uppercase", italic: false },
   bodyProse:            { sizes: { base: 0.8125, md: 0.875, lg: 1, xl3: 1.125, xl4: 1.25 }, tracking: 0, weight: 300, leading: 1.75, opacity: 0.7, casing: "normal-case", italic: false },
@@ -138,8 +129,6 @@ export const DEFAULT_EDITABLE: EditableState = {
   colors: {
     background: "#f5f5f5", foreground: "#111111", primary: "#000000",
     techBlue: "#0029ff", borderNeutral: "rgba(0,0,0,0.08)", surface: "#ffffff",
-    color1: "330 100% 40%", color2: "140 100% 55%", color3: "210 100% 30%",
-    color4: "60 100% 70%", color5: "295 100% 45%",
   },
   colorTokens: {
     bg: "bg-background text-foreground",

@@ -47,7 +47,7 @@ export default function PlayPage() {
                 <div className={`${ui.cardFooter} flex items-center justify-between gap-6 w-full min-h-[4.5rem] 3xl:min-h-[5.5rem] 4xl:min-h-[6.5rem] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]`}>
                   <div className="min-w-0 flex-1">
                     <h2 
-                      className={`${t.playItemName} ${motionTokens.skewHover} leading-[1.2] block`}
+                      className={`${t.cardTitle} ${motionTokens.skewHover} leading-[1.2] block`}
                       title={exp.title}
                     >
                       {exp.title}

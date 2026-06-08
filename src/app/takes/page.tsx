@@ -36,7 +36,7 @@ export default function TakesPage() {
                 </div>
 
                 <div className="md:col-span-7 space-y-6 3xl:space-y-8">
-                  <h2 className={`${t.takesTitle} ${motionTokens.skewHover}`}>
+                  <h2 className={`${t.cardTitle} ${motionTokens.skewHover}`}>
                     {post.title}
                   </h2>
                   <p className={`${t.bodyProse} max-w-[420px] 3xl:max-w-[560px] 4xl:max-w-[700px] line-clamp-2 group-hover:opacity-100 transition-opacity`}>
