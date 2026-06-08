@@ -1,0 +1,19 @@
+# Ignore local build directories
+out/
+.next/
+
+# Ignore unused raw play folder
+public/play/
+
+# Ignore unused large assets and video folders in play-static
+public/play-static/tourmaline-cat-a86db8/bg_video/
+public/play-static/melodic-concha-df128c/showcase/
+
+# Ignore Blender source files
+**/*.blend
+
+# Ignore git/cursor metadata
+.git/
+.cursor/
+.playwright-mcp/
+test-results/
