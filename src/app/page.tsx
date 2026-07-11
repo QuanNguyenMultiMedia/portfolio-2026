@@ -712,6 +712,7 @@ export default function Home() {
                       alt="Minh Quan - Standing Portrait"
                       fill
                       priority
+                      sizes="(max-width: 768px) 130px, (max-width: 1200px) 280px, 400px"
                       className="object-cover opacity-90 grayscale transition-all duration-[2000ms] group-hover:grayscale-0"
                     />
                   </div>
@@ -790,6 +791,7 @@ export default function Home() {
                           src="/assets/portrait_standing.jpg"
                           alt="Quan's Eyes Zoom"
                           fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
                           className="object-cover object-[60%_21%] scale-[2.7] origin-[60%_21%] grayscale"
                         />
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-tech-blue/10 to-transparent pointer-events-none" />

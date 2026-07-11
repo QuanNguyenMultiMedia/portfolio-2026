@@ -66,16 +66,25 @@ export default function useLenis(options: UseLenisOptions = {}) {
     }
 
     let rafId: number;
+    let isVisible = true;
     function raf(time: number) {
-      lenis.raf(time);
+      if (isVisible) {
+        lenis.raf(time);
+      }
       rafId = requestAnimationFrame(raf);
     }
 
     rafId = requestAnimationFrame(raf);
 
+    const handleVisibilityChange = () => {
+      isVisible = document.visibilityState === "visible";
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     return () => {
       lenis.destroy();
       cancelAnimationFrame(rafId);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       if (orientation === "vertical") {
         delete (window as any).lenis;
         delete (window as any).__lenisInstance;
