@@ -6,8 +6,20 @@ const { spawn } = require("child_process");
 // 1. Start the file-saving HTTP server
 const PORT = 3001;
 const server = http.createServer((req, res) => {
-  // Enable CORS so the next dev server can call it
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  // Restrict CORS to local server ports to prevent malicious external websites from hitting the file writer
+  const origin = req.headers.origin;
+  const isLocalOrigin = !origin || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+
+  if (!isLocalOrigin) {
+    console.warn(`[Dev Save Server] Blocked cross-origin request from: ${origin}`);
+    res.writeHead(403, { "Content-Type": "text/plain" });
+    res.end("Forbidden: Cross-Origin request blocked.");
+    return;
+  }
+
+  if (origin) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 

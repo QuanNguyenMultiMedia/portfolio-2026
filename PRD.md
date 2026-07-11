@@ -395,7 +395,7 @@ The overscroll tail is confined to the final 3% of scroll (progress 0.97–1.0).
 - Rate-limited tick sounds (max 60/sec)
 - `requestAnimationFrame` for smooth visual updates during drag
 
-**Data Source:** `@/data/projects.ts` — 5 projects defined (2026 Reel, Herond Browser, Defrasoft, Z Cung Viet, Select Freelance Work).
+**Data Source:** `@/data/projects.ts` — 5 projects defined (2026 Reel, Herond Browser, Defrasoft, Z Cũng Viết, Select Freelance Work).
 
 **Status:** ✅ Complete. Uses local project images (`/projects/*.png`) and Unsplash external imagery. All Wikimedia placeholder URLs replaced.
 

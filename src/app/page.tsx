@@ -890,7 +890,7 @@ export default function Home() {
                       }`}
                   >
                     <MuxPlayer
-                      playbackId="SIBtpHN00huNJBdr01O00pcO02kjQElwnZFgWODBciieRg8"
+                      playbackId="QsmDlpOu6qngxWa01dJlOHgkMb01YoYcxra5G1V3Xsq300"
                       className="w-full h-full object-cover"
                       onVideoReady={(el) => {
                         videoRef.current = el as any;
