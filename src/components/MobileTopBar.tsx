@@ -5,8 +5,14 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import WaveGradientBar from "./WaveGradientBar";
+import dynamic from "next/dynamic";
 import { getPathColors } from "@/lib/navigation";
+import { fx } from "@/lib/designSystem";
+
+const WaveGradientBar = dynamic(() => import("./WaveGradientBar"), {
+  ssr: false,
+  loading: () => <div className="absolute inset-0 w-full h-full" />,
+});
 
 export default function MobileTopBar() {
   const pathname = usePathname();
@@ -33,11 +39,13 @@ export default function MobileTopBar() {
         <AnimatePresence mode="wait">
           {isIndividualItem && (
             <motion.div
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: 36, opacity: 1 }}
-              exit={{ width: 0, opacity: 0 }}
-              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-              className="w-full h-full overflow-hidden border-r border-primary/10 flex items-center justify-center bg-background"
+              layout
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4, ease: fx.easeSharp }}
+              style={{ width: 36 }}
+              className="h-full overflow-hidden border-r border-primary/10 flex items-center justify-center bg-background"
             >
               <Link
                 href={`/${segments[0]}`}
@@ -65,12 +73,12 @@ export default function MobileTopBar() {
       <div className="w-9 h-full flex-shrink-0 border-l border-primary/10 flex items-center justify-center bg-background">
         <button
           onClick={toggleTheme}
-          className="w-full h-full flex items-center justify-center group focus:outline-none"
+          className="w-full h-full flex items-center justify-center group"
           aria-label="Toggle Theme"
         >
           <motion.div
             animate={{ rotate: isDark ? 360 : 0 }}
-            transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+            transition={{ duration: 0.7, ease: fx.easeSharp }}
             className="w-3.5 h-3.5 text-foreground/45 group-hover:text-foreground transition-colors"
           >
             {isDark ? (

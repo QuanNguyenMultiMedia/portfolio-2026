@@ -2,9 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { motion, useMotionValue, useSpring, useTransform, animate } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, animate, useReducedMotion } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
-import { t, motion as motionTokens } from "@/lib/designSystem";
+import { t, motion as motionTokens, fx } from "@/lib/designSystem";
 import StarField from "@/components/StarField";
 
 function GooeyText({
@@ -306,15 +306,17 @@ export default function ContactsPage() {
   );
 
   const zWorld = useMotionValue(0);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
+    if (reduceMotion) return;
     const controls = animate(zWorld, 100000, {
       duration: 1000,
       ease: "linear",
       repeat: Infinity,
     });
     return () => controls.stop();
-  }, [zWorld]);
+  }, [zWorld, reduceMotion]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!containerRef.current) return;
@@ -375,11 +377,25 @@ export default function ContactsPage() {
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           onClick={handleCardClick}
+          role="button"
+          tabIndex={0}
+          aria-label={isFlipped ? "Show contact card" : "Show about card"}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              if (!containerRef.current) return;
+              const rect = containerRef.current.getBoundingClientRect();
+              handleCardClick({
+                clientX: rect.left + rect.width / 2,
+                clientY: rect.top + rect.height / 2,
+              } as React.MouseEvent);
+            }
+          }}
           className="relative w-full cursor-pointer preserve-3d will-change-transform"
           initial={{ y: 900, rotate: -15, rotateX: 35, opacity: 0 }}
           animate={isEntered
             ? {
-                y: isFlipped ? 0 : [0, -15, 0],
+                y: isFlipped || reduceMotion ? 0 : [0, -15, 0],
                 rotate: 0,
                 rotateX: 0,
                 opacity: 1,
@@ -396,7 +412,7 @@ export default function ContactsPage() {
           }}
           transition={isEntered
             ? {
-                y: { repeat: isFlipped ? 0 : Infinity, duration: 6, ease: "easeInOut" },
+                y: { repeat: isFlipped || reduceMotion ? 0 : Infinity, duration: 6, ease: "easeInOut" },
                 rotate: { duration: 0.5 },
                 rotateX: { duration: 0.5 },
               }
@@ -422,7 +438,7 @@ export default function ContactsPage() {
               rotateY: isFlipped ? 180 : 0,
             }}
             transition={{
-              rotateY: { duration: 1.2, ease: [0.23, 1, 0.32, 1] },
+              rotateY: { duration: 1.2, ease: fx.easeSharp },
             }}
             style={{
               transformStyle: "preserve-3d",
@@ -467,7 +483,7 @@ export default function ContactsPage() {
 
                     <div className="space-y-4 pt-4">
                       <div className="flex flex-col gap-4 3xl:gap-5">
-                        {socialLinks.map((link) => (
+                        {socialLinks.filter((link) => link.url !== "#").map((link) => (
                           <a
                             key={link.name}
                             href={link.url}
@@ -480,7 +496,7 @@ export default function ContactsPage() {
                               <span className="opacity-20 mr-2">{link.id}</span>
                               {link.name}
                             </span>
-                            <div className="w-0 group-hover:w-8 h-[0.5px] bg-tech-blue transition-all duration-500" />
+                            <div className="w-8 h-[0.5px] bg-tech-blue scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500" />
                           </a>
                         ))}
                       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 import { playItems } from "@/data/play";
@@ -29,14 +30,16 @@ export default function PlayPage() {
             >
               <Link
                 href={`/play/${exp.slug}`}
-                className="group flex flex-col w-fit self-start transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] max-w-full md:max-w-[340px] 3xl:max-w-[400px]"
+                className="group flex flex-col w-fit self-start transition-all duration-500 ease-[var(--ease-editorial)] max-w-full md:max-w-[340px] 3xl:max-w-[400px]"
               >
                 {/* Top Frame: Thumbnail */}
                 <div className={ui.card}>
                   <div className="relative w-full aspect-video overflow-hidden bg-surface/5">
-                    <img
+                    <Image
                       src={exp.src}
                       alt={exp.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1920px) 340px, 400px"
                       referrerPolicy="no-referrer"
                       className={ui.img}
                     />
@@ -44,7 +47,7 @@ export default function PlayPage() {
                 </div>
 
                 {/* Bottom Frame: Name (connected immediately) */}
-                <div className={`${ui.cardFooter} flex items-center justify-between gap-6 w-full min-h-[4.5rem] 3xl:min-h-[5.5rem] 4xl:min-h-[6.5rem] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]`}>
+                <div className={`${ui.cardFooter} flex items-center justify-between gap-6 w-full min-h-[4.5rem] 3xl:min-h-[5.5rem] 4xl:min-h-[6.5rem] transition-all duration-500 ease-[var(--ease-editorial)]`}>
                   <div className="min-w-0 flex-1">
                     <h2 
                       className={`${t.cardTitle} ${motionTokens.skewHover} leading-[1.2] block`}

@@ -81,7 +81,7 @@ export default function Navbar() {
         {/* Active Pill Highlighter */}
         <div
           className={`absolute bg-tech-blue -z-10 ${
-            mounted ? "transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]" : ""
+            mounted ? "transition-all duration-300 ease-[var(--ease-editorial-sharp)]" : ""
           }`}
           style={{
             left: `${pillStyle.left}px`,

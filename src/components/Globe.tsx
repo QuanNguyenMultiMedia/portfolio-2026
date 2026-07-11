@@ -21,6 +21,8 @@ export default function Globe({ className = "", size = 400 }: GlobeProps) {
   useEffect(() => {
     if (!canvasRef.current) return;
 
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
     let width = size;
     const onResize = () => {
       if (canvasRef.current) {
@@ -31,9 +33,9 @@ export default function Globe({ className = "", size = 400 }: GlobeProps) {
     onResize();
 
     const options = {
-      devicePixelRatio: 2,
-      width: width * 2,
-      height: width * 2,
+      devicePixelRatio: dpr,
+      width: width * dpr,
+      height: width * dpr,
       phi: 0,
       theta: 0.3, // Slight downward tilt to showcase the Northern hemisphere/markers
       dark: isDark ? 1 : 0, // Dynamic dark/light sphere body fill
@@ -51,18 +53,32 @@ export default function Globe({ className = "", size = 400 }: GlobeProps) {
     const globe = createGlobe(canvasRef.current, options);
 
     let animationFrameId: number;
+    let running = true;
     const tick = () => {
+      if (!running) return;
       if (pointerInteracting.current === null) {
         phi.current += 0.005; // Slow auto-rotation when not dragging
       }
       globe.update({
         phi: phi.current,
-        width: width * 2,
-        height: width * 2,
+        width: width * dpr,
+        height: width * dpr,
       });
       animationFrameId = requestAnimationFrame(tick);
     };
-    animationFrameId = requestAnimationFrame(tick);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        running = entry.isIntersecting;
+        if (running) {
+          animationFrameId = requestAnimationFrame(tick);
+        } else {
+          cancelAnimationFrame(animationFrameId);
+        }
+      },
+      { threshold: 0 }
+    );
+    if (canvasRef.current) observer.observe(canvasRef.current);
 
     setTimeout(() => {
       if (canvasRef.current) {
@@ -71,9 +87,11 @@ export default function Globe({ className = "", size = 400 }: GlobeProps) {
     }, 100);
 
     return () => {
+      running = false;
       globe.destroy();
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", onResize);
+      observer.disconnect();
     };
   }, [size, isDark]);
 

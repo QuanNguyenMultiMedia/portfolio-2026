@@ -1,12 +1,13 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
 export default function LoadingScreen() {
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
+  const reduceMotion = useReducedMotion();
 
   const statusMessages = [
     "Loading",
@@ -63,12 +64,12 @@ export default function LoadingScreen() {
 
             {/* Geometric Orbits */}
             <motion.div
-              animate={{ rotate: 360 }}
+              animate={reduceMotion ? undefined : { rotate: 360 }}
               transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-primary/5 rounded-full"
             />
             <motion.div
-              animate={{ rotate: -360 }}
+              animate={reduceMotion ? undefined : { rotate: -360 }}
               transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-primary/[0.03] rounded-full"
             />
@@ -87,9 +88,9 @@ export default function LoadingScreen() {
               </div>
               <div className="h-[1px] w-full bg-primary/10 relative overflow-hidden">
                 <motion.div
-                  className="absolute top-0 left-0 h-full bg-primary"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progress}%` }}
+                  className="absolute top-0 left-0 h-full w-full bg-primary origin-left"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: progress / 100 }}
                 />
               </div>
             </div>

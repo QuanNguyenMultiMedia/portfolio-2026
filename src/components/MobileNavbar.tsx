@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import LogoMark from "./LogoMark";
 import { NAV_ITEMS, getBreadcrumb } from "@/lib/navigation";
 
@@ -211,6 +212,22 @@ export default function MobileNavbar() {
 
   return (
     <>
+      {/* Accessible fallback navigation for keyboard/AT users (the radial menu below is gesture-only) */}
+      <nav aria-label="Mobile navigation" className="md:hidden">
+        <ul className="fixed top-0 left-0 z-[200] flex flex-col">
+          {NAV_ITEMS.map((item) => (
+            <li key={item.path}>
+              <Link
+                href={item.path}
+                className="sr-only focus:not-sr-only focus:block focus:relative focus:bg-background focus:text-foreground focus:border focus:border-primary/25 focus:px-5 focus:py-3 focus:font-mono focus:text-xs focus:tracking-[0.2em] focus:uppercase"
+              >
+                {item.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
       {/* Floating Status Notch / Trigger Button */}
       <div className="fixed bottom-10 left-6 right-6 z-50 md:hidden pointer-events-none">
         <div className="w-full bg-surface/50 backdrop-blur-xl border border-primary/10 px-5 py-4 flex items-center justify-between pointer-events-auto">
@@ -223,6 +240,8 @@ export default function MobileNavbar() {
 
           <button
             ref={triggerRef}
+            aria-label="Hold and drag to open navigation menu"
+            aria-expanded={isOpen}
             onTouchStart={(e) => {
               e.preventDefault();
               if (e.touches.length > 0) {
@@ -233,7 +252,7 @@ export default function MobileNavbar() {
               e.preventDefault();
               handleStart(e.clientX, e.clientY);
             }}
-            className={`font-mono text-[10px] tracking-[0.3em] uppercase border border-primary/25 py-3.5 bg-surface/20 active:bg-primary active:text-background transition-all duration-300 focus:outline-none min-h-[44px] select-none cursor-pointer ${
+            className={`font-mono text-[10px] tracking-[0.3em] uppercase border border-primary/25 py-3.5 bg-surface/20 active:bg-primary active:text-background transition-all duration-300 min-h-[44px] select-none cursor-pointer ${
               hasInteracted ? "min-w-[44px] px-3" : "min-w-[100px] px-5"
             }`}
           >

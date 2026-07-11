@@ -55,7 +55,7 @@ export default function FreebiesPage() {
               opacity: selectedItem ? 0.3 : 1,
               scale: selectedItem ? 0.98 : 1,
             }}
-            transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+            transition={{ duration: 0.6, ease: fx.easeSharp }}
             className={layout.gridMd}
           >
             {freebies.map((item, idx) => {
@@ -77,6 +77,15 @@ export default function FreebiesPage() {
                     layoutId={`container-${item.id}`}
                     className="group cursor-pointer"
                     onClick={() => setSelectedItem(item)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Open ${item.title}`}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedItem(item);
+                      }
+                    }}
                   >
                     <motion.div
                       layoutId={`thumb-${item.id}`}
@@ -127,7 +136,7 @@ export default function FreebiesPage() {
                 <motion.div
                   layoutId={`thumb-${selectedItem.id}`}
                   className="relative w-[45vw] max-w-[55vh] h-[65vh] overflow-hidden bg-foreground/5 border border-primary/10"
-                  transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
+                  transition={{ duration: 0.8, ease: fx.easeSharp }}
                 >
                   <Image
                     src={selectedItem.image}
@@ -147,7 +156,7 @@ export default function FreebiesPage() {
                 initial={{ clipPath: "inset(0 0 0 100%)" }}
                 animate={{ clipPath: `inset(0 0 0 calc(100% - ${panelWidth}px))` }}
                 exit={{ clipPath: "inset(0 0 0 100%)" }}
-                transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+                transition={{ duration: 0.6, ease: fx.easeSharp }}
                 className="fixed inset-0 z-[110] pointer-events-none hidden md:block"
               >
                 <LogoMark
@@ -163,7 +172,7 @@ export default function FreebiesPage() {
                 initial={{ x: "100%" }}
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
-                transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+                transition={{ duration: 0.6, ease: fx.easeSharp }}
                 className="fixed top-0 right-0 bottom-0 bg-background/85 backdrop-blur-2xl border-l border-primary/10 z-[101] flex flex-col pointer-events-auto"
                 style={{ width: screenSize === "mobile" ? "100%" : `${panelWidth}px` }}
               >
@@ -178,6 +187,7 @@ export default function FreebiesPage() {
                   <HUDLabel text={selectedItem.category} className="!opacity-60" />
                   <button
                     onClick={() => setSelectedItem(null)}
+                    aria-label="Close"
                     className="p-2 hover:opacity-40 transition-opacity z-[111] cursor-pointer"
                   >
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -242,9 +252,10 @@ export default function FreebiesPage() {
                 <div className="p-8 md:p-12 pt-4 3xl:p-16 3xl:pt-6 4xl:p-20 4xl:pb-8 border-t border-primary/5">
                   <TechButton
                     href={selectedItem.downloadUrl}
+                    disabled={selectedItem.downloadUrl === "#"}
                     className="w-full !py-6 3xl:!py-8 4xl:!py-10 3xl:text-lg 4xl:text-xl"
                   >
-                    Download // Free
+                    {selectedItem.downloadUrl === "#" ? "Download // Unavailable" : "Download // Free"}
                   </TechButton>
                 </div>
               </motion.div>

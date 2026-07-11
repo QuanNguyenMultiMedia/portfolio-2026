@@ -63,7 +63,8 @@ export default function StarField({
       ctx.scale(dpr, dpr);
 
       // Pre-fill background immediately after resize to prevent flashing
-      ctx.fillStyle = isDark ? "#0a0a0a" : "#f5f5f5";
+      // Reads the actual --background token so it never drifts from globals.css
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--background").trim() || (isDark ? "#0a0a0a" : "#f5f5f5");
       ctx.fillRect(0, 0, width, height);
     };
 
