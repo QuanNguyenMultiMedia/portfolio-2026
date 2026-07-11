@@ -5,8 +5,14 @@
   --foreground: #111111;
   --primary: #000000;
   --tech-blue: #0029ff;
+  --tech-blue-light: #3b82f6;
+  --tech-blue-dark: #1d4ed8;
   --border-neutral: rgba(0, 0, 0, 0.08);
   --surface: #ffffff;
+
+  /* Editorial motion curves — mirror fx.ease / fx.easeSharp in designSystem.ts */
+  --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-editorial-sharp: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .dark {
@@ -64,6 +70,23 @@
   h5,
   h6 {
     @apply font-display tracking-tight;
+  }
+
+  /* Visible keyboard focus everywhere, even where outline-none is used for mouse users */
+  :focus-visible {
+    outline: 2px solid var(--tech-blue);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 

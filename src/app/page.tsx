@@ -11,24 +11,28 @@ import {
   useScroll,
   useTime,
   animate,
+  useReducedMotion,
+  MotionValue,
 } from "framer-motion";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 
-import BalancedText from "@/components/BalancedText";
 import PageWrapper from "@/components/PageWrapper";
 import { GradientText } from "@/components/ui/gradient-text";
 import { VerticalCutReveal } from "@/components/VerticalCutReveal";
 import { useScreenSize } from "@/hooks/useScreenSize";
 import { t, motion as motionTokens, fx } from "@/lib/designSystem";
 import StarField from "@/components/StarField";
-import MobileTestimonials from "@/components/MobileTestimonials";
 
 const MuxPlayer = dynamic(() => import("@/components/MuxPlayerWrapper"), {
   ssr: false,
 });
 
 const Globe = dynamic(() => import("@/components/Globe"), {
+  ssr: false,
+});
+
+const MobileTestimonials = dynamic(() => import("@/components/MobileTestimonials"), {
   ssr: false,
 });
 
@@ -81,18 +85,41 @@ function TestimonialCard({
   orbitAngle,
   depths,
   screenSize,
-  opacity,
-  visibility,
+  zWorld,
+  isMobile,
 }: {
   test: typeof TESTIMONIALS[0];
   idx: number;
   orbitAngle: any;
   depths: number[];
   screenSize: string;
-  opacity: any;
-  visibility: any;
+  zWorld: MotionValue<number>;
+  isMobile: boolean;
 }) {
   const [isHovered, setIsHovered] = useState(false);
+
+  const opacity = useTransform(zWorld, (zVal) => {
+    const s = depths[2] ?? 3500; // showreel
+    const t = depths[3] ?? 5000; // testimonials
+    const st = depths[4] ?? 6200; // stats
+
+    if (isMobile) {
+      const cardTargetZ = t + idx * 250;
+      const fadeInStart = cardTargetZ - 300;
+      const fadeInEnd = cardTargetZ - 50;
+      const fadeOutStart = cardTargetZ + 50;
+      const fadeOutEnd = cardTargetZ + 300;
+      return interpolateDepth(zVal as number, [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd], [0, 1, 1, 0]);
+    } else {
+      const fadeInStart = s + (t - s) * 0.4;
+      const fadeInEnd = s + (t - s) * 0.8;
+      const fadeOutStart = t + (st - t) * 0.15;
+      const fadeOutEnd = t + (st - t) * 0.45;
+      return interpolateDepth(zVal as number, [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd], [0, 1, 1, 0]);
+    }
+  });
+
+  const visibility = useTransform(opacity, (op) => (op as number) > 0.01 ? "visible" : "hidden");
 
   const radius =
     screenSize === "mobile"
@@ -253,9 +280,7 @@ export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
   const screenSize = useScreenSize();
   const [isMuted, setIsMuted] = useState(true);
-  const [viewportWidth, setViewportWidth] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isQuanHovered, setIsQuanHovered] = useState(false);
 
   // 1. Framer Motion Scroll Progress Refactor
   const { scrollYProgress } = useScroll({
@@ -292,7 +317,6 @@ export default function Home() {
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
-      setViewportWidth(window.innerWidth);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -425,36 +449,6 @@ export default function Home() {
   });
   const visibilityShowreel = useTransform(opacityShowreel, (op) => (op as number) > 0.01 ? "visible" : "hidden");
 
-  // Staggered testimonials opacity & visibility curves
-  const testimonialOpacityCurves = TESTIMONIALS.map((_, idx) => {
-    return useTransform(zWorld, (zVal) => {
-      const depths = getDepths();
-      const s = depths[2] ?? 3500; // showreel
-      const t = depths[3] ?? 5000; // testimonials
-      const st = depths[4] ?? 6200; // stats
-
-      if (isMobile) {
-        // Sequentially space out cards on mobile
-        const cardTargetZ = t + idx * 250;
-        const fadeInStart = cardTargetZ - 300;
-        const fadeInEnd = cardTargetZ - 50;
-        const fadeOutStart = cardTargetZ + 50;
-        const fadeOutEnd = cardTargetZ + 300;
-        return interpolateDepth(zVal as number, [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd], [0, 1, 1, 0]);
-      } else {
-        const fadeInStart = s + (t - s) * 0.4;
-        const fadeInEnd = s + (t - s) * 0.8;
-        const fadeOutStart = t + (st - t) * 0.15;
-        const fadeOutEnd = t + (st - t) * 0.45;
-        return interpolateDepth(zVal as number, [fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd], [0, 1, 1, 0]);
-      }
-    });
-  });
-
-  const testimonialVisibilityCurves = testimonialOpacityCurves.map((opCurve) => {
-    return useTransform(opCurve, (op) => (op as number) > 0.01 ? "visible" : "hidden");
-  });
-
   const opacityStats = useTransform(zWorld, (zVal) => {
     const depths = getDepths();
     const t = depths[3] ?? 5000;
@@ -478,8 +472,9 @@ export default function Home() {
   });
   const globeVisibility = useTransform(globeOpacity, (op) => (op as number) > 0.01 ? "visible" : "hidden");
 
+  const reduceMotion = useReducedMotion();
   const time = useTime();
-  const orbitAngle = useTransform(time, (tVal) => (tVal / 25000) * Math.PI * 2);
+  const orbitAngle = useTransform(time, (tVal) => reduceMotion ? 0 : (tVal / 25000) * Math.PI * 2);
 
   const perspectiveVal = useTransform(scrollYProgress, (progress) => {
     let start = 1400;
@@ -538,6 +533,7 @@ export default function Home() {
       // 3. Update Play/Pause Button Icon
       if (playButtonRef.current) {
         playButtonRef.current.textContent = video.paused ? "▶" : "‖";
+        playButtonRef.current.setAttribute("aria-label", video.paused ? "Play video" : "Pause video");
       }
 
       // Continue loop only if video is actively playing
@@ -712,6 +708,7 @@ export default function Home() {
                       alt="Minh Quan - Standing Portrait"
                       fill
                       priority
+                      sizes="(max-width: 768px) 130px, (max-width: 1920px) 280px, 400px"
                       className="object-cover opacity-90 grayscale transition-all duration-[2000ms] group-hover:grayscale-0"
                     />
                   </div>
@@ -775,21 +772,18 @@ export default function Home() {
 
                       {/* Sliding image container - Always On (Reveals on slide activation) */}
                       <motion.div
-                        initial={{ width: 0, opacity: 0 }}
-                        animate={activeFrame === 1 ? {
-                          width: "100%",
-                          opacity: 1
-                        } : {
-                          width: 0,
-                          opacity: 0
-                        }}
+                        layout
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: activeFrame === 1 ? 1 : 0 }}
                         transition={{ type: "spring", stiffness: 80, damping: 18, delay: 0.2 }}
+                        style={{ width: activeFrame === 1 ? "100%" : 0 }}
                         className="relative overflow-hidden bg-surface/5 flex-1 self-stretch border-y border-tech-blue/20"
                       >
                         <Image
                           src="/assets/portrait_standing.jpg"
                           alt="Quan's Eyes Zoom"
                           fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
                           className="object-cover object-[60%_21%] scale-[2.7] origin-[60%_21%] grayscale"
                         />
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-tech-blue/10 to-transparent pointer-events-none" />
@@ -939,6 +933,7 @@ export default function Home() {
                             }
                           }
                         }}
+                        aria-label="Play video"
                         className="w-8 h-8 3xl:w-11 3xl:h-11 4xl:w-14 4xl:h-14 flex items-center justify-center font-mono text-xs 3xl:text-sm 4xl:text-base border border-white/20 bg-black/60 text-white hover:bg-white hover:text-black transition-colors duration-300 pointer-events-auto cursor-pointer"
                       >
                         ▶
@@ -963,6 +958,7 @@ export default function Home() {
                         onClick={toggleFullscreen}
                         className="w-8 h-8 3xl:w-11 3xl:h-11 4xl:w-14 4xl:h-14 flex items-center justify-center font-mono text-[10px] border border-white/20 bg-black/60 text-white hover:bg-white hover:text-black transition-colors duration-300 pointer-events-auto cursor-pointer"
                         title="Toggle Fullscreen"
+                        aria-label="Toggle fullscreen"
                       >
                         ⛶
                       </button>
@@ -1011,8 +1007,8 @@ export default function Home() {
                       orbitAngle={orbitAngle}
                       depths={getDepths()}
                       screenSize={screenSize}
-                      opacity={testimonialOpacityCurves[idx]}
-                      visibility={testimonialVisibilityCurves[idx]}
+                      zWorld={zWorld}
+                      isMobile={isMobile}
                     />
                   ))}
                 </>

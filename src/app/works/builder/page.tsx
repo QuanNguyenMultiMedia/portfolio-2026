@@ -105,6 +105,8 @@ export default function WorksBuilderPage() {
   };
 
   const removeSection = (secId: string) => {
+    const sec = sections.find(s => s.id === secId);
+    sec?.assets.forEach(a => a.previewUrl && URL.revokeObjectURL(a.previewUrl));
     setSections(sections.filter(s => s.id !== secId));
   };
 
@@ -148,6 +150,8 @@ export default function WorksBuilderPage() {
   const removeAsset = (secId: string, assetId: string) => {
     setSections(sections.map(s => {
       if (s.id === secId) {
+        const asset = s.assets.find(a => a.id === assetId);
+        if (asset?.previewUrl) URL.revokeObjectURL(asset.previewUrl);
         return {
           ...s,
           assets: s.assets.filter(a => a.id !== assetId)

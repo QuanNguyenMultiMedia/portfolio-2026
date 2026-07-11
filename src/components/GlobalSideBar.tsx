@@ -5,8 +5,14 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import WaveGradientBar from "./WaveGradientBar";
+import dynamic from "next/dynamic";
 import { getPathColors } from "@/lib/navigation";
+import { fx } from "@/lib/designSystem";
+
+const WaveGradientBar = dynamic(() => import("./WaveGradientBar"), {
+  ssr: false,
+  loading: () => <div className="absolute inset-0 w-full h-full" />,
+});
 
 export default function GlobalSideBar() {
   const pathname = usePathname();
@@ -48,7 +54,7 @@ export default function GlobalSideBar() {
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 48, opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+                transition={{ duration: 0.5, ease: fx.easeSharp }}
                 className="relative w-full flex-shrink-0 pointer-events-auto overflow-hidden border-b border-foreground/5 flex items-center justify-center"
               >
                 <Link
@@ -68,21 +74,26 @@ export default function GlobalSideBar() {
           <div className="relative h-12 w-full flex-shrink-0 pointer-events-auto">
             <motion.button
               onClick={toggleTheme}
-              initial={false}
-              animate={{
+              layout
+              transition={{
+                duration: 0.6,
+                ease: fx.easeSharp,
+              }}
+              style={{
                 width: isHome ? "auto" : "100%",
                 paddingLeft: isHome ? "3rem" : "0",
                 paddingRight: isHome ? "1.5rem" : "0",
               }}
-              transition={{
-                duration: 0.6,
-                ease: [0.23, 1, 0.32, 1],
-              }}
-              className="h-full flex items-center group focus:outline-none whitespace-nowrap overflow-visible"
+              className="h-full flex items-center group whitespace-nowrap overflow-visible"
               aria-label="Toggle Theme"
             >
               <motion.div
-                animate={{
+                layout
+                transition={{
+                  duration: 0.6,
+                  ease: fx.easeSharp,
+                }}
+                style={{
                   width: isHome
                     ? 40
                     : typeof window !== "undefined" && window.innerWidth < 768
@@ -94,7 +105,7 @@ export default function GlobalSideBar() {
               >
                 <motion.div
                   animate={{ rotate: isDark ? 360 : 0 }}
-                  transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+                  transition={{ duration: 0.7, ease: fx.easeSharp }}
                   className={`w-3.5 h-3.5 md:w-4 md:h-4 transition-colors ${isHome ? "text-primary" : "text-foreground/40 group-hover:text-foreground"}`}
                 >
                   {isDark ? (
@@ -138,7 +149,7 @@ export default function GlobalSideBar() {
                     <span className="text-[7px] font-mono tracking-[0.4em] uppercase opacity-40 group-hover:opacity-100 transition-opacity">
                       THEME // {isDark ? "DARK" : "LIGHT"}
                     </span>
-                    <div className="h-[0.5px] w-0 group-hover:w-full bg-tech-blue transition-all duration-500" />
+                    <div className="h-[0.5px] w-full bg-tech-blue scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500" />
                   </motion.div>
                 )}
               </AnimatePresence>

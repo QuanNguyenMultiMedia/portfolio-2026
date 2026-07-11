@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
+import { fx } from "@/lib/designSystem";
 
 export interface PageWrapperProps {
   children: ReactNode;
@@ -49,7 +50,7 @@ export default function PageWrapper({
     <motion.main
       initial={initialProps}
       animate={animateProps}
-      transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.85, ease: fx.ease }}
       style={styleProps}
       className={`${baseStyles} ${className}`}
     >

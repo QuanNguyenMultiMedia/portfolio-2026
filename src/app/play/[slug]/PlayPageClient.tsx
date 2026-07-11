@@ -1,11 +1,12 @@
 "use client";
 
-import { use, useState, useRef, useEffect } from "react";
+import { use, useState, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { playItems } from "@/data/play";
 import { notFound } from "next/navigation";
 import { useScreenSize } from "@/hooks/useScreenSize";
+import { fx } from "@/lib/designSystem";
 
 export default function PlayPageClient({
   params,
@@ -64,14 +65,13 @@ export default function PlayPageClient({
 
       {/* Main Screen Area - Viewfinder Frame */}
       <motion.div
-        initial={false}
-        animate={{
+        layout
+        transition={{ duration: 0.7, ease: fx.easeSharp }}
+        style={{
           width: frameWidth,
           height: frameHeight,
           marginTop: isFullscreen ? 0 : "1.5rem",
         }}
-        transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
-
         className={`relative flex flex-col z-10 border border-foreground/10 group bg-background ${
           isFullscreen ? "w-screen h-screen p-8 md:p-16 bg-background z-50 fixed inset-0" : ""
         }`}

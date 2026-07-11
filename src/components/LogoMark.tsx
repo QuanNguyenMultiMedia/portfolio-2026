@@ -54,7 +54,7 @@ export default function LogoMark({
   );
 
   const containerClasses = fixed
-    ? `fixed top-16 right-16 md:top-24 md:right-24 z-[60] hidden md:block ${className}`
+    ? `fixed top-16 right-16 md:top-24 md:right-24 z-[60] hidden md:block w-24 h-10 ${className}`
     : className;
 
   if (!animate) {

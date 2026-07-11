@@ -172,9 +172,9 @@ function DeliverableCarousel({
             {/* Visual Progress Line */}
             <div className="w-24 md:w-36 h-px bg-primary/10 relative overflow-hidden">
               <motion.div
-                className="absolute left-0 top-0 bottom-0 bg-primary/60"
+                className="absolute left-0 top-0 bottom-0 w-full bg-primary/60 origin-left"
                 animate={{
-                  width: `${((currentSlide + 1) / images.length) * 100}%`,
+                  scaleX: (currentSlide + 1) / images.length,
                 }}
                 transition={{ type: "spring", stiffness: 100, damping: 15 }}
               />
@@ -295,13 +295,17 @@ function SplitGallery({
 function BentoMoodboard({
   screen,
   isMobile,
+  colors,
 }: {
   screen: any;
   isMobile: boolean;
+  colors: string[];
 }) {
   const [copiedHex, setCopiedHex] = useState<string | null>(null);
 
-  const colorsList = ["#0029FF", "#0A0A0A", "#F5F5F5", "#FF4D00"];
+  const colorsList = colors;
+  const swatchGridCols: Record<number, string> = { 1: "grid-cols-1", 2: "grid-cols-2", 3: "grid-cols-3", 4: "grid-cols-4" };
+  const swatchGridColsClass = swatchGridCols[colorsList.length] || "grid-cols-4";
 
   const handleCopy = (hex: string) => {
     if (typeof navigator !== "undefined" && navigator.clipboard) {
@@ -319,7 +323,7 @@ function BentoMoodboard({
         <div className="relative aspect-[16/10] w-full border border-primary/10 p-3 bg-surface/5">
           <Image src={screen.images?.[0] || ""} fill alt="" className="object-cover" />
         </div>
-        <div className="grid grid-cols-4 gap-2">
+        <div className={`grid gap-2 ${swatchGridColsClass}`}>
           {colorsList.map((hex) => (
             <div key={hex} className="flex flex-col gap-1 border border-primary/10 p-2">
               <div className="w-full h-8" style={{ backgroundColor: hex }} />
@@ -379,7 +383,7 @@ function BentoMoodboard({
         {/* Row 3: Colors */}
         <div className="border border-primary/10 p-6 bg-surface/5 flex flex-col justify-between">
           <span className={`${t.monoEyebrow} block opacity-40`}>CHROMATIC_SYSTEM // CLICK_TO_COPY</span>
-          <div className="grid grid-cols-4 gap-4 mt-2">
+          <div className={`grid gap-4 mt-2 ${swatchGridColsClass}`}>
             {colorsList.map((hex) => (
               <button
                 key={hex}
@@ -970,7 +974,7 @@ export default function ProjectPageClient({
 
             {/* Bento Moodboard Component */}
             {screen.type === "bento-moodboard" && (
-              <BentoMoodboard screen={screen} isMobile={isMobile} />
+              <BentoMoodboard screen={screen} isMobile={isMobile} colors={project.colors} />
             )}
 
             {/* Interactive Preview Component */}
@@ -998,7 +1002,7 @@ export default function ProjectPageClient({
                   initial={{ opacity: 0, scale: 1.1 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }}
+                  transition={{ duration: 1.2, ease: fx.easeSharp }}
                   className={
                     isMobile
                       ? "w-full aspect-[16/10] relative overflow-hidden group border border-primary/10"
@@ -1077,7 +1081,7 @@ export default function ProjectPageClient({
                   initial={{ opacity: 0, scale: 0.98 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 1.5, ease: [0.23, 1, 0.32, 1] }}
+                  transition={{ duration: 1.5, ease: fx.easeSharp }}
                   className="w-full h-full relative overflow-hidden group border border-primary/10"
                 >
                   <Image

@@ -8,6 +8,7 @@ interface TechButtonProps {
   href?: string;
   className?: string;
   variant?: "primary" | "secondary" | "ghost";
+  disabled?: boolean;
 }
 
 export default function TechButton({
@@ -16,6 +17,7 @@ export default function TechButton({
   href,
   className = "",
   variant = "primary",
+  disabled = false,
 }: TechButtonProps) {
   const baseStyles =
     "relative flex items-center justify-center py-6 px-12 border overflow-hidden transition-all duration-500 font-mono text-[10px] tracking-[0.4em] uppercase font-bold group rounded-none";
@@ -35,6 +37,19 @@ export default function TechButton({
       <span className="relative z-10">{children}</span>
     </>
   );
+
+  if (disabled) {
+    return (
+      <button
+        type="button"
+        disabled
+        aria-disabled="true"
+        className={`${baseStyles} ${variants[variant]} ${className} opacity-30 cursor-not-allowed pointer-events-none`}
+      >
+        {content}
+      </button>
+    );
+  }
 
   if (href) {
     return (

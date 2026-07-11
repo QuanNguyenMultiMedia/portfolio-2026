@@ -42,6 +42,12 @@ export default function WorksPage() {
   const rotationRef = useRef<number>(0);
   const activeIndexRef = useRef<number>(0);
 
+  useEffect(() => {
+    return () => {
+      gsap.killTweensOf(rotationRef);
+    };
+  }, []);
+
   const lastDragAngleRef = useRef<number | null>(null);
   const accumulatedRotationRef = useRef<number>(0);
   const lastTickTimeRef = useRef<number>(0);
@@ -66,7 +72,7 @@ export default function WorksPage() {
     category: "",
     id: "",
     description: "",
-    colors: ["#000000", "#000000"],
+    colors: ["var(--primary)", "var(--primary)"],
     screens: []
   };
 
@@ -518,6 +524,8 @@ export default function WorksPage() {
           </AnimatePresence>
         </div>
 
+        <h1 className="sr-only">Selected Works</h1>
+
         {/* Minimal SubHeader */}
         <motion.div
           {...fx.headerSlideIn}
@@ -541,7 +549,7 @@ export default function WorksPage() {
               <div
                 className="absolute inset-0 opacity-10 blur-xl group-hover:opacity-20 transition-opacity duration-700 pointer-events-none"
                 style={{
-                  backgroundColor: activeProject.colors?.[0] || "#ffffff",
+                  backgroundColor: activeProject.colors?.[0] || "var(--primary)",
                 }}
               />
 
@@ -656,6 +664,19 @@ export default function WorksPage() {
                               handleItemClick(i);
                             }
                           }}
+                          role="button"
+                          tabIndex={0}
+                          aria-label={isActive ? `Open ${project.title}` : `Select ${project.title}`}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              if (isActive) {
+                                router.push(`/works/${project.slug}`);
+                              } else {
+                                handleItemClick(i);
+                              }
+                            }
+                          }}
                           className="absolute left-0 w-full pl-8 pr-6 h-[60px] md:h-[80px] 3xl:h-[110px] 4xl:h-[140px] flex items-center cursor-pointer select-none group/wheel-item"
                           style={{
                             transformOrigin: "left center",
@@ -701,6 +722,25 @@ export default function WorksPage() {
               >
                 <div
                   ref={dialRef}
+                  role="slider"
+                  aria-label="Select project"
+                  aria-valuenow={activeIndex}
+                  aria-valuemin={0}
+                  aria-valuemax={projects.length - 1}
+                  aria-valuetext={projects[activeIndex]?.title}
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+                      e.preventDefault();
+                      handleItemClick((activeIndex + 1) % projects.length);
+                    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+                      e.preventDefault();
+                      handleItemClick((activeIndex - 1 + projects.length) % projects.length);
+                    } else if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      router.push(`/works/${projects[activeIndex].slug}`);
+                    }
+                  }}
                   className="relative w-[120px] h-[120px] md:w-[160px] md:h-[160px] 3xl:w-[240px] 3xl:h-[240px] 4xl:w-[320px] 4xl:h-[320px] rounded-full border border-primary/10 bg-transparent flex items-center justify-center select-none cursor-pointer touch-none"
                   onMouseDown={(e) => {
                     e.preventDefault();
