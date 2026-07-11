@@ -891,16 +891,22 @@ export default function Home() {
                     className={`relative w-full overflow-hidden bg-black cursor-pointer group ${isFullscreen ? 'h-full' : 'aspect-video'
                       }`}
                   >
-                    <MuxPlayer
-                      playbackId="1I97bdzUXIfRlG02kV6njlPyveonBWYj8Q3Htil1vJDs"
+                    <video
+                      src="https://stream.mux.com/1I97bdzUXIfRlG02kV6njlPyveonBWYj8Q3Htil1vJDs/high.mp4"
                       className="w-full h-full object-cover"
-                      onVideoReady={(el) => {
-                        videoRef.current = el as any;
+                      loop
+                      muted
+                      playsInline
+                      preload="auto"
+                      ref={(el) => {
+                        videoRef.current = el;
                         // Play if slide is already active when loaded
-                        if (activeFrame === 2) {
-                          (el as HTMLVideoElement).play().catch(() => { });
-                        } else {
-                          (el as HTMLVideoElement).pause();
+                        if (el) {
+                          if (activeFrame === 2) {
+                            el.play().catch(() => { });
+                          } else {
+                            el.pause();
+                          }
                         }
                       }}
                     />
