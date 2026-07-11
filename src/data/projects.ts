@@ -92,20 +92,20 @@ export const projects: Project[] = [
   {
     title: "Herond Browser",
     slug: "herond-browser",
-    year: "2025",
+    year: "2024–present",
     category: "UI Motion & Brand Design",
     id: "PRJ_002",
     client: "Herond Labs",
-    role: "Junior Motion Designer & Generalist",
+    role: "Multimedia Marketing & Motion Designer",
     services: [
-      "Gesture-Mapping Specs",
-      "Web3 User Onboarding",
-      "Asset Motion Kits",
-      "Explainer Videos",
+      "Motion Design",
+      "3D Modeling",
+      "Front-End Concepts",
+      "ASO & Campaign Creative",
     ],
     colors: ["#0a0a0a", "#333333", "#666666"],
     description:
-      "My full-time work as a junior design generalist at Herond Labs, a Web3 tech lab building the on-ramp between Web2 power browsers to Web3 discovery.",
+      "Rebranding, motion assets, 3D systems, interactive front-end concepts, and day-to-day creative during Herond's transition to an agentic rewards-focused browser model.",
     coverImage: IMAGES.GIRL_WITH_PEARL_EARRING,
     screens: [
       {
@@ -114,30 +114,48 @@ export const projects: Project[] = [
       {
         type: "editorial-text",
         content:
-          "Working in-house at Herond Labs allowed me to explore the intersection of Web3 capability and Web2 design systems. My focus was designing the motion patterns for Herond Browser, an all-in-one privacy browser with integrated crypto wallets.\n\nThe objective was to make advanced privacy mechanics feel approachable, fluid, and premium. Design coordinates were conformed to high aesthetic standards to respect the users' workflow and cognitive load.",
+          "Herond was rebranding when I joined — new visual direction, tight timelines, a lot of ground to cover. I sat across motion, 3D, front-end, and day-to-day marketing creative. Not because the role was defined that way, but because that's what was needed.",
+      },
+      {
+        type: "video",
+        src: "QsmDlpOu6qngxWa01dJlOHgkMb01YoYcxra5G1V3Xsq300",
+        title: "UI Film",
+        description:
+          "Hero animation showcase for the landing page. Built to work as both a cinematic product showcase and a functional UI explainer, taking the project from storyboard to final render.",
+      },
+      {
+        type: "deliverable-breakdown",
+        number: "01",
+        title: "Onboarding Renders",
+        description:
+          "High-fidelity static renders created for the app's onboarding flow, maintaining visual styling under a unified direction.",
+        images: [IMAGES.NIGHT_WATCH, IMAGES.WANDERER, IMAGES.THE_KISS],
+      },
+      {
+        type: "split-gallery",
+        title: "Herond Point Orb",
+        description:
+          "The Orb sits at the centre of Herond's rewards system. I took it from ideation to final look solo, ensuring it felt rewarding while remaining coherent with a brand that was still being defined. Hover over the frames on the right to see the design progression from rough sketch to final 3D look.",
+        images: [IMAGES.STARRY_NIGHT, IMAGES.GREAT_WAVE, IMAGES.COMPOSITION_8],
       },
       {
         type: "interactive-preview",
-        title: "Gesture-Mapping & Tab Transitions",
+        title: "AI Agent Interface",
         description:
-          "Designed the fluid tab-switching dynamics, workspace transition animations, and wallet verification gesture states.\n\nEvery interface transition is mathematically calculated using custom spring physics, reducing user perceived latencies and layout shifts.",
-        src: IMAGES.THE_KISS,
+          "When Herond moved toward an agentic model, I built out an interface concept: an R3F orb with a full state machine, optimised for web performance, using AI tools throughout the workflow.",
+        src: IMAGES.THE_SCREAM,
       },
       {
-        type: "deliverable-breakdown",
-        number: "02",
-        title: "Web3 Discovery Onboarding",
+        type: "timeline-sequence",
+        title: "Day-to-day & Other Contributions",
         description:
-          "Built a gamified onboarding experience to guide Web2 users into the Web3 space.\n\nFeatures micro-animations for private key generation, network selection cards, and interactive wallet creation states.",
-        images: [IMAGES.LIBERTY_LEADING, IMAGES.THE_SCREAM, IMAGES.TOWER_OF_BABEL],
-      },
-      {
-        type: "deliverable-breakdown",
-        number: "03",
-        title: "Marketing Motion Templates",
-        description:
-          "Created a modular motion asset kit and video templates for social channels, allowing our communications team to output cohesive visual materials rapidly while preserving core branding characteristics.\n\nAll variables were documented in detailed system specs.",
-        images: [IMAGES.COMPOSITION_8, IMAGES.GREAT_WAVE, IMAGES.STARRY_NIGHT],
+          "Social motion for Growth and photography for Internal Comms under high-volume, fast-turnaround conditions. Also contributed reusable motion assets during the rebrand, an Adobe CC → Figma workflow for UI animations, a Blender rendering/WebM export script, and Rive/Lottie in-app animations built alongside the UI/UX team.",
+        images: [
+          IMAGES.LIBERTY_LEADING,
+          IMAGES.THE_SCREAM,
+          IMAGES.TOWER_OF_BABEL,
+          IMAGES.NIGHT_WATCH,
+        ],
       },
       {
         type: "zine-outro",
@@ -147,20 +165,20 @@ export const projects: Project[] = [
   {
     title: "Defrasoft",
     slug: "defrasoft",
-    year: "2025",
-    category: "SaaS Brand & Motion System",
+    year: "2024–present",
+    category: "Performance Creative",
     id: "PRJ_003",
-    client: "Defrasoft Corp",
-    role: "Lead Brand & Motion System Designer",
+    client: "Herond Labs Venture",
+    role: "Performance Creative",
     services: [
-      "SaaS Design Systems",
-      "Interactive Analytics",
-      "Dark Mode Branding",
-      "Motion Standards",
+      "ASO Design",
+      "Performance Ads",
+      "AI UGC Direction",
+      "Rive/Lottie Animation",
     ],
     colors: ["#065f46", "#059669", "#34d399"],
     description:
-      "Complete visual identity and motion system for Defrasoft — a B2B SaaS analytics platform. From logo construction to product UI animation across the entire ecosystem.",
+      "ASO design, paid channel performance ads, AI UGC content generation, and lightweight in-app motion across five mobile applications.",
     coverImage: IMAGES.SUNDAY_ON_LA_GRANDE_JATTE,
     screens: [
       {
@@ -169,33 +187,37 @@ export const projects: Project[] = [
       {
         type: "editorial-text",
         content:
-          "Defrasoft required a cohesive identity and interface motion system to launch their B2B SaaS analytics platform.\n\nWe designed a motion guidelines booklet and implemented real-time dashboard visualization dynamics, helping corporate clients interact with complex data streams without friction. Standard margins and responsive behaviors were built directly into the foundations.",
+          "Defrasoft published and monetised mobile apps. I was the only designer across five products, handling ASO design, performance ads, AI UGC, and Rive/Lottie in-app animations.\n\nThe work here was less about craft per piece and more about judgment at volume — knowing when something was good enough to ship and when it needed another pass.",
       },
       {
-        type: "split-gallery",
-        title: "Grid-Aligned Component Motion",
+        type: "video",
+        src: "QsmDlpOu6qngxWa01dJlOHgkMb01YoYcxra5G1V3Xsq300",
+        title: "Performance Ad Campaign Film",
         description:
-          "Established a strict component layout and transition hierarchy.\n\nEvery tooltip fade, side panel slide, and table row insertion follows the same spatial geometry and duration curves, establishing a coherent UX signature.",
-        images: [
-          IMAGES.SUNDAY_ON_LA_GRANDE_JATTE,
-          IMAGES.WATER_LILIES,
-          IMAGES.BIRTH_OF_VENUS,
-        ],
+          "High-energy performance ad built for paid acquisition channels, designed to hook attention immediately and drive downloads.",
       },
       {
         type: "deliverable-breakdown",
-        number: "02",
-        title: "Dynamic Data Visualizations",
+        number: "01",
+        title: "Rive & Lottie Animations",
         description:
-          "Interactive animated states for analytics graphs, line charts, and live system monitoring dials.\n\nThe graphs animate dynamically based on incoming node inputs, showing state transformations in real-time.",
-        images: [IMAGES.SCHOOL_OF_ATHENS, IMAGES.CREATION_OF_ADAM, IMAGES.MONA_LISA],
+          "Built for light file sizes and clean developer handoff. State logic was part of the design, not an afterthought. Animations are optimized for mobile performance and responsive rendering.",
+        images: [
+          IMAGES.WATER_LILIES,
+          IMAGES.BIRTH_OF_VENUS,
+          IMAGES.SUNDAY_ON_LA_GRANDE_JATTE,
+        ],
       },
       {
         type: "bento-moodboard",
-        title: "Edge-Lit Dark Mode Thematics",
+        title: "AI UGC & App Store Creatives",
         description:
-          "Designed the dark-mode layout parameters.\n\nInjected high-blur glassmorphic panels and razor-thin border highlights to provide high depth contrast and clear technical visual hierarchies under dim ambient lighting.",
-        images: [IMAGES.LAS_MENINAS, IMAGES.MONA_LISA, IMAGES.WATER_LILIES],
+          "High-volume creative for paid channels and app stores. Directed and generated AI-driven user-generated content alongside traditional ad formats, designed within device frames for app store optimization.",
+        images: [
+          IMAGES.LAS_MENINAS,
+          IMAGES.MONA_LISA,
+          IMAGES.WATER_LILIES,
+        ],
       },
       {
         type: "zine-outro",
@@ -203,47 +225,46 @@ export const projects: Project[] = [
     ],
   },
   {
-    title: "Z Cung Viet",
+    title: "Z Cũng Viết",
     slug: "z-cung-viet",
     year: "2023",
-    category: "Motion Identity",
+    category: "Design Lead",
     id: "PRJ_004",
-    client: "Z Cũng Viết Platform",
-    role: "Creative Director & Lead Animator",
+    client: "Graduation Capstone",
+    role: "Design Lead",
     services: [
-      "Brand Identity Films",
-      "Kinetic Typography",
-      "Storyboard Production",
-      "Social Strategy",
+      "Brand Design",
+      "Creative Direction",
+      "Media Production",
+      "Campaign Design",
     ],
     colors: ["#ae2012", "#9b2226", "#370617"],
     description:
-      "Brand film and motion identity for 'Z Cũng Viết' — a creative writing platform redefining how Vietnamese youth engage with literature and self-expression through short-form video.",
+      "End-to-end creative direction, brand identity, campaign motion design, and photography for a social communication campaign promoting writing as a tool for mental health.",
     coverImage: IMAGES.WANDERER,
     screens: [
       {
         type: "zine-cover",
       },
       {
+        type: "bento-moodboard",
+        title: "Brand Board & Identity Spread",
+        description:
+          "Full visual language designed from scratch. Incorporates logo variations, a curated tech-luxe color palette, and bespoke typography systems to elevate the campaign's visual presence, giving it ample room first.",
+        images: [IMAGES.LAS_MENINAS, IMAGES.MONA_LISA, IMAGES.WATER_LILIES],
+      },
+      {
         type: "editorial-text",
         content:
-          "'Z Cũng Viết' is a creative writing community that empowers youth self-expression.\n\nWe built a typographic-first kinetic motion identity for their launch campaign, where the unique characters and shapes of the Vietnamese language are elevated to main visual elements in a series of social brand films. This strategy allowed the brand content to pierce through fast mobile social feeds.",
+          "Z Cũng Viết was a social communication campaign making the case for writing as a tool for mental health. I led brand design, creative direction, and media production end-to-end — wrote the brief, then executed against it.\n\nIt's the project where I had the most creative ownership, and probably the one that best reflects how I think about design when no one's handed me a direction.",
       },
       {
         type: "deliverable-breakdown",
         number: "01",
-        title: "Kinetic Typography Systems",
+        title: "Motion & Media",
         description:
-          "Constructed a custom typographical animation engine for the brand films.\n\nBy treating Vietnamese accents, hooks, and letterforms as independent physical objects, we created a high-impact, rhythmic editorial animation sequence.",
+          "Campaign motion graphics and photography assets. Full-width motion design pieces combined with campaign photography optimized for storytelling and narrative engagement.",
         images: [IMAGES.WANDERER, IMAGES.STARRY_NIGHT, IMAGES.GREAT_WAVE],
-      },
-      {
-        type: "deliverable-breakdown",
-        number: "02",
-        title: "Narrative Concept Storyboards",
-        description:
-          "Developed and produced storyboards that balanced narrative pacing, prose reading speed, and high-contrast visuals.\n\nThe resulting compositions deliver high message retention across fast-scrolling mobile social feeds.",
-        images: [IMAGES.TOWER_OF_BABEL, IMAGES.COMPOSITION_8, IMAGES.NIGHT_WATCH],
       },
       {
         type: "zine-outro",

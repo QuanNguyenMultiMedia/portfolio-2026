@@ -10,6 +10,11 @@ import { notFound } from "next/navigation";
 import useLenis from "@/hooks/useLenis";
 import { useScreenSize } from "@/hooks/useScreenSize";
 import HUDLabel from "@/components/HUDLabel";
+import dynamic from "next/dynamic";
+
+const MuxPlayerWrapper = dynamic(() => import("@/components/MuxPlayerWrapper"), {
+  ssr: false,
+});
 
 const MotionImage = motion.create(Image);
 
@@ -645,6 +650,7 @@ export default function ProjectPageClient({
                 : `flex-shrink-0 h-screen flex items-center justify-center relative px-12 md:px-24 3xl:px-40 4xl:px-48 border-r border-foreground/5
                 ${screen.type === "zine-cover" ? "min-w-[85vw] md:min-w-[85vw] 3xl:min-w-[80vw]" : ""}
                 ${screen.type === "editorial-text" ? "min-w-[65vw] md:min-w-[65vw] 3xl:min-w-[60vw]" : ""}
+                ${screen.type === "video" ? "min-w-[80vw] md:min-w-[100vw] 3xl:min-w-[90vw]" : ""}
                 ${screen.type === "deliverable-breakdown" ? "min-w-[90vw] md:min-w-[90vw] 3xl:min-w-[85vw]" : ""}
                 ${screen.type === "split-gallery" ? "min-w-[95vw] md:min-w-[95vw] 3xl:min-w-[90vw]" : ""}
                 ${screen.type === "bento-moodboard" ? "min-w-[115vw] md:min-w-[115vw] 3xl:min-w-[110vw]" : ""}
@@ -932,6 +938,34 @@ export default function ProjectPageClient({
             {/* Split Gallery Component */}
             {screen.type === "split-gallery" && (
               <SplitGallery screen={screen} isMobile={isMobile} />
+            )}
+
+            {/* Video Preview Component */}
+            {screen.type === "video" && (
+              <div
+                className={
+                  isMobile
+                    ? "w-full aspect-[16/9] flex items-center justify-center bg-black"
+                    : "w-full h-[75vh] flex items-center justify-center bg-black"
+                }
+              >
+                <div className="w-full h-full relative overflow-hidden group border border-primary/10">
+                  <MuxPlayerWrapper
+                    playbackId={screen.src || ""}
+                    className="w-full h-full object-cover"
+                  />
+                  {screen.title && (
+                    <div className="absolute bottom-8 left-8 p-4 bg-background/85 backdrop-blur-sm border border-primary/10 z-20 max-w-sm">
+                      <HUDLabel text="VIDEO_SOURCE" />
+                      <h4 className="font-display font-bold uppercase tracking-tight text-sm mt-1">{screen.title}</h4>
+                      {screen.description && <p className="text-[10px] text-foreground/75 mt-1 font-light leading-relaxed">{screen.description}</p>}
+                    </div>
+                  )}
+                  <div className="absolute bottom-8 right-8 text-[8px] font-mono tracking-widest opacity-30 uppercase pointer-events-none">
+                    VIDEO_REF // {i + 1}
+                  </div>
+                </div>
+              </div>
             )}
 
             {/* Bento Moodboard Component */}

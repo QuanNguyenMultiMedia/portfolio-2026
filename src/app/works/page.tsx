@@ -761,6 +761,16 @@ export default function WorksPage() {
           </div>
         </div>
       </div>
+      {process.env.NODE_ENV === "development" && (
+        <div className="fixed bottom-28 right-8 z-50 md:bottom-32 md:right-12">
+          <Link
+            href="/works/builder"
+            className="text-[10px] md:text-xs font-mono text-foreground/40 hover:text-tech-blue border border-foreground/10 hover:border-tech-blue/30 bg-surface/30 backdrop-blur-md px-3 py-1.5 rounded transition-all duration-300 tracking-wider flex items-center gap-1"
+          >
+            BUILDER ↗
+          </Link>
+        </div>
+      )}
     </PageWrapper>
   );
 }
