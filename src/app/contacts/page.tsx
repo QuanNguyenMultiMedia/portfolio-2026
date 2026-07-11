@@ -502,6 +502,7 @@ export default function ContactsPage() {
                       alt="Minh Quan Portrait"
                       fill
                       priority
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 40vw"
                       className="object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 ease-out"
                     />
                   </div>

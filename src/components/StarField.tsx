@@ -86,9 +86,13 @@ export default function StarField({
       });
     }
 
+    let isIntersecting = false;
+    let isVisible = true;
     let animationFrameId: number;
 
     const render = () => {
+      if (!isIntersecting || !isVisible) return;
+
       // Direct high-performance polling of MotionValues via .get() to bypass React diffing
       const zVal = zWorld.get();
       const tX = translateX.get();
@@ -223,11 +227,32 @@ export default function StarField({
       animationFrameId = requestAnimationFrame(render);
     };
 
-    // Begin render loop
-    animationFrameId = requestAnimationFrame(render);
+    const handleVisibilityChange = () => {
+      isVisible = document.visibilityState === "visible";
+      if (isVisible && isIntersecting) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = requestAnimationFrame(render);
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const wasIntersecting = isIntersecting;
+        isIntersecting = entry.isIntersecting;
+        if (isIntersecting && !wasIntersecting && isVisible) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = requestAnimationFrame(render);
+        }
+      },
+      { threshold: 0.01 }
+    );
+    observer.observe(canvas);
 
     return () => {
       window.removeEventListener("resize", resize);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      observer.disconnect();
       cancelAnimationFrame(animationFrameId);
     };
   }, [isDark, zWorld, translateX, translateY, rotateX, rotateY]);

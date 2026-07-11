@@ -50,8 +50,12 @@ export default function Globe({ className = "", size = 400 }: GlobeProps) {
 
     const globe = createGlobe(canvasRef.current, options);
 
+    let isIntersecting = false;
+    let isVisible = true;
     let animationFrameId: number;
+
     const tick = () => {
+      if (!isIntersecting || !isVisible) return;
       if (pointerInteracting.current === null) {
         phi.current += 0.005; // Slow auto-rotation when not dragging
       }
@@ -62,7 +66,28 @@ export default function Globe({ className = "", size = 400 }: GlobeProps) {
       });
       animationFrameId = requestAnimationFrame(tick);
     };
-    animationFrameId = requestAnimationFrame(tick);
+
+    const handleVisibilityChange = () => {
+      isVisible = document.visibilityState === "visible";
+      if (isVisible && isIntersecting) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = requestAnimationFrame(tick);
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const wasIntersecting = isIntersecting;
+        isIntersecting = entry.isIntersecting;
+        if (isIntersecting && !wasIntersecting && isVisible) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = requestAnimationFrame(tick);
+        }
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(canvasRef.current);
 
     setTimeout(() => {
       if (canvasRef.current) {
@@ -74,6 +99,8 @@ export default function Globe({ className = "", size = 400 }: GlobeProps) {
       globe.destroy();
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", onResize);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      observer.disconnect();
     };
   }, [size, isDark]);
 
