@@ -103,12 +103,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
-        <link
-          rel="preload"
-          href="/assets/portrait_sitting.jpg"
-          as="image"
-          type="image/jpeg"
-        />
         <script dangerouslySetInnerHTML={{
           __html: `
             (function() {
