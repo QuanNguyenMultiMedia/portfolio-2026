@@ -288,9 +288,10 @@ export default function WaveGradientBar({
     setSize();
 
     let raf = 0;
+    let isVisible = true;
     const t0 = performance.now();
     const loop = (t: number) => {
-      if (!isIntersecting) return;
+      if (!isIntersecting || !isVisible) return;
       program.uniforms.iTime.value = (t - t0) * 0.001;
 
       // Target colors from refs (already pre-parsed, avoiding string/regex operations on every frame)
@@ -321,11 +322,20 @@ export default function WaveGradientBar({
       raf = requestAnimationFrame(loop);
     };
 
+    const handleVisibilityChange = () => {
+      isVisible = document.visibilityState === "visible";
+      if (isVisible && isIntersecting) {
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(loop);
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         const wasIntersecting = isIntersecting;
         isIntersecting = entry.isIntersecting;
-        if (isIntersecting && !wasIntersecting) {
+        if (isIntersecting && !wasIntersecting && isVisible) {
           if (raf) cancelAnimationFrame(raf);
           raf = requestAnimationFrame(loop);
         } else if (!isIntersecting && wasIntersecting) {
@@ -344,6 +354,7 @@ export default function WaveGradientBar({
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("mouseleave", handleMouseLeave);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       ro.disconnect();
       observer.disconnect();
       try {
