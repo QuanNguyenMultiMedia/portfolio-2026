@@ -2,10 +2,16 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { motion, useMotionValue, useSpring, useTransform, animate, useReducedMotion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, animate, useReducedMotion, type MotionValue } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 import { t, motion as motionTokens, fx } from "@/lib/designSystem";
 import StarField from "@/components/StarField";
+
+// --- GooeyText cursor-warp tuning (px / unitless) ---
+const GOO_RADIUS = 104; // reach of the cursor's warp field
+const GOO_MAX_BLUR = 6; // blur applied to the char under the cursor
+const GOO_MAX_SCALE = 1.6; // scale applied to the char under the cursor
+const GOO_FALLOFF = 2.8; // higher = tighter, more focused warp
 
 function GooeyText({
   lines,
@@ -29,21 +35,23 @@ function GooeyText({
     let frameQueued = false;
     const initialOffsets: { x: number; y: number }[] = [];
 
-    const RADIUS = 104;
-    const MAX_BLUR = 6;
-    const MAX_SCALE = 1.6;
-    const FALLOFF = 2.8;
-
     const currentChars = () => charsRef.current.filter((ch): ch is HTMLSpanElement => ch !== null);
     const filterWrap = textEl.querySelector('.goo-filter-wrap') as HTMLElement | null;
+
+    // This text lives on one face of a flip card; the hidden face is set to
+    // pointer-events:none. Read that flag straight off style (not
+    // getComputedStyle) so the check never triggers a layout pass.
+    const isPanelInteractive = () => {
+      const panel = textEl.closest('.backface-hidden') as HTMLElement | null;
+      return panel ? panel.style.pointerEvents !== 'none' : true;
+    };
 
     let cachedTextRect: DOMRect | null = null;
     let cachedParentRect: DOMRect | null = null;
 
     function updateRects() {
-      if (!textEl) return;
-      cachedTextRect = textEl.getBoundingClientRect();
-      const parentEl = textEl.parentElement;
+      cachedTextRect = textEl!.getBoundingClientRect();
+      const parentEl = textEl!.parentElement;
       cachedParentRect = parentEl ? parentEl.getBoundingClientRect() : cachedTextRect;
     }
 
@@ -59,7 +67,7 @@ function GooeyText({
       chars.forEach((ch, idx) => {
         let x = ch.offsetLeft + ch.offsetWidth / 2;
         let y = ch.offsetTop + ch.offsetHeight / 2;
-        
+
         let parent = ch.offsetParent as HTMLElement | null;
         while (parent && parent !== textEl) {
           x += parent.offsetLeft;
@@ -82,23 +90,16 @@ function GooeyText({
         updateRects();
       }
 
-      const r = cachedTextRect!;
-      const hr = cachedParentRect!;
-      const cardPanel = textEl!.closest('.backface-hidden') as HTMLElement | null;
-      // Direct DOM attribute check bypassing layout-triggering getComputedStyle
-      const isPanelActive = cardPanel ? cardPanel.style.pointerEvents !== 'none' : true;
+      const textRect = cachedTextRect!;
+      const parentRect = cachedParentRect!;
 
-      let isHovered = false;
-      if (mouse && isPanelActive) {
-        if (
-          mouse.x >= hr.left &&
-          mouse.x <= hr.right &&
-          mouse.y >= hr.top &&
-          mouse.y <= hr.bottom
-        ) {
-          isHovered = true;
-        }
-      }
+      const isHovered =
+        !!mouse &&
+        isPanelInteractive() &&
+        mouse.x >= parentRect.left &&
+        mouse.x <= parentRect.right &&
+        mouse.y >= parentRect.top &&
+        mouse.y <= parentRect.bottom;
 
       if (filterWrap) {
         filterWrap.style.filter = isHovered ? 'url(#goo)' : 'none';
@@ -111,20 +112,20 @@ function GooeyText({
           return;
         }
 
-        const cx = r.left + initialOffsets[idx].x;
-        const cy = r.top + initialOffsets[idx].y;
+        const cx = textRect.left + initialOffsets[idx].x;
+        const cy = textRect.top + initialOffsets[idx].y;
         const dx = cx - mouse.x;
         const dy = cy - mouse.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        const t = Math.max(0, 1 - dist / RADIUS);
-        const influence = Math.pow(t, FALLOFF);
+        const proximity = Math.max(0, 1 - dist / GOO_RADIUS);
+        const influence = Math.pow(proximity, GOO_FALLOFF);
 
         if (influence < 0.001) {
           ch.style.filter = '';
           ch.style.transform = '';
         } else {
-          const blurPx = influence * MAX_BLUR;
-          const scale = 1 + (MAX_SCALE - 1) * influence;
+          const blurPx = influence * GOO_MAX_BLUR;
+          const scale = 1 + (GOO_MAX_SCALE - 1) * influence;
           ch.style.filter = `blur(${blurPx.toFixed(2)}px)`;
           ch.style.transform = `scale(${scale.toFixed(3)})`;
         }
@@ -139,9 +140,7 @@ function GooeyText({
     }
 
     const handleMouseMove = (e: MouseEvent) => {
-      const cardPanel = textEl!.closest('.backface-hidden') as HTMLElement | null;
-      const isPanelActive = cardPanel ? cardPanel.style.pointerEvents !== 'none' : true;
-      if (!isPanelActive) {
+      if (!isPanelInteractive()) {
         if (mouse !== null) {
           mouse = null;
           schedule();
@@ -149,10 +148,7 @@ function GooeyText({
         return;
       }
 
-      mouse = {
-        x: e.clientX,
-        y: e.clientY
-      };
+      mouse = { x: e.clientX, y: e.clientY };
       updateRects();
       schedule();
     };
@@ -176,6 +172,8 @@ function GooeyText({
     };
   }, [lines.join('|'), isFlipped]);
 
+  // Reset the ref list on every render, then re-collect via the callback refs
+  // below so charsRef stays in sync with the rendered spans.
   charsRef.current = [];
   let charIndex = 0;
 
@@ -230,7 +228,7 @@ function GooeyText({
                     }}
                     className={`goo-char ${textClassName || ""}`}
                   >
-                    {char === " " ? "\u00a0" : char}
+                    {char === " " ? " " : char}
                   </span>
                 );
               })}
@@ -248,9 +246,13 @@ const socialLinks = [
     url: "https://www.linkedin.com/in/quannguyenhere/",
     id: "01",
   },
+  // Behance/Upwork are placeholders for now; CONTACT_SOCIALS below hides any
+  // link still pointing at "#" so no dead links ever reach the DOM.
   { name: "BEHANCE", url: "#", id: "02" },
   { name: "UPWORK", url: "#", id: "03" },
 ];
+
+const CONTACT_SOCIALS = socialLinks.filter((link) => link.url !== "#");
 
 const experience = [
   {
@@ -264,7 +266,7 @@ const experience = [
     period: "2020 – 2025",
   },
   {
-    company: "\u201CZ Cũng Viết\u201D",
+    company: "“Z Cũng Viết”",
     role: "Project Manager & Lead Creative",
     period: "2023",
   },
@@ -274,6 +276,87 @@ const experience = [
     period: "2022",
   },
 ];
+
+// Timing for the click-to-flip choreography.
+const FLIP_DURATION = 1.2; // seconds for a full front↔back turn
+const PIVOT_RESET_MS = 300; // let the click-point pivot register, then ease the origin back to center
+const CLICK_LOCK_MS = 200; // briefly ignore re-clicks so a flip can commit
+
+// Shared inner grid for both card faces — the box that holds the two columns.
+const CARD_SHELL =
+  "w-full h-full grid grid-cols-1 lg:grid-cols-12 gap-0 border border-primary/10 bg-background/95 md:bg-surface/20 backdrop-blur-3xl md:backdrop-blur-xl overflow-hidden min-h-[400px] 3xl:min-h-[520px] 4xl:min-h-[620px]";
+
+// The tab-style title chip that sits above the top-right corner of a face.
+function CardBadge({ title }: { title: string }) {
+  return (
+    <div className="bg-primary/5 backdrop-blur-xl border border-primary/10 border-b-0 px-6 py-2 h-[40px] 3xl:px-10 3xl:py-4 3xl:h-[54px] 4xl:px-14 4xl:py-5 4xl:h-[68px] inline-flex items-center absolute top-0 right-0 -translate-y-full">
+      <h1 className={`${t.cardTitle} italic leading-none whitespace-nowrap`}>
+        {title}
+      </h1>
+    </div>
+  );
+}
+
+// One face of the flip card. The parent group rotates 0°→180°; the front face
+// owns the 0–90° half and the back (pre-rotated 180°) owns 90–180°. Each face's
+// visibility is derived from the *live* rotation angle so the hand-off always
+// lands exactly at edge-on (90°) — imperceptible regardless of the easing curve,
+// and bleed-through-proof even with the glass blur that can defeat a plain
+// `backface-visibility`.
+function CardFace({
+  flip,
+  back = false,
+  children,
+}: {
+  flip: MotionValue<number>;
+  back?: boolean;
+  children: React.ReactNode;
+}) {
+  const isFacing = (deg: number) => (back ? deg >= 90 : deg < 90);
+  const opacity = useTransform(flip, (deg) => (isFacing(deg) ? 1 : 0));
+  const zIndex = useTransform(flip, (deg) => (isFacing(deg) ? 1 : 0));
+  const pointerEvents = useTransform(flip, (deg): "auto" | "none" =>
+    isFacing(deg) ? "auto" : "none",
+  );
+
+  return (
+    <motion.div
+      className="col-start-1 row-start-1 backface-hidden w-full preserve-3d"
+      style={{
+        rotateY: back ? 180 : 0,
+        backfaceVisibility: "hidden",
+        transformStyle: "preserve-3d",
+        opacity,
+        zIndex,
+        pointerEvents,
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+// The email headline shared by both faces (the About face adds a subtitle).
+function EmailLink({ isFlipped, subtitle }: { isFlipped: boolean; subtitle?: string }) {
+  return (
+    <div className="space-y-2">
+      <a
+        href="mailto:quannguyenhere@gmail.com"
+        className="pointer-events-auto flex flex-col gap-1.5 py-8 -my-5 group"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <GooeyText
+          lines={["@QUANNGUYENHERE"]}
+          textClassName={`${t.cardTitle} italic leading-none whitespace-nowrap`}
+          isFlipped={isFlipped}
+        />
+      </a>
+      {subtitle && (
+        <p className={`${t.metaDataLabel} opacity-50 mt-1`}>{subtitle}</p>
+      )}
+    </div>
+  );
+}
 
 export default function ContactsPage() {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -318,6 +401,28 @@ export default function ContactsPage() {
     return () => controls.stop();
   }, [zWorld, reduceMotion]);
 
+  // Spring-based entrance can fail to fire onAnimationComplete under OS reduced-motion,
+  // leaving the card stuck in its tilted entrance pose forever. Skip straight to settled state.
+  useEffect(() => {
+    if (reduceMotion) setIsEntered(true);
+  }, [reduceMotion]);
+
+  // Card flip driven as a live angle (0°=front, 180°=back) so each face can key
+  // its visibility off the real rotation instead of a decoupled timer.
+  const flip = useMotionValue(0);
+  useEffect(() => {
+    const target = isFlipped ? 180 : 0;
+    if (reduceMotion) {
+      flip.set(target);
+      return;
+    }
+    const controls = animate(flip, target, {
+      duration: FLIP_DURATION,
+      ease: fx.easeSharp,
+    });
+    return () => controls.stop();
+  }, [flip, isFlipped, reduceMotion]);
+
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
@@ -338,12 +443,10 @@ export default function ContactsPage() {
     tiltY.set(0);
   };
 
-  const handleCardClick = (e: React.MouseEvent) => {
-    if (!containerRef.current || isAnimating) return;
-
-    const rect = containerRef.current.getBoundingClientRect();
-    const xPct = ((e.clientX - rect.left) / rect.width) * 100;
-    const yPct = ((e.clientY - rect.top) / rect.height) * 100;
+  // Flip the card, pivoting the fold around (xPct, yPct) of the card before
+  // easing the origin back to center. Ignored while a flip is in flight.
+  const flipFrom = (xPct: number, yPct: number) => {
+    if (isAnimating) return;
 
     mouseX.set(0);
     mouseY.set(0);
@@ -353,13 +456,22 @@ export default function ContactsPage() {
     setIsAnimating(true);
     pivotX.set(xPct);
     pivotY.set(yPct);
-    setIsFlipped(!isFlipped);
+    setIsFlipped((flipped) => !flipped);
 
     setTimeout(() => {
       pivotX.set(50);
       pivotY.set(50);
-    }, 300);
-    setTimeout(() => setIsAnimating(false), 200);
+    }, PIVOT_RESET_MS);
+    setTimeout(() => setIsAnimating(false), CLICK_LOCK_MS);
+  };
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    flipFrom(
+      ((e.clientX - rect.left) / rect.width) * 100,
+      ((e.clientY - rect.top) / rect.height) * 100,
+    );
   };
 
   return (
@@ -383,15 +495,11 @@ export default function ContactsPage() {
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
-              if (!containerRef.current) return;
-              const rect = containerRef.current.getBoundingClientRect();
-              handleCardClick({
-                clientX: rect.left + rect.width / 2,
-                clientY: rect.top + rect.height / 2,
-              } as React.MouseEvent);
+              flipFrom(50, 50); // keyboard flip pivots from the card center
             }
           }}
           className="relative w-full cursor-pointer preserve-3d will-change-transform"
+          suppressHydrationWarning
           initial={{ y: 900, rotate: -15, rotateX: 35, opacity: 0 }}
           animate={isEntered
             ? {
@@ -434,56 +542,25 @@ export default function ContactsPage() {
           }}
         >
           <motion.div
-            animate={{
-              rotateY: isFlipped ? 180 : 0,
-            }}
-            transition={{
-              rotateY: { duration: 1.2, ease: fx.easeSharp },
-            }}
             style={{
+              rotateY: flip,
               transformStyle: "preserve-3d",
               transformOrigin: transformOrigin,
             }}
             className="grid grid-cols-1 grid-rows-1 w-full"
           >
-            {/* FRONT SIDE */}
-            <div
-              className="col-start-1 row-start-1 backface-hidden w-full preserve-3d transition-all duration-700"
-              style={{
-                backfaceVisibility: "hidden",
-                transformStyle: "preserve-3d",
-                pointerEvents: isFlipped ? "none" : "auto",
-                zIndex: isFlipped ? 0 : 1,
-                opacity: isFlipped ? 0 : 1,
-                visibility: isFlipped ? "hidden" : "visible",
-              }}
-            >
-              <div className="bg-primary/5 backdrop-blur-xl border border-primary/10 border-b-0 px-6 py-2 h-[40px] 3xl:px-10 3xl:py-4 3xl:h-[54px] 4xl:px-14 4xl:py-5 4xl:h-[68px] inline-flex items-center absolute top-0 right-0 -translate-y-full">
-                <h1 className={`${t.cardTitle} italic leading-none whitespace-nowrap`}>
-                  Contact
-                </h1>
-              </div>
+            {/* FRONT SIDE — Contact */}
+            <CardFace flip={flip}>
+              <CardBadge title="Contact" />
 
-              <div className="w-full h-full grid grid-cols-1 lg:grid-cols-12 gap-0 border border-primary/10 bg-background/95 md:bg-surface/20 backdrop-blur-3xl md:backdrop-blur-xl overflow-hidden min-h-[400px] 3xl:min-h-[520px] 4xl:min-h-[620px]">
+              <div className={CARD_SHELL}>
                 <div className="lg:col-span-5 p-5 md:p-8 3xl:p-10 4xl:p-12 border-b lg:border-b-0 lg:border-r border-primary/10 flex flex-col justify-between">
                   <div className="space-y-6 3xl:space-y-10 4xl:space-y-12">
-                    <div className="space-y-2">
-                      <a
-                        href="mailto:quannguyenhere@gmail.com"
-                        className="pointer-events-auto flex flex-col gap-1.5 py-8 -my-5 group"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <GooeyText
-                          lines={["@QUANNGUYENHERE"]}
-                          textClassName={`${t.cardTitle} italic leading-none whitespace-nowrap`}
-                          isFlipped={isFlipped}
-                        />
-                      </a>
-                    </div>
+                    <EmailLink isFlipped={isFlipped} />
 
                     <div className="space-y-4 pt-4">
                       <div className="flex flex-col gap-4 3xl:gap-5">
-                        {socialLinks.filter((link) => link.url !== "#").map((link) => (
+                        {CONTACT_SOCIALS.map((link) => (
                           <a
                             key={link.name}
                             href={link.url}
@@ -523,47 +600,17 @@ export default function ContactsPage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </CardFace>
 
-            {/* BACK SIDE */}
-            <div
-              className="col-start-1 row-start-1 backface-hidden w-full preserve-3d transition-all duration-700"
-              style={{
-                backfaceVisibility: "hidden",
-                transform: "rotateY(180deg)",
-                transformStyle: "preserve-3d",
-                pointerEvents: isFlipped ? "auto" : "none",
-                zIndex: isFlipped ? 1 : 0,
-                opacity: isFlipped ? 1 : 0,
-                visibility: isFlipped ? "visible" : "hidden",
-              }}
-            >
-              <div className="bg-primary/5 backdrop-blur-xl border border-primary/10 border-b-0 px-6 py-2 h-[40px] 3xl:px-10 3xl:py-4 3xl:h-[54px] 4xl:px-14 4xl:py-5 4xl:h-[68px] inline-flex items-center absolute top-0 right-0 -translate-y-full">
-                <h1 className={`${t.cardTitle} italic leading-none whitespace-nowrap`}>
-                  About
-                </h1>
-              </div>
+            {/* BACK SIDE — About */}
+            <CardFace flip={flip} back>
+              <CardBadge title="About" />
 
-              <div className="w-full h-full grid grid-cols-1 lg:grid-cols-12 gap-0 border border-primary/10 bg-background/95 md:bg-surface/20 backdrop-blur-3xl md:backdrop-blur-xl overflow-hidden min-h-[400px] 3xl:min-h-[520px] 4xl:min-h-[620px]">
+              <div className={CARD_SHELL}>
                 <div className="lg:col-span-5 p-5 md:p-8 3xl:p-10 4xl:p-12 border-b lg:border-b-0 lg:border-r border-primary/10 flex flex-col justify-between">
                   <div className="space-y-6 3xl:space-y-10 4xl:space-y-12">
-                    <div className="space-y-2">
-                      <a
-                        href="mailto:quannguyenhere@gmail.com"
-                        className="pointer-events-auto flex flex-col gap-1.5 py-8 -my-5 group"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <GooeyText
-                          lines={["@QUANNGUYENHERE"]}
-                          textClassName={`${t.cardTitle} italic leading-none whitespace-nowrap`}
-                          isFlipped={isFlipped}
-                        />
-                      </a>
-                      <p className={`${t.metaDataLabel} opacity-50 mt-1`}>
-                        Multimedia Designer
-                      </p>
-                    </div>
- 
+                    <EmailLink isFlipped={isFlipped} subtitle="Multimedia Designer" />
+
                     <div className="space-y-4 pt-4">
                       <div className="space-y-4 3xl:space-y-6">
                         {experience.map((exp, i) => (
@@ -584,14 +631,14 @@ export default function ContactsPage() {
                       </div>
                     </div>
                   </div>
- 
+
                   <div className="pt-8 space-y-2">
                     <p className={`${t.bodyProse} max-w-[240px] 3xl:max-w-[320px] opacity-80`}>
                       FPT University // BBA Multimedia Communications
                     </p>
                   </div>
                 </div>
- 
+
                 <div className="lg:col-span-7 p-6 md:p-8 lg:p-10 3xl:p-12 4xl:p-16 flex flex-col justify-center space-y-6 3xl:space-y-8 relative">
                   <div className="space-y-6 3xl:space-y-8 4xl:space-y-10 relative z-10 max-w-2xl 3xl:max-w-3xl 4xl:max-w-4xl">
                     <div className="space-y-3">
@@ -600,7 +647,7 @@ export default function ContactsPage() {
                         telling stories with a purpose.&rdquo;
                       </p>
                     </div>
- 
+
                     <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-8 3xl:gap-12 4xl:gap-16">
                       <p className={`${t.bodyProse} opacity-85`}>
                         Since 2020, I&apos;ve been working as a Freelance Motion
@@ -614,7 +661,7 @@ export default function ContactsPage() {
                       </p>
                     </div>
                   </div>
- 
+
                   <div className="pt-6 3xl:pt-8 flex flex-col gap-2 relative z-10">
                     <span className={`${t.monoEyebrow} opacity-50 block`}>DISCIPLINES</span>
                     <div className="flex gap-3">
@@ -628,7 +675,7 @@ export default function ContactsPage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </CardFace>
           </motion.div>
         </motion.div>
       </div>
