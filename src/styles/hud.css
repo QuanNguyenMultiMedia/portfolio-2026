@@ -28,7 +28,6 @@
 .warp-notch-br-v { x: calc(100% - var(--margin)); y: calc(100% - var(--margin)); width: 1px; height: 12px; }
 
 /* golden-ratio guides: 61.8% across, 38.2% down */
-.warp-guide { stroke: var(--ink-black); stroke-width: 1px; opacity: 0.12; }
 
 .warp-caption {
   position: absolute; left: var(--margin); right: var(--margin); bottom: var(--s-2);

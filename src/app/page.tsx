@@ -44,7 +44,7 @@ export default function Home() {
         </section>
 
         {/* frames 2–4 · featured works: one case study per sheet */}
-        {FEATURED.map((p, i) => (
+        {FEATURED.map((p) => (
           <section key={p.slug} className="sheet featured" aria-labelledby={`f-${p.slug}`}>
             <Link href={`/works/${p.slug}`} className="featured-media" aria-labelledby={`f-${p.slug}`}>
               {p.coverVideo
@@ -52,7 +52,6 @@ export default function Home() {
                 : p.coverImage && <Image src={p.coverImage} alt="" fill sizes="(max-width: 768px) 100vw, 66vw" />}
             </Link>
             <div className="featured-meta">
-              <span className="featured-index">{String(i + 1).padStart(2, "0")} / {String(FEATURED.length).padStart(2, "0")}</span>
               <h2 id={`f-${p.slug}`} className="featured-title">{p.title}</h2>
               <p className="featured-sub">{p.category} · {p.year}</p>
             </div>

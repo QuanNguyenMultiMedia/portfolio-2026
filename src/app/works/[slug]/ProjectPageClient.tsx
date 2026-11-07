@@ -375,7 +375,7 @@ function InteractivePreview({ screen, isMobile }: { screen: Screen; isMobile: bo
           dark
           sizes="60vw"
           fit={{ w: "100%", h: "70vh" }}
-          className="transition-transform duration-[1.5s] group-hover:scale-[1.01]"
+          className="transition-transform group-hover:scale-[1.01]"
         />
       </div>
     </div>
@@ -490,7 +490,7 @@ export default function ProjectPageClient({
             key={i}
             className={
               isMobile
-                ? "w-full flex items-center justify-center relative py-8 border-b border-primary/25 last:border-b-0"
+                ? "w-full flex items-center justify-center relative py-8"
                 : `flex-shrink-0 h-screen flex items-center justify-center relative px-12 md:px-24 3xl:px-40 4xl:px-48 border-r border-primary/25
                 ${screen.type === "zine-cover" ? "w-[85vw] md:w-[85vw] 3xl:w-[80vw]" : ""}
                 ${screen.type === "editorial-text" ? "min-w-[65vw] md:min-w-[65vw] 3xl:min-w-[60vw]" : ""}
@@ -584,15 +584,10 @@ export default function ProjectPageClient({
                         alt={project.title}
                         sizes="(max-width: 768px) 100vw, 25vw"
                         priority
-                        className="transition-transform duration-1000 group-hover:scale-105"
+                        className="transition-transform"
                       />
                     </div>
                   )}
-                  {/* Viewfinder corner lines */}
-                  <div className="absolute top-2 left-2 w-2 h-2 border-t border-l border-primary/25 group-hover:border-primary/40 transition-colors" />
-                  <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-primary/25 group-hover:border-primary/40 transition-colors" />
-                  <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-primary/25 group-hover:border-primary/40 transition-colors" />
-                  <div className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-primary/25 group-hover:border-primary/40 transition-colors" />
                 </div>
               </div>
             )}
@@ -606,7 +601,7 @@ export default function ProjectPageClient({
                     : "w-full h-full py-24 flex flex-col justify-center max-w-2xl 3xl:max-w-3xl 4xl:max-w-4xl"
                 }
               >
-                <div className="border-t border-primary/25 pt-8 space-y-6">
+                <div className="pt-8 space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-8 3xl:gap-12">
                     <div className={`md:col-span-12 md:columns-2 gap-10 ${t.bodyProse} text-foreground/80`}>
                       {screen.content?.split("\n\n").map((para, pIdx) => (
@@ -630,7 +625,7 @@ export default function ProjectPageClient({
               <div
                 className={
                   isMobile
-                    ? "w-full py-12 flex flex-col gap-8 mt-4 border-t border-primary/25"
+                    ? "w-full py-12 flex flex-col gap-8 mt-4"
                     : "w-full h-full py-16 grid grid-cols-12 gap-12 items-center"
                 }
               >
@@ -666,7 +661,7 @@ export default function ProjectPageClient({
                   <Plate
                     src={next.coverVideo || next.coverImage || ""}
                     sizes="50vw"
-                    className={`transition-transform duration-1000 group-hover:scale-[1.01] ${isMobile ? "w-full" : ""}`}
+                    className={`transition-transform group-hover:scale-[1.01] ${isMobile ? "w-full" : ""}`}
                     fit={isMobile ? undefined : { w: "100%", h: "60vh" }}
                   />
                 </Link>
@@ -701,7 +696,7 @@ export default function ProjectPageClient({
                   </div>
                 )}
                 {screen.title && (
-                  <div className={isMobile ? "space-y-2" : "max-w-xs self-end space-y-3 border-t border-primary/25 pt-4 flex-shrink-0"}>
+                  <div className={isMobile ? "space-y-2" : "max-w-xs self-end space-y-3 pt-4 flex-shrink-0"}>
                     <h3 className={t.cardTitle}>{screen.title}</h3>
                     {screen.description && <p className={t.bodyProse}>{screen.description}</p>}
                   </div>
@@ -739,7 +734,7 @@ export default function ProjectPageClient({
                   initial={{ opacity: 0, scale: 1.1 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 1.2, ease: fx.easeSharp }}
+                  transition={{ duration: 0.5, ease: fx.easeSharp }}
                   className={
                     isMobile
                       ? "w-full aspect-[16/10] relative overflow-hidden group border border-primary/25"
@@ -751,17 +746,10 @@ export default function ProjectPageClient({
                     alt={project.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-contain transition-transform duration-[2000ms] group-hover:scale-110"
+                    className="object-contain transition-transform"
                   />
                   <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                  {/* Viewfinder overlay */}
-                  <div className="absolute inset-0 pointer-events-none z-20">
-                    <div className="absolute top-4 left-4 w-3 h-3 border-t border-l border-primary/30 group-hover:border-primary transition-colors duration-500" />
-                    <div className="absolute top-4 right-4 w-3 h-3 border-t border-r border-primary/30 group-hover:border-primary transition-colors duration-500" />
-                    <div className="absolute bottom-4 left-4 w-3 h-3 border-b border-l border-primary/30 group-hover:border-primary transition-colors duration-500" />
-                    <div className="absolute bottom-4 right-4 w-3 h-3 border-b border-r border-primary/30 group-hover:border-primary transition-colors duration-500" />
-                  </div>
                 </motion.div>
 
                 <div
@@ -775,7 +763,7 @@ export default function ProjectPageClient({
                     initial={{ opacity: 0, x: 20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.3 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
                     className="aspect-square relative overflow-hidden border border-primary/25 group"
                   >
                     <Image
@@ -790,7 +778,7 @@ export default function ProjectPageClient({
                     initial={{ opacity: 0, x: 20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.5 }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
                     className="aspect-[4/3] relative overflow-hidden border border-primary/25 group"
                   >
                     <Image
@@ -818,7 +806,7 @@ export default function ProjectPageClient({
                   initial={{ opacity: 0, scale: 0.98 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 1.5, ease: fx.easeSharp }}
+                  transition={{ duration: 0.5, ease: fx.easeSharp }}
                   className="w-full h-full relative overflow-hidden group border border-primary/25"
                 >
                   <Image
@@ -826,7 +814,7 @@ export default function ProjectPageClient({
                     alt={screen.caption || project.title}
                     fill
                     sizes="100vw"
-                    className="object-contain group-hover:scale-105 transition-transform duration-[3000ms]"
+                    className="object-contain transition-transform"
                   />
                 </motion.div>
               </div>

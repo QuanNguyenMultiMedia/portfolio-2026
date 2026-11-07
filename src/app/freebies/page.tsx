@@ -51,7 +51,7 @@ export default function FreebiesPage() {
           {/* Minimal Staggered Grid */}
           <motion.div
             animate={{
-              filter: selectedItem ? "blur(20px)" : "blur(0px)",
+              filter: selectedItem ? "blur(4px)" : "blur(0px)",
               opacity: selectedItem ? 0.3 : 1,
               scale: selectedItem ? 0.98 : 1,
             }}
@@ -178,12 +178,6 @@ export default function FreebiesPage() {
                 className="fixed top-0 right-0 bottom-0 bg-background border-l border-primary/25 z-[101] flex flex-col pointer-events-auto"
                 style={{ width: screenSize === "mobile" ? "100%" : `${panelWidth}px` }}
               >
-                {/* Tech corner accents */}
-                <div className="absolute top-0 left-0 w-3.5 h-3.5 border-t border-l border-primary/25 pointer-events-none" />
-                <div className="absolute top-0 right-0 w-3.5 h-3.5 border-t border-r border-primary/25 pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-3.5 h-3.5 border-b border-l border-primary/25 pointer-events-none" />
-                <div className="absolute bottom-0 right-0 w-3.5 h-3.5 border-b border-r border-primary/25 pointer-events-none" />
-
                 {/* Header */}
                 <div className="p-8 md:p-12 pb-4 3xl:p-16 3xl:pb-6 4xl:p-20 4xl:pb-8 flex justify-between items-center border-b border-primary/25">
                   <HUDLabel text={selectedItem.category} className="!opacity-60" />
@@ -239,7 +233,7 @@ export default function FreebiesPage() {
                       {selectedItem.colors.map((color, i) => (
                         <div key={i} className="group relative">
                           <div
-                            className="w-6 h-6 3xl:w-9 3xl:h-9 4xl:w-12 4xl:h-12 border border-primary/25 transition-transform duration-300 hover:scale-110 cursor-help"
+                            className="w-6 h-6 3xl:w-9 3xl:h-9 4xl:w-12 4xl:h-12 border border-primary/25 transition-transform duration-300 cursor-help"
                             style={{ backgroundColor: color }}
                           />
                           <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-1.5 py-0.5 bg-foreground text-background text-[12px] font-sans opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[120]">

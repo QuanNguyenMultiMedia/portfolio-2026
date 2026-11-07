@@ -12,7 +12,6 @@ import { projects } from "@/data/projects";
 import { useScreenSize } from "@/hooks/useScreenSize";
 import { t, layout, fx } from "@/lib/designSystem";
 
-const MotionImage = motion.create(Image);
 const TICK_DEG = 15;
 
 export default function WorksPage() {
@@ -497,36 +496,10 @@ export default function WorksPage() {
     return "text-lg md:text-3xl lg:text-[2.25rem] xl:text-[2.5rem] 3xl:text-[3rem] 4xl:text-[3.75rem]";
   };
 
-  const getArrowSizeClass = (title: string) => {
-    if (title.length > 15) {
-      return "text-base md:text-2xl lg:text-[1.5rem] xl:text-[1.75rem] 3xl:text-[2.25rem] 4xl:text-[3rem]";
-    }
-    return "text-lg md:text-3xl lg:text-[2.25rem] xl:text-[2.5rem] 3xl:text-[3rem] 4xl:text-[3.75rem]";
-  };
-
   return (
     <PageWrapper variant="hero">
       <PlateOn />
       <div className="relative w-full max-w-screen-xl 3xl:max-w-[1500px] 4xl:max-w-[1800px] mx-auto h-full flex flex-col justify-start lg:justify-between gap-4 lg:gap-0 pt-12 md:pt-28 pb-16 lg:pb-24 px-6 md:px-16 3xl:px-24 4xl:px-32 overflow-hidden z-10">
-        {/* Ambient Mobile Background Image (Dynamic Cross-Fade) */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.05] lg:hidden z-0 overflow-hidden">
-          <AnimatePresence mode="wait">
-            <MotionImage
-              key={activeProject.slug}
-              src={getCoverImage(activeProject)}
-              alt=""
-              fill
-              sizes="10vw"
-              priority
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.15 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.8 }}
-              className="object-cover blur-xl scale-105 mix-blend-print"
-            />
-          </AnimatePresence>
-        </div>
-
         <motion.div
           {...fx.headerSlideIn}
           className="mb-8 lg:mb-12 space-y-4 3xl:space-y-6 shrink-0"
@@ -541,27 +514,9 @@ export default function WorksPage() {
           {/* Left Column: Widescreen Viewport & Details */}
           <motion.div
             {...fx.slideIn(0)}
-            className="col-span-12 lg:col-span-5 flex flex-col justify-between h-full min-h-0 space-y-6 lg:space-y-8 3xl:space-y-12 items-end text-right pb-2"
+            className="col-span-full lg:col-span-5 min-w-0 flex flex-col justify-between h-full min-h-0 space-y-6 lg:space-y-8 3xl:space-y-12 items-end text-right pb-2"
           >
             <div className="relative -mx-8 w-[calc(100%+64px)] self-stretch lg:self-auto lg:mx-0 lg:w-full h-[120px] lg:h-auto lg:flex-1 min-h-0 lg:min-h-[260px] 3xl:min-h-[380px] 4xl:min-h-[480px] bg-transparent border-y lg:border border-primary/25 overflow-hidden group transition-all duration-700 mb-6 lg:mb-0 block">
-              <div
-                className="absolute inset-0 opacity-10 blur-xl group-hover:opacity-20 transition-opacity duration-700 pointer-events-none"
-                style={{
-                  backgroundColor: activeProject.colors?.[0] || "var(--primary)",
-                }}
-              />
-
-              <div className="absolute inset-0 pointer-events-none z-20">
-                <div className="absolute top-4 left-4 w-3.5 h-3.5 border-t border-l border-primary/30 group-hover:border-primary transition-colors duration-500" />
-                <div className="absolute top-4 right-4 w-3.5 h-3.5 border-t border-r border-primary/30 group-hover:border-primary transition-colors duration-500" />
-                <div className="absolute bottom-4 left-4 w-3.5 h-3.5 border-b border-l border-primary/30 group-hover:border-primary transition-colors duration-500" />
-                <div className="absolute bottom-4 right-4 w-3.5 h-3.5 border-b border-r border-primary/30 group-hover:border-primary transition-colors duration-500" />
-              </div>
-
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 border border-primary/25 group-hover:border-primary/30 rounded-full flex items-center justify-center pointer-events-none z-20 transition-all duration-700 group-hover:scale-110">
-                <div className="w-1.5 h-1.5 bg-primary/20 group-hover:bg-primary/40 rounded-full" />
-              </div>
-
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeProject.slug}
@@ -577,9 +532,8 @@ export default function WorksPage() {
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
                     priority
-                    className="object-cover transition-transform duration-[2s] group-hover:scale-105 mix-blend-print"
+                    className="object-cover transition-transform mix-blend-print"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-transparent to-transparent pointer-events-none" />
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -603,7 +557,7 @@ export default function WorksPage() {
           </motion.div>
 
           {/* Right Column: Dynamic 3D Cylinder Scroll Wheel & Integrated Axle Dial */}
-          <div className="col-span-12 lg:col-span-7 flex flex-col justify-center relative min-h-[320px] md:min-h-0 lg:h-full select-none pl-4 pb-16 lg:pb-0">
+          <div className="col-span-full lg:col-span-7 flex flex-col justify-center relative min-h-[320px] md:min-h-0 lg:h-full select-none pl-4 pb-16 lg:pb-0">
             <div className="relative w-full h-full flex items-center md:pb-0">
               {/* Left Section: 3D Cylinder Scroll Container */}
               <motion.div
@@ -684,13 +638,6 @@ export default function WorksPage() {
                             } ${getTitleFontSizeClass(project.title)}`}>
                               {project.title}
                             </h2>
-                            <span className={`font-light leading-none ml-6 transition-all duration-500 shrink-0 ${
-                              isActive
-                                ? "text-primary opacity-100 translate-x-0 scale-100"
-                                : "text-foreground/0 opacity-0 scale-90 translate-x-4 pointer-events-none"
-                            } group-hover/wheel-item:translate-x-1 group-hover/wheel-item:-translate-y-1 ${getArrowSizeClass(project.title)}`}>
-                              ↗
-                            </span>
                           </div>
                         </div>
                       );
@@ -791,10 +738,6 @@ export default function WorksPage() {
                         />
                       ))}
                     </svg>
-
-                    {/* Concentric rings texture details */}
-                    <div className="absolute inset-2 rounded-full border border-primary/[0.04] pointer-events-none" />
-                    <div className="absolute inset-4 rounded-full border border-primary/[0.02] pointer-events-none" />
 
                     {/* Indicator Marker - hollow stroke ring */}
                     <div className="absolute top-1.5 md:top-2.5 left-1/2 -translate-x-1/2 w-2.5 h-2.5 md:w-3 md:h-3 3xl:w-4.5 3xl:h-4.5 4xl:w-6 4xl:h-6 rounded-full border border-primary bg-transparent" />

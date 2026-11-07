@@ -66,9 +66,6 @@ export default function PlayPage() {
                       ))}
                     </div>
                   </div>
-                  <span className={`${ui.arrow} text-xl 3xl:text-2xl 4xl:text-3xl shrink-0`}>
-                    →
-                  </span>
                 </div>
               </Link>
             </motion.div>

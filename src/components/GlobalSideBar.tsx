@@ -59,7 +59,7 @@ export default function GlobalSideBar() {
                 animate={{ height: 48, opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.5, ease: fx.easeSharp }}
-                className="relative w-full flex-shrink-0 pointer-events-auto overflow-hidden border-b border-foreground/5 flex items-center justify-center"
+                className="relative w-full flex-shrink-0 pointer-events-auto overflow-hidden flex items-center justify-center"
               >
                 <Link
                   href={`/${segments[0]}`}
@@ -109,8 +109,8 @@ export default function GlobalSideBar() {
                   style={{ transitionTimingFunction: ease }}
                   className="ml-2 flex flex-col items-start whitespace-nowrap opacity-0 -translate-x-1 transition-[opacity,transform] duration-300 group-hover:opacity-100 group-hover:translate-x-0 group-hover:duration-500 group-focus-visible:opacity-100 group-focus-visible:translate-x-0 motion-reduce:translate-x-0"
                 >
-                  <span className="text-[7px] font-mono tracking-[0.4em] uppercase text-foreground">
-                    THEME // {isDark ? "DARK" : "LIGHT"}
+                  <span className="text-[12px] font-sans text-foreground">
+                    Theme · {isDark ? "Dark" : "Light"}
                   </span>
                   <span
                     style={{ transitionTimingFunction: ease }}

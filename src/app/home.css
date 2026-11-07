@@ -9,14 +9,14 @@
 .sheet {
   --gutter: var(--s-3);
   padding-inline: var(--margin);
-  padding-block: var(--s-7) 0;
+  padding-block: var(--s-6) 0;
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--gutter);
   row-gap: var(--s-4);
   align-items: start;
 }
-.sheet + .sheet { border-top: 1.5px solid var(--ink-black); margin-inline: var(--margin); padding-inline: 0; margin-top: var(--s-7); }
+.sheet + .sheet { margin-inline: var(--margin); padding-inline: 0; }
 
 /* ---------- 3D: the run ---------- */
 .run.is-3d { height: calc(var(--n, 4) * 100svh); }
@@ -80,6 +80,7 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 .reel-frame { grid-column: 1 / -1; justify-self: center; width: 100%; }
 .run.is-3d .reel-frame { width: min(100%, calc(78svh * 16 / 9)); }
 .hud-strip { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); border-top: 1px solid var(--ink-black); padding-top: var(--s-2); }
+@media (max-width: 767px) { .hud-strip { flex-direction: column; gap: var(--s-1); } }
 .hud-name { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--t-list); line-height: 1.1; letter-spacing: -0.01em; }
 
 /* ---------- frames 2–4 · featured works: one case study per sheet ---------- */
@@ -87,7 +88,7 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 .featured-media > img { object-fit: cover; }
 .featured-media:focus-visible { outline: 1px solid var(--ink-black); outline-offset: 4px; }
 .featured-meta { grid-column: 9 / -1; align-self: end; display: grid; gap: var(--s-2); }
-.featured-index, .featured-sub { margin: 0; font-size: var(--t-body); color: var(--ink-black); }
+.featured-sub { margin: 0; font-size: var(--t-body); color: var(--ink-black); }
 .featured-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--t-lead-serif); line-height: 1.04; letter-spacing: -0.02em; }
 @media (max-width: 767px) {
   .featured-media, .featured-meta { grid-column: 1 / -1; }
@@ -106,7 +107,7 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 .ledger { grid-column: 1 / 7; grid-row: 3; margin: var(--s-5) 0 0; display: grid; grid-template-columns: repeat(4, auto); justify-content: start; column-gap: var(--s-4); align-self: start; }
 .ledger > div { display: grid; }
 .ledger dd { margin: 0; font-family: var(--font-display); font-size: var(--t-list); line-height: 1; letter-spacing: -0.02em; }
-.ledger dt { order: 2; font-size: var(--t-label); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.3em; }
+.ledger dt { order: 2; font-size: var(--t-label); margin-top: 0.3em; }
 .collab { grid-column: 1 / 6; grid-row: 4; align-self: end; display: grid; gap: var(--s-1); margin-top: var(--s-4); }
 .collab > p { font-size: var(--t-body); font-style: italic; }
 .client-list { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: var(--gutter); font-size: var(--t-body); line-height: 1.5; }
