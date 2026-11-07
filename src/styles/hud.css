@@ -38,7 +38,7 @@
   color: var(--ink-black);
 }
 
-.warp-hint { opacity: 0.6; display: none; }
+.warp-hint { opacity: 0.75; display: none; }
 @media (pointer: fine) {
   .warp-hint { display: inline; }
 }

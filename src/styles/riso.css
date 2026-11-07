@@ -222,6 +222,8 @@ html.plate-route main { --ink-black: var(--ink-black-print); --foreground: var(-
 [data-reg] .under { transition: transform var(--t-register) var(--ease-print) calc(var(--i, 0) * var(--t-ink-stagger)); }
 [data-reg] .over, [data-reg].reg-fade { transition: opacity 500ms var(--ease-print) calc(var(--i, 0) * var(--t-ink-stagger)), transform var(--t-register) var(--ease-print) calc(var(--i, 0) * var(--t-ink-stagger)); }
 [data-reg]:not(.is-in) .under { transform: translate3d(calc(var(--rx) * 9), calc(var(--ry) * 9 + 0.04em), 0); }
+/* at rest the plates sit in register: the offset is a residue of motion, shown only while a route travels */
+html:not([data-warp]) [data-reg].is-in .under { transform: translate3d(0, 0, 0); }
 [data-reg]:not(.is-in) .over, [data-reg].reg-fade:not(.is-in) { opacity: 0; transform: translate3d(0, 0.25em, 0); }
 
 @media (prefers-reduced-motion: reduce) {

@@ -677,13 +677,13 @@ export default function WorksPage() {
                           }}
                         >
                           <div className="w-full h-full flex items-center justify-between">
-                            <h3 className={`font-display tracking-tighter leading-[0.85] font-bold transition-all duration-300 origin-left inline-block group-hover/wheel-item:skew-x-[-10deg] ${
+                            <h2 className={`font-display tracking-tighter leading-[0.85] font-bold transition-all duration-300 origin-left inline-block group-hover/wheel-item:skew-x-[-10deg] ${
                               isActive
                                 ? "text-primary animate-pulse-subtle"
                                 : "text-foreground/55 group-hover/wheel-item:text-foreground/85"
                             } ${getTitleFontSizeClass(project.title)}`}>
                               {project.title}
-                            </h3>
+                            </h2>
                             <span className={`font-light leading-none ml-6 transition-all duration-500 shrink-0 ${
                               isActive
                                 ? "text-primary opacity-100 translate-x-0 scale-100"
