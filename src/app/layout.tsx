@@ -20,6 +20,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import Portal from "@/components/Portal";
 import ExitChoreographer from "@/components/ExitChoreographer";
 import WarpField from "@/components/WarpField";
+import KeyFlight from "@/components/KeyFlight";
 
 
 
@@ -99,6 +100,7 @@ export default function RootLayout({
       >
         <Fountain className="page-plate" mode="aurora" />
         <WarpField />
+        <KeyFlight />
         <ThemeProvider>
           <ExitChoreographer />
           <SmoothScroll>

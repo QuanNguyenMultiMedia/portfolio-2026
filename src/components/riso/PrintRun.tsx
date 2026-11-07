@@ -9,6 +9,7 @@
 // Client boundary: only the camera lives here; sheet content is server-rendered children.
 // Below 768px, on short screens and under reduced motion the same sheets read as a vertical page (CSS).
 import { useEffect, useRef } from "react";
+import { motionBus } from "@/lib/warp";
 import IndexRail from "./IndexRail";
 
 const DEPTH = 1400; // px between sheets along Z
@@ -92,11 +93,13 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
       step(lookX, pointer.x, LOOK.stiffness, LOOK.damping, LOOK.mass, dt);
       step(lookY, pointer.y, LOOK.stiffness, LOOK.damping, LOOK.mass, dt);
       paint();
+      motionBus.runVelocity = cam.v;
       const settled =
         Math.abs(cam.v) < 0.5 && Math.abs(cam.x - target()) < 0.5 &&
         Math.abs(lookX.v) + Math.abs(lookY.v) < 1e-3 &&
         Math.abs(lookX.x - pointer.x) + Math.abs(lookY.x - pointer.y) < 1e-3;
       raf = settled ? 0 : requestAnimationFrame(frame);
+      if (settled) motionBus.runVelocity = 0;
       if (settled) last = 0;
     };
     const wake = () => { if (!raf && mq.matches) raf = requestAnimationFrame(frame); };
@@ -138,13 +141,20 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
       return best;
     };
     const current = () => (mq.matches ? lastNear : nearestSheet());
+    // a step pressed while a previous step is still travelling counts from where that one is going,
+    // so repeated W/S presses queue sheets instead of collapsing into one
+    let pending = -1, pendingUntil = 0;
     const goto = (i: number) => {
+      pending = i; pendingUntil = performance.now() + 900;
       const behavior = scrollBehavior();
       if (mq.matches) window.scrollTo({ top: top + (n > 1 ? i / (n - 1) : 0) * span, behavior });
       else { const el = sheets[i]; if (el) el.scrollIntoView({ behavior, block: "start" }); }
     };
     const onGoto = (e: Event) => goto((e as CustomEvent<{ i: number }>).detail.i);
-    const onStep = (e: Event) => goto(clamp(current() + (e as CustomEvent<{ d: number }>).detail.d, 0, n - 1));
+    const onStep = (e: Event) => {
+      const from = pending >= 0 && performance.now() < pendingUntil ? pending : current();
+      goto(clamp(from + (e as CustomEvent<{ d: number }>).detail.d, 0, n - 1));
+    };
     const onActivate = () => sheets[current()]?.querySelector<HTMLAnchorElement>("a[href]")?.click();
 
     // flow mode: a marked sheet holding most of the viewport turns the plate on

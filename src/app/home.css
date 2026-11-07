@@ -74,7 +74,7 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 .ink-fill[data-fallback]:not([data-live]) .ink-knock { color: var(--ink-coral); }
 .hero-line { grid-column: 1 / 4; align-self: start; font-family: var(--font-display); font-size: var(--t-list); line-height: 1.1; letter-spacing: -0.01em; }
 
-/* ---------- frame 2 · showreel ---------- */
+/* ---------- frame 1 · showreel ---------- */
 /* the reel takes the whole measure; the name strip prints under it */
 .reel { align-content: center; }
 .reel-frame { grid-column: 1 / -1; justify-self: center; width: 100%; }
@@ -82,17 +82,6 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 .hud-strip { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); border-top: 1px solid var(--ink-black); padding-top: var(--s-2); }
 @media (max-width: 767px) { .hud-strip { flex-direction: column; gap: var(--s-1); } }
 .hud-name { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--t-list); line-height: 1.1; letter-spacing: -0.01em; }
-
-/* ---------- frames 2–4 · featured works: one case study per sheet ---------- */
-.featured-media { grid-column: 1 / 9; position: relative; aspect-ratio: 16 / 9; display: block; }
-.featured-media > img { object-fit: cover; }
-.featured-media:focus-visible { outline: 1px solid var(--ink-black); outline-offset: 4px; }
-.featured-meta { grid-column: 9 / -1; align-self: end; display: grid; gap: var(--s-2); }
-.featured-sub { margin: 0; font-size: var(--t-body); color: var(--ink-black); }
-.featured-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--t-lead-serif); line-height: 1.04; letter-spacing: -0.02em; }
-@media (max-width: 767px) {
-  .featured-media, .featured-meta { grid-column: 1 / -1; }
-}
 
 /* ---------- last frame · the statement and the way in ----------
    The manifesto over a hairline; beneath, the record as one quiet ledger line, the collaborators, and

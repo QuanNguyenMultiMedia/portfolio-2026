@@ -1,4 +1,5 @@
 "use client";
+import "@/styles/hud.css";
 // The section rail for the print run: one hairline notch per sheet, the active one long and inked.
 // PrintRun reports the nearest sheet with run-index; a click asks for that sheet with run-goto.
 // Hidden until the run has reported once (flow layout or no run keeps it out of the way).

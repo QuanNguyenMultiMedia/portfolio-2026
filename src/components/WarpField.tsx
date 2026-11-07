@@ -1,30 +1,35 @@
 "use client";
-// Route warp streaks. A fixed canvas that is empty at rest: a navigation fires one velocity pulse
-// (lib/warp.ts "warp" event) and points in a 3D field stream past the camera along the jump's heading,
-// drawn as short streaks whose length follows the speed. Two ink plates (blue, rose) print each streak
-// a hair off register (≤3px at peak), the only riso trace, and only while moving.
-// Reduced motion: never draws. Hidden tab: no frames. The loop stops itself when the pulse ends.
-// Client boundary: mounted once in layout.tsx, outside the view-transition slot (its own transition name).
+// One star field for the whole site: trailed dots in a 3D field ahead of the camera (ported from the contacts
+// StarField). Three things drive its speed along Z:
+//   · contacts: a slow constant cruise (the old contacts spread);
+//   · home: the print-run camera's velocity (lib/warp.ts `motionBus.runVelocity`, written by PrintRun), so
+//     scrolling the journey streams the stars past;
+//   · any route change: one warp pulse ("warp" event) that surges and settles, reversed for Back.
+// Stars are visible at rest on home and contacts; elsewhere they appear only for the warp and fade back out.
+// Trails come from fading the previous frame to transparent (destination-out), so the aurora behind stays.
+// Reduced motion: static dots on home/contacts, no surge. Hidden tab: no frames.
+// Client boundary: mounted once in layout.tsx, outside the view-transition slot (own transition name).
 import { useEffect, useRef } from "react";
-import { WARP, WARP_TOTAL, type Heading, type WarpDir } from "@/lib/warp";
+import { WARP, WARP_TOTAL, destKey, motionBus, type WarpDir } from "@/lib/warp";
 
-const COUNT = 150;
-const SPREAD = 1600; // world half-width of the field
-const FAR = 2400; // world depth
-const FOCAL = 520;
-const PEAK = 90; // world units per frame at peak speed
-const OFFSET = 3; // px plate misregister at peak
+const COUNT = 200;
+const FAR = 11000;
+const NEAR = 200;
+const FOCUS = 1000;
+const CRUISE = 100; // world units / s on contacts (the old contacts drift)
+const SURGE = 14000; // world units / s at warp peak
+const RUN_GAIN = 6; // world units per px of camera travel on home
+const TRAIL_FADE = 0.18; // per-frame fade of the previous frame: the trail length
 
-type P = { x: number; y: number; z: number };
+type Star = { x: number; y: number; z: number; accent: boolean; px?: number; py?: number };
 
-// speed envelope over the pulse: ease up through the exit, hold briefly, ease down into the arrival
 function envelope(t: number) {
   const a = WARP.exit / WARP_TOTAL, b = (WARP.exit + WARP.travel) / WARP_TOTAL;
   if (t <= 0 || t >= 1) return 0;
   if (t < a) { const u = t / a; return u * u * u; }
   if (t < b) return 1;
   const u = (t - b) / (1 - b);
-  return 1 - (1 - Math.pow(1 - u, 3));
+  return Math.pow(1 - u, 3);
 }
 
 export default function WarpField() {
@@ -36,76 +41,125 @@ export default function WarpField() {
     if (!canvas || !ctx) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-    const pts: P[] = Array.from({ length: COUNT }, () => ({
-      x: (Math.random() - 0.5) * 2 * SPREAD,
-      y: (Math.random() - 0.5) * 2 * SPREAD,
-      z: Math.random() * FAR + 1,
+    const stars: Star[] = Array.from({ length: COUNT }, () => ({
+      x: (Math.random() - 0.5) * 4000,
+      y: (Math.random() - 0.5) * 4000,
+      z: -Math.random() * (FAR - NEAR) - NEAR,
+      accent: Math.random() < 0.2,
     }));
-    let w = 0, h = 0, dpr = 1;
+
+    let w = 0, h = 0;
     const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       w = window.innerWidth; h = window.innerHeight;
       canvas.width = w * dpr; canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      stars.forEach((s) => { s.px = undefined; });
     };
     resize();
 
-    const css = getComputedStyle(document.documentElement);
-    const ink = (name: string, fb: string) => css.getPropertyValue(name).trim() || fb;
-    const plateA = ink("--ink-blue", "currentColor");
-    const plateB = ink("--ink-rose", "currentColor");
+    let base = "", accent = "";
+    const readInks = () => {
+      const css = getComputedStyle(document.documentElement);
+      base = css.getPropertyValue("--ink-black").trim() || "#313131";
+      accent = css.getPropertyValue("--ink-blue").trim() || "#00A8FF";
+    };
+    readInks();
 
-    let raf = 0, t0 = 0, dir: WarpDir = "fwd", hd: Heading = { x: 0, y: 0 };
+    let raf = 0, last = 0, frame = 0;
+    let pulseT0 = -1e9, dir: WarpDir = "fwd";
+    let presence = 0;
+
+    const restHere = () => {
+      const k = destKey(location.pathname);
+      return k === "" || k === "contacts";
+    };
 
     const draw = (now: number) => {
-      const t = (now - t0) / WARP_TOTAL;
-      const v = envelope(t);
-      ctx.clearRect(0, 0, w, h);
-      if (t >= 1 || document.hidden) { raf = 0; return; }
-      const sgn = dir === "back" ? -1 : 1;
-      const step = PEAK * v * sgn;
-      // the vanishing point leans toward the heading, so each route pair travels its own way
-      const cx = w / 2 + hd.x * 0.25 * w, cy = h / 2 + hd.y * 0.25 * h;
-      const off = OFFSET * v;
-      ctx.lineWidth = 1;
-      ctx.globalAlpha = Math.min(1, v * 1.4) * 0.38;
-      for (const plate of [plateA, plateB]) {
-        const o = plate === plateA ? -off : off;
-        ctx.strokeStyle = plate;
-        ctx.beginPath();
-        for (const p of pts) {
-          const z1 = p.z, z0 = p.z + step * 2.2; // tail sits where the point was a little earlier
-          if (z1 <= 1 || z0 <= 1) continue;
-          const x1 = cx + (p.x / z1) * FOCAL, y1 = cy + (p.y / z1) * FOCAL;
-          const x0 = cx + (p.x / z0) * FOCAL, y0 = cy + (p.y / z0) * FOCAL;
-          ctx.moveTo(x0 + o, y0); ctx.lineTo(x1 + o, y1);
+      raf = 0;
+      if (document.hidden) return;
+      const dt = Math.min(0.05, last ? (now - last) / 1000 : 1 / 60);
+      last = now;
+      if (++frame % 60 === 0) readInks();
+
+      const pulse = reduce.matches ? 0 : envelope((now - pulseT0) / WARP_TOTAL);
+      const k = destKey(location.pathname);
+      const cruise = k === "contacts" && !reduce.matches ? CRUISE : 0;
+      const run = k === "" && !reduce.matches ? motionBus.runVelocity * RUN_GAIN : 0;
+      const speed = cruise + run + pulse * SURGE * (dir === "back" ? -1 : 1);
+
+      const target = restHere() ? 1 : pulse;
+      presence += (target - presence) * Math.min(1, dt * 6);
+
+      // fade the previous frame toward transparent: that residue is the trail
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.fillStyle = `rgba(0,0,0,${reduce.matches ? 1 : TRAIL_FADE + (1 - Math.min(1, Math.abs(speed) / 2000)) * 0.5})`;
+      ctx.fillRect(0, 0, w, h);
+      ctx.globalCompositeOperation = "source-over";
+
+      const cx = w / 2, cy = h / 2;
+      const dz = speed * dt;
+      for (const s of stars) {
+        s.z += dz;
+        let wrapped = false;
+        if (s.z > -NEAR) { s.z -= FAR - NEAR; wrapped = true; }
+        else if (s.z < -FAR) { s.z += FAR - NEAR; wrapped = true; }
+        const sc = FOCUS / -s.z;
+        const x = s.x * sc + cx, y = s.y * sc + cy;
+        if (wrapped || x < -100 || x > w + 100 || y < -100 || y > h + 100) { s.px = undefined; continue; }
+        const size = Math.max(0.3, Math.min(2.5, 1.2 * sc));
+        const fog = 1 - -s.z / FAR;
+        const nearFade = Math.max(0, Math.min(1, (-s.z - 50) / 150));
+        const a = Math.min(0.4, 0.45 * fog * nearFade) * presence * (s.accent ? 1.2 : 0.8);
+        if (a <= 0.01) { s.px = undefined; continue; }
+        ctx.globalAlpha = a;
+        const col = s.accent ? accent : base;
+        if (s.px !== undefined && s.py !== undefined && Math.hypot(x - s.px, y - s.py) < 300) {
+          ctx.strokeStyle = col; ctx.lineWidth = size * 2; ctx.lineCap = "round";
+          ctx.beginPath(); ctx.moveTo(s.px, s.py); ctx.lineTo(x, y); ctx.stroke();
+        } else {
+          ctx.fillStyle = col;
+          ctx.beginPath(); ctx.arc(x, y, size, 0, Math.PI * 2); ctx.fill();
         }
-        ctx.stroke();
+        s.px = x; s.py = y;
       }
       ctx.globalAlpha = 1;
-      for (const p of pts) {
-        p.z -= step;
-        if (p.z < 1) p.z += FAR;
-        else if (p.z > FAR) p.z -= FAR;
-      }
-      raf = requestAnimationFrame(draw);
+
+      // keep running while anything moves or is still visible; otherwise stop until woken
+      const moving = Math.abs(speed) > 0.5 || Math.abs(presence - target) > 0.01;
+      if (moving) raf = requestAnimationFrame(draw);
+      else last = 0;
     };
 
+    const wake = () => { if (!raf && !document.hidden) raf = requestAnimationFrame(draw); };
     const onWarp = (e: Event) => {
-      if (reduce.matches) return;
-      const d = (e as CustomEvent<{ dir: WarpDir; heading: Heading }>).detail;
+      const d = (e as CustomEvent<{ dir: WarpDir }>).detail;
       dir = d?.dir ?? "fwd";
-      hd = d?.heading ?? { x: 0, y: 0 };
-      t0 = performance.now();
-      if (!raf) raf = requestAnimationFrame(draw);
+      pulseT0 = performance.now();
+      wake();
     };
+    // the home camera moves on scroll; the route can change without a warp (first load, hard links)
+    const onScroll = () => wake();
+    const onVis = () => { if (!document.hidden) { last = 0; wake(); } };
+    const ro = new MutationObserver(() => { readInks(); wake(); });
+    ro.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 
     window.addEventListener("warp", onWarp);
+    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", resize);
+    window.addEventListener("popstate", wake);
+    document.addEventListener("visibilitychange", onVis);
+    const poll = window.setInterval(wake, 500); // route changes without events (Next soft nav) still settle presence
+    wake();
     return () => {
       cancelAnimationFrame(raf);
+      window.clearInterval(poll);
+      ro.disconnect();
       window.removeEventListener("warp", onWarp);
+      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", resize);
+      window.removeEventListener("popstate", wake);
+      document.removeEventListener("visibilitychange", onVis);
     };
   }, []);
 
