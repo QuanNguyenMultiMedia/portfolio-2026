@@ -1,17 +1,18 @@
 "use client";
 // Route exit choreography. Intercepts internal link clicks, lifts the page's visible blocks off the sheet in
 // reading order (top→bottom, left→right, one stagger step apart), then navigates; the view transition in
-// layout.tsx carries the hand-off and the next page runs its own entrance. Animates `translate`, `opacity` and
-// `filter` (never `transform`), so it composes with whatever transforms a block already has (print run, Framer).
-// Back/forward cannot be intercepted; those fall through to the view transition alone.
+// layout.tsx carries the hand-off and the next page runs its own entrance. Animates `scale` and `opacity` only
+// (never `transform`), so it composes with whatever transforms a block already has (print run, Framer).
+// Back/forward cannot be intercepted; popstate stamps their direction (fwd/back) for the view transition instead.
 // Opt-outs: data-no-exit on an element skips it (and its subtree); [data-exit] marks a block explicitly.
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { WARP, getLastPath, heading, setLastPath, setWarp } from "@/lib/warp";
 
 const BLOCKS = "[data-exit], h1, h2, h3, h4, p, li, figure, img, video, canvas, blockquote, button, a, [class*='card'], .printed";
 const MAX = 14; // blocks in flight; the rest leave with the last step
 const STEP = 22; // ms between blocks (riso --t-ink-stagger is 75: exits run tighter than entrances)
-const DUR = 320;
+const DUR = WARP.exit;
 const EASE = "cubic-bezier(0.7, 0, 0.84, 0)"; // ease-in: departures accelerate away (mirror of --ease-print)
 
 function pick(root: Element): HTMLElement[] {
@@ -57,15 +58,19 @@ export default function ExitChoreographer() {
       e.preventDefault();
       e.stopPropagation();
       busy = true;
+      const to = url.pathname;
+      setWarp("fwd", heading(getLastPath(), to));
+      const back = document.documentElement.dataset.warp === "back";
 
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const anims = els.map((el, i) => {
         const delay = reduce ? 0 : Math.min(i, MAX) * STEP;
+        // fwd: blocks come toward the viewer; back: they fall away
         const frames: Keyframe[] = reduce
           ? [{ opacity: 1 }, { opacity: 0 }]
           : [
-              { opacity: 1, translate: "0 0", filter: "blur(0px)" },
-              { opacity: 0, translate: "0 -0.9rem", filter: "blur(4px)" },
+              { opacity: 1, scale: "1" },
+              { opacity: 0, scale: back ? "0.96" : "1.04" },
             ];
         return el.animate(frames, { duration: reduce ? 160 : DUR, delay, easing: reduce ? "linear" : EASE, fill: "forwards" });
       });
@@ -75,6 +80,7 @@ export default function ExitChoreographer() {
       const total = reduce ? 160 : Math.min(els.length - 1, MAX) * STEP + DUR * 0.45;
       window.setTimeout(() => {
         router.push(href);
+        setLastPath(to);
         // the old tree unmounts with its animations; release anything that survived (same-layout routes)
         window.setTimeout(() => { anims.forEach((x) => x.cancel()); busy = false; }, 900);
       }, total);
@@ -89,13 +95,34 @@ export default function ExitChoreographer() {
       warmed.add(url.pathname);
       router.prefetch(url.pathname + url.search);
     };
+    // Back/forward: the Navigation API reports both entry indexes before React renders the new route, so the
+    // view transition already knows its direction. Without it (non-Chromium, which also lacks view
+    // transitions) popstate falls back to "back".
+    type Nav = EventTarget & { currentEntry?: { index: number } };
+    type EntryChange = Event & { navigationType?: string; from?: { index: number } };
+    const nav = (window as unknown as { navigation?: Nav }).navigation;
+    const onEntry = (e: Event) => {
+      const ev = e as EntryChange;
+      if (ev.navigationType !== "traverse" || !nav?.currentEntry || !ev.from) return;
+      setWarp(nav.currentEntry.index < ev.from.index ? "back" : "fwd", heading(getLastPath(), location.pathname));
+      setLastPath(location.pathname);
+    };
+    const onPop = () => {
+      if (nav) return;
+      setWarp("back", heading(getLastPath(), location.pathname));
+      setLastPath(location.pathname);
+    };
     document.addEventListener("click", onClick, true);
     document.addEventListener("pointerover", onIntent, { passive: true });
     document.addEventListener("focusin", onIntent);
+    window.addEventListener("popstate", onPop);
+    nav?.addEventListener("currententrychange", onEntry);
     return () => {
       document.removeEventListener("click", onClick, true);
       document.removeEventListener("pointerover", onIntent);
       document.removeEventListener("focusin", onIntent);
+      window.removeEventListener("popstate", onPop);
+      nav?.removeEventListener("currententrychange", onEntry);
     };
   }, [router]);
 

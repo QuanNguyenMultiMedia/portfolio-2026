@@ -1,6 +1,6 @@
 // Route warp contract. Every route is a destination in one space; a navigation is a jump along the vector
 // between two destinations. These names are internal only: nothing here is ever shown as UI copy.
-// Writers: ExitChoreographer (link clicks, popstate), MobileNavbar (hold), KeyFlight (A/D).
+// Writers: ExitChoreographer (link clicks; back/forward via the Navigation API), MobileNavbar (hold), KeyFlight (A/D).
 // Readers: WarpField (streak pulse), riso.css (`html[data-warp]` view-transition rules), WarpFrame (index).
 
 export type WarpDir = "fwd" | "back";
@@ -36,27 +36,6 @@ export function heading(from: string, to: string): Heading {
 let lastPath = typeof window === "undefined" ? "/" : window.location.pathname;
 export const getLastPath = () => lastPath;
 export const setLastPath = (p: string) => { lastPath = p; };
-
-/** Stamp an increasing index on the current history entry so popstate can tell Back from Forward. */
-let counter = 0;
-export function navIndex(): number {
-  if (typeof window === "undefined") return 0;
-  const cur = (window.history.state as { warpIdx?: number } | null)?.warpIdx;
-  counter = Math.max(counter, cur ?? 0) + 1;
-  return counter;
-}
-export function stampIndex(idx: number) {
-  if (typeof window === "undefined") return;
-  window.history.replaceState({ ...(window.history.state ?? {}), warpIdx: idx }, "");
-}
-export function currentIndex(): number {
-  if (typeof window === "undefined") return 0;
-  return (window.history.state as { warpIdx?: number } | null)?.warpIdx ?? 0;
-}
-/** On popstate: the entry we land on has a lower index than where we were → Back. */
-export function dirFromPop(landedIdx: number | undefined, fromIdx: number): WarpDir {
-  return (landedIdx ?? 0) < fromIdx ? "back" : "fwd";
-}
 
 let clearTimer: ReturnType<typeof setTimeout> | undefined;
 export function setWarp(dir: WarpDir, h: Heading = { x: 0, y: 0 }) {

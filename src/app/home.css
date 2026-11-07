@@ -63,12 +63,6 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 
 /* ---------- frame 1 · hero ---------- */
 /* the name runs the full measure; the line sits in the left rail, the portrait stands at the right edge */
-.hero { align-content: center; row-gap: var(--s-3); }
-.hero-name {
-  grid-column: 1 / -1; margin: 0; white-space: nowrap; font-family: var(--font-display); font-weight: 400; text-transform: none;
-  font-size: var(--t-cover); line-height: 0.82; letter-spacing: -0.045em;
-}
-.run.is-3d .hero-name { font-size: min(var(--t-cover), 30svh); }
 /* display type printed in the fountain ink (the name, View Works): the plate is cut to the [data-clip]
    glyphs in its own canvas (Fountain clipText), so nothing outside the letters is painted. The DOM text stays
    for reading and selection, and prints in plain coral until the shader has a frame up (or without WebGL). */
@@ -78,65 +72,33 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 .ink-fill[data-live] > canvas { opacity: 1; }
 /* the DOM ink only prints when the plate cannot (no WebGL, mask failed): never as a flash before the first frame */
 .ink-fill[data-fallback]:not([data-live]) .ink-knock { color: var(--ink-coral); }
-.name-fill, .name-fill .ink-knock { display: block; }
 .hero-line { grid-column: 1 / 4; align-self: start; font-family: var(--font-display); font-size: var(--t-list); line-height: 1.1; letter-spacing: -0.01em; }
-.hero-portrait { grid-column: 10 / -1; aspect-ratio: 3 / 4; width: 100%; justify-self: end; }
-.hero-portrait > img { filter: grayscale(1) contrast(1.05); }
-.run.is-3d .hero-portrait { width: min(100%, calc(44svh * 3 / 4)); }
 
 /* ---------- frame 2 · showreel ---------- */
-/* the reel takes the whole measure: nothing else prints on this sheet */
+/* the reel takes the whole measure; the name strip prints under it */
 .reel { align-content: center; }
 .reel-frame { grid-column: 1 / -1; justify-self: center; width: 100%; }
 .run.is-3d .reel-frame { width: min(100%, calc(78svh * 16 / 9)); }
+.hud-strip { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); border-top: 1px solid var(--ink-black); padding-top: var(--s-2); }
+.hud-name { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--t-list); line-height: 1.1; letter-spacing: -0.01em; }
 
-/* ---------- frame 3 · works & words ----------
-   A proof wall, not a menu: five frames hung off the grid at their own ratios (printed whole), each
-   re-printing a new fragment on its own clock. The swap is a print pass: the plate lands off register and
-   slides home while the ink comes up. One pull quote sits in the open bay of the collage. */
-.drift { align-content: center; grid-template-rows: auto auto auto; row-gap: var(--s-3); }
-.drift-kicker { grid-column: 1 / 4; grid-row: 1; margin: 0; padding-top: var(--s-2); border-top: 1.5px solid var(--ink-black); align-self: start; font-size: var(--t-label); font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; }
-.drift-kicker span { font-family: var(--font-display-italic); font-style: italic; text-transform: none; letter-spacing: 0; font-size: 1.25em; }
-.proof { display: grid; gap: 0.4rem; align-content: start; min-width: 0; }
-.proof-plate { width: 100%; }
-.proof-plate > .proof-print { object-fit: contain; filter: grayscale(1) contrast(1.08); animation: proof-in 1100ms var(--ease-print) both; }
-@keyframes proof-in {
-  from { opacity: 0; transform: translate3d(0.9rem, -0.6rem, 0) scale(1.04); }
-  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
-}
-.proof-from { font-size: var(--t-label); letter-spacing: 0.08em; text-transform: uppercase; animation: words-in 900ms var(--ease-print) both; }
-/* the hang: a wide frame up top, a tall one dropping through the middle, a small square tucked low, a
-   brand still and a type loop closing the right edge. Uneven tops so the wall reads as pinned, not gridded. */
-.proof-1 { grid-column: 4 / 9; grid-row: 1 / 3; }
-.proof-2 { grid-column: 9 / 11; grid-row: 1 / 4; margin-top: var(--s-6); }
-.proof-3 { grid-column: 1 / 3; grid-row: 2 / 4; align-self: end; }
-.proof-4 { grid-column: 11 / -1; grid-row: 1 / 3; margin-top: var(--s-3); }
-.proof-5 { grid-column: 11 / -1; grid-row: 3; align-self: end; }
-.drift-quote { grid-column: 3 / 9; grid-row: 3; align-self: end; display: grid; gap: var(--s-2); margin: 0; padding-left: var(--s-3); }
-.drift-words { font-family: var(--font-display); font-size: clamp(1.2rem, 1.9vw, 2.1rem); line-height: 1.1; letter-spacing: -0.015em; max-width: 34ch; text-wrap: pretty; animation: words-in 900ms var(--ease-print) both; }
-.drift-words p::before { content: "\201C"; display: inline-block; width: 0.5em; margin-left: -0.5em; color: var(--ink-violet); }
-@keyframes words-in { from { opacity: 0; transform: translate3d(0, 0.5rem, 0); } to { opacity: 1; transform: none; } }
-.drift-credit { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-2); padding-top: var(--s-1); border-top: 1.5px solid var(--ink-black); font-size: var(--t-label); letter-spacing: 0.08em; text-transform: uppercase; }
-.drift-turn { display: inline-flex; align-items: baseline; gap: 0.75em; font-variant-numeric: tabular-nums; }
-.drift-turn button { font: inherit; padding: 0.15em 0.4em; border: 0; background: none; color: inherit; cursor: pointer; transition: transform 300ms var(--ease-print), color 300ms var(--ease-print); }
-.drift-turn button:hover, .drift-turn button:focus-visible { color: var(--ink-violet); }
-.drift-turn button:first-child:hover { transform: translate3d(-0.2em, 0, 0); }
-.drift-turn button:last-child:hover { transform: translate3d(0.2em, 0, 0); }
-.run.is-3d .proof-plate { max-height: 40svh; }
-.run.is-3d .proof-2 .proof-plate, .run.is-3d .proof-4 .proof-plate { max-height: 52svh; }
-@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) {
-  .proof-plate > .proof-print, .drift-words { animation-duration: 200ms; animation-name: fade-in; }
+/* ---------- frames 2–4 · featured works: one case study per sheet ---------- */
+.featured-media { grid-column: 1 / 9; position: relative; aspect-ratio: 16 / 9; display: block; }
+.featured-media > img { object-fit: cover; }
+.featured-media:focus-visible { outline: 1px solid var(--ink-black); outline-offset: 4px; }
+.featured-meta { grid-column: 9 / -1; align-self: end; display: grid; gap: var(--s-2); }
+.featured-index, .featured-sub { margin: 0; font-size: var(--t-body); color: var(--ink-black); }
+.featured-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: var(--t-lead-serif); line-height: 1.04; letter-spacing: -0.02em; }
+@media (max-width: 767px) {
+  .featured-media, .featured-meta { grid-column: 1 / -1; }
 }
 
-/* ---------- frame 4 · the statement and the way in ----------
-   The eye strip hangs top right, the manifesto runs into it from the left over a hairline; beneath, the
-   record as one quiet ledger line, the collaborators, and View Works in the fountain ink on the baseline. */
+/* ---------- last frame · the statement and the way in ----------
+   The manifesto over a hairline; beneath, the record as one quiet ledger line, the collaborators, and
+   View Works in the fountain ink on the baseline. */
 .close { align-content: center; grid-template-rows: auto auto auto auto; row-gap: 0; }
-.manifesto-eye { grid-column: 5 / -1; grid-row: 1; aspect-ratio: 21 / 8; width: 100%; }
-.manifesto-eye > img { object-position: 62% 18%; transform: scale(3.6); transform-origin: 62% 18%; filter: grayscale(1) contrast(1.15); }
 .manifesto-text {
-  grid-column: 1 / 10; grid-row: 2; margin-top: calc(var(--s-6) * -1); z-index: 1;
+  grid-column: 1 / 10; grid-row: 2; z-index: 1;
   padding-top: var(--s-2); border-top: 1.5px solid var(--ink-black);
   font-family: var(--font-display); font-size: var(--t-lead-serif); line-height: 1.04; letter-spacing: -0.02em;
   text-indent: 4ch; text-wrap: pretty; mix-blend-mode: var(--blend);
@@ -153,23 +115,12 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 .view-works .fountain-content { display: inline-flex; align-items: baseline; gap: 0.1em; white-space: nowrap; }
 .view-arrow { display: inline-block; transition: transform 500ms var(--ease-print); }
 .view-works a:hover .view-arrow, .view-works a:focus-visible .view-arrow { transform: translate3d(0.12em, 0, 0); }
-.run.is-3d .manifesto-eye { max-height: 26svh; }
 .run.is-3d .manifesto-text { font-size: min(var(--t-lead-serif), 5.4svh); }
 
 /* ---------- tablet ---------- */
 @media (max-width: 1024px) {
   .manifesto-text { grid-column: 1 / -1; }
   .hero-line { grid-column: 1 / 8; }
-  .hero-portrait { grid-column: 8 / -1; }
-  .manifesto-eye { grid-column: 4 / -1; }
-  .drift { grid-template-rows: none; }
-  .drift-kicker { grid-column: 1 / -1; grid-row: auto; }
-  .proof-1 { grid-column: 1 / 9; grid-row: auto; }
-  .proof-2 { grid-column: 9 / -1; grid-row: span 2; margin-top: 0; }
-  .proof-3 { grid-column: 1 / 5; grid-row: auto; align-self: start; }
-  .proof-4 { grid-column: 5 / 9; grid-row: auto; margin-top: 0; }
-  .proof-5 { display: none; }
-  .drift-quote { grid-column: 1 / -1; grid-row: auto; padding-left: 0; }
   .ledger, .collab { grid-column: 1 / -1; grid-row: auto; }
   .view-works { grid-column: 1 / -1; grid-row: auto; margin-top: var(--s-5); }
 }
@@ -179,26 +130,15 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
   .sheet > * { grid-column: 1 / -1 !important; }
   .view-works { justify-self: start; }
   .ledger { grid-template-columns: repeat(2, auto); row-gap: var(--s-3); }
-  .proof-3 { display: none; }
 }
 
 /* ---------- 3D: depth inside a sheet ----------
    --d runs 1 → 0 → -1 as a sheet approaches, holds the camera plane, and passes. Layers slide against each
    other along it, so a sheet reads as plates hung at different depths, not one flat card. */
 .run.is-3d .sheet > * { will-change: transform; }
-.run.is-3d .hero-name { transform: translate3d(0, calc(var(--d, 0) * -8svh), 0); }
 .run.is-3d .hero-line { transform: translate3d(calc(var(--d, 0) * -3vw), calc(var(--d, 0) * 5svh), 0); }
-.run.is-3d .hero-portrait { transform: translate3d(calc(var(--d, 0) * 4vw), calc(var(--d, 0) * 3svh), 0); }
 .run.is-3d .reel-frame { transform: translate3d(0, calc(var(--d, 0) * -4svh), 0); }
-.run.is-3d .drift-kicker { transform: translate3d(calc(var(--d, 0) * -3vw), 0, 0); }
-.run.is-3d .proof-1 { transform: translate3d(0, calc(var(--d, 0) * -6svh), 0); }
-.run.is-3d .proof-2 { transform: translate3d(calc(var(--d, 0) * 3vw), calc(var(--d, 0) * 10svh), 0); }
-.run.is-3d .proof-3 { transform: translate3d(calc(var(--d, 0) * -6vw), calc(var(--d, 0) * 8svh), 0); }
-.run.is-3d .proof-4 { transform: translate3d(calc(var(--d, 0) * 7vw), calc(var(--d, 0) * -5svh), 0); }
-.run.is-3d .proof-5 { transform: translate3d(calc(var(--d, 0) * 5vw), calc(var(--d, 0) * 12svh), 0); }
-.run.is-3d .drift-quote { transform: translate3d(0, calc(var(--d, 0) * 6svh), 0); }
 .run.is-3d .manifesto-text { transform: translate3d(calc(var(--d, 0) * -5vw), 0, 0); }
-.run.is-3d .manifesto-eye { transform: translate3d(calc(var(--d, 0) * 7vw), calc(var(--d, 0) * 5svh), 0); }
 .run.is-3d .ledger { transform: translate3d(0, calc(var(--d, 0) * 4svh), 0); }
 .run.is-3d .collab { transform: translate3d(0, calc(var(--d, 0) * 6svh), 0); }
 .run.is-3d .view-works { transform: translate3d(calc(var(--d, 0) * 8vw), calc(var(--d, 0) * 10svh), 0); }

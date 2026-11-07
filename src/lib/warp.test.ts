@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { heading, dirFromPop, setWarp, clearWarp, destKey, DEST_KEYS } from "./warp";
+import { heading, setWarp, clearWarp, destKey, DEST_KEYS } from "./warp";
 
 describe("warp contract", () => {
   it("same destination has no heading", () => {
@@ -12,10 +12,6 @@ describe("warp contract", () => {
   it("unknown routes map to home", () => {
     expect(destKey("/nope")).toBe("");
     expect(DEST_KEYS[0]).toBe("");
-  });
-  it("popstate direction from history index", () => {
-    expect(dirFromPop(1, 3)).toBe("back");
-    expect(dirFromPop(4, 3)).toBe("fwd");
   });
   it("setWarp stamps the root and fires an event; clearWarp removes it", () => {
     const fn = vi.fn();
