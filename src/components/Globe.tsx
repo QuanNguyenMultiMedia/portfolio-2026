@@ -1,128 +1,112 @@
 "use client";
-
+// The testimonials globe, printed (design.md §2): cobe draws a neutral dot map; CSS thresholds it to a mask
+// (dots black, sphere white), a screened violet layer turns the dots into ink, and the plate multiplies onto
+// the page, so only the dots print and the sphere is paper. HCMC is the one marker.
+// Spins slowly, drags with inertia; holds still under reduced motion; stops offscreen and in hidden tabs.
 import { useEffect, useRef } from "react";
 import createGlobe from "cobe";
-import { useTheme } from "next-themes";
 
 interface GlobeProps {
   className?: string;
   size?: number;
+  /** [lat, lng] the globe opens facing and carries a marker for. */
+  focus?: [number, number];
 }
 
-export default function Globe({ className = "", size = 400 }: GlobeProps) {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme !== "light"; // Default to dark mode if undefined
+const AUTO_SPIN = 0.0022;
+const DRAG_DAMPING = 0.92;
+const HCMC: [number, number] = [10.82, 106.63];
 
+// cobe's phi/theta for a location facing the camera
+const toAngles = ([lat, lng]: [number, number]) => ({
+  phi: Math.PI - ((lng * Math.PI) / 180 - Math.PI / 2),
+  theta: ((lat * Math.PI) / 180) * 0.6,
+});
+
+export default function Globe({ className = "", size = 520, focus = HCMC }: GlobeProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const pointerInteracting = useRef<number | null>(null);
-  const pointerInteractionStart = useRef<number>(0);
-  const phi = useRef(0);
+  const dragX = useRef<number | null>(null);
+  const velocity = useRef(0);
+  const phi = useRef(toAngles(focus).phi);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
-
+    const canvas = canvasRef.current;
+    if (!canvas) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const { theta } = toAngles(focus);
 
-    let width = size;
-    const onResize = () => {
-      if (canvasRef.current) {
-        width = canvasRef.current.offsetWidth;
-      }
-    };
-    window.addEventListener("resize", onResize);
-    onResize();
-
-    const options = {
+    const globe = createGlobe(canvas, {
       devicePixelRatio: dpr,
-      width: width * dpr,
-      height: width * dpr,
-      phi: 0,
-      theta: 0.3, // Slight downward tilt to showcase the Northern hemisphere/markers
-      dark: isDark ? 1 : 0, // Dynamic dark/light sphere body fill
+      width: size * dpr,
+      height: size * dpr,
+      phi: phi.current,
+      theta,
+      dark: 0,
       diffuse: 0,
-      mapSamples: 15000,
-      mapBrightness: 10, // Higher brightness for landmasses
-      // Contrast colors for land dots: light blue in dark mode, dark blue/gray in light mode
-      baseColor: (isDark ? [1.0, 1.0, 1.0] : [245 / 255, 245 / 255, 245 / 255]) as [number, number, number],
-      markerColor: [0.0, 0.9, 1.0] as [number, number, number],   // Bright cyan markers
-      glowColor: [1, 1, 1] as [number, number, number],      // Faint glow removed completely
-      markers: [],
+      mapSamples: 16000,
+      mapBrightness: 6,
+      baseColor: [1, 1, 1],
+      markerColor: [0, 0, 0],
+      glowColor: [1, 1, 1],
+      markers: [{ location: focus, size: 0.07 }],
       context: { alpha: true },
-    };
+    });
 
-    const globe = createGlobe(canvasRef.current, options);
-
-    let animationFrameId: number;
-    let running = true;
+    let frame = 0;
+    let onScreen = true;
+    const shouldRun = () => onScreen && document.visibilityState === "visible";
     const tick = () => {
-      if (!running) return;
-      if (pointerInteracting.current === null) {
-        phi.current += 0.005; // Slow auto-rotation when not dragging
+      frame = 0;
+      if (!shouldRun()) return;
+      if (dragX.current === null) {
+        velocity.current *= DRAG_DAMPING; // release inertia decays back into the idle spin
+        phi.current += (reduceMotion ? 0 : AUTO_SPIN) + velocity.current;
       }
-      globe.update({
-        phi: phi.current,
-        width: width * dpr,
-        height: width * dpr,
-      });
-      animationFrameId = requestAnimationFrame(tick);
+      globe.update({ phi: phi.current });
+      frame = requestAnimationFrame(tick);
     };
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        running = entry.isIntersecting;
-        if (running) {
-          animationFrameId = requestAnimationFrame(tick);
-        } else {
-          cancelAnimationFrame(animationFrameId);
-        }
-      },
-      { threshold: 0 }
-    );
-    if (canvasRef.current) observer.observe(canvasRef.current);
-
-    setTimeout(() => {
-      if (canvasRef.current) {
-        canvasRef.current.style.opacity = "1";
-      }
-    }, 100);
-
+    const wake = () => { if (!frame && shouldRun()) frame = requestAnimationFrame(tick); };
+    const io = new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; wake(); });
+    io.observe(canvas);
+    document.addEventListener("visibilitychange", wake);
+    globe.update({ phi: phi.current }); // one frame even before it runs, so it's never blank
+    canvas.style.opacity = "1";
+    wake();
     return () => {
-      running = false;
+      cancelAnimationFrame(frame);
+      io.disconnect();
+      document.removeEventListener("visibilitychange", wake);
       globe.destroy();
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener("resize", onResize);
-      observer.disconnect();
     };
-  }, [size, isDark]);
+  }, [size, focus]);
+
+  const endDrag = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (dragX.current === null) return;
+    dragX.current = null;
+    e.currentTarget.style.cursor = "grab";
+  };
 
   return (
-    <div
-      className={`relative mx-auto aspect-square w-full select-none ${className}`}
-      style={{ maxWidth: size, height: size }}
-    >
+    <div className={`printed-globe ${className}`} style={{ maxWidth: size }}>
       <canvas
         ref={canvasRef}
+        aria-hidden="true"
         onPointerDown={(e) => {
-          pointerInteracting.current = e.clientX;
-          pointerInteractionStart.current = phi.current;
-          if (canvasRef.current) canvasRef.current.style.cursor = "grabbing";
-        }}
-        onPointerUp={() => {
-          pointerInteracting.current = null;
-          if (canvasRef.current) canvasRef.current.style.cursor = "grab";
-        }}
-        onPointerOut={() => {
-          pointerInteracting.current = null;
-          if (canvasRef.current) canvasRef.current.style.cursor = "grab";
+          dragX.current = e.clientX;
+          velocity.current = 0;
+          e.currentTarget.setPointerCapture(e.pointerId);
+          e.currentTarget.style.cursor = "grabbing";
         }}
         onPointerMove={(e) => {
-          if (pointerInteracting.current !== null) {
-            const delta = e.clientX - pointerInteracting.current;
-            phi.current = pointerInteractionStart.current - delta / 200;
-          }
+          if (dragX.current === null) return;
+          const delta = (e.clientX - dragX.current) / 200;
+          dragX.current = e.clientX;
+          phi.current += delta;
+          velocity.current = delta;
         }}
-        className="h-full w-full opacity-0 transition-opacity duration-500 ease-in-out"
-        style={{ cursor: "grab", contain: "layout paint size", background: "var(--background)", borderRadius: "50%" }}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
       />
     </div>
   );

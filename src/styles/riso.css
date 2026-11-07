@@ -1,0 +1,253 @@
+/* Riso Run — the print model from docs/design.md §2, as CSS.
+   Every coloured thing is a plate: an ink colour, a halftone screen at that ink's angle,
+   a fixed per-ink register offset, overprinted with multiply onto paper. */
+
+:root {
+  /* paper */
+  --paper: #f2f3f5;
+  --paper-hi: #f5f7fa;
+  --paper-shade: #c7cad4;
+
+  /* ink set */
+  --ink-black: #313131;
+  --ink-black-print: #313131; /* ink black as printed on stock (MainTitle.aep): never flips with the theme */
+  --ink-blue: #00a8ff;
+  --ink-violet: #3a3efa;
+  --ink-indigo: #3000ff;
+  --ink-rose: #e07ab0;
+  --ink-mint: #2aeed4;
+  --ink-coral: #ff5c36;
+  --ink-cream: #e5e6e1;
+
+  /* split fountain ramps */
+  --fountain-mint: #c2eef7, #75e2f9, #2aeed4, #7debda, #9ad6a4;
+  --fountain-herond: #3a3efa, #9b6fd0, #e07ab0;
+
+  /* register: fixed per ink for the whole page (em, so it scales with display type) */
+  --reg-black-x: -0.012em;  --reg-black-y: 0.01em;
+  --reg-blue-x: 0.015em;    --reg-blue-y: 0em;
+  --reg-violet-x: 0em;      --reg-violet-y: 0.015em;
+  --reg-indigo-x: -0.016em; --reg-indigo-y: 0.009em;
+  --reg-rose-x: 0.02em;     --reg-rose-y: -0.01em;
+  --reg-coral-x: -0.01em;   --reg-coral-y: 0.012em;
+
+  /* halftone screens: one alpha tile per ink angle (cell ≈ 3–4px) */
+  --screen-45: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Cdefs%3E%3Cpattern id='p' width='3' height='3' patternUnits='userSpaceOnUse' patternTransform='rotate(45)'%3E%3Ccircle cx='1.5' cy='1.5' r='1.25'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='6' height='6' fill='url(%23p)'/%3E%3C/svg%3E");
+  --screen-15: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cdefs%3E%3Cpattern id='p' width='3.5' height='3.5' patternUnits='userSpaceOnUse' patternTransform='rotate(15)'%3E%3Ccircle cx='1.75' cy='1.75' r='1.45'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='28' height='28' fill='url(%23p)'/%3E%3C/svg%3E");
+  --screen-75: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cdefs%3E%3Cpattern id='p' width='3.5' height='3.5' patternUnits='userSpaceOnUse' patternTransform='rotate(75)'%3E%3Ccircle cx='1.75' cy='1.75' r='1.45'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='28' height='28' fill='url(%23p)'/%3E%3C/svg%3E");
+  --screen-0: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='3.5' height='3.5'%3E%3Ccircle cx='1.75' cy='1.75' r='1.45'/%3E%3C/svg%3E");
+  --screen-solid: 0.74; /* how much ink fills between dots: solids still show the screen */
+
+  /* layout + type (design.md §3–4) */
+  --margin: clamp(1.25rem, 5.5vw, 7rem);
+  /* spacing: one fluid 1.5 ratio scale; every gap, pad and offset picks a step */
+  --s-1: clamp(0.5rem, 0.6vw, 0.75rem);
+  --s-2: clamp(0.75rem, 0.9vw, 1.125rem);
+  --s-3: clamp(1.125rem, 1.4vw, 1.75rem);
+  --s-4: clamp(1.75rem, 2.1vw, 2.625rem);
+  --s-5: clamp(2.5rem, 3.2vw, 3.875rem);
+  --s-6: clamp(3.75rem, 4.8vw, 5.875rem);
+  --s-7: clamp(5.5rem, 7.2vw, 8.75rem);
+  --s-8: clamp(8rem, 10.8vw, 13rem);
+  --t-display-xl: clamp(4.5rem, 19vw, 22rem);
+  --t-display: clamp(3rem, 10vw, 11rem);
+  --t-display-col: clamp(2.25rem, 6.5vw, 7rem);
+  --t-lead: clamp(1.75rem, 4.8vw, 5rem);
+  --t-list: clamp(1.25rem, 3.2vw, 3rem);
+  --t-body: clamp(0.95rem, 1.25vw, 1.25rem);
+  --t-label: clamp(0.75rem, 0.78vw, 0.8rem);  /* captions, kickers, masthead: never under 12px */
+  --t-lead-serif: clamp(1.6rem, 3.4vw, 3.6rem); /* pull quote */
+  --t-cover: 20.6vw;                            /* fitted so the cover name fills the 12-col measure */
+  --font-display: var(--font-display-face), "Times New Roman", serif;
+  --font-display-italic: var(--font-display-face), "Times New Roman", serif;
+  --font-text: var(--font-product), "Helvetica Neue", Arial, sans-serif;
+
+  /* how ink meets the stock: inks darken light paper (multiply), and lighten dark stock (screen) */
+  --blend: multiply;
+
+  /* motion */
+  --ease-print: cubic-bezier(0.16, 1, 0.3, 1);
+  --t-register: 850ms;
+  --t-ink-stagger: 75ms;
+}
+
+/* ---------- dark stock ----------
+   The same job printed on black board: the paper turns charcoal, the black plate becomes a bone-white ink,
+   and every ink screens onto the stock instead of multiplying into it. Blue-violet inks are mixed lighter so
+   they still read on the dark ground (AA against --paper). */
+html.dark {
+  --paper: #161618;
+  --paper-hi: #1c1c1f;
+  --paper-shade: #2c2d33;
+  --ink-black: #e6e4df;
+  --ink-violet: #8c8fff;
+  --ink-indigo: #9a7dff;
+  --ink-cream: #2a2a2c;
+  --blend: screen;
+}
+
+/* ---------- paper ---------- */
+html {
+  color-scheme: light;
+  transition: background-color 600ms var(--ease-print);
+  background-color: var(--paper);
+  background-image: url("/media/paper-tooth.jpg");
+  /* one sheet, not tiles: the scan's edges do not match, so any repeat prints a seam */
+  background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;
+  /* soft-light: the scan adds tooth around the paper value instead of darkening it, so the ground stays at
+     --paper (the loading screen's value) */
+  background-blend-mode: soft-light;
+}
+html.dark { color-scheme: dark; background-blend-mode: multiply; } /* soft-light lifted the board to mid grey: the tooth may only darken it */
+html.dark .riso-tooth { mix-blend-mode: multiply; opacity: 0.5; }
+/* the tooth and grain are texture, not ink: on dark stock they lift the board instead of darkening it */
+html.dark .riso-grain { mix-blend-mode: screen; opacity: 0.08; }
+body.riso-paper {
+  margin: 0;
+  color: var(--ink-black);
+  font-family: var(--font-text);
+  font-size: var(--t-body);
+  line-height: 1.35;
+  background: transparent; /* the paper is on <html>; the page plate prints between them */
+  -webkit-font-smoothing: antialiased;
+}
+body.riso-paper ::selection { background: var(--ink-mint); color: var(--ink-black); }
+body.riso-paper :focus-visible { outline: 2px solid var(--ink-violet); outline-offset: 3px; }
+
+/* grain: printed on top of everything, 12fps */
+/* paper tooth printed over everything, ink included: the sheet, not the screen */
+.riso-tooth {
+  position: fixed; inset: 0; z-index: 59; pointer-events: none;
+  background: url("/media/paper-tooth.jpg") center / cover no-repeat; /* one sheet: tiling the scan seams */
+  mix-blend-mode: soft-light; opacity: 0.35;
+}
+/* the sheet is the viewport; the oversized texture that jitters inside it is clipped to it, so nothing
+   hangs past the screen edge. The blend sits on the clipping sheet (position: fixed isolates its children). */
+.riso-grain {
+  position: fixed; inset: 0; z-index: 60; pointer-events: none; overflow: hidden;
+  opacity: 0.08;
+  mix-blend-mode: var(--blend);
+}
+.riso-grain::before {
+  content: ""; position: absolute; inset: -50%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.19 0 0 0 0 0.19 0 0 0 0 0.19 0 0 0 1.4 -0.35'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: riso-grain 1s steps(12) infinite;
+}
+@keyframes riso-grain {
+  0% { transform: translate3d(0, 0, 0); } 25% { transform: translate3d(-7%, 4%, 0); }
+  50% { transform: translate3d(5%, -6%, 0); } 75% { transform: translate3d(-3%, -9%, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* ---------- ink plates ---------- */
+.ink { --ink: var(--ink-black); --screen: var(--screen-45); --rx: var(--reg-black-x); --ry: var(--reg-black-y); }
+.ink-blue { --ink: var(--ink-blue); --screen: var(--screen-15); --rx: var(--reg-blue-x); --ry: var(--reg-blue-y); }
+.ink-violet { --ink: var(--ink-violet); --screen: var(--screen-75); --rx: var(--reg-violet-x); --ry: var(--reg-violet-y); }
+.ink-indigo { --ink: var(--ink-indigo); --screen: var(--screen-75); --rx: var(--reg-indigo-x); --ry: var(--reg-indigo-y); }
+.ink-coral { --ink: var(--ink-coral); --screen: var(--screen-0); --rx: var(--reg-coral-x); --ry: var(--reg-coral-y); }
+.ink-rose { --ink: var(--ink-rose); --screen: var(--screen-0); --rx: var(--reg-rose-x); --ry: var(--reg-rose-y); }
+
+/* a plate: ink colour clipped to the glyphs, broken into its screen, multiplied onto paper */
+.plate {
+  color: transparent;
+  background: var(--ink);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-mask-image: var(--screen), linear-gradient(rgb(0 0 0 / var(--screen-solid)), rgb(0 0 0 / var(--screen-solid)));
+  mask-image: var(--screen), linear-gradient(rgb(0 0 0 / var(--screen-solid)), rgb(0 0 0 / var(--screen-solid)));
+  mix-blend-mode: var(--blend);
+  /* the mask and background-clip paint only the inline box: pad it so tight leading and the
+     synthetic slant never clip ascenders, tails or overhang (vertical inline padding leaves layout alone) */
+  padding: 0.28em 0.18em 0.32em 0.06em;
+  margin-inline: -0.06em -0.18em;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+.plate.hard { mix-blend-mode: hard-light; --screen-solid: 0.88; }
+.plate.fountain-herond { background: linear-gradient(180deg, var(--fountain-herond)); }
+
+/* a double-plate lockup: the under-plate is a second ink, out of register */
+.plates { position: relative; display: inline-block; isolation: auto; }
+.plates > .under {
+  /* same oversized paint box as .plate; as a block, offset it back so glyphs line up with the over-plate */
+  position: absolute; inset: 0 auto auto 0; width: 100%; box-sizing: content-box;
+  margin: -0.28em 0 0 -0.06em;
+  transform: translate3d(var(--rx), var(--ry), 0);
+  pointer-events: none; user-select: none;
+}
+.plates > .over { position: relative; }
+
+/* ---------- type roles ---------- */
+.t-display-xl, .t-display, .t-display-col, .t-list { font-family: var(--font-display); font-weight: 400; line-height: 0.9; letter-spacing: -0.01em; }
+.t-display-xl { font-size: var(--t-display-xl); }
+.t-display { font-size: var(--t-display); }
+.t-display-col { font-size: var(--t-display-col); line-height: 0.92; }
+.t-list { font-size: var(--t-list); line-height: 1; }
+.t-italic { font-family: var(--font-display-italic); font-style: italic; }
+.t-lead { font-family: var(--font-text); font-size: var(--t-lead); line-height: 1; letter-spacing: -0.035em; }
+.t-body { font-size: var(--t-body); line-height: 1.35; max-width: 46ch; }
+.t-aside { font-style: italic; font-size: var(--t-body); line-height: 1.3; }
+.defocus { filter: blur(clamp(3px, 0.6vw, 9px)); }
+
+/* ---------- printed media ---------- */
+/* photos print as ink: the whole plate multiplies onto the field, so its paper-grey ground takes the ink under it */
+.printed { position: relative; overflow: hidden; background: var(--paper); mix-blend-mode: var(--blend); }
+.printed > video, .printed > img { display: block; width: 100%; height: 100%; object-fit: cover; mix-blend-mode: var(--blend); }
+.printed::after { /* the black plate's screen over the photo, very light */
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: var(--ink-black); opacity: 0.12; mix-blend-mode: var(--blend);
+  -webkit-mask-image: var(--screen-45); mask-image: var(--screen-45);
+}
+.printed.duotone > img { filter: saturate(0.8) contrast(1.05) brightness(1.05); }
+
+.fountain { position: relative; overflow: hidden; background: linear-gradient(135deg, var(--fountain-mint)); }
+.fountain > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; image-rendering: pixelated; mix-blend-mode: var(--blend); }
+/* the plate is ink, not a card: no fill of its own, edges feather out in the shader */
+.fountain { background: none; overflow: visible; mix-blend-mode: var(--blend); }
+.fountain > .fountain-content { position: relative; }
+/* the page plate: one fixed full-viewport fountain behind all content, printed onto the paper only where a
+   spread asks for it (html.plate-on: set by PrintRun for [data-plate] sheets, and by <PlateOn /> on a route) */
+.fountain.page-plate { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 1200ms var(--ease-print); }
+html.plate-on .fountain.page-plate { opacity: 1; }
+/* dark stock: light ink can only lighten the board, so the plate prints at a lower density there, or the
+   type set over it (the manifesto) falls under 3:1. Route plates (<PlateOn />: Works) carry display type only
+   and print at full density. */
+html.dark.plate-on:not(.plate-route) .fountain.page-plate { opacity: 0.45; }
+/* over a full-density route plate the type prints in ink black, as in the AE comp, on either stock */
+html.plate-route main { --ink-black: var(--ink-black-print); --foreground: var(--ink-black-print); --primary: var(--ink-black-print); --color-foreground: var(--ink-black-print); --color-primary: var(--ink-black-print); color: var(--ink-black-print); }
+@media (prefers-reduced-motion: reduce) { .fountain.page-plate { transition-duration: 200ms; } }
+
+.rule { border: 0; border-top: 1.5px solid var(--ink-black); margin: 0; }
+
+/* ---------- register-in (plates settle into the page's fixed offsets) ---------- */
+[data-reg] .under { transition: transform var(--t-register) var(--ease-print) calc(var(--i, 0) * var(--t-ink-stagger)); }
+[data-reg] .over, [data-reg].reg-fade { transition: opacity 500ms var(--ease-print) calc(var(--i, 0) * var(--t-ink-stagger)), transform var(--t-register) var(--ease-print) calc(var(--i, 0) * var(--t-ink-stagger)); }
+[data-reg]:not(.is-in) .under { transform: translate3d(calc(var(--rx) * 9), calc(var(--ry) * 9 + 0.04em), 0); }
+[data-reg]:not(.is-in) .over, [data-reg].reg-fade:not(.is-in) { opacity: 0; transform: translate3d(0, 0.25em, 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .riso-grain::before { animation: none; }
+  [data-reg] .under, [data-reg] .over, [data-reg].reg-fade { transition: opacity 200ms linear !important; transform: none; }
+  [data-reg]:not(.is-in) .under { transform: translate3d(var(--rx), var(--ry), 0); }
+  [data-reg]:not(.is-in) .over, [data-reg].reg-fade:not(.is-in) { transform: none; }
+}
+
+/* route change: on link clicks ExitChoreographer has already lifted each block off in reading order, so the
+   old snapshot is mostly bare paper and its fade only covers back/forward. The outgoing sheet lifts off the press (slight misregister drift, ink softening), the next one
+   settles into register under it. One curve for the house (--ease-print); exit short, enter longer and delayed.
+   Navbars and the page fountain sit outside the transition, so the chrome never blinks. */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+::view-transition-group(.sheet) { animation-duration: 0s; }
+::view-transition-old(.sheet) { animation: sheet-fade 160ms linear both reverse; }
+::view-transition-new(.sheet) { animation: sheet-fade 160ms linear both; } /* each page's own entrance carries the arrival */
+@keyframes sheet-fade { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(.sheet), ::view-transition-new(.sheet) { animation-duration: 120ms; }
+}
+
+/* .rise: CSS-only staged entrance for server-rendered pages (takes article, 404). Each block settles into
+   register in reading order (--i), on the house curve and stagger; reduced motion keeps only the fade. */
+.rise { animation: rise var(--t-register) var(--ease-print) calc(120ms + var(--i, 0) * var(--t-ink-stagger)) both; }
+@keyframes rise { from { opacity: 0; transform: translate3d(0, 1.25rem, 0); filter: blur(3px); } }
+@media (prefers-reduced-motion: reduce) {
+  .rise { animation: sheet-fade 240ms linear calc(var(--i, 0) * 40ms) both; }
+}

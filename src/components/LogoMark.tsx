@@ -7,7 +7,7 @@ import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 
 interface LogoMarkProps {
-  variant?: "default" | "inverted" | "auto";
+  variant?: "default" | "inverted" | "auto" | "on-ink"; // on-ink: sits on an ink-black plate, so it takes the other theme's art
   className?: string;
   animate?: boolean;
   fixed?: boolean;
@@ -27,7 +27,11 @@ export default function LogoMark({
   const shouldAnimate = animate && isDefault;
 
   const logoSrc =
-    variant === "auto"
+    variant === "on-ink"
+      ? mounted && resolvedTheme === "dark"
+        ? "/assets/Logo_Full_LightMode.svg"
+        : "/assets/Logo_Full_DarkMode.svg"
+      : variant === "auto"
       ? mounted && resolvedTheme === "dark"
         ? "/assets/Logo_Full_DarkMode.svg"
         : "/assets/Logo_Full_LightMode.svg"

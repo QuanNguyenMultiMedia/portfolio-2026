@@ -3,9 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 import LogoMark from "./LogoMark";
-import { NAV_ITEMS, getBreadcrumb } from "@/lib/navigation";
+import { NAV_ITEMS } from "@/lib/navigation";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -52,35 +51,21 @@ export default function Navbar() {
     };
   }, [pathname]);
 
-  const { directory, title } = getBreadcrumb(pathname);
-
   return (
     <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 hidden md:flex flex-col items-end w-max">
-      {/* Physical HUD Notch */}
-      <motion.div
-        initial={{ opacity: 0, y: 5 }}
-        animate={{ opacity: 1, y: 0 }}
-        key={pathname}
-        className="bg-surface/40 backdrop-blur-md border border-primary/10 border-b-0 px-4 py-1 -mb-[1px] relative z-0 origin-bottom"
-      >
-        <div className="tech-label text-[7px] opacity-40 tracking-[0.4em] whitespace-nowrap max-w-[70vw] md:max-w-none overflow-hidden text-ellipsis">
-          {`${directory} // ${title}`}
-        </div>
-      </motion.div>
-
       {/* Main Navigation Bar */}
       <nav
         ref={navRef}
-        className="relative z-10 flex items-center gap-1 p-1 bg-background/75 backdrop-blur-2xl border border-primary/10 rounded-none"
+        className="relative z-10 flex items-center gap-1 p-1 bg-foreground text-background rounded-none"
       >
         {/* Logo Mark on the left side of desktop navbar */}
         <div className="flex items-center pl-4 pr-2 h-7 w-24 flex-shrink-0">
-          <LogoMark fixed={false} variant="auto" animate={false} className="w-full h-full" />
+          <LogoMark fixed={false} variant="on-ink" animate={false} className="w-full h-full" />
         </div>
 
         {/* Active Pill Highlighter */}
         <div
-          className={`absolute bg-tech-blue -z-10 ${
+          className={`absolute bg-background -z-10 ${
             mounted ? "transition-all duration-300 ease-[var(--ease-editorial-sharp)]" : ""
           }`}
           style={{
@@ -102,10 +87,10 @@ export default function Navbar() {
               key={item.path}
               href={item.path}
               data-active={isActive}
-              className={`relative px-5 py-2 text-[10px] font-mono tracking-[0.2em] uppercase transition-colors duration-300 ${
+              className={`relative px-4 py-1.5 text-[14px] font-sans tracking-[-0.01em] transition-colors duration-300 ${
                 isActive
-                  ? "text-background"
-                  : "text-foreground/60 hover:text-foreground"
+                  ? "text-foreground"
+                  : "text-background/60 hover:text-background"
               }`}
             >
               {item.name}

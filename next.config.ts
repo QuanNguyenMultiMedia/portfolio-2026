@@ -20,6 +20,8 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
+    // route enter/exit: React <ViewTransition> around the page slot (layout.tsx, styles/riso.css)
+    viewTransition: true,
     // Disabled experimental filesystem cache for dev on macOS as it causes heavy disk I/O, cache corruption, and freezes/timeouts.
     // Enabled on Windows and Linux for significant performance improvement.
     turbopackFileSystemCacheForDev: process.platform === "darwin" ? false : true,
@@ -27,20 +29,10 @@ const nextConfig: NextConfig = {
 
   // Removed aggressive 60s onDemandEntries page disposal to prevent constant CPU-intensive recompilation of heavy 3D and media modules (Three.js, R3F, GSAP, Mux).
 
+  // Dev-only routes (/design-system, /works/builder) are guarded in their server page.tsx via notFound().
   turbopack: {
     root: path.resolve(__dirname),
     resolveExtensions: [".mdx", ".tsx", ".ts", ".jsx", ".js", ".mjs", ".json"],
-  },
-
-  webpack: (config, { dev }) => {
-    if (!dev) {
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        [path.resolve(__dirname, "src/app/design-system/page.tsx")]: path.resolve(__dirname, "src/app/design-system/page.dummy.tsx"),
-        [path.resolve(__dirname, "src/app/works/builder/page.tsx")]: path.resolve(__dirname, "src/app/works/builder/page.dummy.tsx"),
-      };
-    }
-    return config;
   },
 };
 

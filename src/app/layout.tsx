@@ -1,44 +1,26 @@
 import type { Metadata } from "next";
-import { Inter, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
-import Script from "next/script";
+import { ViewTransition } from "react";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // Styles
 import "./globals.css";
+import "../styles/riso.css";
+import { display, productSans } from "./fonts";
+import Fountain from "@/components/riso/Fountain";
+import BlurMap from "@/components/riso/BlurMap";
 
 // Internal Components
 import GlobalSideBar from "@/components/GlobalSideBar";
 import LoadingScreen from "@/components/LoadingScreen";
-import LogoMark from "@/components/LogoMark";
 import Navbar from "@/components/Navbar";
 import MobileNavbar from "@/components/MobileNavbar";
 import MobileTopBar from "@/components/MobileTopBar";
 import SmoothScroll from "@/components/SmoothScroll";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Portal from "@/components/Portal";
+import ExitChoreographer from "@/components/ExitChoreographer";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  weight: ["300", "400", "500", "600", "700"],
-  display: "swap",
-});
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  variable: "--font-display",
-  weight: ["400", "500", "700", "800"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  weight: ["400", "500"],
-  display: "swap",
-});
 
 
 export const metadata: Metadata = {
@@ -104,43 +86,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang="en" className={`${display.variable} ${productSans.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
-        <link
-          rel="preload"
-          href="/assets/portrait_sitting.jpg"
-          as="image"
-          type="image/jpeg"
-        />
-        <Script id="theme-detector" strategy="beforeInteractive">
-          {`
-            (function() {
-              try {
-                var m = localStorage.getItem('next-themes') || 'system';
-                var d = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                if (m === 'dark' || (m === 'system' && d)) {
-                  document.documentElement.classList.add('dark');
-                }
-              } catch(e) {}
-            })();
-          `}
-        </Script>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
       <body
-        className="bg-background text-foreground min-h-full"
+        className="riso-paper min-h-full"
         suppressHydrationWarning
       >
+        <Fountain className="page-plate" />
         <ThemeProvider>
           <LoadingScreen />
+          <ExitChoreographer />
           <SmoothScroll>
-              <div className="relative">
-                <LogoMark />
+              {/* isolate: inks multiply on each other, never on the page fountain (that tinted every element) */}
+              <div className="relative isolate">
                 <GlobalSideBar />
-                {children}
+                <ViewTransition default="sheet">{children}</ViewTransition>
               </div>
             </SmoothScroll>
             <Portal>
@@ -148,6 +113,10 @@ export default function RootLayout({
               <Navbar />
               <MobileNavbar />
             </Portal>
+            <div className="riso-tooth" aria-hidden />
+            <div className="riso-grain" aria-hidden />
+            {/* display-type print stack (MainTitle.aep): Roughen Edges → Compound Blur on the BlurMap */}
+            <BlurMap />
             <Analytics />
             <SpeedInsights />
         </ThemeProvider>

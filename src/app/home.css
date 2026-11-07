@@ -1,0 +1,204 @@
+/* Home: the print run (design.md §2–4, §7). Four sheets on a strict 12-column grid.
+   Flow mode (default, phones, short screens, reduced motion): sheets read top to bottom, each opened by a
+   hairline rule. 3D mode (.run.is-3d, set by PrintRun): sheets stack in depth inside a sticky stage and the
+   camera dollies through them; sheets carry ink only, so they overprint each other (multiply) in passing. */
+
+.home { padding-block: 0 var(--s-8); }
+.home p, .home figure, .home blockquote { margin: 0; }
+
+.sheet {
+  --gutter: var(--s-3);
+  padding-inline: var(--margin);
+  padding-block: var(--s-7) 0;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: var(--s-4);
+  align-items: start;
+}
+.sheet + .sheet { border-top: 1.5px solid var(--ink-black); margin-inline: var(--margin); padding-inline: 0; margin-top: var(--s-7); }
+
+/* ---------- 3D: the run ---------- */
+.run.is-3d { height: calc(var(--n, 4) * 100svh); }
+.home:has(> .run.is-3d) { padding-bottom: 0; } /* the run ends on the last sheet, held in place */
+.run.is-3d > .run-stage {
+  position: sticky; top: 0; height: 100svh; overflow: hidden;
+  perspective: 1000px; perspective-origin: 50% 46%;
+  mix-blend-mode: var(--blend); /* sheets overprint each other; the layout wrapper isolates them from the fountain */
+}
+.run.is-3d .sheet {
+  position: absolute; inset: 0; margin: 0; border: 0;
+  padding-inline: var(--margin); padding-block: var(--s-5) calc(var(--s-7) + env(safe-area-inset-bottom, 0px)); /* clears the bottom nav */
+  align-content: center;
+  mix-blend-mode: var(--blend); /* ink only: the sheet behind shows through and overprints */
+  transform-origin: 50% 46%;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+/* until the camera paints, only the first sheet is on the press: no later sheet flashes through */
+.run.is-3d:not([data-painted]) .sheet + .sheet, .run.is-3d .sheet[data-off] { opacity: 0; visibility: hidden; }
+/* keyboard users (html.kbd, set by PrintRun on Tab) keep every sheet focusable: focus calls the camera to it */
+html.kbd .run.is-3d .sheet { visibility: visible; }
+.run.is-3d .sheet:nth-child(1) { z-index: 6; }
+.run.is-3d .sheet:nth-child(2) { z-index: 5; }
+.run.is-3d .sheet:nth-child(3) { z-index: 4; }
+.run.is-3d .sheet:nth-child(4) { z-index: 3; }
+.run.is-3d .sheet:nth-child(5) { z-index: 2; }
+.run.is-3d .sheet:nth-child(6) { z-index: 1; }
+/* misregistration is driven by depth: far sheets print wide off register, and settle at the camera plane */
+.run.is-3d .plates > .under { transition: none; transform: translate3d(calc(var(--rx) * var(--mis, 1)), calc(var(--ry) * var(--mis, 1)), 0); }
+
+/* ---------- shared editorial parts ---------- */
+
+
+/* PrintedVideo controls */
+.printed-video { position: relative; margin: 0; width: 100%; }
+.video-controls { position: absolute; right: var(--s-1); bottom: var(--s-1); z-index: 2; display: flex; gap: 0.35rem; }
+.video-toggle {
+  font: inherit; font-size: var(--t-label); padding: 0.35em 0.7em;
+  border: 1.5px solid var(--ink-black); border-radius: 0; background: var(--paper); color: var(--ink-black); cursor: pointer;
+  transition: background 200ms var(--ease-print), color 200ms var(--ease-print);
+}
+.video-toggle:hover, .video-toggle:focus-visible { background: var(--ink-black); color: var(--paper); }
+
+/* ---------- frame 1 · hero ---------- */
+/* the name runs the full measure; the line sits in the left rail, the portrait stands at the right edge */
+.hero { align-content: center; row-gap: var(--s-3); }
+.hero-name {
+  grid-column: 1 / -1; margin: 0; white-space: nowrap; font-family: var(--font-display); font-weight: 400; text-transform: none;
+  font-size: var(--t-cover); line-height: 0.82; letter-spacing: -0.045em;
+}
+.run.is-3d .hero-name { font-size: min(var(--t-cover), 30svh); }
+/* display type printed in the fountain ink (the name, View Works): the plate is cut to the [data-clip]
+   glyphs in its own canvas (Fountain clipText), so nothing outside the letters is painted. The DOM text stays
+   for reading and selection, and prints in plain coral until the shader has a frame up (or without WebGL). */
+.ink-fill { isolation: isolate; padding-block: 0.16em 0.06em; margin-block: -0.16em -0.06em; } /* room for ascenders and descenders */
+.ink-fill > canvas { opacity: 0; mix-blend-mode: normal; transition: opacity 900ms var(--ease-print); }
+.ink-knock { color: transparent; transition: color 900ms var(--ease-print); }
+.ink-fill[data-live] > canvas { opacity: 1; }
+/* the DOM ink only prints when the plate cannot (no WebGL, mask failed): never as a flash before the first frame */
+.ink-fill[data-fallback]:not([data-live]) .ink-knock { color: var(--ink-coral); }
+.name-fill, .name-fill .ink-knock { display: block; }
+.hero-line { grid-column: 1 / 4; align-self: start; font-family: var(--font-display); font-size: var(--t-list); line-height: 1.1; letter-spacing: -0.01em; }
+.hero-portrait { grid-column: 10 / -1; aspect-ratio: 3 / 4; width: 100%; justify-self: end; }
+.hero-portrait > img { filter: grayscale(1) contrast(1.05); }
+.run.is-3d .hero-portrait { width: min(100%, calc(44svh * 3 / 4)); }
+
+/* ---------- frame 2 · showreel ---------- */
+/* the reel takes the whole measure: nothing else prints on this sheet */
+.reel { align-content: center; }
+.reel-frame { grid-column: 1 / -1; justify-self: center; width: 100%; }
+.run.is-3d .reel-frame { width: min(100%, calc(78svh * 16 / 9)); }
+
+/* ---------- frame 3 · works & words ----------
+   A proof wall, not a menu: five frames hung off the grid at their own ratios (printed whole), each
+   re-printing a new fragment on its own clock. The swap is a print pass: the plate lands off register and
+   slides home while the ink comes up. One pull quote sits in the open bay of the collage. */
+.drift { align-content: center; grid-template-rows: auto auto auto; row-gap: var(--s-3); }
+.drift-kicker { grid-column: 1 / 4; grid-row: 1; margin: 0; padding-top: var(--s-2); border-top: 1.5px solid var(--ink-black); align-self: start; font-size: var(--t-label); font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; }
+.drift-kicker span { font-family: var(--font-display-italic); font-style: italic; text-transform: none; letter-spacing: 0; font-size: 1.25em; }
+.proof { display: grid; gap: 0.4rem; align-content: start; min-width: 0; }
+.proof-plate { width: 100%; }
+.proof-plate > .proof-print { object-fit: contain; filter: grayscale(1) contrast(1.08); animation: proof-in 1100ms var(--ease-print) both; }
+@keyframes proof-in {
+  from { opacity: 0; transform: translate3d(0.9rem, -0.6rem, 0) scale(1.04); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+.proof-from { font-size: var(--t-label); letter-spacing: 0.08em; text-transform: uppercase; animation: words-in 900ms var(--ease-print) both; }
+/* the hang: a wide frame up top, a tall one dropping through the middle, a small square tucked low, a
+   brand still and a type loop closing the right edge. Uneven tops so the wall reads as pinned, not gridded. */
+.proof-1 { grid-column: 4 / 9; grid-row: 1 / 3; }
+.proof-2 { grid-column: 9 / 11; grid-row: 1 / 4; margin-top: var(--s-6); }
+.proof-3 { grid-column: 1 / 3; grid-row: 2 / 4; align-self: end; }
+.proof-4 { grid-column: 11 / -1; grid-row: 1 / 3; margin-top: var(--s-3); }
+.proof-5 { grid-column: 11 / -1; grid-row: 3; align-self: end; }
+.drift-quote { grid-column: 3 / 9; grid-row: 3; align-self: end; display: grid; gap: var(--s-2); margin: 0; padding-left: var(--s-3); }
+.drift-words { font-family: var(--font-display); font-size: clamp(1.2rem, 1.9vw, 2.1rem); line-height: 1.1; letter-spacing: -0.015em; max-width: 34ch; text-wrap: pretty; animation: words-in 900ms var(--ease-print) both; }
+.drift-words p::before { content: "\201C"; display: inline-block; width: 0.5em; margin-left: -0.5em; color: var(--ink-violet); }
+@keyframes words-in { from { opacity: 0; transform: translate3d(0, 0.5rem, 0); } to { opacity: 1; transform: none; } }
+.drift-credit { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-2); padding-top: var(--s-1); border-top: 1.5px solid var(--ink-black); font-size: var(--t-label); letter-spacing: 0.08em; text-transform: uppercase; }
+.drift-turn { display: inline-flex; align-items: baseline; gap: 0.75em; font-variant-numeric: tabular-nums; }
+.drift-turn button { font: inherit; padding: 0.15em 0.4em; border: 0; background: none; color: inherit; cursor: pointer; transition: transform 300ms var(--ease-print), color 300ms var(--ease-print); }
+.drift-turn button:hover, .drift-turn button:focus-visible { color: var(--ink-violet); }
+.drift-turn button:first-child:hover { transform: translate3d(-0.2em, 0, 0); }
+.drift-turn button:last-child:hover { transform: translate3d(0.2em, 0, 0); }
+.run.is-3d .proof-plate { max-height: 40svh; }
+.run.is-3d .proof-2 .proof-plate, .run.is-3d .proof-4 .proof-plate { max-height: 52svh; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .proof-plate > .proof-print, .drift-words { animation-duration: 200ms; animation-name: fade-in; }
+}
+
+/* ---------- frame 4 · the statement and the way in ----------
+   The eye strip hangs top right, the manifesto runs into it from the left over a hairline; beneath, the
+   record as one quiet ledger line, the collaborators, and View Works in the fountain ink on the baseline. */
+.close { align-content: center; grid-template-rows: auto auto auto auto; row-gap: 0; }
+.manifesto-eye { grid-column: 5 / -1; grid-row: 1; aspect-ratio: 21 / 8; width: 100%; }
+.manifesto-eye > img { object-position: 62% 18%; transform: scale(3.6); transform-origin: 62% 18%; filter: grayscale(1) contrast(1.15); }
+.manifesto-text {
+  grid-column: 1 / 10; grid-row: 2; margin-top: calc(var(--s-6) * -1); z-index: 1;
+  padding-top: var(--s-2); border-top: 1.5px solid var(--ink-black);
+  font-family: var(--font-display); font-size: var(--t-lead-serif); line-height: 1.04; letter-spacing: -0.02em;
+  text-indent: 4ch; text-wrap: pretty; mix-blend-mode: var(--blend);
+}
+.ledger { grid-column: 1 / 7; grid-row: 3; margin: var(--s-5) 0 0; display: grid; grid-template-columns: repeat(4, auto); justify-content: start; column-gap: var(--s-4); align-self: start; }
+.ledger > div { display: grid; }
+.ledger dd { margin: 0; font-family: var(--font-display); font-size: var(--t-list); line-height: 1; letter-spacing: -0.02em; }
+.ledger dt { order: 2; font-size: var(--t-label); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.3em; }
+.collab { grid-column: 1 / 6; grid-row: 4; align-self: end; display: grid; gap: var(--s-1); margin-top: var(--s-4); }
+.collab > p { font-size: var(--t-body); font-style: italic; }
+.client-list { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: var(--gutter); font-size: var(--t-body); line-height: 1.5; }
+.view-works { grid-column: 7 / -1; grid-row: 3 / 5; align-self: end; justify-self: end; margin: 0; font-family: var(--font-display-italic); font-style: italic; font-size: clamp(3rem, 8.4vw, 9rem); line-height: 0.82; letter-spacing: -0.04em; }
+.view-works a { color: inherit; text-decoration: none; display: inline-block; }
+.view-works .fountain-content { display: inline-flex; align-items: baseline; gap: 0.1em; white-space: nowrap; }
+.view-arrow { display: inline-block; transition: transform 500ms var(--ease-print); }
+.view-works a:hover .view-arrow, .view-works a:focus-visible .view-arrow { transform: translate3d(0.12em, 0, 0); }
+.run.is-3d .manifesto-eye { max-height: 26svh; }
+.run.is-3d .manifesto-text { font-size: min(var(--t-lead-serif), 5.4svh); }
+
+/* ---------- tablet ---------- */
+@media (max-width: 1024px) {
+  .manifesto-text { grid-column: 1 / -1; }
+  .hero-line { grid-column: 1 / 8; }
+  .hero-portrait { grid-column: 8 / -1; }
+  .manifesto-eye { grid-column: 4 / -1; }
+  .drift { grid-template-rows: none; }
+  .drift-kicker { grid-column: 1 / -1; grid-row: auto; }
+  .proof-1 { grid-column: 1 / 9; grid-row: auto; }
+  .proof-2 { grid-column: 9 / -1; grid-row: span 2; margin-top: 0; }
+  .proof-3 { grid-column: 1 / 5; grid-row: auto; align-self: start; }
+  .proof-4 { grid-column: 5 / 9; grid-row: auto; margin-top: 0; }
+  .proof-5 { display: none; }
+  .drift-quote { grid-column: 1 / -1; grid-row: auto; padding-left: 0; }
+  .ledger, .collab { grid-column: 1 / -1; grid-row: auto; }
+  .view-works { grid-column: 1 / -1; grid-row: auto; margin-top: var(--s-5); }
+}
+/* ---------- phone: one column ---------- */
+@media (max-width: 640px) {
+  .sheet { grid-template-columns: minmax(0, 1fr); }
+  .sheet > * { grid-column: 1 / -1 !important; }
+  .view-works { justify-self: start; }
+  .ledger { grid-template-columns: repeat(2, auto); row-gap: var(--s-3); }
+  .proof-3 { display: none; }
+}
+
+/* ---------- 3D: depth inside a sheet ----------
+   --d runs 1 → 0 → -1 as a sheet approaches, holds the camera plane, and passes. Layers slide against each
+   other along it, so a sheet reads as plates hung at different depths, not one flat card. */
+.run.is-3d .sheet > * { will-change: transform; }
+.run.is-3d .hero-name { transform: translate3d(0, calc(var(--d, 0) * -8svh), 0); }
+.run.is-3d .hero-line { transform: translate3d(calc(var(--d, 0) * -3vw), calc(var(--d, 0) * 5svh), 0); }
+.run.is-3d .hero-portrait { transform: translate3d(calc(var(--d, 0) * 4vw), calc(var(--d, 0) * 3svh), 0); }
+.run.is-3d .reel-frame { transform: translate3d(0, calc(var(--d, 0) * -4svh), 0); }
+.run.is-3d .drift-kicker { transform: translate3d(calc(var(--d, 0) * -3vw), 0, 0); }
+.run.is-3d .proof-1 { transform: translate3d(0, calc(var(--d, 0) * -6svh), 0); }
+.run.is-3d .proof-2 { transform: translate3d(calc(var(--d, 0) * 3vw), calc(var(--d, 0) * 10svh), 0); }
+.run.is-3d .proof-3 { transform: translate3d(calc(var(--d, 0) * -6vw), calc(var(--d, 0) * 8svh), 0); }
+.run.is-3d .proof-4 { transform: translate3d(calc(var(--d, 0) * 7vw), calc(var(--d, 0) * -5svh), 0); }
+.run.is-3d .proof-5 { transform: translate3d(calc(var(--d, 0) * 5vw), calc(var(--d, 0) * 12svh), 0); }
+.run.is-3d .drift-quote { transform: translate3d(0, calc(var(--d, 0) * 6svh), 0); }
+.run.is-3d .manifesto-text { transform: translate3d(calc(var(--d, 0) * -5vw), 0, 0); }
+.run.is-3d .manifesto-eye { transform: translate3d(calc(var(--d, 0) * 7vw), calc(var(--d, 0) * 5svh), 0); }
+.run.is-3d .ledger { transform: translate3d(0, calc(var(--d, 0) * 4svh), 0); }
+.run.is-3d .collab { transform: translate3d(0, calc(var(--d, 0) * 6svh), 0); }
+.run.is-3d .view-works { transform: translate3d(calc(var(--d, 0) * 8vw), calc(var(--d, 0) * 10svh), 0); }

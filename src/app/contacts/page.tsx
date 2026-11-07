@@ -199,6 +199,9 @@ function GooeyText({
           display: block;
           text-rendering: optimizeLegibility;
         }
+        /* The handle never wraps, so it scales with its column (a size
+           container) and caps at the cardTitle size. */
+        .goo-fit .goo-char { font-size: min(clamp(1.6rem, 2.6vw, 2.6rem), 9.8cqi); }
         .goo-char {
           display: inline-block;
           will-change: filter, transform;
@@ -228,7 +231,7 @@ function GooeyText({
                     }}
                     className={`goo-char ${textClassName || ""}`}
                   >
-                    {char === " " ? " " : char}
+                    {char === " " ? " " : char}
                   </span>
                 );
               })}
@@ -246,9 +249,9 @@ const socialLinks = [
     url: "https://www.linkedin.com/in/quannguyenhere/",
     id: "01",
   },
-  // Behance/Upwork are placeholders for now; CONTACT_SOCIALS below hides any
+  // Upwork is a placeholder for now; CONTACT_SOCIALS below hides any
   // link still pointing at "#" so no dead links ever reach the DOM.
-  { name: "BEHANCE", url: "#", id: "02" },
+  { name: "BEHANCE", url: "https://www.behance.net/quannguyenhere", id: "02" },
   { name: "UPWORK", url: "#", id: "03" },
 ];
 
@@ -284,12 +287,12 @@ const CLICK_LOCK_MS = 200; // briefly ignore re-clicks so a flip can commit
 
 // Shared inner grid for both card faces — the box that holds the two columns.
 const CARD_SHELL =
-  "w-full h-full grid grid-cols-1 lg:grid-cols-12 gap-0 border border-primary/10 bg-background/95 md:bg-surface/20 backdrop-blur-3xl md:backdrop-blur-xl overflow-hidden min-h-[400px] 3xl:min-h-[520px] 4xl:min-h-[620px]";
+  "w-full h-full grid grid-cols-1 lg:grid-cols-12 gap-0 border border-primary/25 bg-background overflow-hidden min-h-[400px] 3xl:min-h-[520px] 4xl:min-h-[620px]";
 
 // The tab-style title chip that sits above the top-right corner of a face.
 function CardBadge({ title }: { title: string }) {
   return (
-    <div className="bg-primary/5 backdrop-blur-xl border border-primary/10 border-b-0 px-6 py-2 h-[40px] 3xl:px-10 3xl:py-4 3xl:h-[54px] 4xl:px-14 4xl:py-5 4xl:h-[68px] inline-flex items-center absolute top-0 right-0 -translate-y-full">
+    <div className="bg-primary/5 border border-primary/25 border-b-0 px-6 pt-3 pb-2.5 3xl:px-10 3xl:pt-4 3xl:pb-3.5 4xl:px-14 4xl:pt-5 4xl:pb-4.5 inline-flex items-center absolute top-0 right-0 -translate-y-full">
       <h1 className={`${t.cardTitle} italic leading-none whitespace-nowrap`}>
         {title}
       </h1>
@@ -339,7 +342,7 @@ function CardFace({
 // The email headline shared by both faces (the About face adds a subtitle).
 function EmailLink({ isFlipped, subtitle }: { isFlipped: boolean; subtitle?: string }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 @container">
       <a
         href="mailto:quannguyenhere@gmail.com"
         className="pointer-events-auto flex flex-col gap-1.5 py-8 -my-5 group"
@@ -348,6 +351,7 @@ function EmailLink({ isFlipped, subtitle }: { isFlipped: boolean; subtitle?: str
         <GooeyText
           lines={["@QUANNGUYENHERE"]}
           textClassName={`${t.cardTitle} italic leading-none whitespace-nowrap`}
+          className="goo-fit"
           isFlipped={isFlipped}
         />
       </a>
@@ -554,7 +558,7 @@ export default function ContactsPage() {
               <CardBadge title="Contact" />
 
               <div className={CARD_SHELL}>
-                <div className="lg:col-span-5 p-5 md:p-8 3xl:p-10 4xl:p-12 border-b lg:border-b-0 lg:border-r border-primary/10 flex flex-col justify-between">
+                <div className="lg:col-span-5 p-5 md:p-8 3xl:p-10 4xl:p-12 border-b lg:border-b-0 lg:border-r border-primary/25 flex flex-col justify-between">
                   <div className="space-y-6 3xl:space-y-10 4xl:space-y-12">
                     <EmailLink isFlipped={isFlipped} />
 
@@ -588,7 +592,7 @@ export default function ContactsPage() {
                   </div>
                 </div>
 
-                <div className="lg:col-span-7 p-4 md:p-6 lg:p-8 relative min-h-[300px] lg:min-h-full bg-primary/[0.01] group">
+                <div className="lg:col-span-7 p-4 md:p-6 lg:p-8 relative min-h-[300px] lg:min-h-full bg-primary/[0.01]">
                   <div className="relative w-full h-full min-h-[268px] lg:min-h-0">
                     <Image
                       src="/assets/portrait_sitting.jpg"
@@ -596,7 +600,7 @@ export default function ContactsPage() {
                       fill
                       priority
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 40vw"
-                      className="object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 ease-out"
+                      className="object-cover mix-blend-print"
                     />
                   </div>
                 </div>
@@ -608,7 +612,7 @@ export default function ContactsPage() {
               <CardBadge title="About" />
 
               <div className={CARD_SHELL}>
-                <div className="lg:col-span-5 p-5 md:p-8 3xl:p-10 4xl:p-12 border-b lg:border-b-0 lg:border-r border-primary/10 flex flex-col justify-between">
+                <div className="lg:col-span-5 p-5 md:p-8 3xl:p-10 4xl:p-12 border-b lg:border-b-0 lg:border-r border-primary/25 flex flex-col justify-between">
                   <div className="space-y-6 3xl:space-y-10 4xl:space-y-12">
                     <EmailLink isFlipped={isFlipped} subtitle="Multimedia Designer" />
 
@@ -635,7 +639,7 @@ export default function ContactsPage() {
 
                   <div className="pt-8 space-y-2">
                     <p className={`${t.bodyProse} max-w-[240px] 3xl:max-w-[320px] opacity-80`}>
-                      FPT University // BBA Multimedia Communications
+                      FPT University / BBA Multimedia Communications
                     </p>
                   </div>
                 </div>
@@ -666,10 +670,10 @@ export default function ContactsPage() {
                   <div className="pt-6 3xl:pt-8 flex flex-col gap-2 relative z-10">
                     <span className={`${t.monoEyebrow} opacity-50 block`}>DISCIPLINES</span>
                     <div className="flex gap-3">
-                      <span className={`border border-primary/10 px-3 py-1 ${t.metaDataLabel} opacity-75`}>
+                      <span className={`border border-primary/25 px-3 py-1 ${t.metaDataLabel} opacity-75`}>
                         Motion Graphics
                       </span>
-                      <span className={`border border-primary/10 px-3 py-1 ${t.metaDataLabel} opacity-75`}>
+                      <span className={`border border-primary/25 px-3 py-1 ${t.metaDataLabel} opacity-75`}>
                         Visual Systems
                       </span>
                     </div>

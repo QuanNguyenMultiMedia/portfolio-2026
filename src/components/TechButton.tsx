@@ -20,12 +20,12 @@ export default function TechButton({
   disabled = false,
 }: TechButtonProps) {
   const baseStyles =
-    "relative flex items-center justify-center py-6 px-12 border overflow-hidden transition-all duration-500 font-mono text-[10px] tracking-[0.4em] uppercase font-bold group rounded-none";
+    "relative flex items-center justify-center py-6 px-12 border overflow-hidden transition-all duration-500 font-sans text-[12px] font-bold group rounded-none";
 
   const variants = {
     primary: "border-primary text-foreground hover:text-background",
     secondary:
-      "border-primary/20 text-foreground/60 hover:border-primary hover:text-foreground",
+      "border-primary/25 text-foreground/60 hover:border-primary hover:text-foreground",
     ghost: "border-transparent text-foreground/40 hover:text-foreground",
   };
 

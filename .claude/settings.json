@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(npx tsc --noEmit*)",
+      "Bash(npx eslint*)",
+      "Bash(npx vitest run*)",
+      "Bash(npm run lint*)",
+      "Bash(npm test*)",
+      "PowerShell(git status*)",
+      "PowerShell(git diff*)",
+      "PowerShell(git log*)"
+    ],
+    "deny": [
+      "Read(./.next/**)",
+      "Read(./out/**)",
+      "Read(./test-results/**)",
+      "Read(./public/play-static/**)",
+      "Read(./tsconfig.tsbuildinfo)",
+      "Read(./package-lock.json)",
+      "Read(./src/data/vietnam-forest-data.json)"
+    ]
+  }
+}

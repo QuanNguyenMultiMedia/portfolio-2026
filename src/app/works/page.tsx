@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import gsap from "gsap";
 import PageWrapper from "@/components/PageWrapper";
+import PlateOn from "@/components/riso/PlateOn";
 import { projects } from "@/data/projects";
 import { useScreenSize } from "@/hooks/useScreenSize";
 import { t, layout, fx } from "@/lib/designSystem";
@@ -504,6 +505,7 @@ export default function WorksPage() {
 
   return (
     <PageWrapper variant="hero">
+      <PlateOn />
       <div className="relative w-full max-w-screen-xl 3xl:max-w-[1500px] 4xl:max-w-[1800px] mx-auto h-full flex flex-col justify-start lg:justify-between gap-4 lg:gap-0 pt-12 md:pt-28 pb-16 lg:pb-24 px-6 md:px-16 3xl:px-24 4xl:px-32 overflow-hidden z-10">
         {/* Ambient Mobile Background Image (Dynamic Cross-Fade) */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.05] lg:hidden z-0 overflow-hidden">
@@ -519,23 +521,18 @@ export default function WorksPage() {
               animate={{ opacity: 0.15 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.8 }}
-              className="object-cover blur-xl scale-105"
+              className="object-cover blur-xl scale-105 mix-blend-print"
             />
           </AnimatePresence>
         </div>
 
-        <h1 className="sr-only">Selected Works</h1>
-
-        {/* Minimal SubHeader */}
         <motion.div
           {...fx.headerSlideIn}
-          className="hidden md:flex w-full justify-between items-end border-b border-primary/10 pb-3 mb-3 lg:mb-4 shrink-0"
+          className="mb-8 lg:mb-12 space-y-4 3xl:space-y-6 shrink-0"
         >
-          <div className="flex flex-col gap-1">
-            <span className={`${t.metaDataLabel} tracking-[0.4em] opacity-40 group-hover:opacity-40`}>
-              Selected Works
-            </span>
-          </div>
+          <h1 className={t.sectionHeaderDisplay}>
+            Works
+          </h1>
         </motion.div>
 
         {/* Main Grid conformed to viewport */}
@@ -545,7 +542,7 @@ export default function WorksPage() {
             {...fx.slideIn(0)}
             className="col-span-12 lg:col-span-5 flex flex-col justify-between h-full min-h-0 space-y-6 lg:space-y-8 3xl:space-y-12 items-end text-right pb-2"
           >
-            <div className="relative -mx-8 w-[calc(100%+64px)] self-stretch lg:self-auto lg:mx-0 lg:w-full h-[120px] lg:h-auto lg:flex-1 min-h-0 lg:min-h-[260px] 3xl:min-h-[380px] 4xl:min-h-[480px] bg-transparent border-y lg:border border-primary/10 overflow-hidden group transition-all duration-700 mb-6 lg:mb-0 block">
+            <div className="relative -mx-8 w-[calc(100%+64px)] self-stretch lg:self-auto lg:mx-0 lg:w-full h-[120px] lg:h-auto lg:flex-1 min-h-0 lg:min-h-[260px] 3xl:min-h-[380px] 4xl:min-h-[480px] bg-transparent border-y lg:border border-primary/25 overflow-hidden group transition-all duration-700 mb-6 lg:mb-0 block">
               <div
                 className="absolute inset-0 opacity-10 blur-xl group-hover:opacity-20 transition-opacity duration-700 pointer-events-none"
                 style={{
@@ -560,7 +557,7 @@ export default function WorksPage() {
                 <div className="absolute bottom-4 right-4 w-3.5 h-3.5 border-b border-r border-primary/30 group-hover:border-primary transition-colors duration-500" />
               </div>
 
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 border border-primary/10 group-hover:border-primary/30 rounded-full flex items-center justify-center pointer-events-none z-20 transition-all duration-700 group-hover:scale-110">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 border border-primary/25 group-hover:border-primary/30 rounded-full flex items-center justify-center pointer-events-none z-20 transition-all duration-700 group-hover:scale-110">
                 <div className="w-1.5 h-1.5 bg-primary/20 group-hover:bg-primary/40 rounded-full" />
               </div>
 
@@ -579,7 +576,7 @@ export default function WorksPage() {
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
                     priority
-                    className="object-cover transition-transform duration-[2s] group-hover:scale-105"
+                    className="object-cover transition-transform duration-[2s] group-hover:scale-105 mix-blend-print"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-transparent to-transparent pointer-events-none" />
                 </motion.div>
@@ -622,14 +619,9 @@ export default function WorksPage() {
                 }}
                 className="relative flex-1 h-full pr-[168px] md:pr-[220px] 3xl:pr-[320px] 4xl:pr-[420px] flex items-center justify-start overflow-hidden"
               >
-                {/* Top Fade & Blur Overlay */}
-                <div className="absolute top-0 left-0 right-[158px] md:right-[210px] 3xl:right-[310px] 4xl:right-[410px] h-20 md:h-28 3xl:h-36 4xl:h-44 bg-gradient-to-b from-background via-background/90 to-transparent pointer-events-none z-20" />
-
-                {/* Bottom Fade & Blur Overlay */}
-                <div className="absolute bottom-0 left-0 right-[158px] md:right-[210px] 3xl:right-[310px] 4xl:right-[410px] h-20 md:h-28 3xl:h-36 4xl:h-44 bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none z-20" />
-
+                {/* no fade slabs: the wheel is ink on the sheet, and its own mask feathers the ends */}
                 {/* Viewfinder Selection Frame - aligns perfectly to Bezel boundary */}
-                <div className="absolute left-0 right-[158px] md:right-[210px] 3xl:right-[310px] 4xl:right-[410px] top-1/2 -translate-y-1/2 h-[60px] md:h-[80px] 3xl:h-[110px] 4xl:h-[140px] border-y border-primary/10 bg-transparent pointer-events-none z-0">
+                <div className="absolute left-0 right-[158px] md:right-[210px] 3xl:right-[310px] 4xl:right-[410px] top-1/2 -translate-y-1/2 h-[60px] md:h-[80px] 3xl:h-[110px] 4xl:h-[140px] border-y border-primary/25 bg-transparent pointer-events-none z-0">
                   {/* Persistent, stationary vertical indicator on the left edge */}
                   <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary rounded-full z-10" />
                 </div>
@@ -684,10 +676,10 @@ export default function WorksPage() {
                           }}
                         >
                           <div className="w-full h-full flex items-center justify-between">
-                            <h3 className={`font-display uppercase tracking-tighter leading-[0.85] font-bold transition-all duration-300 origin-left inline-block group-hover/wheel-item:skew-x-[-10deg] ${
+                            <h3 className={`font-display tracking-tighter leading-[0.85] font-bold transition-all duration-300 origin-left inline-block group-hover/wheel-item:skew-x-[-10deg] ${
                               isActive
                                 ? "text-primary animate-pulse-subtle"
-                                : "text-foreground/15 group-hover/wheel-item:text-foreground/45"
+                                : "text-foreground/55 group-hover/wheel-item:text-foreground/85"
                             } ${getTitleFontSizeClass(project.title)}`}>
                               {project.title}
                             </h3>
@@ -741,7 +733,7 @@ export default function WorksPage() {
                       router.push(`/works/${projects[activeIndex].slug}`);
                     }
                   }}
-                  className="relative w-[120px] h-[120px] md:w-[160px] md:h-[160px] 3xl:w-[240px] 3xl:h-[240px] 4xl:w-[320px] 4xl:h-[320px] rounded-full border border-primary/10 bg-transparent flex items-center justify-center select-none cursor-pointer touch-none"
+                  className="relative w-[120px] h-[120px] md:w-[160px] md:h-[160px] 3xl:w-[240px] 3xl:h-[240px] 4xl:w-[320px] 4xl:h-[320px] rounded-full border border-primary/25 bg-transparent flex items-center justify-center select-none cursor-pointer touch-none"
                   onMouseDown={(e) => {
                     e.preventDefault();
                     handleDialStart(e.clientX, e.clientY);
@@ -779,7 +771,7 @@ export default function WorksPage() {
                   {/* Rotatable Knob */}
                   <div
                     ref={knobRef}
-                    className="w-[84px] h-[84px] md:w-[110px] md:h-[110px] 3xl:w-[170px] 3xl:h-[170px] 4xl:w-[226px] 4xl:h-[226px] rounded-full bg-transparent border border-primary/20 flex items-center justify-center relative"
+                    className="w-[84px] h-[84px] md:w-[110px] md:h-[110px] 3xl:w-[170px] 3xl:h-[170px] 4xl:w-[226px] 4xl:h-[226px] rounded-full bg-transparent border border-primary/25 flex items-center justify-center relative"
                   >
                     {/* Concentric rings texture details */}
                     <div className="absolute inset-2 rounded-full border border-primary/[0.04] pointer-events-none" />
@@ -790,8 +782,8 @@ export default function WorksPage() {
                   </div>
 
                   {/* Static Center Cap (Sibling - remains stationary and upright) */}
-                  <div className="absolute w-[32px] h-[32px] md:w-[44px] md:h-[44px] 3xl:w-[66px] 3xl:h-[66px] 4xl:w-[90px] 4xl:h-[90px] rounded-full bg-transparent backdrop-blur-[1px] border border-primary/15 flex items-center justify-center pointer-events-none z-30">
-                    <span className="text-xs md:text-sm 3xl:text-xl 4xl:text-3xl font-mono font-black text-primary/80 tracking-tighter">
+                  <div className="absolute w-[32px] h-[32px] md:w-[44px] md:h-[44px] 3xl:w-[66px] 3xl:h-[66px] 4xl:w-[90px] 4xl:h-[90px] rounded-full bg-transparent border border-primary/25 flex items-center justify-center pointer-events-none z-30">
+                    <span className="text-xs md:text-sm 3xl:text-xl 4xl:text-3xl font-sans font-black text-primary/80 tracking-tighter">
                       0{activeIndex + 1}
                     </span>
                   </div>
@@ -805,7 +797,7 @@ export default function WorksPage() {
         <div className="fixed bottom-28 right-8 z-50 md:bottom-32 md:right-12">
           <Link
             href="/works/builder"
-            className="text-[10px] md:text-xs font-mono text-foreground/40 hover:text-tech-blue border border-foreground/10 hover:border-tech-blue/30 bg-surface/30 backdrop-blur-md px-3 py-1.5 rounded transition-all duration-300 tracking-wider flex items-center gap-1"
+            className="text-[12px] md:text-xs font-sans text-foreground/40 hover:text-tech-blue border border-primary/25 hover:border-tech-blue/30 bg-background px-3 py-1.5 rounded transition-all duration-300 flex items-center gap-1"
           >
             BUILDER ↗
           </Link>

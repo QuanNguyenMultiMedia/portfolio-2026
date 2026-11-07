@@ -1,27 +1,33 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f5f5f5;
-  --foreground: #111111;
-  --primary: #000000;
-  --tech-blue: #0029ff;
-  --tech-blue-light: #3b82f6;
-  --tech-blue-dark: #1d4ed8;
-  --border-neutral: rgba(0, 0, 0, 0.08);
-  --surface: #ffffff;
+  /* Riso Run (docs/design.md): paper ground, ink set. Legacy names kept so every route restyles at once. */
+  --background: #f2f3f5; /* --paper */
+  --foreground: #313131; /* --ink-black */
+  --primary: #313131;
+  --tech-blue: #3a3efa; /* accent is now --ink-violet */
+  --tech-blue-light: #00a8ff;
+  --tech-blue-dark: #3000ff;
+  --border-neutral: rgba(49, 49, 49, 0.18);
+  --surface: #f5f7fa; /* --paper-hi */
 
   /* Editorial motion curves — mirror fx.ease / fx.easeSharp in designSystem.ts */
   --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-editorial-sharp: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.dark {
-  --background: #0a0a0a;
-  --foreground: #f5f5f5;
-  --primary: #ffffff;
-  --tech-blue: #0029ff;
-  --border-neutral: rgba(255, 255, 255, 0.1);
-  --surface: #111111;
+/* Dark stock (design.md §1.5): legacy names follow the riso tokens in styles/riso.css */
+html.dark {
+  --background: #161618; /* --paper */
+  --foreground: #e6e4df; /* --ink-black on dark stock */
+  --primary: #e6e4df;
+  --tech-blue: #8c8fff; /* --ink-violet on dark stock */
+  --border-neutral: rgba(230, 228, 223, 0.18);
+  --surface: #1c1c1f; /* --paper-hi */
+}
+
+@utility mix-blend-print {
+  mix-blend-mode: var(--blend, multiply);
 }
 
 @theme {
@@ -32,9 +38,9 @@
   --color-border-neutral: var(--border-neutral);
   --color-surface: var(--surface);
 
-  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-mono), monospace;
+  --font-sans: var(--font-product), "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-display-face), "Times New Roman", serif;
+  --font-mono: var(--font-product), "Helvetica Neue", Arial, sans-serif;
 
 
   --spacing-tight: 24px;
@@ -156,3 +162,6 @@
     animation: pulse-subtle 3s ease-in-out infinite;
   }
 }
+
+/* LoadingScreen holds the page still until its exit finishes */
+html.scroll-locked, html.scroll-locked body { overflow: hidden; overscroll-behavior: none; }

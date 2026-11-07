@@ -55,3 +55,7 @@ next-env.d.ts
 # Temporary scratch scripts
 scratch/test-mobile.js
 
+
+# Playwright output
+/test-results/
+/playwright-report/

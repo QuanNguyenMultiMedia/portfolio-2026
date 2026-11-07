@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import LogoMark from "./LogoMark";
-import { NAV_ITEMS, getBreadcrumb } from "@/lib/navigation";
+import { NAV_ITEMS } from "@/lib/navigation";
 
 export default function MobileNavbar() {
   const router = useRouter();
@@ -37,8 +37,6 @@ export default function MobileNavbar() {
     };
   }, [isOpen]);
 
-  const { title } = getBreadcrumb(pathname);
-  const breadcrumb = `// ${title}`;
 
   // Spreading 6 items in an arc from 180 degrees (straight left) to 270 degrees (straight up)
   const radius = 175;
@@ -219,7 +217,7 @@ export default function MobileNavbar() {
             <li key={item.path}>
               <Link
                 href={item.path}
-                className="sr-only focus:not-sr-only focus:block focus:relative focus:bg-background focus:text-foreground focus:border focus:border-primary/25 focus:px-5 focus:py-3 focus:font-mono focus:text-xs focus:tracking-[0.2em] focus:uppercase"
+                className="sr-only focus:not-sr-only focus:block focus:relative focus:bg-background focus:text-foreground focus:border focus:border-primary/25 focus:px-5 focus:py-3 focus:font-sans focus:text-xs"
               >
                 {item.name}
               </Link>
@@ -230,12 +228,11 @@ export default function MobileNavbar() {
 
       {/* Floating Status Notch / Trigger Button */}
       <div className="fixed bottom-10 left-6 right-6 z-50 md:hidden pointer-events-none">
-        <div className="w-full bg-surface/50 backdrop-blur-xl border border-primary/10 px-5 py-4 flex items-center justify-between pointer-events-auto">
+        <div className="w-full bg-background border border-primary/25 px-5 py-4 flex items-center justify-between pointer-events-auto">
           <div className="flex items-center gap-3">
             <div className="w-16 h-8 flex-shrink-0">
               <LogoMark fixed={false} variant="auto" animate={false} className="w-full h-full" />
             </div>
-            <span className="font-mono text-[8px] tracking-[0.2em] opacity-60 uppercase">{breadcrumb}</span>
           </div>
 
           <button
@@ -252,11 +249,11 @@ export default function MobileNavbar() {
               e.preventDefault();
               handleStart(e.clientX, e.clientY);
             }}
-            className={`font-mono text-[10px] tracking-[0.3em] uppercase border border-primary/25 py-3.5 bg-surface/20 active:bg-primary active:text-background transition-all duration-300 min-h-[44px] select-none cursor-pointer ${
+            className={`font-sans text-[12px] border border-primary/25 py-3.5 bg-background active:bg-primary active:text-background transition-all duration-300 min-h-[44px] select-none cursor-pointer ${
               hasInteracted ? "min-w-[44px] px-3" : "min-w-[100px] px-5"
             }`}
           >
-            {hasInteracted ? "[ ]" : "[ HOLD MENU ]"}
+            <span aria-hidden>≡</span>
           </button>
         </div>
       </div>
@@ -269,11 +266,11 @@ export default function MobileNavbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 bg-background/70 backdrop-blur-md z-[100] md:hidden pointer-events-none flex items-center justify-center overflow-hidden"
+            className="fixed inset-0 bg-background z-[100] md:hidden pointer-events-none flex items-center justify-center overflow-hidden"
           >
             {/* Ambient subtle glow ring */}
             <div 
-              className="absolute w-[360px] h-[360px] rounded-full border border-dashed border-primary/5 pointer-events-none animate-[spin_60s_linear_infinite]"
+              className="absolute w-[360px] h-[360px] rounded-full border border-dashed border-primary/25 pointer-events-none animate-[spin_60s_linear_infinite]"
               style={{
                 left: `${touchCenter.x - 180}px`,
                 top: `${touchCenter.y - 180}px`,
@@ -330,18 +327,18 @@ export default function MobileNavbar() {
                   }}
                 >
                   <div
-                    className={`w-20 h-10 flex items-center justify-center font-mono text-[9px] tracking-[0.15em] uppercase border transition-all duration-300 relative overflow-visible ${
+                    className={`w-20 h-10 flex items-center justify-center font-sans text-[12px] border transition-all duration-300 relative overflow-visible ${
                       isSelected
                         ? "bg-tech-blue border-tech-blue text-background scale-110"
                         : isCurrent
-                          ? "bg-surface/80 border-tech-blue/50 text-tech-blue"
-                          : "bg-surface/30 backdrop-blur-xl border-primary/10 text-primary/70"
+                          ? "bg-background border-tech-blue/50 text-tech-blue"
+                          : "bg-background border-primary/25 text-primary/70"
                     }`}
                   >
                     <span
                       className={`transition-all duration-300 whitespace-nowrap px-2 py-1 ${
                         isSelected
-                          ? "-translate-y-8 text-tech-blue font-bold scale-110 bg-surface/90 border border-tech-blue/30 backdrop-blur-md"
+                          ? "-translate-y-8 text-tech-blue font-bold scale-110 bg-background border border-tech-blue/30"
                           : ""
                       }`}
                     >
@@ -354,7 +351,7 @@ export default function MobileNavbar() {
 
             {/* Center Anchor Point */}
             <div
-              className="absolute w-12 h-12 rounded-full border border-primary/20 flex items-center justify-center z-10 pointer-events-none bg-surface/20"
+              className="absolute w-12 h-12 rounded-full border border-primary/25 flex items-center justify-center z-10 pointer-events-none bg-background"
               style={{
                 left: `${touchCenter.x - 24}px`,
                 top: `${touchCenter.y - 24}px`,
@@ -370,8 +367,8 @@ export default function MobileNavbar() {
 
             {/* Gesture Tip Overlay */}
             <div className="absolute top-1/4 left-1/2 -translate-x-1/2 text-center pointer-events-none z-10">
-              <span className="font-mono text-[8px] tracking-[0.3em] uppercase opacity-40">
-                DRAG FINGER TO ITEM // RELEASE TO CONFIRM
+              <span className="font-sans text-[12px] opacity-40">
+                DRAG FINGER TO ITEM / RELEASE TO CONFIRM
               </span>
             </div>
           </motion.div>

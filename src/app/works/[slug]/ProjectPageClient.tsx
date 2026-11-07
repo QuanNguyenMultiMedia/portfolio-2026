@@ -4,571 +4,379 @@ import { useRef, use, useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { projects } from "@/data/projects";
-import { layout, ui, t, fx } from "@/lib/designSystem";
+import { projects, type Project } from "@/data/projects";
+
+type Screen = Project["screens"][number];
+import { t, fx } from "@/lib/designSystem";
 import { notFound } from "next/navigation";
 import useLenis from "@/hooks/useLenis";
 import { useScreenSize } from "@/hooks/useScreenSize";
-import HUDLabel from "@/components/HUDLabel";
 import dynamic from "next/dynamic";
+import WorkMedia, { mediaAspect } from "@/components/WorkMedia";
 
 const MuxPlayerWrapper = dynamic(() => import("@/components/MuxPlayerWrapper"), {
   ssr: false,
 });
 
-const MotionImage = motion.create(Image);
+// Every media frame below is sized from the work's own aspect ratio (mediaAspect), so footage is
+// only ever scaled, never cropped. Copy comes from projects.ts only.
 
-function DeliverableCarousel({
-  images,
-  screenSize,
+const pad2 = (n: number) => String(n).padStart(2, "0");
+
+/**
+ * A matted print of one piece of work, sized by height; width follows the media. `fit` instead
+ * contains it in a max width × max height box, so very wide or tall work never letterboxes.
+ */
+function Plate({
+  src,
+  className = "",
+  sizes = "40vw",
+  dark = false,
+  thin = false,
+  fit,
+  style,
 }: {
-  images: string[];
-  screenSize: string;
+  src: string;
+  style?: React.CSSProperties;
+  className?: string;
+  sizes?: string;
+  dark?: boolean;
+  thin?: boolean;
+  fit?: { w: string; h: string };
 }) {
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [constraints, setConstraints] = useState({ left: 0, right: 0 });
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [positionX, setPositionX] = useState(0);
-
-  useEffect(() => {
-    if (!carouselRef.current || !containerRef.current) return;
-    const scrollWidth = carouselRef.current.scrollWidth;
-    const offsetWidth = containerRef.current.offsetWidth;
-    setConstraints({
-      left: -Math.max(0, scrollWidth - offsetWidth),
-      right: 0,
-    });
-  }, [images, screenSize]);
-
-  // Center a slide in the viewport
-  const getStep = () => {
-    if (!carouselRef.current || !containerRef.current || images.length <= 1) return 0;
-    const scrollWidth = carouselRef.current.scrollWidth;
-    const offsetWidth = containerRef.current.offsetWidth;
-    return (scrollWidth - offsetWidth) / (images.length - 1);
-  };
-
-  const handleNext = () => {
-    const step = getStep();
-    if (step === 0) return;
-    const nextIndex = Math.min(images.length - 1, currentSlide + 1);
-    setPositionX(-nextIndex * step);
-    setCurrentSlide(nextIndex);
-  };
-
-  const handlePrev = () => {
-    const step = getStep();
-    if (step === 0) return;
-    const prevIndex = Math.max(0, currentSlide - 1);
-    setPositionX(-prevIndex * step);
-    setCurrentSlide(prevIndex);
-  };
-
-  const handleDragEnd = (event: any, info: any) => {
-    const step = getStep();
-    if (step === 0) return;
-    // Calculate ending position based on drag offset
-    const currentX = positionX + info.offset.x;
-    const nearestIndex = Math.min(
-      images.length - 1,
-      Math.max(0, Math.round(-currentX / step))
-    );
-    setPositionX(-nearestIndex * step);
-    setCurrentSlide(nearestIndex);
-  };
-
-  const isMobile = screenSize === "mobile";
-
-  if (isMobile) {
-    return (
-      <div className="w-full space-y-4">
-        <div className="w-full overflow-x-auto flex gap-4 pr-6 pb-2 scrollbar-none snap-x snap-mandatory">
-          {images.map((img, idx) => (
-            <div
-              key={idx}
-              className="relative aspect-[16/10] w-[75vw] flex-shrink-0 border border-primary/10 p-3 bg-surface/5 snap-center"
-            >
-              <div className="relative w-full h-full overflow-hidden">
-                <Image
-                  src={img}
-                  alt=""
-                  fill
-                  sizes="75vw"
-                  className="object-cover"
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="text-[10px] font-mono opacity-40 tracking-wider text-right pr-6">
-          SWIPE FOR MORE // 01 OF {images.length}
-        </div>
-      </div>
-    );
-  }
-
+  const aspect = mediaAspect(src);
   return (
-    <div ref={containerRef} className="w-full flex flex-col gap-6 select-none">
-      <div
-        ref={carouselRef}
-        onMouseDown={(e) => e.stopPropagation()}
-        onTouchStart={(e) => e.stopPropagation()}
-        className="w-full overflow-hidden flex items-center"
-      >
-        <motion.div
-          drag="x"
-          dragConstraints={constraints}
-          dragElastic={0.15}
-          animate={{ x: positionX }}
-          onDragEnd={handleDragEnd}
-          className="flex gap-8 cursor-grab active:cursor-grabbing w-max select-none py-4"
-        >
-          {images.map((img, idx) => (
-            <div
-              key={idx}
-              className="relative aspect-[16/10] h-[35vh] md:h-[45vh] 3xl:h-[50vh] 4xl:h-[55vh] border border-primary/10 bg-surface/5 p-4 md:p-6 select-none pointer-events-none flex-shrink-0 group transition-colors duration-500 hover:border-primary/20"
-            >
-              <div className="relative w-full h-full overflow-hidden">
-                <Image
-                  src={img}
-                  alt=""
-                  fill
-                  sizes="(max-width: 768px) 100vw, 40vw"
-                  className="object-cover pointer-events-none grayscale group-hover:grayscale-0 transition-all duration-[1.2s] group-hover:scale-105"
-                />
-              </div>
-              {/* Viewfinder corner lines */}
-              <div className="absolute top-2 left-2 w-2 h-2 border-t border-l border-primary/20 group-hover:border-primary/40 transition-colors" />
-              <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-primary/20 group-hover:border-primary/40 transition-colors" />
-              <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-primary/20 group-hover:border-primary/40 transition-colors" />
-              <div className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-primary/20 group-hover:border-primary/40 transition-colors" />
-            </div>
-          ))}
-        </motion.div>
+    <div
+      className={`relative flex-shrink-0 border border-primary/25 ${thin ? "p-1" : "p-2 md:p-3"} ${dark ? "bg-foreground" : "bg-background"} ${className}`}
+      style={{ aspectRatio: `${aspect}`, ...style, ...(fit && { width: `min(${fit.w}, calc(${fit.h} * ${aspect}))` }) }}
+    >
+      <div className="relative w-full h-full">
+        <WorkMedia src={src} sizes={sizes} />
       </div>
-
-      {/* Interactive Controls & Progress Indicators */}
-      {images.length > 1 && (
-        <div className="flex items-center justify-between border-t border-primary/10 pt-4 pr-4">
-          <div className="flex items-center gap-4 text-[10px] font-mono tracking-widest text-primary/70">
-            <button
-              onClick={handlePrev}
-              disabled={currentSlide === 0}
-              className="hover:text-primary transition-colors cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed select-none"
-            >
-              [ ← PREV ]
-            </button>
-            <button
-              onClick={handleNext}
-              disabled={currentSlide === images.length - 1}
-              className="hover:text-primary transition-colors cursor-pointer disabled:opacity-20 disabled:cursor-not-allowed select-none"
-            >
-              [ NEXT → ]
-            </button>
-          </div>
-
-          <div className="flex items-center gap-6">
-            {/* Visual Progress Line */}
-            <div className="w-24 md:w-36 h-px bg-primary/10 relative overflow-hidden">
-              <motion.div
-                className="absolute left-0 top-0 bottom-0 w-full bg-primary/60 origin-left"
-                animate={{
-                  scaleX: (currentSlide + 1) / images.length,
-                }}
-                transition={{ type: "spring", stiffness: 100, damping: 15 }}
-              />
-            </div>
-
-            <span className="text-[10px] font-mono tracking-widest text-foreground/40 select-none">
-              SLIDE_0{currentSlide + 1} // 0{images.length}
-            </span>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
 
-function SplitGallery({
-  screen,
-  isMobile,
-}: {
-  screen: any;
-  isMobile: boolean;
-}) {
-  const [activeImage, setActiveImage] = useState(screen.images?.[0] || "");
+function SplitGallery({ screen, isMobile }: { screen: Screen; isMobile: boolean }) {
+  const images: string[] = screen.images ?? [];
+  const [activeImage, setActiveImage] = useState(images[0] || "");
+
+  const thumbs = (size: string) =>
+    images.map((img, idx) => (
+      <button
+        type="button"
+        key={img}
+        aria-label={`${screen.title} ${idx + 1}`}
+        aria-pressed={activeImage === img}
+        onMouseEnter={() => setActiveImage(img)}
+        onFocus={() => setActiveImage(img)}
+        onClick={() => setActiveImage(img)}
+        className={`relative flex-shrink-0 aspect-square border bg-foreground p-1 cursor-pointer transition-[opacity,border-color] duration-300 ${size} ${
+          activeImage === img ? "border-primary" : "border-primary/25 opacity-80 hover:opacity-100"
+        }`}
+      >
+        <span className="relative block w-full h-full">
+          <WorkMedia src={img} sizes="96px" />
+        </span>
+      </button>
+    ));
 
   if (isMobile) {
     return (
       <div className="w-full flex flex-col gap-6">
         <h3 className={`${t.cardTitle} text-primary`}>{screen.title}</h3>
         <p className={t.bodyProse}>{screen.description}</p>
-        <div className="relative aspect-[16/10] w-full border border-primary/10 p-3 bg-surface/5">
-          <div className="relative w-full h-full overflow-hidden">
-            <Image src={activeImage} fill alt="" className="object-cover" />
-          </div>
-        </div>
-        <div className="flex gap-2 overflow-x-auto py-2">
-          {screen.images?.map((img: string, idx: number) => (
-            <button
-              key={idx}
-              onClick={() => setActiveImage(img)}
-              className={`relative w-20 aspect-video flex-shrink-0 border transition-all ${
-                activeImage === img ? "border-primary" : "border-primary/15 opacity-60"
-              }`}
-            >
-              <Image src={img} fill alt="" className="object-cover" />
-            </button>
-          ))}
-        </div>
+        <Plate src={activeImage} dark sizes="100vw" className="w-full" />
+        <div className="flex gap-2 overflow-x-auto py-1">{thumbs("h-16")}</div>
       </div>
     );
   }
 
   return (
     <div className="w-full h-full py-16 grid grid-cols-12 gap-12 items-center">
-      {/* Left Preview Box */}
-      <div className="col-span-7 h-[60vh] relative border border-primary/10 p-6 bg-surface/5 flex items-center justify-center overflow-hidden group">
+      <div className="col-span-7 min-w-0 h-[70vh] flex items-center justify-center">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeImage}
             initial={{ opacity: 0, scale: 1.02 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}
-            transition={{ duration: 0.4 }}
-            className="relative w-full h-full"
+            transition={{ duration: 0.4, ease: fx.easeSharp }}
+            className="w-full h-full flex items-center justify-center"
           >
-            <Image src={activeImage} fill alt="" className="object-cover" />
+            <Plate src={activeImage} dark sizes="50vw" fit={{ w: "100%", h: "70vh" }} />
           </motion.div>
         </AnimatePresence>
-        {/* Tech crosshairs */}
-        <div className="absolute inset-0 pointer-events-none z-20">
-          <div className="absolute top-4 left-4 w-3.5 h-3.5 border-t border-l border-primary/30" />
-          <div className="absolute top-4 right-4 w-3.5 h-3.5 border-t border-r border-primary/30" />
-          <div className="absolute bottom-4 left-4 w-3.5 h-3.5 border-b border-l border-primary/30" />
-          <div className="absolute bottom-4 right-4 w-3.5 h-3.5 border-b border-r border-primary/30" />
-          <div className="absolute top-1/2 left-4 right-4 h-px bg-primary/[0.03]" />
-          <div className="absolute left-1/2 top-4 bottom-4 w-px bg-primary/[0.03]" />
-        </div>
       </div>
 
-      {/* Right Content & Interactive List */}
-      <div className="col-span-5 h-[60vh] flex flex-col justify-between pl-6 border-l border-primary/10">
+      <div className="col-span-5 min-w-0 h-[70vh] flex flex-col justify-between gap-8 pl-6 border-l border-primary/25">
         <div className="space-y-6">
-          <HUDLabel text="INTERACTIVE_SHOWCASE" />
           <h3 className={t.cardTitle}>{screen.title}</h3>
           <p className={t.bodyProse}>{screen.description}</p>
         </div>
-
-        <div className="space-y-3">
-          <span className={`${t.monoEyebrow} block opacity-30`}>SELECT_FRAME // INTERACTIVE</span>
-          <div className="flex flex-col gap-2">
-            {screen.images?.map((img: string, idx: number) => {
-              const isActive = activeImage === img;
-              return (
-                <div
-                  key={idx}
-                  onMouseEnter={() => setActiveImage(img)}
-                  className={`flex items-center justify-between border p-3 cursor-pointer transition-all duration-300 ${
-                    isActive 
-                      ? "border-primary bg-primary/5 text-primary pl-5" 
-                      : "border-primary/10 text-foreground/55 hover:border-primary/30 hover:text-foreground"
-                  }`}
-                >
-                  <span className="font-mono text-[10px] tracking-widest uppercase">
-                    FRAME_0{idx + 1} // SRC_VALUE
-                  </span>
-                  <span className="text-xs transition-transform duration-300">
-                    {isActive ? "● ACTIVE" : "○ HOVER_TO_VIEW"}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        <div className="flex flex-wrap gap-2">{thumbs("h-20 3xl:h-24")}</div>
       </div>
     </div>
   );
 }
 
-function BentoMoodboard({
-  screen,
-  isMobile,
-  colors,
-}: {
-  screen: any;
-  isMobile: boolean;
-  colors: string[];
-}) {
-  const [copiedHex, setCopiedHex] = useState<string | null>(null);
+// Media wall for large sets. Lanes are contiguous runs of the data order (which groups work by
+// app/campaign), cut where each lane's total aspect is closest to an equal share, so lanes end near
+// the same length. Plates keep their own aspect: lanes share a height and only widths vary.
+function balanceLanes(images: string[], laneCount: number) {
+  const total = images.reduce((sum, img) => sum + mediaAspect(img), 0);
+  const lanes: string[][] = [[]];
+  let run = 0;
+  for (const img of images) {
+    const share = (total / laneCount) * lanes.length;
+    const a = mediaAspect(img);
+    if (lanes.length < laneCount && run + a / 2 > share && lanes[lanes.length - 1].length) lanes.push([]);
+    lanes[lanes.length - 1].push(img);
+    run += a;
+  }
+  const lengths = lanes.map((l) => l.reduce((sum, img) => sum + mediaAspect(img), 0));
+  return { lanes, longest: Math.max(...lengths) };
+}
 
-  const colorsList = colors;
-  const swatchGridCols: Record<number, string> = { 1: "grid-cols-1", 2: "grid-cols-2", 3: "grid-cols-3", 4: "grid-cols-4" };
-  const swatchGridColsClass = swatchGridCols[colorsList.length] || "grid-cols-4";
+// A second lane once one lane would run past ~5 frame-heights of width; sections are cut from the
+// AE boards so none needs a third.
+const wallLanes = (images: string[]) =>
+  images.reduce((sum, img) => sum + mediaAspect(img), 0) > 5 ? 2 : 1;
 
-  const handleCopy = (hex: string) => {
-    if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText(hex);
-      setCopiedHex(hex);
-      setTimeout(() => setCopiedHex(null), 1500);
-    }
-  };
-
-  if (isMobile) {
-    return (
-      <div className="w-full flex flex-col gap-6">
-        <h3 className={`${t.cardTitle} text-primary`}>{screen.title}</h3>
-        <p className={t.bodyProse}>{screen.description}</p>
-        <div className="relative aspect-[16/10] w-full border border-primary/10 p-3 bg-surface/5">
-          <Image src={screen.images?.[0] || ""} fill alt="" className="object-cover" />
-        </div>
-        <div className={`grid gap-2 ${swatchGridColsClass}`}>
-          {colorsList.map((hex) => (
-            <div key={hex} className="flex flex-col gap-1 border border-primary/10 p-2">
-              <div className="w-full h-8" style={{ backgroundColor: hex }} />
-              <span className="font-mono text-[8px] tracking-wider text-center">{hex}</span>
-            </div>
+function MediaWall({ images, height }: { images: string[]; height?: number }) {
+  const laneCount = wallLanes(images);
+  height ??= laneCount === 2 ? 82 : 70;
+  const { lanes, longest } = balanceLanes(images, laneCount);
+  const gapRem = 0.75;
+  const laneVh = (height - (laneCount - 1) * 2) / laneCount;
+  return (
+    <div
+      className="flex-shrink-0 flex flex-col justify-center"
+      style={{ gap: `${gapRem}rem`, width: `calc(${longest} * ${laneVh}vh + ${Math.max(...lanes.map((l) => l.length))}rem)` }}
+    >
+      {lanes.map((lane, li) => (
+        <div key={li} className="flex items-end" style={{ gap: `${gapRem}rem`, height: `${laneVh}vh` }}>
+          {lane.map((img) => (
+            <Plate key={img} src={img} sizes="25vw" thin className="h-full" />
           ))}
         </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="w-full h-full py-16 grid grid-cols-12 gap-8 items-stretch">
-      {/* Box 1: Large Image */}
-      <div className="col-span-7 border border-primary/10 p-4 bg-surface/5 flex flex-col justify-between group">
-        <div className="relative w-full h-[45vh] overflow-hidden">
-          <Image
-            src={screen.images?.[0] || ""}
-            fill
-            alt=""
-            className="object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-102"
-          />
-        </div>
-        <div className="flex justify-between items-center mt-4 border-t border-primary/5 pt-3">
-          <h3 className={t.cardTitle}>{screen.title}</h3>
-          <span className="font-mono text-[9px] opacity-40">IMAGE_REF_01</span>
-        </div>
-      </div>
-
-      {/* Right Grid */}
-      <div className="col-span-5 grid grid-rows-3 gap-8">
-        {/* Row 1: Content/Specs */}
-        <div className="border border-primary/10 p-6 bg-surface/5 flex flex-col justify-between">
-          <HUDLabel text="LAYOUT_SPECIFICATIONS" />
-          <p className="text-[11px] md:text-xs leading-relaxed font-light text-foreground/75 mt-2">
-            {screen.description}
-          </p>
-          <div className="flex gap-4 border-t border-primary/10 pt-3 mt-3 font-mono text-[8px] opacity-50">
-            <span>COORDS: X:42, Y:19</span>
-            <span>SYSTEM: SECURE_ON_LOAD</span>
-          </div>
-        </div>
-
-        {/* Row 2: Secondary Image */}
-        <div className="border border-primary/10 p-4 bg-surface/5 flex items-center justify-between group overflow-hidden relative">
-          <Image
-            src={screen.images?.[1] || screen.images?.[0] || ""}
-            fill
-            alt=""
-            className="object-cover grayscale hover:scale-105 transition-all duration-700 pointer-events-none opacity-40 group-hover:opacity-80"
-          />
-          <div className="relative z-10 p-2 bg-background/80 backdrop-blur-sm border border-primary/10 font-mono text-[8px] tracking-widest">
-            SECONDARY_SPEC_GRID
-          </div>
-        </div>
-
-        {/* Row 3: Colors */}
-        <div className="border border-primary/10 p-6 bg-surface/5 flex flex-col justify-between">
-          <span className={`${t.monoEyebrow} block opacity-40`}>CHROMATIC_SYSTEM // CLICK_TO_COPY</span>
-          <div className={`grid gap-4 mt-2 ${swatchGridColsClass}`}>
-            {colorsList.map((hex) => (
-              <button
-                key={hex}
-                onClick={() => handleCopy(hex)}
-                className="group/swatch relative flex flex-col gap-2 items-stretch text-left border border-primary/15 p-1.5 hover:border-primary transition-colors cursor-pointer"
-              >
-                <div className="h-8 w-full border border-primary/10" style={{ backgroundColor: hex }} />
-                <span className="font-mono text-[9px] tracking-tighter text-center group-hover/swatch:text-primary">
-                  {copiedHex === hex ? "✓ COPIED" : hex}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+      ))}
     </div>
   );
 }
 
-function InteractivePreview({
-  screen,
-  isMobile,
-}: {
-  screen: any;
-  isMobile: boolean;
-}) {
-  const codeLines = [
-    `const motion = {`,
-    `  stiffness: 180,`,
-    `  damping: 14,`,
-    `  mass: 1.25,`,
-    `  restSpeed: 0.005`,
-    `};`,
-    `// Spring interpolation`,
-    `const value = useSpring(x, motion);`,
-  ];
-
-  if (isMobile) {
-    return (
-      <div className="w-full flex flex-col gap-6">
-        <h3 className={`${t.cardTitle} text-primary`}>{screen.title}</h3>
-        <div className="relative aspect-[16/10] w-full border border-primary/10 p-3 bg-surface/5">
-          <Image src={screen.src || ""} fill alt="" className="object-cover" />
-        </div>
-        <p className={t.bodyProse}>{screen.description}</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="w-full h-full py-16 grid grid-cols-12 gap-8 items-stretch">
-      {/* Left Code Editor Panel */}
-      <div className="col-span-4 border border-primary/10 p-6 bg-surface/5 flex flex-col justify-between font-mono text-[9px] md:text-[10px] 3xl:text-xs">
-        <div className="space-y-4">
-          <div className="flex justify-between items-center border-b border-primary/10 pb-2.5">
-            <span className="text-primary font-bold">ANIMATION_LOGIC.ts</span>
-            <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-          </div>
-          <div className="space-y-1.5 opacity-70">
-            {codeLines.map((line, idx) => (
-              <div key={idx} className="flex gap-4">
-                <span className="opacity-30 select-none w-4">0{idx + 1}</span>
-                <span className="text-foreground">{line}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="border-t border-primary/10 pt-4 space-y-2">
-          <HUDLabel text="INTERPOLATION_METRICS" />
-          <div className="space-y-1 text-foreground/45 text-[8px] tracking-wider">
-            <div>INTEGRATOR: RUNGE_KUTTA_4</div>
-            <div>FPS_LOCK: 120_VSYNC</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Right Browser Viewport */}
-      <div className="col-span-8 border border-primary/10 bg-surface/5 p-4 flex flex-col justify-between group">
-        <div className="flex items-center justify-between border-b border-primary/10 pb-3 mb-3">
-          <div className="flex gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full border border-primary/20" />
-            <div className="w-2.5 h-2.5 rounded-full border border-primary/20" />
-            <div className="w-2.5 h-2.5 rounded-full border border-primary/20" />
-          </div>
-          <div className="border border-primary/15 px-6 py-0.5 text-[8px] font-mono tracking-widest opacity-60 bg-background/50">
-            https://sandbox.works/preview/{screen.title?.toLowerCase().replace(/\s+/g, "-")}
-          </div>
-          <div className="w-8 h-px bg-primary/25" />
-        </div>
-
-        <div className="relative w-full h-[45vh] overflow-hidden">
-          <Image
-            src={screen.src || ""}
-            fill
-            alt=""
-            className="object-cover grayscale group-hover:grayscale-0 transition-all duration-[1.5s] group-hover:scale-102"
-          />
-          <div className="absolute inset-x-0 h-0.5 bg-primary/20 animate-scanline pointer-events-none" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TimelineSequence({
-  screen,
-  isMobile,
-}: {
-  screen: any;
-  isMobile: boolean;
-}) {
-  const [activeFrame, setActiveFrame] = useState(0);
-
-  const keyframes = [
-    { time: "00:00:00", value: "x: 0.0, opacity: 0.0" },
-    { time: "00:00:15", value: "x: 15.2, opacity: 0.3" },
-    { time: "00:00:30", value: "x: 48.9, opacity: 0.7" },
-    { time: "00:01:00", value: "x: 100.0, opacity: 1.0" },
-  ];
+// Titled media wall: bento-moodboard and timeline-sequence share it.
+function BentoMoodboard({ screen, isMobile }: { screen: Screen; isMobile: boolean }) {
+  const images: string[] = screen.images ?? [];
 
   if (isMobile) {
     return (
       <div className="w-full flex flex-col gap-6">
         <h3 className={`${t.cardTitle} text-primary`}>{screen.title}</h3>
         <p className={t.bodyProse}>{screen.description}</p>
-        <div className="w-full flex gap-3 overflow-x-auto py-2">
-          {screen.images?.map((img: string, idx: number) => (
-            <div key={idx} className="relative w-44 aspect-video flex-shrink-0 border border-primary/10 p-1.5 animate-pulse">
-              <Image src={img} fill alt="" className="object-cover" />
-            </div>
-          ))}
+        <div className="-mx-6 px-6 overflow-x-auto scrollbar-none">
+          <MediaWall images={images} height={wallLanes(images) === 2 ? 58 : 40} />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full h-full py-16 flex flex-col justify-between">
-      <div className="flex justify-between items-baseline border-b border-primary/10 pb-4">
-        <div>
-          <HUDLabel text="TIMELINE_SEQUENCE_CHOREOGRAPHY" />
-          <h3 className={`${t.cardTitle} mt-2`}>{screen.title}</h3>
-        </div>
-        <span className="font-mono text-[9px] tracking-widest opacity-40">
-          FRAME_COUNT: 0{screen.images?.length || 4} // TYPE: KEYFRAME_LAYERS
-        </span>
+    <div className="flex-shrink-0 h-full py-16 flex items-center gap-12">
+      <div className="w-[22vw] flex-shrink-0 self-stretch flex flex-col justify-end gap-6 pr-10 border-r border-primary/25">
+        <h3 className={t.cardTitle}>{screen.title}</h3>
+        <p className={t.bodyProse}>{screen.description}</p>
       </div>
+      <MediaWall images={images} />
+    </div>
+  );
+}
 
-      <div className="grid grid-cols-4 gap-6 my-6">
-        {screen.images?.map((img: string, idx: number) => {
-          const isActive = activeFrame === idx;
-          return (
-            <div
-              key={idx}
-              onMouseEnter={() => setActiveFrame(idx)}
-              className={`border transition-all duration-300 p-2.5 bg-surface/5 flex flex-col gap-3 relative cursor-pointer ${
-                isActive ? "border-primary scale-[1.01]" : "border-primary/10 opacity-70 hover:opacity-100 hover:border-primary/30"
-              }`}
-            >
-              <div className="relative aspect-[16/10] overflow-hidden">
-                <Image src={img} fill alt="" className="object-cover" />
-              </div>
-              <div className="flex justify-between items-center font-mono text-[8px] opacity-65">
-                <span>INDEX // 0{idx + 1}</span>
-                <span>{keyframes[idx]?.time || "00:00:00"}</span>
-              </div>
-              {isActive && (
-                <div className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-primary rounded-full animate-ping" />
-              )}
+function BreakdownText({ screen, className = "" }: { screen: Screen; className?: string }) {
+  return (
+    <div className={`flex flex-col gap-6 ${className}`}>
+      <span className="font-sans text-2xl md:text-3xl font-black text-primary/30 block">{screen.number}</span>
+      <h3 className={`${t.cardTitle} text-primary`}>{screen.title}</h3>
+      <div className={`${t.bodyProse} text-foreground/80 space-y-4`}>
+        {screen.description?.split("\n\n").map((para, i) => <p key={i}>{para}</p>)}
+      </div>
+    </div>
+  );
+}
+
+// Contact sheet: a uniform set as rows of equals, filled left to right so the data order (grouped
+// by app/campaign) reads like a line of text. Cells share a height; width follows each aspect.
+// Fills whatever height its parent leaves under the title band. Pieces whose shape differs from
+// the set (a BTS clip among medals) would blow a column open, so they stand beside the sheet.
+function ContactSheet({ images, rows }: { images: string[]; rows: number }) {
+  const shapeOf = (img: string) => Math.round(mediaAspect(img) * 4) / 4;
+  const counts = new Map<number, number>();
+  images.forEach((img) => counts.set(shapeOf(img), (counts.get(shapeOf(img)) ?? 0) + 1));
+  const common = [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0];
+  const sheet = images.filter((img) => shapeOf(img) === common);
+  const aside = images.filter((img) => shapeOf(img) !== common);
+  const cols = Math.ceil(sheet.length / rows);
+
+  // The height left under the title band varies with the description, and an aspect-ratio plate
+  // sized from a percentage height reports no width to the horizontal track, so the section would
+  // not grow to hold it. Measure the box once per resize and size every plate in pixels.
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [boxH, setBoxH] = useState(0);
+  useEffect(() => {
+    const el = boxRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([e]) => setBoxH(e.contentRect.height));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const gap = 12;
+  const cellH = (boxH - (rows - 1) * gap) / rows;
+  const asideH = (boxH - (aside.length - 1) * gap) / Math.max(aside.length, 1);
+  const sized = (img: string, h: number) => ({ height: h, width: h * mediaAspect(img) });
+
+  return (
+    <div ref={boxRef} className="h-full flex gap-10">
+      {boxH > 0 && (
+        <>
+          <div
+            className="grid"
+            style={{ gap, gridTemplateColumns: `repeat(${cols}, max-content)`, gridTemplateRows: `repeat(${rows}, ${cellH}px)` }}
+          >
+            {sheet.map((img) => (
+              <Plate key={img} src={img} sizes="20vw" thin style={sized(img, cellH)} />
+            ))}
+          </div>
+          {aside.length > 0 && (
+            <div className="flex flex-col" style={{ gap }}>
+              {aside.map((img) => (
+                <Plate key={img} src={img} sizes="30vw" thin style={sized(img, asideH)} />
+              ))}
             </div>
-          );
-        })}
-      </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
 
-      <div className="border border-primary/10 p-5 bg-surface/5 font-mono text-[9px] tracking-widest flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <span className="text-primary font-bold">STATE_MONITOR //</span>
-          <span className="opacity-70">
-            ACTIVE_FRAME: 0{activeFrame + 1} &rarr; {keyframes[activeFrame]?.value || ""}
-          </span>
+// One creative cut into formats: the tallest cut stands full height, the others stack beside it.
+function FormatSets({ images, sets, height }: { images: string[]; sets: number[]; height: number }) {
+  const groups: string[][] = [];
+  let i = 0;
+  for (const n of sets) groups.push(images.slice(i, (i += n)));
+  if (i < images.length) groups.push(...images.slice(i).map((img) => [img]));
+  return (
+    <div className="flex items-center gap-10" style={{ height: `${height}vh` }}>
+      {groups.map((g) => (
+        <div key={g[0]} className="h-full flex gap-3">
+          <Plate src={g[0]} sizes="20vw" thin className="h-full" />
+          {g.length > 1 && (
+            <div className="h-full flex flex-col justify-end gap-3">
+              {g.slice(1).map((img) => (
+                <Plate key={img} src={img} sizes="15vw" thin style={{ height: `calc((100% - ${(g.length - 2) * 0.75}rem) / ${g.length - 1})` }} />
+              ))}
+            </div>
+          )}
         </div>
-        <div className="flex gap-2 items-center opacity-40">
-          <span>RULER:</span>
-          <span>├─────┼─────┼─────┼─────┤</span>
+      ))}
+    </div>
+  );
+}
+
+function Breakdown({ screen, isMobile }: { screen: Screen; isMobile: boolean }) {
+  const images = screen.images ?? [];
+  const layout = screen.layout ?? "wall";
+
+  if (isMobile) {
+    return (
+      <div className="w-full flex flex-col gap-6">
+        <BreakdownText screen={screen} />
+        {layout === "feature" && <Plate src={images[0]} dark sizes="100vw" className="w-full" />}
+        <div className="-mx-6 px-6 overflow-x-auto scrollbar-none">
+          {(() => {
+            const rest = layout === "feature" ? images.slice(1) : images;
+            return <MediaWall images={rest} height={wallLanes(rest) === 2 ? 58 : 40} />;
+          })()}
         </div>
+      </div>
+    );
+  }
+
+  if (layout === "grid") {
+    return (
+      <div className="h-full w-max pt-16 pb-28 flex flex-col gap-8">
+        <div className="flex items-end gap-16 border-b border-primary/25 pb-6 min-w-[48rem]">
+          <div className="flex-shrink-0 space-y-3">
+            <span className="font-sans text-2xl md:text-3xl font-black text-primary/30 block">{screen.number}</span>
+            <h3 className={`${t.cardTitle} text-primary`}>{screen.title}</h3>
+          </div>
+          <div className={`${t.bodyProse} text-foreground/80 w-[32rem] flex-shrink-0 space-y-4`}>
+            {screen.description?.split("\n\n").map((para, i) => <p key={i}>{para}</p>)}
+          </div>
+        </div>
+        <div className={`min-h-0 ${screen.rows === 1 ? "h-[50vh] my-auto" : "flex-1"}`}>
+          <ContactSheet images={images} rows={screen.rows ?? 2} />
+        </div>
+      </div>
+    );
+  }
+
+  const side = (
+    <BreakdownText
+      screen={screen}
+      className="w-[22vw] flex-shrink-0 self-stretch justify-center pr-10 border-r border-primary/25"
+    />
+  );
+
+  if (layout === "feature") {
+    const [hero, ...rest] = images;
+    return (
+      <div className="h-full py-16 flex items-center gap-12">
+        {side}
+        <Plate src={hero} sizes="60vw" fit={{ w: "60vw", h: "72vh" }} />
+        {rest.length > 0 && <MediaWall images={rest} height={rest.length > 3 ? 60 : 44} />}
+      </div>
+    );
+  }
+
+  return (
+    <div className="h-full py-16 flex items-center gap-12">
+      {side}
+      {layout === "sets" ? (
+        <FormatSets images={images} sets={screen.sets ?? []} height={64} />
+      ) : (
+        <MediaWall images={images} />
+      )}
+    </div>
+  );
+}
+
+function InteractivePreview({ screen, isMobile }: { screen: Screen; isMobile: boolean }) {
+  if (isMobile) {
+    return (
+      <div className="w-full flex flex-col gap-6">
+        <h3 className={`${t.cardTitle} text-primary`}>{screen.title}</h3>
+        <Plate src={screen.src || ""} dark sizes="100vw" className="w-full" />
+        <p className={t.bodyProse}>{screen.description}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full h-full py-16 grid grid-cols-12 gap-12 items-center">
+      <div className="col-span-4 flex flex-col gap-6 pr-8 border-r border-primary/25">
+        <h3 className={t.cardTitle}>{screen.title}</h3>
+        <p className={t.bodyProse}>{screen.description}</p>
+      </div>
+      <div className="col-span-8 min-w-0 h-[70vh] flex items-center justify-center group">
+        <Plate
+          src={screen.src || ""}
+          dark
+          sizes="60vw"
+          fit={{ w: "100%", h: "70vh" }}
+          className="transition-transform duration-[1.5s] group-hover:scale-[1.01]"
+        />
       </div>
     </div>
   );
@@ -594,9 +402,10 @@ export default function ProjectPageClient({
     autoAssign: false,
   });
 
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  // Drag-to-scroll lives in refs, not state: a pointermove re-rendering the whole spread every
+  // frame is what made it stutter. 1:1 with the pointer while held, then a flick carries on
+  // through Lenis's own easing. A drag past the threshold swallows the click it ends on.
+  const drag = useRef({ active: false, moved: false, x: 0, scroll: 0, lastX: 0, lastT: 0, v: 0 });
 
   const project = projects.find((p) => p.slug === slug);
 
@@ -605,37 +414,68 @@ export default function ProjectPageClient({
   }
 
   const screens = project.screens;
+  // Landscape cover footage gets the wider column, so it never reads as a postage stamp.
+  const coverWide = mediaAspect(project.coverVideo || project.coverImage || "") > 1.2;
+  const next = projects[(projects.findIndex((p) => p.slug === slug) + 1) % projects.length];
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!lenisRef.current) return;
-    setIsDragging(true);
-    setStartX(e.pageX);
-    setScrollLeft(lenisRef.current.scroll);
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse" || e.button !== 0 || !lenisRef.current) return;
+    lenisRef.current.stop();
+    lenisRef.current.start();
+    drag.current = { active: true, moved: false, x: e.clientX, scroll: lenisRef.current.scroll, lastX: e.clientX, lastT: e.timeStamp, v: 0 };
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !lenisRef.current) return;
-    e.preventDefault();
-    const x = e.pageX;
-    const walk = (x - startX) * 1.5;
-    lenisRef.current.scrollTo(scrollLeft - walk, { immediate: true });
+  const handlePointerMove = (e: React.PointerEvent) => {
+    const d = drag.current;
+    if (!d.active || !lenisRef.current) return;
+    const dx = e.clientX - d.x;
+    if (!d.moved && Math.abs(dx) < 6) return;
+    if (!d.moved) {
+      d.moved = true;
+      scrollRef.current?.setPointerCapture(e.pointerId);
+      if (scrollRef.current) scrollRef.current.style.cursor = "grabbing";
+    }
+    const dt = Math.max(e.timeStamp - d.lastT, 1);
+    d.v = 0.8 * ((e.clientX - d.lastX) / dt) + 0.2 * d.v;
+    d.lastX = e.clientX;
+    d.lastT = e.timeStamp;
+    lenisRef.current.scrollTo(d.scroll - dx, { immediate: true });
   };
 
-  const handleMouseUp = () => setIsDragging(false);
-  const handleMouseLeave = () => setIsDragging(false);
+  const endDrag = (e: React.PointerEvent) => {
+    const d = drag.current;
+    if (!d.active) return;
+    d.active = false;
+    if (scrollRef.current) scrollRef.current.style.cursor = "";
+    if (scrollRef.current?.hasPointerCapture(e.pointerId)) scrollRef.current.releasePointerCapture(e.pointerId);
+    if (!d.moved || !lenisRef.current) return;
+    // Flick: a stale velocity (pointer held still before release) carries nothing.
+    const v = e.timeStamp - d.lastT > 80 ? 0 : Math.max(-3, Math.min(3, d.v));
+    if (v) lenisRef.current.scrollTo(lenisRef.current.scroll - v * 220);
+  };
+
+  const swallowClickAfterDrag = (e: React.MouseEvent) => {
+    if (drag.current.moved) {
+      e.preventDefault();
+      e.stopPropagation();
+      drag.current.moved = false;
+    }
+  };
 
   return (
     <div
       ref={scrollRef}
-      onMouseDown={isMobile ? undefined : handleMouseDown}
-      onMouseMove={isMobile ? undefined : handleMouseMove}
-      onMouseUp={isMobile ? undefined : handleMouseUp}
-      onMouseLeave={isMobile ? undefined : handleMouseLeave}
+      onPointerDown={isMobile ? undefined : handlePointerDown}
+      onPointerMove={isMobile ? undefined : handlePointerMove}
+      onPointerUp={isMobile ? undefined : endDrag}
+      onPointerCancel={isMobile ? undefined : endDrag}
+      onClickCapture={isMobile ? undefined : swallowClickAfterDrag}
+      onDragStart={isMobile ? undefined : (e) => e.preventDefault()}
       data-lenis-prevent={isMobile ? undefined : ""}
       className={
         isMobile
           ? "relative bg-background w-full min-h-screen overflow-y-auto"
-          : "relative bg-background h-screen w-full overflow-hidden select-none cursor-grab active:cursor-grabbing"
+          : "relative bg-background h-screen w-full overflow-hidden select-none cursor-grab"
       }
     >
       <div
@@ -650,15 +490,15 @@ export default function ProjectPageClient({
             key={i}
             className={
               isMobile
-                ? "w-full flex items-center justify-center relative py-8 border-b border-foreground/5 last:border-b-0"
-                : `flex-shrink-0 h-screen flex items-center justify-center relative px-12 md:px-24 3xl:px-40 4xl:px-48 border-r border-foreground/5
-                ${screen.type === "zine-cover" ? "min-w-[85vw] md:min-w-[85vw] 3xl:min-w-[80vw]" : ""}
+                ? "w-full flex items-center justify-center relative py-8 border-b border-primary/25 last:border-b-0"
+                : `flex-shrink-0 h-screen flex items-center justify-center relative px-12 md:px-24 3xl:px-40 4xl:px-48 border-r border-primary/25
+                ${screen.type === "zine-cover" ? "w-[85vw] md:w-[85vw] 3xl:w-[80vw]" : ""}
                 ${screen.type === "editorial-text" ? "min-w-[65vw] md:min-w-[65vw] 3xl:min-w-[60vw]" : ""}
                 ${screen.type === "video" ? "min-w-[80vw] md:min-w-[100vw] 3xl:min-w-[90vw]" : ""}
-                ${screen.type === "deliverable-breakdown" ? "min-w-[90vw] md:min-w-[90vw] 3xl:min-w-[85vw]" : ""}
-                ${screen.type === "split-gallery" ? "min-w-[95vw] md:min-w-[95vw] 3xl:min-w-[90vw]" : ""}
-                ${screen.type === "bento-moodboard" ? "min-w-[115vw] md:min-w-[115vw] 3xl:min-w-[110vw]" : ""}
-                ${screen.type === "interactive-preview" ? "min-w-[95vw] md:min-w-[95vw] 3xl:min-w-[90vw]" : ""}
+                ${screen.type === "deliverable-breakdown" ? "min-w-[90vw]" : ""}
+                ${screen.type === "split-gallery" ? "w-[95vw] md:w-[95vw] 3xl:w-[90vw]" : ""}
+                ${screen.type === "bento-moodboard" ? "min-w-[100vw]" : ""}
+                ${screen.type === "interactive-preview" ? "w-[95vw] md:w-[95vw] 3xl:w-[90vw]" : ""}
                 ${screen.type === "timeline-sequence" ? "min-w-[100vw] md:min-w-[100vw] 3xl:min-w-[95vw]" : ""}
                 ${screen.type === "zine-outro" ? "min-w-[85vw] md:min-w-[85vw] 3xl:min-w-[80vw]" : ""}
                 ${screen.type === "image" ? "min-w-[80vw] md:min-w-[100vw] 3xl:min-w-[90vw]" : ""}
@@ -678,20 +518,17 @@ export default function ProjectPageClient({
               >
                 {/* Desktop Left: running metadata */}
                 {!isMobile && (
-                  <div className="col-span-3 h-full flex flex-col justify-between border-r border-primary/10 pr-8">
+                  <div className="col-span-3 h-full flex flex-col justify-between border-r border-primary/25 pr-8">
                     <div className="space-y-4">
-                      <HUDLabel text={project.category} />
-                      <div className="text-[10px] font-mono tracking-widest uppercase opacity-40">
-                        YEAR // {project.year}
+                      <div className="text-[12px] font-sans text-primary">{project.category}</div>
+                      <div className="text-[12px] font-sans opacity-40">
+                        YEAR / {project.year}
                       </div>
-                      <div className="text-[10px] font-mono tracking-widest uppercase opacity-40">
-                        CLIENT // {project.client}
+                      <div className="text-[12px] font-sans opacity-40">
+                        CLIENT / {project.client}
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <span className={`${t.monoEyebrow} block opacity-30`}>
-                        DELIVERABLES
-                      </span>
                       <div className="flex flex-col gap-1.5">
                         {project.services?.map((svc, sIdx) => (
                           <span
@@ -711,10 +548,10 @@ export default function ProjectPageClient({
                   className={
                     isMobile
                       ? "w-full space-y-4"
-                      : "col-span-6 flex flex-col justify-center gap-8 pl-4"
+                      : `${coverWide ? "col-span-4" : "col-span-5"} flex flex-col justify-center gap-8 pl-4`
                   }
                 >
-                  <h1 className={t.mainHeroTitle}>
+                  <h1 className={t.pageTitle}>
                     {project.title.split(" ").map((word, idx) => (
                       <span
                         key={idx}
@@ -735,27 +572,27 @@ export default function ProjectPageClient({
                 <div
                   className={
                     isMobile
-                      ? "w-full aspect-[4/5] relative border border-primary/10 p-3 bg-surface/5 overflow-hidden"
-                      : "col-span-3 h-[60vh] relative border border-primary/10 p-4 md:p-6 bg-surface/5 overflow-hidden group transition-colors duration-500 hover:border-primary/20"
+                      ? "w-full relative border border-primary/25 p-3 bg-background"
+                      : `${coverWide ? "col-span-5" : "col-span-4"} max-h-[78vh] w-full self-center relative border border-primary/25 p-4 md:p-6 bg-background group`
                   }
+                  style={{ aspectRatio: `${mediaAspect(project.coverVideo || project.coverImage || "")}` }}
                 >
-                  {project.coverImage && (
-                    <div className="relative w-full h-full overflow-hidden">
-                      <Image
-                        src={project.coverImage}
+                  {(project.coverVideo || project.coverImage) && (
+                    <div className="relative w-full h-full">
+                      <WorkMedia
+                        src={project.coverVideo || project.coverImage || ""}
                         alt={project.title}
-                        fill
                         sizes="(max-width: 768px) 100vw, 25vw"
                         priority
-                        className="object-cover grayscale hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
+                        className="transition-transform duration-1000 group-hover:scale-105"
                       />
                     </div>
                   )}
                   {/* Viewfinder corner lines */}
-                  <div className="absolute top-2 left-2 w-2 h-2 border-t border-l border-primary/20 group-hover:border-primary/40 transition-colors" />
-                  <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-primary/20 group-hover:border-primary/40 transition-colors" />
-                  <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-primary/20 group-hover:border-primary/40 transition-colors" />
-                  <div className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-primary/20 group-hover:border-primary/40 transition-colors" />
+                  <div className="absolute top-2 left-2 w-2 h-2 border-t border-l border-primary/25 group-hover:border-primary/40 transition-colors" />
+                  <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-primary/25 group-hover:border-primary/40 transition-colors" />
+                  <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-primary/25 group-hover:border-primary/40 transition-colors" />
+                  <div className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-primary/25 group-hover:border-primary/40 transition-colors" />
                 </div>
               </div>
             )}
@@ -769,25 +606,14 @@ export default function ProjectPageClient({
                     : "w-full h-full py-24 flex flex-col justify-center max-w-2xl 3xl:max-w-3xl 4xl:max-w-4xl"
                 }
               >
-                <div className="border-t border-primary/15 pt-8 space-y-6">
-                  <div className={`${t.monoEyebrow} opacity-40`}>
-                    [ NARRATIVE_FOCUS ] // {project.id}
-                  </div>
+                <div className="border-t border-primary/25 pt-8 space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-8 3xl:gap-12">
-                    <div className="md:col-span-8 columns-2 gap-8 text-[11px] md:text-xs 3xl:text-sm leading-relaxed font-light text-foreground/75 space-y-4">
+                    <div className={`md:col-span-12 md:columns-2 gap-10 ${t.bodyProse} text-foreground/80`}>
                       {screen.content?.split("\n\n").map((para, pIdx) => (
                         <p key={pIdx} className="mb-4 inline-block w-full break-inside-avoid">
                           {para}
                         </p>
                       ))}
-                    </div>
-                    <div className="md:col-span-4 space-y-4 font-mono text-[9px] 3xl:text-[10px] tracking-widest text-foreground/45 border-l border-primary/10 pl-6 h-full flex flex-col justify-start">
-                      <div className="border-b border-primary/5 pb-2">
-                        // THE OBJECTIVE WAS TO DEFINE STRUCTURAL MOVEMENT WITH AN EDITORIAL WHITE SPACE BIAS.
-                      </div>
-                      <div className="border-b border-primary/5 pb-2 border-dashed">
-                        // DYNAMICS GOVERNED BY CUSTOM SPRING EQUATIONS IN REAL-TIME.
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -796,55 +622,7 @@ export default function ProjectPageClient({
 
             {/* DELIVERABLE BREAKDOWN SCREEN */}
             {screen.type === "deliverable-breakdown" && (
-              <div
-                className={
-                  isMobile
-                    ? "w-full flex flex-col gap-6"
-                    : "w-full h-full py-16 grid grid-cols-12 gap-12 items-center"
-                }
-              >
-                {/* Left Description Column */}
-                <div
-                  className={
-                    isMobile
-                      ? "w-full space-y-4"
-                      : "col-span-4 flex flex-col justify-center gap-6 h-full pr-8 border-r border-primary/10"
-                  }
-                >
-                  <div className="space-y-2">
-                    <span className="font-mono text-2xl md:text-3xl font-black text-primary/30 block">
-                      {screen.number}
-                    </span>
-                    <HUDLabel text="DELIVERABLE_SPEC" className="opacity-60" />
-                  </div>
-                  <h3 className={`${t.cardTitle} text-primary`}>
-                    {screen.title}
-                  </h3>
-                  <div className="text-[11px] md:text-xs 3xl:text-sm leading-relaxed font-light text-foreground/75 space-y-4">
-                    {screen.description?.split("\n\n").map((para, pIdx) => (
-                      <p key={pIdx} className="mb-2">
-                        {para}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Right Carousel Column */}
-                <div
-                  className={
-                    isMobile
-                      ? "w-full"
-                      : "col-span-8 h-full flex items-center pl-4"
-                  }
-                >
-                  {screen.images && (
-                    <DeliverableCarousel
-                      images={screen.images}
-                      screenSize={screenSize}
-                    />
-                  )}
-                </div>
-              </div>
+              <Breakdown screen={screen} isMobile={isMobile} />
             )}
 
             {/* OUTRO / NEXT PROJECT SCREEN */}
@@ -852,90 +630,46 @@ export default function ProjectPageClient({
               <div
                 className={
                   isMobile
-                    ? "w-full py-12 flex flex-col gap-8 mt-4 border-t border-foreground/5"
+                    ? "w-full py-12 flex flex-col gap-8 mt-4 border-t border-primary/25"
                     : "w-full h-full py-16 grid grid-cols-12 gap-12 items-center"
                 }
               >
-                {/* Desktop Left Details */}
+                {/* Left: this project's credits, then the next project's title (set beside its
+                    cover, never over it) */}
                 <div
                   className={
                     isMobile
                       ? "w-full space-y-4"
-                      : "col-span-4 h-full flex flex-col justify-between pr-8 border-r border-primary/10"
+                      : "col-span-4 h-[60vh] flex flex-col justify-between pr-8 border-r border-primary/25"
                   }
                 >
-                  <div className="space-y-4">
-                    <HUDLabel text="PROJECT_OVERVIEW" />
-                    <div className="space-y-2 text-[10px] font-mono tracking-widest uppercase text-foreground/50">
-                      <div>CLIENT // {project.client}</div>
-                      <div>ROLE // {project.role}</div>
-                      <div>YEAR // {project.year}</div>
-                    </div>
+                  <div className="space-y-2 text-[12px] font-sans text-foreground/50">
+                    <div>CLIENT / {project.client}</div>
+                    <div>ROLE / {project.role}</div>
+                    <div>YEAR / {project.year}</div>
                   </div>
-                  <div className="pt-8">
-                    <p className={`${t.bodyProse} italic opacity-60`}>
-                      * All design system configurations and source interactions
-                      are dynamically processed in-browser.
-                    </p>
-                  </div>
+                  <Link href={`/works/${next.slug}`} className="group block space-y-4">
+                    <span aria-hidden className="block text-2xl text-foreground/60 group-hover:text-primary transition-colors">→</span>
+                    <h4 className={`${t.cardTitle} text-foreground group-hover:text-primary group-hover:translate-x-2 transition-[color,transform] duration-500`}>
+                      {next.title}
+                    </h4>
+                  </Link>
                 </div>
 
-                {/* Desktop Right Link - inset matted print border */}
-                <div
-                  className={
-                    isMobile
-                      ? "w-full"
-                      : "col-span-8 pl-4 h-[60vh] flex items-center"
-                  }
+                {/* Right: the next project's cover as a matted print */}
+                <Link
+                  href={`/works/${next.slug}`}
+                  aria-label={next.title}
+                  tabIndex={-1}
+                  className={isMobile ? "w-full block" : "col-span-8 pl-4 h-[60vh] flex items-center justify-center group"}
                 >
-                  <Link
-                    href={`/works/${
-                      projects[
-                        (projects.findIndex((p) => p.slug === slug) + 1) %
-                          projects.length
-                      ].slug
-                    }`}
-                    className="relative w-full h-full group border border-primary/10 p-4 md:p-6 bg-surface/5 overflow-hidden block transition-colors duration-500 hover:border-primary/20"
-                  >
-                    <div className="relative w-full h-full overflow-hidden">
-                      <Image
-                        src={
-                          projects[
-                            (projects.findIndex((p) => p.slug === slug) + 1) %
-                              projects.length
-                        ].coverImage || ""
-                      }
-                      alt="Next project preview"
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-background/20 group-hover:bg-transparent transition-colors duration-500" />
-                    <div className="absolute inset-0 flex flex-col justify-between p-8 md:p-12 z-20">
-                      <span
-                        className={`${t.monoEyebrow} text-white opacity-60 group-hover:text-primary transition-colors`}
-                      >
-                        CONTINUE // NEXT_PROJECT
-                      </span>
-                      <h4
-                        className={`${t.mainHeroTitle} text-white drop-shadow-md group-hover:translate-x-2 transition-transform duration-500`}
-                      >
-                        {
-                          projects[
-                            (projects.findIndex((p) => p.slug === slug) + 1) %
-                              projects.length
-                          ].title
-                        }
-                      </h4>
-                    </div>
-                  </div>
-                  {/* Viewfinder borders */}
-                  <div className="absolute top-2 left-2 w-2 h-2 border-t border-l border-white/40 group-hover:border-primary/40 transition-colors" />
-                  <div className="absolute top-2 right-2 w-2 h-2 border-t border-r border-white/40 group-hover:border-primary/40 transition-colors" />
-                  <div className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-white/40 group-hover:border-primary/40 transition-colors" />
-                  <div className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-white/40 group-hover:border-primary/40 transition-colors" />
+                  <Plate
+                    src={next.coverVideo || next.coverImage || ""}
+                    sizes="50vw"
+                    className={`transition-transform duration-1000 group-hover:scale-[1.01] ${isMobile ? "w-full" : ""}`}
+                    fit={isMobile ? undefined : { w: "100%", h: "60vh" }}
+                  />
                 </Link>
-              </div>
             </div>
           )}
 
@@ -944,37 +678,40 @@ export default function ProjectPageClient({
               <SplitGallery screen={screen} isMobile={isMobile} />
             )}
 
-            {/* Video Preview Component */}
+            {/* Video: the film at its own aspect, its caption set beside it rather than over it */}
             {screen.type === "video" && (
               <div
                 className={
                   isMobile
-                    ? "w-full aspect-[16/9] flex items-center justify-center bg-black"
-                    : "w-full h-[75vh] flex items-center justify-center bg-black"
+                    ? "w-full flex flex-col gap-4"
+                    : "w-full h-full py-16 flex flex-row-reverse items-center justify-end gap-12"
                 }
               >
-                <div className="w-full h-full relative overflow-hidden group border border-primary/10">
-                  <MuxPlayerWrapper
-                    playbackId={screen.src || ""}
-                    className="w-full h-full object-cover"
+                {screen.src?.startsWith("/") ? (
+                  <Plate
+                    src={screen.src}
+                    dark
+                    sizes="80vw"
+                    className={isMobile ? "w-full" : ""}
+                    fit={isMobile ? undefined : { w: "62vw", h: "70vh" }}
                   />
-                  {screen.title && (
-                    <div className="absolute bottom-8 left-8 p-4 bg-background/85 backdrop-blur-sm border border-primary/10 z-20 max-w-sm">
-                      <HUDLabel text="VIDEO_SOURCE" />
-                      <h4 className="font-display font-bold uppercase tracking-tight text-sm mt-1">{screen.title}</h4>
-                      {screen.description && <p className="text-[10px] text-foreground/75 mt-1 font-light leading-relaxed">{screen.description}</p>}
-                    </div>
-                  )}
-                  <div className="absolute bottom-8 right-8 text-[8px] font-mono tracking-widest opacity-30 uppercase pointer-events-none">
-                    VIDEO_REF // {i + 1}
+                ) : (
+                  <div className={isMobile ? "w-full aspect-video relative" : "h-[72vh] aspect-video relative"}>
+                    <MuxPlayerWrapper playbackId={screen.src || ""} className="w-full h-full object-contain" />
                   </div>
-                </div>
+                )}
+                {screen.title && (
+                  <div className={isMobile ? "space-y-2" : "max-w-xs self-end space-y-3 border-t border-primary/25 pt-4 flex-shrink-0"}>
+                    <h3 className={t.cardTitle}>{screen.title}</h3>
+                    {screen.description && <p className={t.bodyProse}>{screen.description}</p>}
+                  </div>
+                )}
               </div>
             )}
 
             {/* Bento Moodboard Component */}
             {screen.type === "bento-moodboard" && (
-              <BentoMoodboard screen={screen} isMobile={isMobile} colors={project.colors} />
+              <BentoMoodboard screen={screen} isMobile={isMobile} />
             )}
 
             {/* Interactive Preview Component */}
@@ -984,7 +721,7 @@ export default function ProjectPageClient({
 
             {/* Timeline Sequence Component */}
             {screen.type === "timeline-sequence" && (
-              <TimelineSequence screen={screen} isMobile={isMobile} />
+              <BentoMoodboard screen={screen} isMobile={isMobile} />
             )}
 
             {/* --- BACKWARD COMPATIBILITY FALLBACKS --- */}
@@ -1005,8 +742,8 @@ export default function ProjectPageClient({
                   transition={{ duration: 1.2, ease: fx.easeSharp }}
                   className={
                     isMobile
-                      ? "w-full aspect-[16/10] relative overflow-hidden group border border-primary/10"
-                      : "col-span-8 h-[60vh] relative overflow-hidden group border border-primary/10"
+                      ? "w-full aspect-[16/10] relative overflow-hidden group border border-primary/25"
+                      : "col-span-8 h-[60vh] relative overflow-hidden group border border-primary/25"
                   }
                 >
                   <Image
@@ -1014,7 +751,7 @@ export default function ProjectPageClient({
                     alt={project.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover transition-transform duration-[2000ms] group-hover:scale-110"
+                    className="object-contain transition-transform duration-[2000ms] group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
 
@@ -1039,14 +776,14 @@ export default function ProjectPageClient({
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8, delay: 0.3 }}
-                    className="aspect-square relative overflow-hidden border border-foreground/5 group"
+                    className="aspect-square relative overflow-hidden border border-primary/25 group"
                   >
                     <Image
                       src={screen.images?.[1] || ""}
                       alt={`${project.title} detail`}
                       fill
                       sizes="(max-width: 768px) 50vw, 25vw"
-                      className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                      className="object-contain transition-all duration-700"
                     />
                   </motion.div>
                   <motion.div
@@ -1054,14 +791,14 @@ export default function ProjectPageClient({
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8, delay: 0.5 }}
-                    className="aspect-[4/3] relative overflow-hidden border border-foreground/5 group"
+                    className="aspect-[4/3] relative overflow-hidden border border-primary/25 group"
                   >
                     <Image
                       src={screen.images?.[2] || ""}
                       alt={`${project.title} detail secondary`}
                       fill
                       sizes="(max-width: 768px) 50vw, 25vw"
-                      className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                      className="object-contain transition-all duration-700"
                     />
                   </motion.div>
                 </div>
@@ -1082,18 +819,15 @@ export default function ProjectPageClient({
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 1.5, ease: fx.easeSharp }}
-                  className="w-full h-full relative overflow-hidden group border border-primary/10"
+                  className="w-full h-full relative overflow-hidden group border border-primary/25"
                 >
                   <Image
                     src={screen.src || ""}
                     alt={screen.caption || project.title}
                     fill
                     sizes="100vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-[3000ms]"
+                    className="object-contain group-hover:scale-105 transition-transform duration-[3000ms]"
                   />
-                  <div className="absolute bottom-8 right-8 text-[8px] font-mono tracking-widest opacity-30 uppercase pointer-events-none">
-                    IMG_REF // {i + 1}
-                  </div>
                 </motion.div>
               </div>
             )}

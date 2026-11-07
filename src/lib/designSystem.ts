@@ -11,8 +11,8 @@ const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const easeSharp: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 const entrance = { 
-  initial: { opacity: 0, x: 32, filter: "blur(8px)" }, 
-  animate: { opacity: 1, x: 0, filter: "blur(0px)" } 
+  initial: { opacity: 0, x: 0, y: 18, filter: "blur(6px)" }, 
+  animate: { opacity: 1, x: 0, y: 0, filter: "blur(0px)" } 
 };
 
 // ─── Colors ──────────────────────────────────────────────────────────────────
@@ -20,7 +20,7 @@ const entrance = {
 export const colors = {
   bg:           "bg-background text-foreground",
   surface:      "bg-surface",
-  surfaceGlass: "bg-surface/30 backdrop-blur-md border border-border-neutral",
+  surfaceGlass: "bg-surface border-t border-primary", // glass retired: a printed field under a hairline rule
   textMuted:    "text-foreground/60",
   textDisabled: "text-foreground/30",
   accent:       "text-tech-blue border-tech-blue/30",
@@ -37,15 +37,16 @@ export const motion = {
 // ─── Typography — Semantic Visual Roles ──────────────────────────────────────
 
 export const t = {
-  mainHeroTitle:     "text-[3rem] md:text-[4.5rem] lg:text-[6.5rem] 3xl:text-[8.5rem] 4xl:text-[11.0rem] font-display uppercase font-[800] leading-[1] tracking-[-0.02em]",
-  heroTagline:     "text-[1.125rem] md:text-[1.25rem] lg:text-[1.5rem] 3xl:text-[1.875rem] 4xl:text-[2.25rem] font-display normal-case font-[300] leading-[1.625] tracking-[-0.02em] opacity-90 italic",
-  sectionHeaderDisplay:     "text-[1.875rem] md:text-[3rem] lg:text-[3.75rem] 3xl:text-[4.5rem] 4xl:text-[6.5rem] font-display uppercase font-[700] leading-[0.85] tracking-[-0.02em]",
-  pageTitle:     "text-[1.5rem] md:text-[2.25rem] lg:text-[3rem] 3xl:text-[3.75rem] 4xl:text-[4.5rem] font-display uppercase font-[700] leading-[1] tracking-[-0.02em]",
-  cardTitle:     "text-[1.75rem] md:text-[1.875rem] lg:text-[2rem] 3xl:text-[2.25rem] 4xl:text-[2.5rem] font-display font-bold lowercase font-[100] leading-[1] tracking-[0.03em]",
-  navItemLabel:     "text-[0.75rem] md:text-[0.875rem] lg:text-[1rem] 3xl:text-[1rem] 4xl:text-[1.125rem] font-display uppercase font-[500] leading-[1.2] tracking-[0.05em]",
-  monoEyebrow:     "text-[0.563rem] md:text-[0.563rem] lg:text-[0.563rem] 3xl:text-[0.688rem] 4xl:text-[0.75rem] font-mono uppercase text-tech-blue font-[700] leading-[1.2] tracking-[0.4em] opacity-60",
-  bodyProse:     "text-[0.813rem] md:text-[0.875rem] lg:text-[1rem] 3xl:text-[1.125rem] 4xl:text-[1.25rem] font-light lowercase font-[100] leading-[1.85] tracking-[-0.02em] opacity-45",
-  metaDataLabel:     "text-[0.5rem] md:text-[0.5rem] lg:text-[0.5rem] 3xl:text-[0.625rem] 4xl:text-[0.75rem] font-mono uppercase font-[400] leading-[1.2] tracking-[0.2em] opacity-30",
+  // Riso Run roles (docs/design.md §3): Junicode speaks, Product Sans explains. Fluid sizes mirror riso.css --t-*.
+  mainHeroTitle:        "font-display font-[400] text-[clamp(4.5rem,19vw,22rem)] leading-[0.85] tracking-[-0.02em]",
+  heroTagline:          "font-sans font-[400] text-[clamp(1.25rem,2.6vw,2.6rem)] leading-[1.05] tracking-[-0.03em]",
+  sectionHeaderDisplay: "font-display font-[400] text-[clamp(3rem,10vw,11rem)] leading-[0.88] tracking-[-0.015em]",
+  pageTitle:            "font-display font-[400] text-[clamp(2.5rem,7vw,7.5rem)] leading-[0.9] tracking-[-0.015em]",
+  cardTitle:            "font-display font-[400] text-[clamp(1.6rem,2.6vw,2.6rem)] leading-[0.95] tracking-[-0.01em]",
+  navItemLabel:         "font-sans font-[400] text-[clamp(0.85rem,0.9vw,1rem)] leading-[1.2] tracking-[-0.01em]",
+  monoEyebrow:          "font-sans font-[700] text-[clamp(0.75rem,0.8vw,0.9rem)] leading-[1.2] tracking-[0.02em] text-tech-blue",
+  bodyProse:            "font-sans font-[400] text-[clamp(0.95rem,1.25vw,1.25rem)] leading-[1.35] tracking-[-0.005em]",
+  metaDataLabel:        "font-sans italic font-[400] text-[clamp(0.8rem,0.85vw,0.95rem)] leading-[1.3] opacity-70",
 };
 
 // ─── Layout ──────────────────────────────────────────────────────────────────
@@ -66,8 +67,8 @@ export const layout = {
 export const ui = {
   card:        "border border-primary/10 bg-surface/30 p-2.5 3xl:p-4 4xl:p-6 transition-colors duration-500 group-hover:border-primary/30",
   cardFooter:  "border-x border-b border-primary/10 bg-surface/10 px-6 py-5 3xl:px-8 3xl:py-7 4xl:px-10 4xl:py-9 transition-colors duration-500 group-hover:border-primary/30 flex justify-between items-center",
-  img:         "w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-[1.03] transition-all duration-700 ease-[0.23,1,0.32,1]",
-  imgFade:     "object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out opacity-60 group-hover:opacity-100",
+  img:         "w-full h-full object-cover mix-blend-multiply group-hover:scale-[1.03] transition-all duration-700 ease-[0.23,1,0.32,1]",
+  imgFade:     "object-cover mix-blend-multiply transition-all duration-700 ease-out opacity-90 group-hover:opacity-100",
   arrow:       "opacity-40 group-hover:opacity-100 group-hover:translate-x-1.5 transition-all duration-500 ease-[0.23,1,0.32,1]",
   backButton:  "fixed top-16 left-16 md:top-24 md:left-24 3xl:top-32 3xl:left-32 4xl:top-40 4xl:left-40 z-50",
 };

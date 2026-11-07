@@ -89,7 +89,7 @@ export default function FreebiesPage() {
                   >
                     <motion.div
                       layoutId={`thumb-${item.id}`}
-                      className="relative aspect-[4/5] overflow-hidden bg-primary/5 border border-primary/5 mb-4"
+                      className="relative aspect-[4/5] overflow-hidden bg-primary/5 border border-primary/25 mb-4"
                     >
                       <Image
                         src={item.image}
@@ -97,7 +97,7 @@ export default function FreebiesPage() {
                         fill
                         referrerPolicy="no-referrer"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className={ui.imgFade}
+                        className={`${ui.imgFade} mix-blend-print`}
                       />
                     </motion.div>
 
@@ -126,7 +126,7 @@ export default function FreebiesPage() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={() => setSelectedItem(null)}
-                className="fixed inset-0 bg-background/95 z-[100] cursor-zoom-out backdrop-blur-3xl"
+                className="fixed inset-0 bg-background z-[100] cursor-zoom-out"
               />
 
               {/* Image hero — centered, vertically centered within the left area */}
@@ -136,7 +136,7 @@ export default function FreebiesPage() {
               >
                 <motion.div
                   layoutId={`thumb-${selectedItem.id}`}
-                  className="relative w-[45vw] max-w-[55vh] h-[65vh] overflow-hidden bg-foreground/5 border border-primary/10"
+                  className="relative w-[45vw] max-w-[55vh] h-[65vh] overflow-hidden bg-foreground/5 border border-primary/25"
                   transition={{ duration: 0.8, ease: fx.easeSharp }}
                 >
                   <Image
@@ -145,7 +145,7 @@ export default function FreebiesPage() {
                     fill
                     referrerPolicy="no-referrer"
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover grayscale-0"
+                    className="object-cover mix-blend-print"
                     priority
                   />
                   <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent pointer-events-none" />
@@ -175,7 +175,7 @@ export default function FreebiesPage() {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ duration: 0.6, ease: fx.easeSharp }}
-                className="fixed top-0 right-0 bottom-0 bg-background/85 backdrop-blur-2xl border-l border-primary/10 z-[101] flex flex-col pointer-events-auto"
+                className="fixed top-0 right-0 bottom-0 bg-background border-l border-primary/25 z-[101] flex flex-col pointer-events-auto"
                 style={{ width: screenSize === "mobile" ? "100%" : `${panelWidth}px` }}
               >
                 {/* Tech corner accents */}
@@ -185,7 +185,7 @@ export default function FreebiesPage() {
                 <div className="absolute bottom-0 right-0 w-3.5 h-3.5 border-b border-r border-primary/25 pointer-events-none" />
 
                 {/* Header */}
-                <div className="p-8 md:p-12 pb-4 3xl:p-16 3xl:pb-6 4xl:p-20 4xl:pb-8 flex justify-between items-center border-b border-primary/5">
+                <div className="p-8 md:p-12 pb-4 3xl:p-16 3xl:pb-6 4xl:p-20 4xl:pb-8 flex justify-between items-center border-b border-primary/25">
                   <HUDLabel text={selectedItem.category} className="!opacity-60" />
                   <button
                     onClick={() => setSelectedItem(null)}
@@ -205,14 +205,14 @@ export default function FreebiesPage() {
                 {/* Content Focus */}
                 <div className="flex-grow p-8 md:p-12 3xl:p-16 4xl:p-20 flex flex-col justify-start md:justify-center space-y-8 md:space-y-12 3xl:space-y-16 4xl:space-y-24 overflow-y-auto">
                   {/* Mobile Image Preview */}
-                  <div className="block md:hidden w-full aspect-[16/10] relative overflow-hidden bg-primary/5 border border-primary/10">
+                  <div className="block md:hidden w-full aspect-[16/10] relative overflow-hidden bg-primary/5 border border-primary/25">
                     <Image
                       src={selectedItem.image}
                       alt={selectedItem.title}
                       fill
                       referrerPolicy="no-referrer"
                       sizes="100vw"
-                      className="object-cover"
+                      className="object-cover mix-blend-print"
                     />
                   </div>
 
@@ -233,16 +233,16 @@ export default function FreebiesPage() {
 
                   <div className="space-y-2">
                     <span className={`${t.metaDataLabel} block opacity-20`}>
-                      COLOR PALETTE // SPEC_2026
+                      COLOR PALETTE / SPEC_2026
                     </span>
                     <div className="flex gap-2">
                       {selectedItem.colors.map((color, i) => (
                         <div key={i} className="group relative">
                           <div
-                            className="w-6 h-6 3xl:w-9 3xl:h-9 4xl:w-12 4xl:h-12 border border-primary/15 transition-transform duration-300 hover:scale-110 cursor-help"
+                            className="w-6 h-6 3xl:w-9 3xl:h-9 4xl:w-12 4xl:h-12 border border-primary/25 transition-transform duration-300 hover:scale-110 cursor-help"
                             style={{ backgroundColor: color }}
                           />
-                          <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-1.5 py-0.5 bg-foreground text-background text-[8px] font-mono uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[120]">
+                          <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-1.5 py-0.5 bg-foreground text-background text-[12px] font-sans opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-[120]">
                             {color}
                           </span>
                         </div>
@@ -252,13 +252,13 @@ export default function FreebiesPage() {
                 </div>
 
                 {/* Action Area */}
-                <div className="p-8 md:p-12 pt-4 3xl:p-16 3xl:pt-6 4xl:p-20 4xl:pb-8 border-t border-primary/5">
+                <div className="p-8 md:p-12 pt-4 3xl:p-16 3xl:pt-6 4xl:p-20 4xl:pb-8 border-t border-primary/25">
                   <TechButton
                     href={selectedItem.downloadUrl}
                     disabled={selectedItem.downloadUrl === "#"}
                     className="w-full !py-6 3xl:!py-8 4xl:!py-10 3xl:text-lg 4xl:text-xl"
                   >
-                    {selectedItem.downloadUrl === "#" ? "Download // Unavailable" : "Download // Free"}
+                    {selectedItem.downloadUrl === "#" ? "Download / Unavailable" : "Download / Free"}
                   </TechButton>
                 </div>
               </motion.div>

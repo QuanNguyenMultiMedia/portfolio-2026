@@ -19,7 +19,7 @@ export default function TakesPage() {
           </h1>
         </motion.div>
         
-        <div className="flex flex-col gap-0 border-t border-primary/5">
+        <div className="flex flex-col gap-0 border-t border-primary/25">
           {takes.map((post, idx) => (
             <motion.div
               key={post.slug}
@@ -32,7 +32,7 @@ export default function TakesPage() {
                 }`}
               >
                 <div className={`md:col-span-2 ${t.metaDataLabel}`}>
-                  {`ESSAY_${String(idx + 1).padStart(2, "0")} // ${post.topic} // ${post.date.split(" ").pop()}`}
+                  {`ESSAY_${String(idx + 1).padStart(2, "0")} / ${post.topic} / ${post.date.split(" ").pop()}`}
                 </div>
 
                 <div className="md:col-span-7 space-y-6 3xl:space-y-8">
