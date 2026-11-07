@@ -13,6 +13,7 @@ import { useScreenSize } from "@/hooks/useScreenSize";
 import { t, layout, fx } from "@/lib/designSystem";
 
 const MotionImage = motion.create(Image);
+const TICK_DEG = 15;
 
 export default function WorksPage() {
   const router = useRouter();
@@ -773,6 +774,24 @@ export default function WorksPage() {
                     ref={knobRef}
                     className="w-[84px] h-[84px] md:w-[110px] md:h-[110px] 3xl:w-[170px] 3xl:h-[170px] 4xl:w-[226px] 4xl:h-[226px] rounded-full bg-transparent border border-primary/25 flex items-center justify-center relative"
                   >
+                    {/* Hairline degree scale, rotates with the knob */}
+                    <svg aria-hidden viewBox="0 0 100 100" className="absolute inset-0 w-full h-full pointer-events-none">
+                      {Array.from({ length: 360 / TICK_DEG }, (_, i) => (
+                        <line
+                          key={i}
+                          x1="50"
+                          y1="3"
+                          x2="50"
+                          y2={i % 6 === 0 ? 9 : 6}
+                          transform={`rotate(${i * TICK_DEG} 50 50)`}
+                          stroke="currentColor"
+                          strokeWidth={0.5}
+                          vectorEffect="non-scaling-stroke"
+                          className="text-primary/30"
+                        />
+                      ))}
+                    </svg>
+
                     {/* Concentric rings texture details */}
                     <div className="absolute inset-2 rounded-full border border-primary/[0.04] pointer-events-none" />
                     <div className="absolute inset-4 rounded-full border border-primary/[0.02] pointer-events-none" />
@@ -784,7 +803,7 @@ export default function WorksPage() {
                   {/* Static Center Cap (Sibling - remains stationary and upright) */}
                   <div className="absolute w-[32px] h-[32px] md:w-[44px] md:h-[44px] 3xl:w-[66px] 3xl:h-[66px] 4xl:w-[90px] 4xl:h-[90px] rounded-full bg-transparent border border-primary/25 flex items-center justify-center pointer-events-none z-30">
                     <span className="text-xs md:text-sm 3xl:text-xl 4xl:text-3xl font-sans font-black text-primary/80 tracking-tighter">
-                      0{activeIndex + 1}
+                      {String(activeIndex + 1).padStart(2, "0")}
                     </span>
                   </div>
                 </div>

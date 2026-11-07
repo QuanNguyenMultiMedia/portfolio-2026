@@ -1,0 +1,66 @@
+/* HUD: the persistent frame, its route index, and the print run's section rail.
+   Hairlines only, radius 0, no glow. Geometry is in CSS px and the page margin token. */
+
+.warp-frame {
+  position: fixed; inset: 0; z-index: 40; pointer-events: none;
+}
+
+.warp-frame-svg {
+  position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible;
+}
+
+/* inset rectangle at the page margin, 1px hairline */
+.warp-frame-box {
+  fill: none; stroke: var(--ink-black); stroke-width: 1px; opacity: 0.35;
+  x: var(--margin); y: var(--margin);
+  width: calc(100% - 2 * var(--margin)); height: calc(100% - 2 * var(--margin));
+}
+
+/* corner notches: each edge runs 12px past its corner (crop-mark ticks, 1px) */
+.warp-notch { fill: var(--ink-black); opacity: 0.35; }
+.warp-notch-tl-h { x: calc(var(--margin) - 12px); y: var(--margin); width: 12px; height: 1px; }
+.warp-notch-tl-v { x: var(--margin); y: calc(var(--margin) - 12px); width: 1px; height: 12px; }
+.warp-notch-tr-h { x: calc(100% - var(--margin)); y: var(--margin); width: 12px; height: 1px; }
+.warp-notch-tr-v { x: calc(100% - var(--margin)); y: calc(var(--margin) - 12px); width: 1px; height: 12px; }
+.warp-notch-bl-h { x: calc(var(--margin) - 12px); y: calc(100% - var(--margin)); width: 12px; height: 1px; }
+.warp-notch-bl-v { x: var(--margin); y: calc(100% - var(--margin)); width: 1px; height: 12px; }
+.warp-notch-br-h { x: calc(100% - var(--margin)); y: calc(100% - var(--margin)); width: 12px; height: 1px; }
+.warp-notch-br-v { x: calc(100% - var(--margin)); y: calc(100% - var(--margin)); width: 1px; height: 12px; }
+
+/* golden-ratio guides: 61.8% across, 38.2% down */
+.warp-guide { stroke: var(--ink-black); stroke-width: 1px; opacity: 0.12; }
+
+.warp-caption {
+  position: absolute; left: var(--margin); right: var(--margin); bottom: var(--s-2);
+  display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3);
+  margin: 0;
+  font-family: var(--font-text); font-size: var(--t-label); line-height: 1.2;
+  color: var(--ink-black);
+}
+
+.warp-hint { opacity: 0.6; display: none; }
+@media (pointer: fine) {
+  .warp-hint { display: inline; }
+}
+
+/* the print run's section rail: one notch per sheet, right edge, vertically centred */
+.index-rail {
+  position: fixed; top: 50%; right: var(--s-2); z-index: 41;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: center;
+}
+.index-rail[hidden] { display: none; }
+
+.index-rail-notch {
+  position: relative; width: 12px; height: 24px; padding: 0;
+  border: 0; border-radius: 0; background: none; cursor: pointer;
+}
+.index-rail-notch::before {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  width: 1px; height: 16px; transform: translate(-50%, -50%);
+  background: var(--ink-black); opacity: 0.35;
+}
+.index-rail-notch[aria-current="true"]::before {
+  height: 24px; opacity: 1;
+}
+.index-rail-notch:focus-visible { outline: 1px solid var(--ink-black); outline-offset: 2px; }

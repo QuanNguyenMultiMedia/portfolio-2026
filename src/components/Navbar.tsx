@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LogoMark from "./LogoMark";
 import { NAV_ITEMS } from "@/lib/navigation";
+import { ui } from "@/lib/designSystem";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -89,8 +90,8 @@ export default function Navbar() {
               data-active={isActive}
               className={`relative px-4 py-1.5 text-[14px] font-sans tracking-[-0.01em] transition-colors duration-300 ${
                 isActive
-                  ? "text-foreground"
-                  : "text-background/60 hover:text-background"
+                  ? ui.hudKeyActive
+                  : `${ui.hudKey} text-background/60 hover:text-background`
               }`}
             >
               {item.name}

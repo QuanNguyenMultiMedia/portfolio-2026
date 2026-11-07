@@ -8,7 +8,7 @@
 import { useEffect, useRef } from "react";
 import { WARP, WARP_TOTAL, type Heading, type WarpDir } from "@/lib/warp";
 
-const COUNT = 260;
+const COUNT = 150;
 const SPREAD = 1600; // world half-width of the field
 const FAR = 2400; // world depth
 const FOCAL = 520;
@@ -68,7 +68,7 @@ export default function WarpField() {
       const cx = w / 2 + hd.x * 0.25 * w, cy = h / 2 + hd.y * 0.25 * h;
       const off = OFFSET * v;
       ctx.lineWidth = 1;
-      ctx.globalAlpha = Math.min(1, v * 1.4) * 0.55;
+      ctx.globalAlpha = Math.min(1, v * 1.4) * 0.38;
       for (const plate of [plateA, plateB]) {
         const o = plate === plateA ? -off : off;
         ctx.strokeStyle = plate;

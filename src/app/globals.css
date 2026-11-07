@@ -163,5 +163,3 @@ html.dark {
   }
 }
 
-/* LoadingScreen holds the page still until its exit finishes */
-html.scroll-locked, html.scroll-locked body { overflow: hidden; overscroll-behavior: none; }

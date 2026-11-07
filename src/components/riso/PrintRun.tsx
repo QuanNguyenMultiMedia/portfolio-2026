@@ -9,6 +9,7 @@
 // Client boundary: only the camera lives here; sheet content is server-rendered children.
 // Below 768px, on short screens and under reduced motion the same sheets read as a vertical page (CSS).
 import { useEffect, useRef } from "react";
+import IndexRail from "./IndexRail";
 
 const DEPTH = 1400; // px between sheets along Z
 const SPRING = { stiffness: 100, damping: 28, mass: 0.6 }; // camera follow: weighty, no overshoot
@@ -43,6 +44,7 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
     const cam: Spring = { x: 0, v: 0 };
     const lookX: Spring = { x: 0, v: 0 };
     const lookY: Spring = { x: 0, v: 0 };
+    let lastNear = -1;
     let pointer = { x: 0, y: 0 };
     let raf = 0;
     let last = 0;
@@ -76,6 +78,10 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
       }
       run.setAttribute("data-painted", "");
       const near = Math.round(cam.x / DEPTH);
+      if (near !== lastNear) {
+        lastNear = near;
+        window.dispatchEvent(new CustomEvent("run-index", { detail: { i: near, n } }));
+      }
       setPlate(sheets[near]?.hasAttribute("data-plate") ?? false);
     };
 
@@ -120,6 +126,27 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
       wake();
     };
 
+    // the index rail and the keys drive the run: goto a sheet, step to a neighbour, open the sheet's first link
+    const scrollBehavior = () =>
+      (window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth") as ScrollBehavior;
+    const nearestSheet = () => {
+      let best = 0, bestTop = Infinity;
+      sheets.forEach((el, i) => {
+        const t = Math.abs(el.getBoundingClientRect().top);
+        if (t < bestTop) { best = i; bestTop = t; }
+      });
+      return best;
+    };
+    const current = () => (mq.matches ? lastNear : nearestSheet());
+    const goto = (i: number) => {
+      const behavior = scrollBehavior();
+      if (mq.matches) window.scrollTo({ top: top + (n > 1 ? i / (n - 1) : 0) * span, behavior });
+      else { const el = sheets[i]; if (el) el.scrollIntoView({ behavior, block: "start" }); }
+    };
+    const onGoto = (e: Event) => goto((e as CustomEvent<{ i: number }>).detail.i);
+    const onStep = (e: Event) => goto(clamp(current() + (e as CustomEvent<{ d: number }>).detail.d, 0, n - 1));
+    const onActivate = () => sheets[current()]?.querySelector<HTMLAnchorElement>("a[href]")?.click();
+
     // flow mode: a marked sheet holding most of the viewport turns the plate on
     const seen = new Set<Element>();
     const io = new IntersectionObserver((entries) => {
@@ -151,9 +178,15 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
     window.addEventListener("pointermove", onPointer, { passive: true });
     run.addEventListener("focusin", onFocus);
     window.addEventListener("keydown", onTab);
+    window.addEventListener("run-goto", onGoto);
+    window.addEventListener("run-step", onStep);
+    window.addEventListener("run-activate", onActivate);
     window.addEventListener("pointerdown", onPress, { passive: true });
     return () => {
       window.removeEventListener("keydown", onTab);
+      window.removeEventListener("run-goto", onGoto);
+      window.removeEventListener("run-step", onStep);
+      window.removeEventListener("run-activate", onActivate);
       window.removeEventListener("pointerdown", onPress);
       root.classList.remove("kbd");
       cancelAnimationFrame(raf);
@@ -171,6 +204,7 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
   return (
     <div className="run" ref={runRef}>
       <div className="run-stage">{children}</div>
+      <IndexRail />
     </div>
   );
 }

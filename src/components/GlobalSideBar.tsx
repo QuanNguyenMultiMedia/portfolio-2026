@@ -8,6 +8,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { getPathColors } from "@/lib/navigation";
 import { fx } from "@/lib/designSystem";
+import WarpFrame from "./WarpFrame";
 
 // WebGL bar is client-only; the placeholder holds its box so nothing shifts.
 const WaveGradientBar = dynamic(() => import("./WaveGradientBar"), {
@@ -35,6 +36,7 @@ export default function GlobalSideBar() {
     <div
       className={`fixed left-0 top-24 bottom-0 z-[60] flex-col w-6 md:w-8 pointer-events-none transition-opacity duration-300 hidden md:flex ${mounted ? "opacity-100" : "opacity-0"}`}
     >
+      <WarpFrame />
       {!mounted ? null : (
         <>
           {/* 0. Right Border Stroke */}

@@ -5,7 +5,6 @@ import Image from "next/image";
 import { motion, useMotionValue, useSpring, useTransform, animate, useReducedMotion, type MotionValue } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 import { t, motion as motionTokens, fx } from "@/lib/designSystem";
-import StarField from "@/components/StarField";
 
 // --- GooeyText cursor-warp tuning (px / unitless) ---
 const GOO_RADIUS = 104; // reach of the cursor's warp field
@@ -392,18 +391,7 @@ export default function ContactsPage() {
     ([x, y]) => `${x}% ${y}%`,
   );
 
-  const zWorld = useMotionValue(0);
   const reduceMotion = useReducedMotion();
-
-  useEffect(() => {
-    if (reduceMotion) return;
-    const controls = animate(zWorld, 100000, {
-      duration: 1000,
-      ease: "linear",
-      repeat: Infinity,
-    });
-    return () => controls.stop();
-  }, [zWorld, reduceMotion]);
 
   // Spring-based entrance can fail to fire onAnimationComplete under OS reduced-motion,
   // leaving the card stuck in its tilted entrance pose forever. Skip straight to settled state.
@@ -480,14 +468,13 @@ export default function ContactsPage() {
 
   return (
     <PageWrapper variant="hero" className="flex flex-col justify-center py-0">
-      <StarField
-        zWorld={zWorld}
-        translateX={springX}
-        translateY={springY}
-        rotateX={springTiltX}
-        rotateY={springTiltY}
-      />
       <div className="max-w-[900px] 3xl:max-w-[1180px] 4xl:max-w-[1400px] mx-auto px-8 3xl:px-16 4xl:px-24 w-full perspective-[3000px]">
+        <motion.div
+          className="preserve-3d"
+          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, z: -120, rotateY: 12 }}
+          animate={{ opacity: 1, z: 0, rotateY: 0 }}
+          transition={reduceMotion ? { duration: 0.2 } : { type: "spring", stiffness: 100, damping: 28, mass: 0.6, delay: 0.08 }}
+        >
         <motion.div
           ref={containerRef}
           onMouseMove={handleMouseMove}
@@ -596,7 +583,7 @@ export default function ContactsPage() {
                   <div className="relative w-full h-full min-h-[268px] lg:min-h-0">
                     <Image
                       src="/assets/portrait_sitting.jpg"
-                      alt="Minh Quan Portrait"
+                      alt="Minh Quân Portrait"
                       fill
                       priority
                       sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 40vw"
@@ -682,6 +669,7 @@ export default function ContactsPage() {
               </div>
             </CardFace>
           </motion.div>
+        </motion.div>
         </motion.div>
       </div>
 

@@ -6,6 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import LogoMark from "./LogoMark";
 import { NAV_ITEMS } from "@/lib/navigation";
+import { setWarp, heading } from "@/lib/warp";
+
+const CHARGE_R = 22;
+const CHARGE_C = 2 * Math.PI * CHARGE_R;
+const CHARGE_MS = 450;
 
 export default function MobileNavbar() {
   const router = useRouter();
@@ -13,6 +18,9 @@ export default function MobileNavbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [charge, setCharge] = useState(0);
+  const chargeRef = useRef(0);
+  const rafRef = useRef(0);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -37,6 +45,28 @@ export default function MobileNavbar() {
     };
   }, [isOpen]);
 
+
+  // Hold charge: the active item fills over CHARGE_MS before release will navigate
+  useEffect(() => {
+    chargeRef.current = 0;
+    if (!isOpen || activeIndex === null) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      rafRef.current = requestAnimationFrame(() => {
+        chargeRef.current = 1;
+        setCharge(1);
+      });
+      return () => cancelAnimationFrame(rafRef.current);
+    }
+    const start = performance.now();
+    const tick = (now: number) => {
+      const next = Math.min(1, (now - start) / CHARGE_MS);
+      chargeRef.current = next;
+      setCharge(next);
+      if (next < 1) rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [isOpen, activeIndex]);
 
   // Spreading 6 items in an arc from 180 degrees (straight left) to 270 degrees (straight up)
   const radius = 175;
@@ -113,8 +143,9 @@ export default function MobileNavbar() {
 
   const handleEnd = () => {
     if (!isOpen) return;
-    if (activeIndex !== null) {
+    if (activeIndex !== null && chargeRef.current >= 1) {
       const target = NAV_ITEMS[activeIndex];
+      setWarp("fwd", heading(pathname, target.path));
       router.push(target.path);
       playSuccess();
       localStorage.setItem("mq_menu_interacted", "true");
@@ -344,6 +375,25 @@ export default function MobileNavbar() {
                     >
                       {item.name}
                     </span>
+                    {isSelected && (
+                      <svg
+                        aria-hidden
+                        viewBox="0 0 48 48"
+                        className="absolute left-1/2 top-1/2 w-12 h-12 -translate-x-1/2 -translate-y-1/2 text-tech-blue pointer-events-none overflow-visible"
+                      >
+                        <circle
+                          cx="24"
+                          cy="24"
+                          r={CHARGE_R}
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1"
+                          strokeDasharray={CHARGE_C}
+                          strokeDashoffset={CHARGE_C * (1 - charge)}
+                          transform="rotate(-90 24 24)"
+                        />
+                      </svg>
+                    )}
                   </div>
                 </motion.div>
               );

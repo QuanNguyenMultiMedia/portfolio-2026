@@ -12,7 +12,6 @@ import BlurMap from "@/components/riso/BlurMap";
 
 // Internal Components
 import GlobalSideBar from "@/components/GlobalSideBar";
-import LoadingScreen from "@/components/LoadingScreen";
 import Navbar from "@/components/Navbar";
 import MobileNavbar from "@/components/MobileNavbar";
 import MobileTopBar from "@/components/MobileTopBar";
@@ -20,13 +19,14 @@ import SmoothScroll from "@/components/SmoothScroll";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Portal from "@/components/Portal";
 import ExitChoreographer from "@/components/ExitChoreographer";
+import WarpField from "@/components/WarpField";
 
 
 
 export const metadata: Metadata = {
-  title: "Minh Quan | Motion Design & Creative Engineering",
+  title: "Minh Quân | Motion Design & Creative Engineering",
   description:
-    "I'm Nguyen Minh Quan, a mid-level motion designer who loves to move things around. I work at the intersection of interaction design, creative engineering, and motion design. HCMC based, globally available.",
+    "I'm Nguyen Minh Quân, a mid-level motion designer who loves to move things around. I work at the intersection of interaction design, creative engineering, and motion design. HCMC based, globally available.",
   keywords: [
     "Motion Design",
     "WebGL",
@@ -34,17 +34,17 @@ export const metadata: Metadata = {
     "Creative Developer",
     "UI Animation",
     "Branding",
-    "Minh Quan",
+    "Minh Quân",
   ],
   alternates: {
     canonical: "https://minhquan.works",
   },
   openGraph: {
-    title: "Minh Quan | Motion Design & Creative Engineering",
+    title: "Minh Quân | Motion Design & Creative Engineering",
     description:
       "Cinematic motion, 3D engineering, and editorial design portfolio.",
     url: "https://minhquan.works",
-    siteName: "Minh Quan Portfolio",
+    siteName: "Minh Quân Portfolio",
     type: "website",
   },
   icons: {
@@ -56,8 +56,8 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
-  "name": "Nguyen Minh Quan",
-  "alternateName": "Minh Quan",
+  "name": "Nguyen Minh Quân",
+  "alternateName": "Minh Quân",
   "url": "https://minhquan.works",
   "image": "https://minhquan.works/assets/portrait_sitting.jpg",
   "jobTitle": "Motion Designer & Creative Engineer",
@@ -97,9 +97,9 @@ export default function RootLayout({
         className="riso-paper min-h-full"
         suppressHydrationWarning
       >
-        <Fountain className="page-plate" />
+        <Fountain className="page-plate" mode="aurora" />
+        <WarpField />
         <ThemeProvider>
-          <LoadingScreen />
           <ExitChoreographer />
           <SmoothScroll>
               {/* isolate: inks multiply on each other, never on the page fountain (that tinted every element) */}

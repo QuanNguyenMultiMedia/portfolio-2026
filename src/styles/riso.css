@@ -231,18 +231,34 @@ html.plate-route main { --ink-black: var(--ink-black-print); --foreground: var(-
   [data-reg]:not(.is-in) .over, [data-reg].reg-fade:not(.is-in) { transform: none; }
 }
 
-/* route change: on link clicks ExitChoreographer has already lifted each block off in reading order, so the
-   old snapshot is mostly bare paper and its fade only covers back/forward. The outgoing sheet lifts off the press (slight misregister drift, ink softening), the next one
-   settles into register under it. One curve for the house (--ease-print); exit short, enter longer and delayed.
-   Navbars and the page fountain sit outside the transition, so the chrome never blinks. */
+/* route change: a short travel along the site's depth axis (lib/warp.ts). On link clicks ExitChoreographer has
+   already pushed each block toward the viewer, so the old snapshot is bare and only Back animates it (falling
+   away). The new page arrives from depth: 120px of Z under perspective, never a zoom, never a flash: the ground
+   colour is continuous because the root snapshot does not animate. Direction from html[data-warp].
+   WarpField and the frame have their own transition names and stay live; the nav and the aurora sit outside. */
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+::view-transition-group(warp-field), ::view-transition-group(frame) { animation: none; }
+::view-transition-old(warp-field), ::view-transition-old(frame) { display: none; }
+::view-transition-new(warp-field), ::view-transition-new(frame) { animation: none; }
 ::view-transition-group(.sheet) { animation-duration: 0s; }
-::view-transition-old(.sheet) { animation: sheet-fade 160ms linear both reverse; }
-::view-transition-new(.sheet) { animation: sheet-fade 160ms linear both; } /* each page's own entrance carries the arrival */
+::view-transition-old(.sheet) { animation: warp-out 220ms var(--ease-exit, cubic-bezier(0.7, 0, 0.84, 0)) both; }
+::view-transition-new(.sheet) { animation: warp-in-fwd 300ms var(--ease-print) 80ms both; }
+html[data-warp="back"]::view-transition-old(.sheet) { animation: warp-out-back 300ms var(--ease-exit, cubic-bezier(0.7, 0, 0.84, 0)) both; }
+html[data-warp="back"]::view-transition-new(.sheet) { animation: warp-in-back 300ms var(--ease-print) 120ms both; }
+@keyframes warp-out { to { opacity: 0; } }
+@keyframes warp-out-back { to { opacity: 0; transform: perspective(1400px) translateZ(-120px); } }
+@keyframes warp-in-fwd { from { opacity: 0; transform: perspective(1400px) translateZ(-120px); } }
+@keyframes warp-in-back { from { opacity: 0; transform: perspective(1400px) translateZ(60px); } }
 @keyframes sheet-fade { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(.sheet), ::view-transition-new(.sheet) { animation-duration: 120ms; }
+  ::view-transition-old(.sheet), html[data-warp]::view-transition-old(.sheet) { animation: sheet-fade 200ms linear both reverse; }
+  ::view-transition-new(.sheet), html[data-warp]::view-transition-new(.sheet) { animation: sheet-fade 200ms linear both; }
 }
+
+/* riso residue only in motion: the grain prints while a route is travelling, never at rest */
+html:not([data-warp]) .riso-grain { opacity: 0; }
+.riso-grain { transition: opacity 240ms linear; }
+html:not([data-warp]) .riso-grain::before { animation-play-state: paused; }
 
 /* .rise: CSS-only staged entrance for server-rendered pages (takes article, 404). Each block settles into
    register in reading order (--i), on the house curve and stagger; reduced motion keeps only the fade. */

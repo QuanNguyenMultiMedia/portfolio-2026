@@ -71,6 +71,8 @@ export const ui = {
   imgFade:     "object-cover mix-blend-multiply transition-all duration-700 ease-out opacity-90 group-hover:opacity-100",
   arrow:       "opacity-40 group-hover:opacity-100 group-hover:translate-x-1.5 transition-all duration-500 ease-[0.23,1,0.32,1]",
   backButton:  "fixed top-16 left-16 md:top-24 md:left-24 3xl:top-32 3xl:left-32 4xl:top-40 4xl:left-40 z-50",
+  hudKey:      "rounded-none border border-foreground/30 font-sans transition-colors",
+  hudKeyActive: "rounded-none border border-foreground bg-foreground text-background",
 };
 
 // ─── Motion Presets ──────────────────────────────────────────────────────────
