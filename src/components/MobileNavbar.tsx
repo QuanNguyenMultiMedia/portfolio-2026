@@ -244,12 +244,12 @@ export default function MobileNavbar() {
       </nav>
 
       {/* Floating Status Notch / Trigger Button */}
-      {/* a slim strip at the thumb: logo and the hold trigger, clear of the home indicator */}
+      {/* the desktop ink bar at the thumb: logo and the hold trigger, clear of the home indicator */}
       <div className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-4 right-4 z-50 md:hidden pointer-events-none">
-        <div className="w-full bg-background border border-primary/25 pl-3 pr-1 py-1 flex items-center justify-between pointer-events-auto">
+        <div className="w-full bg-foreground text-background pl-3 pr-1 py-1 flex items-center justify-between pointer-events-auto">
           <div className="flex items-center gap-3">
             <div className="w-12 h-6 flex-shrink-0">
-              <LogoMark fixed={false} variant="auto" animate={false} className="w-full h-full" />
+              <LogoMark fixed={false} variant="on-ink" animate={false} className="w-full h-full" />
             </div>
           </div>
 
@@ -267,7 +267,7 @@ export default function MobileNavbar() {
               e.preventDefault();
               handleStart();
             }}
-            className="font-sans text-[14px] w-11 h-11 flex items-center justify-center bg-background active:bg-primary active:text-background transition-colors duration-300 select-none cursor-pointer touch-none"
+            className="font-sans text-[14px] w-11 h-11 flex items-center justify-center bg-background text-foreground active:bg-foreground active:text-background transition-colors duration-300 select-none cursor-pointer touch-none"
           >
             <span aria-hidden>≡</span>
           </button>

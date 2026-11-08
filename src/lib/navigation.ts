@@ -7,21 +7,9 @@ export const NAV_ITEMS = [
   { name: "Contacts", path: "/contacts" },
 ];
 
-export interface PathColors {
-  colors: string[];
-  topic: string;
-}
-
-export function getPathColors(pathname: string): PathColors {
-  const segments = pathname.split("/").filter(Boolean);
-  const defaults: PathColors = { colors: ["#005f73", "#0a9396", "#94d2bd"], topic: "" };
-
-  if (pathname === "/") return { colors: ["#1e3a8a", "#1e40af", "#3b82f6"], topic: "HOME" };
-  if (segments[0] === "works") return { colors: ["#ca6702", "#ee9b00", "#e9d8a6"], topic: "WORKS" };
-  if (segments[0] === "takes") return { colors: ["#4c1d95", "#6d28d9", "#8b5cf6"], topic: "TAKES" };
-  if (segments[0] === "freebies") return { colors: ["#005f73", "#0a9396", "#94d2bd"], topic: "FREEBIES" };
-  if (segments[0] === "play") return { colors: ["#ca6702", "#bb3e03", "#ae2012"], topic: "PLAY" };
-  if (segments[0] === "contacts") return { colors: ["#333333", "#444444", "#555555"], topic: "CONTACTS" };
-
-  return defaults;
+/** The route's label, set in italic on the sidebar's ink block (and the phone strip). */
+export function routeTopic(pathname: string): string {
+  const seg = pathname.split("/").filter(Boolean)[0];
+  if (!seg) return "HOME";
+  return NAV_ITEMS.some((n) => n.path === `/${seg}`) ? seg.toUpperCase() : "";
 }

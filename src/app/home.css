@@ -188,6 +188,33 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
   .drift > .drift-quote { grid-area: 4 / 1 / 5 / 3 !important; }
 }
 
+/* ---------- flow mode (phones, short screens, reduced motion): one spread per screen ----------
+   The desktop run shows one sheet at a time; read top to bottom, each sheet still gets the whole screen, opens on a
+   hairline, and composes inside it with paper to spare. The scroll itself drives the print: the cover lifts away,
+   the reel presses up to size, frames hang in, and the sign-off slides onto the sheet. All compositor-only
+   (transform, opacity) on the scroll timeline; without scroll timelines or under reduced motion it reads static. */
+.run:not(.is-3d) .sheet { min-height: 100svh; align-content: center; padding-block: var(--s-7); }
+.run:not(.is-3d) .sheet + .sheet { border-top: 1px solid var(--ink-black); }
+.run:not(.is-3d) .hero { align-content: end; padding-block: var(--s-8) var(--s-8); row-gap: var(--s-4); }
+.run:not(.is-3d) .reel .reel-frame { width: calc(100% + var(--margin) * 2); margin-inline: calc(var(--margin) * -1); }
+.run:not(.is-3d) .drift { row-gap: var(--s-3); }
+.run:not(.is-3d) .drift > .drift-quote { margin-top: var(--s-5); }
+.run:not(.is-3d) .close { row-gap: var(--s-6); }
+.run:not(.is-3d) .close > :is(.ledger, .collab, .view-works) { margin-top: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .run:not(.is-3d) .hero > * { animation: flow-lift linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
+    .run:not(.is-3d) .reel-frame { animation: flow-press linear both; animation-timeline: view(); animation-range: entry 0% cover 45%; }
+    .run:not(.is-3d) .proof, .run:not(.is-3d) .drift-quote { animation: flow-hang linear both; animation-timeline: view(); animation-range: entry 0% entry 85%; }
+    .run:not(.is-3d) .close > * { animation: flow-hang linear both; animation-timeline: view(); animation-range: entry 0% entry 80%; }
+    .run:not(.is-3d) .close > .view-works { animation-name: flow-slide; animation-range: entry 0% cover 40%; }
+  }
+}
+@keyframes flow-lift { to { transform: translate3d(0, -14svh, 0); opacity: 0; } }
+@keyframes flow-press { from { transform: scale(0.84); } to { transform: none; } }
+@keyframes flow-hang { from { opacity: 0; transform: translate3d(0, 2.5rem, 0); } to { opacity: 1; transform: none; } }
+@keyframes flow-slide { from { opacity: 0; transform: translate3d(-24%, 0, 0); } to { opacity: 1; transform: none; } }
+
 /* ---------- 3D: depth inside a sheet ----------
    One rule for every layer: PrintRun moves each layer radially from the vanishing point by --d (1 ahead → 0 held →
    -1 passed) times its depth --z. Ahead, layers gather toward the centre; passing, they spread out of frame, the

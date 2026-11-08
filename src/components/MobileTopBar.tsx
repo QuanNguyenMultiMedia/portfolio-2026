@@ -6,13 +6,15 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { getPathColors } from "@/lib/navigation";
+import { routeTopic } from "@/lib/navigation";
 import { fx } from "@/lib/designSystem";
 
-const WaveGradientBar = dynamic(() => import("./WaveGradientBar"), {
+// The phone's strip is the desktop sidebar laid flat: the same fountain ink and the route set in italic on an ink block.
+const Fountain = dynamic(() => import("./riso/Fountain"), {
   ssr: false,
   loading: () => <div className="absolute inset-0 w-full h-full" />,
 });
+const BAR_INK = { speed: 1.6, phase: 2.4, zoom: 0.45, lean: 1.8, cursor: 1 };
 
 export default function MobileTopBar() {
   const pathname = usePathname();
@@ -24,7 +26,7 @@ export default function MobileTopBar() {
 
   const isDark = resolvedTheme === "dark";
   const isIndividualItem = segments.length >= 2;
-  const { colors } = getPathColors(pathname);
+  const topic = routeTopic(pathname);
 
   const toggleTheme = () => setTheme(isDark ? "light" : "dark");
 
@@ -61,12 +63,13 @@ export default function MobileTopBar() {
         </AnimatePresence>
       </div>
 
-      {/* Horizontal Gradient Bar (middle fill) */}
+      {topic && (
+        <div className="h-full flex-shrink-0 flex items-center px-3 bg-foreground text-background">
+          <span className="text-[13px] font-display italic whitespace-nowrap">{topic}</span>
+        </div>
+      )}
       <div className="flex-grow h-full relative overflow-hidden">
-        <WaveGradientBar
-          colors={colors}
-          className="absolute inset-0 w-full h-full"
-        />
+        <Fountain params={BAR_INK} className="!absolute inset-0 w-full h-full" />
       </div>
 
       {/* Theme Toggle (right side) */}

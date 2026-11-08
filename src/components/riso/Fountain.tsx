@@ -189,6 +189,7 @@ type Slot = {
   clip: boolean; masks: HTMLElement[]; size: [number, number];
   mask: HTMLCanvasElement | null; maskKey: string; sheet: HTMLElement | null; tick: number; faded: boolean;
   p: Required<FountainParams>; ptr: [number, number, number]; ptrTarget: [number, number, number];
+  field?: import("ogl").RenderTarget;
 };
 
 // Per-plate tuning: the same ink, printed differently (the sidebar runs it as a narrow, cursor-led strip).
@@ -282,13 +283,13 @@ async function start() {
   });
   const mesh = new Mesh(gl, { geometry: new Triangle(gl), program });
   await warmProgram(gl, VERT, DITHER);
-  const field = new RenderTarget(gl, { width: 2, height: 2 });
-  const screen = new Program(gl, { vertex: VERT, fragment: DITHER, uniforms: { tMap: { value: field.texture }, uDot: { value: 2 }, uLevels: { value: LEVELS } } });
+  // each plate keeps its own field target, and the GL canvas only ever grows: plates of different sizes (the page
+  // wash and the sidebar strip) used to resize both every frame, reallocating buffers twice per plate per frame
+  const screen = new Program(gl, { vertex: VERT, fragment: DITHER, uniforms: { tMap: { value: null as unknown as import("ogl").Texture }, uDot: { value: 2 }, uLevels: { value: LEVELS } } });
   const screenMesh = new Mesh(gl, { geometry: new Triangle(gl), program: screen });
-  let fW = 0, fH = 0;
   still = isPhone() || window.matchMedia("(prefers-reduced-motion: reduce)").matches; // phones print one still frame
 
-  let last = 0, drift = 0, glW = 0, glH = 0;
+  let last = 0, drift = 0;
   const t0 = performance.now();
   window.addEventListener("warp", (e) => {
     const d = (e as CustomEvent<{ dir: "fwd" | "back"; heading: { x: number; y: number } }>).detail;
@@ -328,7 +329,8 @@ async function start() {
       const k = Math.min(1, MAX_OUT / Math.max(rw * dpr, rh * dpr));
       const cw = Math.max(2, Math.round(rw * dpr * k)), ch = Math.max(2, Math.round(rh * dpr * k));
       if (s.canvas.width !== cw || s.canvas.height !== ch) { s.canvas.width = cw; s.canvas.height = ch; }
-      if (fW !== w || fH !== h) { field.setSize(w, h); fW = w; fH = h; }
+      const field = (s.field ??= new RenderTarget(gl, { width: w, height: h }));
+      if (field.width !== w || field.height !== h) field.setSize(w, h);
       program.uniforms.uRes.value = [w, h];
       s.ptr[0] += (s.ptrTarget[0] - s.ptr[0]) * 0.18;
       s.ptr[1] += (s.ptrTarget[1] - s.ptr[1]) * 0.18;
@@ -340,15 +342,17 @@ async function start() {
       program.uniforms.uCell.value = 1;
       renderer.render({ scene: mesh, target: field });
       // resizing the GL canvas reallocates its drawing buffer: only when this plate's size differs from the last
-      if (glW !== cw || glH !== ch) { renderer.setSize(cw, ch); glW = cw; glH = ch; }
-      screen.uniforms.tMap.value = field.texture; // setSize swaps in a new texture: rebind every frame
+      const G = gl.canvas;
+      if (G.width < cw || G.height < ch) renderer.setSize(Math.max(G.width, cw), Math.max(G.height, ch));
+      renderer.width = cw; renderer.height = ch; // the screen pass prints into the bottom-left cw x ch of the canvas
+      screen.uniforms.tMap.value = field.texture;
       screen.uniforms.uDot.value = DOT * dpr * k;
       renderer.render({ scene: screenMesh });
       const ctx = s.canvas.getContext("2d");
       if (ctx) {
         ctx.globalCompositeOperation = "copy";
         ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(gl.canvas, 0, 0, cw, ch, 0, 0, cw, ch);
+        ctx.drawImage(gl.canvas, 0, gl.canvas.height - ch, cw, ch, 0, 0, cw, ch);
         if (s.clip) {
           if (!s.masks.some((m) => m.isConnected)) { s.masks = host ? Array.from(host.querySelectorAll<HTMLElement>("[data-clip]")) : []; s.mask = null; }
           const key = `${cw}x${ch}`;

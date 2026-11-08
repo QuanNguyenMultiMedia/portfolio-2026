@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { getPathColors } from "@/lib/navigation";
+import { routeTopic } from "@/lib/navigation";
 import { fx } from "@/lib/designSystem";
 
 // The bar prints the same fountain ink as the page wash: a closer crop, faster drift, an eddy under the cursor.
@@ -27,7 +27,7 @@ export default function GlobalSideBar() {
   const isDark = resolvedTheme === "dark";
   const isHome = pathname === "/";
   const isIndividualItem = segments.length >= 2;
-  const { topic } = getPathColors(pathname);
+  const topic = routeTopic(pathname);
 
   const ease = `cubic-bezier(${fx.easeSharp.join(",")})`;
   const toggleTheme = () => setTheme(isDark ? "light" : "dark");
