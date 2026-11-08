@@ -49,10 +49,6 @@ export const metadata: Metadata = {
     siteName: "Minh Quân Portfolio",
     type: "website",
   },
-  icons: {
-    icon: "/assets/favicon white.png",
-    apple: "/assets/favicon white.png",
-  },
 };
 
 const jsonLd = {
