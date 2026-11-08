@@ -264,6 +264,13 @@ html:not([data-warp]) .riso-grain::before { animation-play-state: paused; }
 
 /* .rise: CSS-only staged entrance for server-rendered pages (takes article, 404). Each block settles into
    register in reading order (--i), on the house curve and stagger; reduced motion keeps only the fade. */
+/* .page-in: the content pages' entrance (PageWrapper), CSS so the page paints before hydration */
+.page-in { animation: page-in var(--t-register) var(--ease-print) both; }
+.page-in-fade { animation: sheet-fade var(--t-register) var(--ease-print) both; }
+@keyframes page-in { from { opacity: 0; transform: translate3d(0, 1rem, 0); } }
+@media (prefers-reduced-motion: reduce) {
+  .page-in, .page-in-fade { animation: sheet-fade 240ms linear both; }
+}
 .rise { animation: rise var(--t-register) var(--ease-print) calc(120ms + var(--i, 0) * var(--t-ink-stagger)) both; }
 @keyframes rise { from { opacity: 0; transform: translate3d(0, 1.25rem, 0); filter: blur(3px); } }
 @media (prefers-reduced-motion: reduce) {

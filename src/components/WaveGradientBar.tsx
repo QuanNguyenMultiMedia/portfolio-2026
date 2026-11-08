@@ -246,15 +246,17 @@ export default function WaveGradientBar({
     let currentMouseX = -10.0;
     let currentMouseY = -10.0;
 
+    // the bar's rect is cached on resize and scroll, never read per pointer event (no layout read per move)
+    let rect = container.getBoundingClientRect();
+    const remeasure = () => { rect = container.getBoundingClientRect(); };
+    window.addEventListener("scroll", remeasure, { passive: true });
     const handleMouseMove = (e: MouseEvent) => {
-      const rect = container.getBoundingClientRect();
       targetMouseX = (e.clientX - rect.left) / rect.width;
       targetMouseY = 1.0 - (e.clientY - rect.top) / rect.height;
     };
 
     const handleTouchMove = (e: TouchEvent) => {
       if (e.touches.length > 0) {
-        const rect = container.getBoundingClientRect();
         targetMouseX = (e.touches[0].clientX - rect.left) / rect.width;
         targetMouseY = 1.0 - (e.touches[0].clientY - rect.top) / rect.height;
       }
@@ -273,7 +275,7 @@ export default function WaveGradientBar({
     let isIntersecting = false;
 
     const setSize = () => {
-      const rect = container.getBoundingClientRect();
+      remeasure();
       const scale = 1.0; // Render at native layout dimensions to keep noise/grain sharp
       const width = Math.max(1, Math.floor(rect.width * scale));
       const height = Math.max(1, Math.floor(rect.height * scale));
@@ -293,8 +295,12 @@ export default function WaveGradientBar({
     let raf = 0;
     let isVisible = true;
     const t0 = performance.now();
+    let lastFrame = 0;
     const loop = (t: number) => {
       if (!isIntersecting || !isVisible) return;
+      // a slow ambient strip: 30fps reads the same and halves (or quarters, at 120Hz) the GPU and main-thread cost
+      if (t - lastFrame < 1000 / 30) { raf = requestAnimationFrame(loop); return; }
+      lastFrame = t;
       program.uniforms.iTime.value = (t - t0) * 0.001;
 
       // Target colors from refs (already pre-parsed, avoiding string/regex operations on every frame)
@@ -354,6 +360,7 @@ export default function WaveGradientBar({
 
     return () => {
       if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", remeasure);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("mouseleave", handleMouseLeave);

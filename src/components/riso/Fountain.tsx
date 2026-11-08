@@ -234,7 +234,7 @@ async function start() {
   const mesh = new Mesh(gl, { geometry: new Triangle(gl), program });
   still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  let last = 0, drift = 0;
+  let last = 0, drift = 0, glW = 0, glH = 0;
   const t0 = performance.now();
   window.addEventListener("warp", (e) => {
     const d = (e as CustomEvent<{ dir: "fwd" | "back"; heading: { x: number; y: number } }>).detail;
@@ -271,7 +271,8 @@ async function start() {
       const out = s.clip ? dpr / scale : 1;
       const cw = Math.round(w * out), ch = Math.round(h * out);
       if (s.canvas.width !== cw || s.canvas.height !== ch) { s.canvas.width = cw; s.canvas.height = ch; }
-      renderer.setSize(w, h);
+      // resizing the GL canvas reallocates its drawing buffer: only when this plate's size differs from the last
+      if (glW !== w || glH !== h) { renderer.setSize(w, h); glW = w; glH = h; }
       program.uniforms.uRes.value = [w, h];
       program.uniforms.uTime.value = time;
       program.uniforms.uLean.value = s.lean;

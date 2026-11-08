@@ -1,9 +1,8 @@
-"use client";
-
 import { ReactNode } from "react";
-import { motion } from "framer-motion";
-import { fx } from "@/lib/designSystem";
 
+// Page shell: the <main> landmark, the page's padding variant, and its entrance. The entrance is CSS (riso.css
+// .page-in / .page-in-fade, the house curve over 850ms), so a page paints and reads on first frame without waiting
+// for hydration; it stays a Server Component and adds no client JS.
 export interface PageWrapperProps {
   children: ReactNode;
   className?: string;
@@ -32,31 +31,13 @@ export default function PageWrapper({
         ? "pt-28 pb-20 px-0 md:pt-36 md:pb-28"
         : "p-0"; // Hero and Story handle their own internal layout/padding
 
-  const isStory = variant === "story";
-
-  const initialProps = isStory
-    ? { opacity: 0 }
-    : { opacity: 0, y: 16 };
-
-  const animateProps = isStory
-    ? { opacity: 1 }
-    : { opacity: 1, y: 0 };
-
-  const styleProps = isStory
-    ? { willChange: "opacity" }
-    : { willChange: "opacity, transform" };
+  const entrance = variant === "story" ? "page-in-fade" : "page-in";
 
   return (
-    <motion.main
-      initial={initialProps}
-      animate={animateProps}
-      transition={{ duration: 0.85, ease: fx.ease }}
-      style={styleProps}
-      className={`${baseStyles} ${className}`}
-    >
+    <main className={`${baseStyles} ${entrance} ${className}`}>
       <div className={paddingStyles}>
         {children}
       </div>
-    </motion.main>
+    </main>
   );
 }
