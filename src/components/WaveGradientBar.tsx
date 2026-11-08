@@ -191,6 +191,12 @@ export default function WaveGradientBar({
     }
 
     const gl = renderer.gl;
+    // no GPU (lib/gpu): the bar holds its three colours as a still gradient instead of a CPU-rendered shader
+    if (!fastGpu(gl)) {
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
+      containerRef.current.style.backgroundImage = `linear-gradient(180deg, ${color1}, ${color2}, ${color3})`;
+      return;
+    }
     const canvas = gl.canvas;
     canvas.style.width = "100%";
     canvas.style.height = "100%";
@@ -384,12 +390,6 @@ export default function WaveGradientBar({
 
   useEffect(() => {
     if (!containerRef.current) return;
-    const host = containerRef.current;
-    // no GPU (lib/gpu): the bar holds its three colours as a still gradient instead of a CPU-rendered shader
-    if (!fastGpu()) {
-      host.style.backgroundImage = `linear-gradient(180deg, ${color1}, ${color2}, ${color3})`;
-      return;
-    }
     let dispose: (() => void) | undefined, gone = false;
     const cancel = afterLoadIdle(() => { mount().then((d) => { if (gone) d?.(); else dispose = d; }); });
     return () => { gone = true; cancel(); dispose?.(); };

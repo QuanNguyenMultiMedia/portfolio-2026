@@ -7,6 +7,10 @@
 // The page fountain prints only on sheets marked [data-plate]: the camera (3D) or an observer (flow) sets
 // html.plate-on while one holds the view, and the plate's CSS fades it in and out.
 // Client boundary: only the camera lives here; sheet content is server-rendered children.
+// Layers inside a sheet part radially from the vanishing point at their own depth rate (one rule, true parallax);
+// camera speed drives the speed lens: a GPU blur on each moving layer (the sheets' ink only, so paper and fountain
+// behind stay sharp), weighted by a radial ramp in viewport space: sharp at the centre, soft toward the rim.
+// (An SVG filter over the whole stage looked the same but re-ran every text filter inside it on the CPU each frame.)
 // Below 768px, on short screens and under reduced motion the same sheets read as a vertical page (CSS).
 import { useEffect, useRef } from "react";
 import { motionBus } from "@/lib/warp";
@@ -16,6 +20,20 @@ const DEPTH = 1400; // px between sheets along Z
 const SPRING = { stiffness: 100, damping: 28, mass: 0.6 }; // camera follow: weighty, no overshoot
 const LOOK = { shift: 10, stiffness: 80, damping: 30, mass: 1 }; // pointer look-around: shift only, no tilt
 const ENABLED = "(min-width: 768px) and (min-height: 600px) and (prefers-reduced-motion: no-preference)";
+
+// layer depth inside a sheet: how fast it parts from the vanishing point as the camera passes (1 = the sheet's own plane)
+const LAYERS: [string, number][] = [
+  [".hero-name", 1], [".hero-line", 1.7],
+  [".reel-frame", 1.1],
+  [".proof-1", 0.8], [".proof-2", 1.5], [".proof-3", 1.2], [".proof-4", 1.8], [".proof-5", 1.4], [".proof-6", 1.6], [".proof-7", 0.9], [".proof-8", 1.3], [".drift-quote", 1.1],
+  [".manifesto-text", 1], [".ledger", 1.3], [".collab", 1.5], [".view-works", 1.9],
+];
+const HOLD = 0.08; // |camera offset| from the nearest sheet, in sheets, inside which it counts as held
+const SPREAD = 0.55; // radial travel per unit depth, in sheet widths/heights at |d| = 1
+const LENS = { vmax: 2000, barrel: 0.09, scale: 0.035, rise: 14, fall: 5, blur: 10, step: 0.5 }; // speed → lens: velocity at full effect, barrel push, settle rates, max blur px, blur quantum
+
+// the lens ramp (viewport space, from the vanishing point): no blur inside LENS_IN of the radius, full at LENS_OUT
+const LENS_R = 0.7, LENS_IN = 0.36, LENS_OUT = 0.92;
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 
@@ -41,6 +59,30 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
     const n = sheets.length;
     run.style.setProperty("--n", String(n));
     const mq = window.matchMedia(ENABLED);
+    type Layer = { el: HTMLElement; z: number; nx: number; ny: number; r2: number; hw: number; hh: number; blur: number };
+    const layers: Layer[][] = sheets.map((sh) =>
+      LAYERS.flatMap(([sel, z]) => Array.from(sh.querySelectorAll<HTMLElement>(sel)).map((el) => {
+        el.setAttribute("data-z", "");
+        return { el, z, nx: 0, ny: 0, r2: 0, hw: 0, hh: 0, blur: 0 };
+      })));
+    let speed = 0; // 0..1, smoothed |camera velocity|
+    let dir = 1; // smoothed sign of travel: +1 forward (barrel), -1 back (pincushion)
+    // under travel the ink-edge filters drop (riso.css): a url() filter beside a changing blur re-runs every step
+    let travelling = false;
+    let hazeOn = true;
+    const lensLayer = (L: Layer, px: number, k: number) => {
+      // the layer's rim, where it sits on screen now, against the elliptical ramp
+      const ex = (Math.abs(L.nx * (1 + k)) + L.hw) / LENS_R, ey = (Math.abs(L.ny * (1 + k)) + L.hh) / LENS_R;
+      const ramp = clamp((Math.sqrt(ex * ex + ey * ey) - LENS_IN) / (LENS_OUT - LENS_IN));
+      const b = Math.round((px * ramp) / LENS.step) * LENS.step;
+      if (b === L.blur) return;
+      // keep a filter the layer prints with (BlurMap's stack), and add the lens after it
+      const own = L.el.style.filter.replace(/\s*blur\([^)]*\)$/, "");
+      L.blur = b;
+      if (b > 0) L.el.style.filter = `${own} blur(${b}px)`.trim();
+      else if (own) L.el.style.filter = own;
+      else L.el.style.removeProperty("filter");
+    };
 
     const cam: Spring = { x: 0, v: 0 };
     const lookX: Spring = { x: 0, v: 0 };
@@ -51,10 +93,26 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
     let last = 0;
     let top = 0;
     let span = 1;
+    let W = 1, H = 1; // stage size: every sheet fills it
 
     const measure = () => {
       top = run.getBoundingClientRect().top + window.scrollY;
       span = Math.max(1, run.offsetHeight - window.innerHeight);
+      // each layer's centre relative to the vanishing point, as a fraction of its sheet (projection-invariant)
+      W = stage.clientWidth; H = stage.clientHeight;
+      run.classList.add("is-measuring");
+      sheets.forEach((sh, i) => {
+        const s = sh.getBoundingClientRect();
+        const ox = s.left + s.width * 0.5, oy = s.top + s.height * 0.46;
+        for (const L of layers[i]) {
+          const r = L.el.getBoundingClientRect();
+          L.nx = (r.left + r.width / 2 - ox) / s.width;
+          L.ny = (r.top + r.height / 2 - oy) / s.height;
+          L.r2 = L.nx * L.nx + L.ny * L.ny;
+          L.hw = r.width / s.width / 2; L.hh = r.height / s.height / 2;
+        }
+      });
+      run.classList.remove("is-measuring");
     };
     const target = () => clamp((window.scrollY - top) / span) * (n - 1) * DEPTH;
 
@@ -62,6 +120,9 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
     const setPlate = (on: boolean) => root.classList.toggle("plate-on", on);
 
     const paint = () => {
+      const lensE = 1 - (1 - speed) * (1 - speed); // ease-out: a single sheet step already reads, a hard scrub saturates
+      const lensPx = Math.round((lensE * LENS.blur) / LENS.step) * LENS.step;
+      if ((lensPx > 0) !== travelling) { travelling = lensPx > 0; stage.classList.toggle("is-travelling", travelling); }
       stage.style.perspectiveOrigin = `${50 + lookX.x * 4}% ${46 + lookY.x * 4}%`;
       for (let i = 0; i < n; i++) {
         const el = sheets[i];
@@ -76,9 +137,22 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
         el.style.setProperty("--d", clamp(d, -1, 1).toFixed(3));
         el.style.setProperty("--mis", (1 + ahead * 10).toFixed(2));
         el.style.pointerEvents = Math.abs(d) < 0.3 ? "auto" : "none";
+        // parallax: ahead (d>0) layers gather to the centre, passing (d<0) they spread out, deeper z faster;
+        // lens: speed pushes the frame's edges outward (barrel) more than its centre
+        const dc = clamp(d, -1, 1);
+        for (const L of layers[i]) {
+          const k = -dc * L.z * SPREAD + dir * speed * LENS.barrel * L.r2 * 4;
+          const sc = 1 + dir * speed * LENS.scale * L.r2 * 4 - dc * (L.z - 1) * 0.12;
+          L.el.style.transform = `translate3d(${(L.nx * W * k).toFixed(1)}px,${(L.ny * H * k).toFixed(1)}px,0) scale(${sc.toFixed(4)})`;
+          lensLayer(L, lensPx, k);
+        }
       }
       run.setAttribute("data-painted", "");
       const near = Math.round(cam.x / DEPTH);
+      // BlurMap's haze re-runs its whole filter chain on every step; on a sheet in projection (travelling, or
+      // parked between sheets) that costs a frame budget, so the drift runs only on a held sheet
+      const held = Math.abs(cam.x / DEPTH - near) < HOLD;
+      if (held !== hazeOn) { hazeOn = held; root.classList.toggle("haze-hold", !held); }
       if (near !== lastNear) {
         lastNear = near;
         window.dispatchEvent(new CustomEvent("run-index", { detail: { i: near, n } }));
@@ -92,12 +166,16 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
       step(cam, target(), SPRING.stiffness, SPRING.damping, SPRING.mass, dt);
       step(lookX, pointer.x, LOOK.stiffness, LOOK.damping, LOOK.mass, dt);
       step(lookY, pointer.y, LOOK.stiffness, LOOK.damping, LOOK.mass, dt);
+      const want = clamp(Math.abs(cam.v) / LENS.vmax);
+      speed += (want - speed) * (1 - Math.exp(-(want > speed ? LENS.rise : LENS.fall) * dt));
+      if (speed < 1e-3 && want === 0) speed = 0;
+      if (Math.abs(cam.v) > 50) dir += (Math.sign(cam.v) - dir) * (1 - Math.exp(-6 * dt));
       paint();
       motionBus.runVelocity = cam.v;
       const settled =
         Math.abs(cam.v) < 0.5 && Math.abs(cam.x - target()) < 0.5 &&
         Math.abs(lookX.v) + Math.abs(lookY.v) < 1e-3 &&
-        Math.abs(lookX.x - pointer.x) + Math.abs(lookY.x - pointer.y) < 1e-3;
+        Math.abs(lookX.x - pointer.x) + Math.abs(lookY.x - pointer.y) < 1e-3 && speed === 0;
       raf = settled ? 0 : requestAnimationFrame(frame);
       if (settled) motionBus.runVelocity = 0;
       if (settled) last = 0;
@@ -106,9 +184,14 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
 
     const clear = () => {
       run.classList.remove("is-3d");
+      root.classList.remove("run-3d");
       run.removeAttribute("data-painted");
       sheets.forEach((el) => { el.removeAttribute("style"); el.removeAttribute("data-off"); });
       stage.style.removeProperty("perspective-origin");
+      layers.flat().forEach((L) => L.el.style.removeProperty("transform"));
+      layers.flat().forEach((L) => lensLayer(L, 0, 0));
+      travelling = false; stage.classList.remove("is-travelling");
+      hazeOn = true; root.classList.remove("haze-hold");
     };
 
     // keyboard: focusing into a sheet brings the camera to it
@@ -168,6 +251,7 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
     const setup = () => {
       if (mq.matches) {
         run.classList.add("is-3d");
+        root.classList.add("run-3d");
         measure();
         cam.x = target(); // arrive where the page already is (reload mid-scroll), then follow
         cam.v = 0;
@@ -185,6 +269,7 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
     mq.addEventListener("change", setup);
     window.addEventListener("scroll", wake, { passive: true });
     window.addEventListener("resize", onResize);
+    window.addEventListener("run-measure", onResize); // a sheet re-laid itself out (the works wall re-hangs)
     window.addEventListener("pointermove", onPointer, { passive: true });
     run.addEventListener("focusin", onFocus);
     window.addEventListener("keydown", onTab);
@@ -203,6 +288,7 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
       mq.removeEventListener("change", setup);
       window.removeEventListener("scroll", wake);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("run-measure", onResize);
       window.removeEventListener("pointermove", onPointer);
       run.removeEventListener("focusin", onFocus);
       io.disconnect();

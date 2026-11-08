@@ -9,8 +9,13 @@
   --paper-shade: #c7cad4;
 
   /* ink set */
-  --ink-black: #313131;
-  --ink-black-print: #313131; /* ink black as printed on stock (MainTitle.aep): never flips with the theme */
+  /* ink black, measured on the rendered AE boards (11/12, OCIO viewer-exact): text layers are filled #000 and
+     body copy prints solid, core #000. Display layers sit at 80% opacity, but with roughen and the grunge plate
+     their cores read #131314 on paper (≈ 92% black). The old flat #313131 was that 80% baked onto paper: over a
+     fountain it printed grey instead of darkening the ink under it. */
+  --ink-black: #000;
+  --ink-black-print: #000; /* never flips with the theme */
+  --ink-display: rgb(0 0 0 / 0.92); /* display type: translucent black, so the ink under it darkens as on the board */
   --ink-blue: #00a8ff;
   --ink-violet: #3a3efa;
   --ink-indigo: #3000ff;
@@ -36,7 +41,7 @@
   --screen-15: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cdefs%3E%3Cpattern id='p' width='3.5' height='3.5' patternUnits='userSpaceOnUse' patternTransform='rotate(15)'%3E%3Ccircle cx='1.75' cy='1.75' r='1.45'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='28' height='28' fill='url(%23p)'/%3E%3C/svg%3E");
   --screen-75: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cdefs%3E%3Cpattern id='p' width='3.5' height='3.5' patternUnits='userSpaceOnUse' patternTransform='rotate(75)'%3E%3Ccircle cx='1.75' cy='1.75' r='1.45'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='28' height='28' fill='url(%23p)'/%3E%3C/svg%3E");
   --screen-0: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='3.5' height='3.5'%3E%3Ccircle cx='1.75' cy='1.75' r='1.45'/%3E%3C/svg%3E");
-  --screen-solid: 0.74; /* how much ink fills between dots: solids still show the screen */
+  --screen-solid: 0.94; /* measured: AE type cores print near solid; the dither lives in the blooms */
 
   /* layout + type (design.md §3–4) */
   --margin: clamp(1.25rem, 5.5vw, 7rem);
@@ -80,6 +85,7 @@ html.dark {
   --paper-hi: #1c1c1f;
   --paper-shade: #2c2d33;
   --ink-black: #e6e4df;
+  --ink-display: #e6e4df;
   --ink-violet: #8c8fff;
   --ink-indigo: #9a7dff;
   --ink-cream: #2a2a2c;
@@ -90,16 +96,11 @@ html.dark {
 html {
   color-scheme: light;
   transition: background-color 600ms var(--ease-print);
-  background-color: var(--paper);
-  background-image: url("/media/paper-tooth.jpg");
-  /* one sheet, not tiles: the scan's edges do not match, so any repeat prints a seam */
-  background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;
-  /* soft-light: the scan adds tooth around the paper value instead of darkening it, so the ground stays at
-     --paper (the loading screen's value) */
-  background-blend-mode: soft-light;
+  background-color: var(--paper); /* the tooth prints over everything (.riso-tooth), as the grunge layer tops every comp */
 }
-html.dark { color-scheme: dark; background-blend-mode: multiply; } /* soft-light lifted the board to mid grey: the tooth may only darken it */
-html.dark .riso-tooth { mix-blend-mode: multiply; opacity: 0.5; }
+html.dark { color-scheme: dark; }
+/* on charcoal stock the tooth lifts instead: screen the inverted plate */
+html.dark .riso-tooth { mix-blend-mode: screen; filter: invert(1); opacity: 0.35; }
 /* the tooth and grain are texture, not ink: on dark stock they lift the board instead of darkening it */
 html.dark .riso-grain { mix-blend-mode: screen; opacity: 0.08; }
 body.riso-paper {
@@ -116,10 +117,16 @@ body.riso-paper :focus-visible { outline: 2px solid var(--ink-violet); outline-o
 
 /* grain: printed on top of everything, 12fps */
 /* paper tooth printed over everything, ink included: the sheet, not the screen */
+/* MainTitle.aep: "Texturelabs_Grunge_305L.jpg" sits on top of every comp at 50% (Motion Tile, Levels). The
+   scan is mid-grey (mean 128, std 47); the web cut bakes the Levels lift in (mean 0.9, contrast 0.5: white
+   stock with dark tooth) and multiplies at 50%, which matches the measured board: paper stays light (mean
+   228–244) with visible tooth. Paper, fountain and ink all print through it. public/media/paper-grunge.webp */
 .riso-tooth {
   position: fixed; inset: 0; z-index: 59; pointer-events: none;
-  background: url("/media/paper-tooth.jpg") center / cover no-repeat; /* one sheet: tiling the scan seams */
-  mix-blend-mode: soft-light; opacity: 0.35;
+  /* the grain is pixel-scale (any downscale averages it away), so it prints 1:1: a native crop mirrored 2x2
+     into a seamless tile, as Motion Tile's Mirror Edges does; 384 CSS px = 768 scan px at 2x */
+  background: url("/media/paper-grunge.webp") 0 0 / 384px 384px repeat;
+  mix-blend-mode: multiply; opacity: 0.5;
 }
 /* the sheet is the viewport; the oversized texture that jitters inside it is clipped to it, so nothing
    hangs past the screen edge. The blend sits on the clipping sheet (position: fixed isolates its children). */
@@ -140,7 +147,7 @@ body.riso-paper :focus-visible { outline: 2px solid var(--ink-violet); outline-o
 }
 
 /* ---------- ink plates ---------- */
-.ink { --ink: var(--ink-black); --screen: var(--screen-45); --rx: var(--reg-black-x); --ry: var(--reg-black-y); }
+.ink { --ink: var(--ink-display); --screen: var(--screen-45); --rx: var(--reg-black-x); --ry: var(--reg-black-y); }
 .ink-blue { --ink: var(--ink-blue); --screen: var(--screen-15); --rx: var(--reg-blue-x); --ry: var(--reg-blue-y); }
 .ink-violet { --ink: var(--ink-violet); --screen: var(--screen-75); --rx: var(--reg-violet-x); --ry: var(--reg-violet-y); }
 .ink-indigo { --ink: var(--ink-indigo); --screen: var(--screen-75); --rx: var(--reg-indigo-x); --ry: var(--reg-indigo-y); }
@@ -162,7 +169,7 @@ body.riso-paper :focus-visible { outline: 2px solid var(--ink-violet); outline-o
   margin-inline: -0.06em -0.18em;
   -webkit-box-decoration-break: clone; box-decoration-break: clone;
 }
-.plate.hard { mix-blend-mode: hard-light; --screen-solid: 0.88; }
+.plate.hard { mix-blend-mode: hard-light; --screen-solid: 1; }
 .plate.fountain-herond { background: linear-gradient(180deg, var(--fountain-herond)); }
 
 /* a double-plate lockup: the under-plate is a second ink, out of register */
@@ -178,6 +185,8 @@ body.riso-paper :focus-visible { outline: 2px solid var(--ink-violet); outline-o
 
 /* ---------- type roles ---------- */
 .t-display-xl, .t-display, .t-display-col, .t-list { font-family: var(--font-display); font-weight: 400; line-height: 0.9; letter-spacing: -0.01em; }
+/* display type prints as translucent black ink (design.md §2 Ink set) */
+.t-display-xl, .t-display, .t-display-col, .t-list, main h1 { color: var(--ink-display); }
 .t-display-xl { font-size: var(--t-display-xl); }
 .t-display { font-size: var(--t-display); }
 .t-display-col { font-size: var(--t-display-col); line-height: 0.92; }
@@ -186,6 +195,11 @@ body.riso-paper :focus-visible { outline: 2px solid var(--ink-violet); outline-o
 .t-lead { font-family: var(--font-text); font-size: var(--t-lead); line-height: 1; letter-spacing: -0.035em; }
 .t-body { font-size: var(--t-body); line-height: 1.35; max-width: 46ch; }
 .t-aside { font-style: italic; font-size: var(--t-body); line-height: 1.3; }
+/* every text block prints with roughened edges (InkEdges); display words carry their own stack (BlurMap),
+   nested blocks are already covered by their parent, and blocks holding media would warp the picture. Each
+   filtered box is its own raster pass, so a list or a [data-ink] group prints as one block, not item by item. */
+:is(main, nav) :is(h1, h2, h3, h4, p, ul, ol, dl, li, dd, dt, blockquote, figcaption, a, [data-ink]):not([data-blurmap], [data-blurmap] *, :is(h1, h2, h3, h4, p, ul, ol, dl, li, dd, dt, blockquote, figcaption, a, [data-ink]) *, .sr-only, :has(img, video, canvas, svg)) { filter: url(#ink-edges); }
+.run-stage.is-travelling :is(h1, h2, h3, h4, p, ul, ol, dl, li, dd, dt, blockquote, figcaption, a, [data-ink]) { filter: none; }
 .defocus { filter: blur(clamp(3px, 0.6vw, 9px)); }
 
 /* ---------- printed media ---------- */
@@ -213,7 +227,7 @@ html.plate-on .fountain.page-plate { opacity: 1; }
    and print at full density. */
 html.dark.plate-on:not(.plate-route) .fountain.page-plate { opacity: 0.45; }
 /* over a full-density route plate the type prints in ink black, as in the AE comp, on either stock */
-html.plate-route main { --ink-black: var(--ink-black-print); --foreground: var(--ink-black-print); --primary: var(--ink-black-print); --color-foreground: var(--ink-black-print); --color-primary: var(--ink-black-print); color: var(--ink-black-print); }
+html.plate-route main { --ink-display: rgb(0 0 0 / 0.92); --ink-black: var(--ink-black-print); --foreground: var(--ink-black-print); --primary: var(--ink-black-print); --color-foreground: var(--ink-black-print); --color-primary: var(--ink-black-print); color: var(--ink-black-print); }
 @media (prefers-reduced-motion: reduce) { .fountain.page-plate { transition-duration: 200ms; } }
 
 .rule { border: 0; border-top: 1.5px solid var(--ink-black); margin: 0; }

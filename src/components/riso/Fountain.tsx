@@ -16,13 +16,15 @@ const FRAG = /* glsl */ `
 //   → Gaussian Blur 189.4 → Glasswork (45°, size 238, disp 10/88) → CC Radial Blur (zoom 153, centre 1464,2428.5)
 //   → AGP RetroDither (palette 3, 14 levels, downscale 4). The teeth stay screen-locked while the star turns under them.
 // Axis conventions, wave scale and coverage were fitted against the green layer soloed in AE at 0–6 s (IoU 0.93);
-// the Colorama ramps are the RetroDither palette entries measured from the same renders.
+// the ramps are the composite colours measured on the rendered board (the soloed-layer palette printed dull and yellow-green).
 precision highp float;
 uniform vec2 uRes;
 uniform float uTime;
 uniform vec2 uLean;
 uniform float uCell;
 uniform float uDark;
+uniform float uZoom;   // span scale of the board rect: <1 prints a closer crop of the ink
+uniform vec3 uPtr;     // cursor in plate uv (y down) + strength: the ink swirls around it
 varying vec2 vUv;
 
 const float PI = 3.14159265;
@@ -64,8 +66,9 @@ vec2 waveWarp(vec2 p, float dirDeg, bool pin){
 }
 
 vec3 rampGreen(float I){
-  vec3 g0 = vec3(0.039,0.157,0.039), g1 = vec3(0.039,0.353,0.157), g2 = vec3(0.039,0.549,0.275);
-  vec3 g3 = vec3(0.039,0.667,0.392), g4 = vec3(0.157,0.784,0.549), g5 = vec3(0.314,0.824,0.667);
+  // composite colours measured on the rendered 01.Title board (OCIO viewer-exact), deep bloom → open field
+  vec3 g0 = vec3(0.055,0.192,0.133), g1 = vec3(0.071,0.275,0.180), g2 = vec3(0.090,0.490,0.243);
+  vec3 g3 = vec3(0.098,0.659,0.408), g4 = vec3(0.133,0.894,0.765), g5 = vec3(0.235,0.914,0.827); // g5 = the open field (AE median #41ead5 over paper)
   if (I < 0.2) return mix(g0, g1, I / 0.2);
   if (I < 0.35) return mix(g1, g2, (I - 0.2) / 0.15);
   if (I < 0.5) return mix(g2, g3, (I - 0.35) / 0.15);
@@ -73,8 +76,8 @@ vec3 rampGreen(float I){
   return mix(g4, g5, min(1.0, (I - 0.7) / 0.2));
 }
 vec3 rampSky(float I){
-  vec3 b0 = vec3(0.078,0.431,0.510), b1 = vec3(0.078,0.667,0.824), b2 = vec3(0.157,0.784,0.941);
-  vec3 b3 = vec3(0.353,0.824,0.980), b4 = vec3(0.510,0.863,0.980);
+  vec3 b0 = vec3(0.243,0.780,0.980), b1 = vec3(0.259,0.902,0.988), b2 = vec3(0.557,0.914,0.988);
+  vec3 b3 = vec3(0.765,0.937,0.992), b4 = vec3(0.824,0.953,0.992);
   if (I < 0.25) return mix(b0, b1, I / 0.25);
   if (I < 0.45) return mix(b1, b2, (I - 0.25) / 0.2);
   if (I < 0.65) return mix(b2, b3, (I - 0.45) / 0.2);
@@ -125,25 +128,54 @@ void main(){
   vec2 rect0 = vec2(153.0, 161.0), rectS = vec2(2493.0, 2146.0);
   float va = uRes.x / uRes.y, ra = rectS.x / rectS.y;
   vec2 span = va > ra ? vec2(rectS.x, rectS.x / va) : vec2(rectS.y * va, rectS.y);
+  span *= uZoom;
   vec2 comp = rect0 + (rectS - span) * 0.5 + uv * span - uLean * 120.0;
+  // cursor: a soft eddy, the ink turns around the pointer and is pushed off it (comp px, aspect-correct falloff)
+  vec2 dv = (uv - uPtr.xy) * vec2(va, 1.0);
+  float f = exp(-dot(dv, dv) / 0.035) * uPtr.z;
+  comp += (vec2(-dv.y, dv.x) * 2600.0 + dv * 900.0) * f;
 
   float t = mod(uTime, LOOP) / LOOP * 360.0;
   vec4 sky = layer(comp, vec2(1822.915, 1026.289), vec2(3.101, 1.588), -3.6596 + t, -133.0, false);
   vec4 grn = layer(comp, vec2(2085.939, 1890.875), vec2(2.824, 1.860), 153.5288 - t, -200.0, true);
 
-  // RetroDither: ordered threshold on alpha (14 levels) and colour (palette step 10/255)
-  float th = bayer4(cell) - 0.5;
+  // pass 1 prints the smooth field; the RetroDither screen runs in pass 2 (DITHER) at device resolution
   vec3 skyC = sky.rgb / max(sky.a, 1e-3), grnC = grn.rgb / max(grn.a, 1e-3);
-  float sa = clamp(floor(sky.a * 13.0 + 0.5 + th) / 13.0, 0.0, 1.0);
-  float ga = clamp(floor(grn.a * 13.0 + 0.5 + th) / 13.0, 0.0, 1.0);
-
   vec3 col = vec3(1.0 - uDark); // paper: white multiplies onto light stock, black screens onto dark
-  col = mix(col, skyC, sa);
-  col = mix(col, grnC, ga);
-  col = clamp(floor(col * 25.5 + 0.5 + th) / 25.5, 0.0, 1.0);
+  col = mix(col, skyC, sky.a);
+  col = mix(col, grnC, grn.a);
   gl_FragColor = vec4(col, 1.0);
 }
 `;
+
+// Pass 2: AGP RetroDither as measured on the rendered board. The screen is fine (dots of ~4 board px, about
+// 2 CSS px) and chromatic: each channel thresholds on its own phase of the ordered matrix, so the field breaks
+// into magenta, yellow, cyan, white and black specks around its colour. Runs at device resolution over the
+// low-res smooth field (bilinear), so the dots stay crisp while the heavy field shader stays cheap.
+const DITHER = /* glsl */ `
+precision highp float;
+uniform sampler2D tMap;
+uniform float uDot;
+uniform float uLevels;
+varying vec2 vUv;
+float bayer4(vec2 c){
+  int x = int(mod(c.x, 4.0)); int y = int(mod(c.y, 4.0));
+  int i = x + y * 4;
+  float m[16];
+  m[0]=0.;m[1]=8.;m[2]=2.;m[3]=10.;m[4]=12.;m[5]=4.;m[6]=14.;m[7]=6.;
+  m[8]=3.;m[9]=11.;m[10]=1.;m[11]=9.;m[12]=15.;m[13]=7.;m[14]=13.;m[15]=5.;
+  for (int k = 0; k < 16; k++) { if (k == i) return (m[k] + 0.5) / 16.0; }
+  return 0.5;
+}
+void main(){
+  vec3 col = texture2D(tMap, vUv).rgb;
+  vec2 d = floor(gl_FragCoord.xy / uDot);
+  // the matrix, jittered per dot: the grunge and Glasswork under the dither break its regular grid on the board
+  vec3 p3 = fract(vec3(d.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); // hash without sine (no diagonal bands)
+  float j = fract((p3.x + p3.y) * p3.z) - 0.5;
+  vec3 th = vec3(bayer4(d), bayer4(d + vec2(2.0, 1.0)), bayer4(d + vec2(1.0, 3.0))) - 0.5 + j * 0.6;
+  gl_FragColor = vec4(clamp(floor(col * uLevels + 0.5 + th) / uLevels, 0.0, 1.0), 1.0);
+}`;
 
 const VERT = /* glsl */ `
 attribute vec2 position; attribute vec2 uv; varying vec2 vUv;
@@ -156,7 +188,18 @@ type Slot = {
   canvas: HTMLCanvasElement; visible: boolean; lean: [number, number]; target: [number, number];
   clip: boolean; masks: HTMLElement[]; size: [number, number];
   mask: HTMLCanvasElement | null; maskKey: string; sheet: HTMLElement | null; tick: number; faded: boolean;
+  p: Required<FountainParams>; ptr: [number, number, number]; ptrTarget: [number, number, number];
 };
+
+// Per-plate tuning: the same ink, printed differently (the sidebar runs it as a narrow, cursor-led strip).
+export type FountainParams = {
+  speed?: number;   // x the shared drift
+  phase?: number;   // s offset into the loop, so two plates never print the same frame
+  zoom?: number;    // board crop (1 = the whole board rect)
+  lean?: number;    // window-pointer lean strength (1 = default)
+  cursor?: number;  // local eddy strength under the pointer (0 = off)
+};
+const DEFAULTS: Required<FountainParams> = { speed: 1, phase: 0, zoom: 1, lean: 1, cursor: 0 };
 
 // Cut the plate to each mask element's glyphs, at the output resolution, set in its own computed font.
 // Works in the canvas's local CSS px, so a sheet scaled by the camera's perspective still lines up;
@@ -188,6 +231,9 @@ function buildMask(canvas: HTMLCanvasElement, els: HTMLElement[], cw: number, ch
 }
 
 // --- shared renderer (module scope: one context for the page) ---
+const DOT = 1.5; // CSS px per screen dot (≈ 3 board px at the board's 2800 px, measured)
+const LEVELS = 3; // steps per channel: the board's coarse, chromatic palette
+const MAX_OUT = 2560; // device px cap for the printed plate
 const SETTLE = 0.16; // resting speed vs the AE loop: one turn in ~44 s, inside design.md's 40–90 s drift
 const TAU = 5; // s: how long the entrance takes to settle
 const FADE_CHECK = 12; // frames between computed-opacity reads (~0.5 s at 24fps): never a style flush per frame
@@ -205,6 +251,8 @@ const gust = (now: number) => {
   return u <= 0 || u >= 1 ? 0 : Math.sin(Math.PI * u) ** 2;
 };
 
+const TRAVEL_HOLD = 0.08; // |sheet depth| past which fountain-filled type stops drawing
+
 // The context and shader compile are the heaviest main-thread work on the page: they wait for load and an idle
 // slot (lib/gpu afterLoadIdle), so first paint and input never queue behind them. The plates fade in anyway.
 let queued = false;
@@ -217,21 +265,27 @@ function startWhenIdle() {
 async function start() {
   if (started) return;
   started = true;
+  const { Renderer, Program, Mesh, Triangle, RenderTarget } = await import("ogl");
+  const renderer = new Renderer({ dpr: 1, alpha: false, antialias: false, preserveDrawingBuffer: true });
+  const gl = renderer.gl;
   // no GPU (lib/gpu): the plates stay down and the DOM ink carries the type, as it does without WebGL
-  if (!fastGpu()) {
+  if (!fastGpu(gl)) {
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
     for (const s of slots) { const host = s.canvas.parentElement; if (host && s.clip) host.dataset.fallback = ""; }
     return;
   }
-  const { Renderer, Program, Mesh, Triangle } = await import("ogl");
-  const renderer = new Renderer({ dpr: 1, alpha: false, antialias: false, preserveDrawingBuffer: true });
-  const gl = renderer.gl;
   await warmProgram(gl, VERT, FRAG); // compile off the main thread first; the build below then hits the cache
   const program = new Program(gl, {
     vertex: VERT,
     fragment: FRAG,
-    uniforms: { uRes: { value: [1, 1] }, uTime: { value: 0 }, uLean: { value: [0, 0] }, uCell: { value: 4 }, uDark: { value: 0 } },
+    uniforms: { uRes: { value: [1, 1] }, uTime: { value: 0 }, uLean: { value: [0, 0] }, uCell: { value: 4 }, uDark: { value: 0 }, uZoom: { value: 1 }, uPtr: { value: [0.5, 0.5, 0] } },
   });
   const mesh = new Mesh(gl, { geometry: new Triangle(gl), program });
+  await warmProgram(gl, VERT, DITHER);
+  const field = new RenderTarget(gl, { width: 2, height: 2 });
+  const screen = new Program(gl, { vertex: VERT, fragment: DITHER, uniforms: { tMap: { value: field.texture }, uDot: { value: 2 }, uLevels: { value: LEVELS } } });
+  const screenMesh = new Mesh(gl, { geometry: new Triangle(gl), program: screen });
+  let fW = 0, fH = 0;
   still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   let last = 0, drift = 0, glW = 0, glH = 0;
@@ -258,6 +312,9 @@ async function start() {
       if (!s.visible || !s.size[0] || !s.size[1]) continue;
       // a sheet the print run has taken off the press (an attribute: no style flush to read it)
       if (s.sheet && s.sheet.hasAttribute("data-off")) continue;
+      // fountain-filled type prints through BlurMap's filter chain, which re-runs on every new frame: while its
+      // sheet travels past the camera (PrintRun's inline --d, no style flush) the ink holds its last frame
+      if (s.clip && s.sheet && Math.abs(parseFloat(s.sheet.style.getPropertyValue("--d")) || 0) > TRAVEL_HOLD) continue;
       const host = s.canvas.parentElement;
       // a plate faded fully out (page plate off this spread) costs nothing; sampled, not read every frame
       if (!still && host && s.tick++ % FADE_CHECK === 0) s.faded = getComputedStyle(host).opacity === "0";
@@ -267,22 +324,31 @@ async function start() {
       const [rw, rh] = s.size;
       const w = Math.max(2, Math.round(Math.min(rw * scale, 1100)));
       const h = Math.max(2, Math.round(Math.min(rh * scale, 1100 * (rh / Math.max(rw, 1)))));
-      // a text-clipped plate keeps the shader's coarse dither but cuts the glyph edges at device resolution
-      const out = s.clip ? dpr / scale : 1;
-      const cw = Math.round(w * out), ch = Math.round(h * out);
+      // the field renders small (w x h); the screen prints at device resolution (capped), 1:1 into the plate
+      const k = Math.min(1, MAX_OUT / Math.max(rw * dpr, rh * dpr));
+      const cw = Math.max(2, Math.round(rw * dpr * k)), ch = Math.max(2, Math.round(rh * dpr * k));
       if (s.canvas.width !== cw || s.canvas.height !== ch) { s.canvas.width = cw; s.canvas.height = ch; }
-      // resizing the GL canvas reallocates its drawing buffer: only when this plate's size differs from the last
-      if (glW !== w || glH !== h) { renderer.setSize(w, h); glW = w; glH = h; }
+      if (fW !== w || fH !== h) { field.setSize(w, h); fW = w; fH = h; }
       program.uniforms.uRes.value = [w, h];
-      program.uniforms.uTime.value = time;
+      s.ptr[0] += (s.ptrTarget[0] - s.ptr[0]) * 0.18;
+      s.ptr[1] += (s.ptrTarget[1] - s.ptr[1]) * 0.18;
+      s.ptr[2] += (s.ptrTarget[2] - s.ptr[2]) * 0.08;
+      program.uniforms.uTime.value = time * s.p.speed + s.p.phase;
       program.uniforms.uLean.value = s.lean;
-      program.uniforms.uCell.value = Math.max(1, Math.round(4 * scale));
-      renderer.render({ scene: mesh });
+      program.uniforms.uZoom.value = s.p.zoom;
+      program.uniforms.uPtr.value = s.ptr;
+      program.uniforms.uCell.value = 1;
+      renderer.render({ scene: mesh, target: field });
+      // resizing the GL canvas reallocates its drawing buffer: only when this plate's size differs from the last
+      if (glW !== cw || glH !== ch) { renderer.setSize(cw, ch); glW = cw; glH = ch; }
+      screen.uniforms.tMap.value = field.texture; // setSize swaps in a new texture: rebind every frame
+      screen.uniforms.uDot.value = DOT * dpr * k;
+      renderer.render({ scene: screenMesh });
       const ctx = s.canvas.getContext("2d");
       if (ctx) {
         ctx.globalCompositeOperation = "copy";
         ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(gl.canvas, 0, 0, w, h, 0, 0, cw, ch);
+        ctx.drawImage(gl.canvas, 0, 0, cw, ch, 0, 0, cw, ch);
         if (s.clip) {
           if (!s.masks.some((m) => m.isConnected)) { s.masks = host ? Array.from(host.querySelectorAll<HTMLElement>("[data-clip]")) : []; s.mask = null; }
           const key = `${cw}x${ch}`;
@@ -305,7 +371,7 @@ async function start() {
   let raf = requestAnimationFrame(frame);
 }
 
-export default function Fountain({ className = "", children, clipText = false }: { className?: string; children?: React.ReactNode; clipText?: boolean }) {
+export default function Fountain({ className = "", children, clipText = false, params }: { className?: string; children?: React.ReactNode; clipText?: boolean; params?: FountainParams }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -315,6 +381,7 @@ export default function Fountain({ className = "", children, clipText = false }:
       canvas, visible: false, lean: [0, 0], target: [0, 0], clip: clipText,
       masks: clipText ? Array.from(canvas.parentElement?.querySelectorAll<HTMLElement>("[data-clip]") ?? []) : [],
       size: [0, 0], mask: null, maskKey: "", sheet: canvas.closest<HTMLElement>(".sheet"), tick: 0, faded: false,
+      p: { ...DEFAULTS, ...params }, ptr: [0.5, 0.5, 0], ptrTarget: [0.5, 0.5, 0],
     };
     slots.add(slot);
     // layout size (unaffected by the camera's transforms); a new size or a font swap re-cuts the glyph mask
@@ -332,7 +399,14 @@ export default function Fountain({ className = "", children, clipText = false }:
     const fallback = clipText ? window.setTimeout(() => { if (host && !host.dataset.live) host.dataset.fallback = ""; }, 5000) : 0;
     const onMove = (e: PointerEvent) => {
       // lean 3–5% toward the pointer, on a spring (applied in the shared loop)
-      slot.target = [(e.clientX / window.innerWidth - 0.5) * 0.35, (e.clientY / window.innerHeight - 0.5) * 0.35];
+      const k = 0.35 * slot.p.lean;
+      slot.target = [(e.clientX / window.innerWidth - 0.5) * k, (e.clientY / window.innerHeight - 0.5) * k];
+      if (!slot.p.cursor || !host) return;
+      // the eddy follows the pointer while it is over the plate (plus a margin), and lets go when it leaves
+      const r = host.getBoundingClientRect();
+      const m = 48;
+      const over = e.clientX > r.left - m && e.clientX < r.right + m && e.clientY > r.top - m && e.clientY < r.bottom + m;
+      slot.ptrTarget = [(e.clientX - r.left) / Math.max(1, r.width), (e.clientY - r.top) / Math.max(1, r.height), over ? slot.p.cursor : 0];
     };
     window.addEventListener("pointermove", onMove, { passive: true });
     return () => { window.clearTimeout(fallback); io.disconnect(); ro.disconnect(); document.fonts?.removeEventListener("loadingdone", onFonts); slots.delete(slot); window.removeEventListener("pointermove", onMove); };

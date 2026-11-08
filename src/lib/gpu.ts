@@ -1,16 +1,13 @@
 // Shared WebGL gate for the decorative shaders (Fountain plates, the sidebar wave). A machine without a GPU
 // rasterises WebGL on the CPU (SwiftShader, llvmpipe): a full-rate shader there stalls the whole page, so those
-// effects hold a static state instead. Probed once per page load; the probe context is released at once.
+// effects hold a static state instead. Read once per page load from the caller's own context: creating a context
+// blocks the main thread for 100-300 ms (driver handshake), so a separate probe context would cost that twice.
 let verdict: boolean | undefined;
 
-export function fastGpu(): boolean {
+export function fastGpu(gl: WebGLRenderingContext | WebGL2RenderingContext): boolean {
   if (verdict !== undefined) return verdict;
-  if (typeof document === "undefined") return false;
-  const gl = document.createElement("canvas").getContext("webgl", { failIfMajorPerformanceCaveat: true });
-  if (!gl) return (verdict = false);
   const info = gl.getExtension("WEBGL_debug_renderer_info");
   const name = String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
-  gl.getExtension("WEBGL_lose_context")?.loseContext();
   return (verdict = !/swiftshader|llvmpipe|software|basic render/i.test(name));
 }
 
@@ -38,13 +35,21 @@ export function warmProgram(gl: WebGLRenderingContext | WebGL2RenderingContext, 
   });
 }
 
-/** Runs `fn` after the page has loaded, in an idle slot: shader compiles never queue ahead of first paint or input. */
+// A new context's setup calls are synchronous round trips to the GPU process; right after load that process is
+// still rasterising the first frames (the ink filters), and the main thread waits behind it (measured 200-300 ms).
+// Past this settle time the same calls return in a few ms.
+const GPU_SETTLE = 900;
+
+/** Runs `fn` after the page has loaded and the GPU has settled, in an idle slot: context setup and shader
+ * compiles never queue ahead of first paint, the first raster, or input. */
 export function afterLoadIdle(fn: () => void): () => void {
   let cancelled = false, idle = 0, timer = 0;
   const run = () => { if (!cancelled) fn(); };
   const go = () => {
-    if ("requestIdleCallback" in window) idle = window.requestIdleCallback(run, { timeout: 1500 });
-    else timer = setTimeout(run, 200) as unknown as number;
+    timer = setTimeout(() => {
+      if ("requestIdleCallback" in window) idle = window.requestIdleCallback(run, { timeout: 1500 });
+      else run();
+    }, GPU_SETTLE) as unknown as number;
   };
   if (document.readyState === "complete") go();
   else window.addEventListener("load", go, { once: true });

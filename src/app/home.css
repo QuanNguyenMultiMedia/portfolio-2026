@@ -72,7 +72,7 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 /* display type printed in the fountain ink (the name, View Works): the plate is cut to the [data-clip]
    glyphs in its own canvas (Fountain clipText), so nothing outside the letters is painted. The DOM text stays
    for reading and selection, and prints in plain coral until the shader has a frame up (or without WebGL). */
-.ink-fill { isolation: isolate; padding-block: 0.16em 0.06em; margin-block: -0.16em -0.06em; } /* room for ascenders and descenders */
+.ink-fill { isolation: isolate; will-change: transform; padding-block: 0.16em 0.06em; margin-block: -0.16em -0.06em; } /* room for ascenders and descenders; own layer, so the plate redrawing behind never re-runs its BlurMap chain */
 .ink-fill > canvas { opacity: 0; mix-blend-mode: normal; transition: opacity 900ms var(--ease-print); }
 .ink-knock { color: transparent; transition: color 900ms var(--ease-print); }
 .ink-fill[data-live] > canvas { opacity: 1; }
@@ -88,29 +88,42 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 .run.is-3d .reel-frame { width: min(100%, calc(78svh * 16 / 9)); }
 
 /* ---------- frame 3 · works & words ----------
-   Not a menu: five frames hung off the grid at their own ratios (printed whole), each re-printing a new
-   fragment on its own clock. The swap is a print pass: the plate lands off register and slides home while
-   the ink comes up; hovering a frame lets its colour through. One pull quote sits in the open bay. */
-.drift { align-content: center; grid-template-rows: auto auto auto; row-gap: var(--s-3); }
-.proof { display: grid; gap: 0.4rem; align-content: start; min-width: 0; }
-.proof-plate { width: 100%; }
-.proof-plate > .proof-print { object-fit: contain; filter: grayscale(1) contrast(1.08); transition: filter 400ms var(--ease-print); animation: proof-in 1100ms var(--ease-print) both; }
-.proof:hover .proof-print { filter: none; }
+   Not a menu: eight frames hung on a 12 x 4 wall, one of them the feature, each re-printing a new fragment
+   on its own clock. Every ~15 s the wall re-hangs into another of three compositions ([data-hang], set by
+   ProofDrift): the frames glide to their new bays together (Framer layout), so the shift is the gesture.
+   Prints sit whole inside their bay (contain), in full colour; the swap lands off register and slides home. */
+.drift { --wall: min(72svh, 46rem); align-content: center; align-items: stretch; grid-template-rows: repeat(4, calc(var(--wall) / 4 - var(--s-2) * 0.75)); row-gap: var(--s-2); }
+.proof { position: relative; min-width: 0; min-height: 0; }
+.proof-hang { position: absolute; inset: 0; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 0.35rem; }
+.proof-plate { position: relative; min-height: 0; background: none; }
+.proof-plate > .proof-print { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: left bottom; mix-blend-mode: var(--blend); filter: saturate(1.05) contrast(1.04); transition: filter 400ms var(--ease-print); animation: proof-in 1100ms var(--ease-print) both; }
+.proof:hover .proof-print { filter: saturate(1.2) contrast(1.1); }
 @keyframes proof-in {
   from { opacity: 0; transform: translate3d(0.9rem, -0.6rem, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 .proof-from { font-size: var(--t-label); animation: words-in 900ms var(--ease-print) both; }
-/* the hang: a wide frame up top, a tall one dropping through the middle, a small square tucked low, a
-   brand still and a type loop closing the right edge. Uneven tops so the wall reads as pinned, not gridded. */
-.proof-1 { grid-column: 4 / 9; grid-row: 1 / 3; }
-.proof-2 { grid-column: 9 / 11; grid-row: 1 / 4; margin-top: var(--s-6); }
-.proof-3 { grid-column: 1 / 3; grid-row: 2 / 4; align-self: end; }
-.proof-4 { grid-column: 11 / -1; grid-row: 1 / 3; margin-top: var(--s-3); }
-.proof-5 { grid-column: 11 / -1; grid-row: 3; align-self: end; }
-.drift-quote { grid-column: 3 / 9; grid-row: 3; align-self: end; display: grid; gap: var(--s-2); margin: 0; padding-left: var(--s-3); }
+/* the three hangs (row / column start / row end / column end) */
+.drift .proof-1 { grid-area: 1 / 1 / 3 / 6; }   .drift .proof-2 { grid-area: 1 / 6 / 2 / 8; }
+.drift .proof-3 { grid-area: 1 / 8 / 3 / 10; }  .drift .proof-4 { grid-area: 1 / 10 / 2 / 13; }
+.drift .proof-5 { grid-area: 2 / 10 / 4 / 13; } .drift .proof-6 { grid-area: 3 / 1 / 5 / 3; }
+.drift .proof-7 { grid-area: 2 / 6 / 3 / 8; }   .drift .proof-8 { grid-area: 4 / 7 / 5 / 10; }
+.drift .drift-quote { grid-area: 3 / 3 / 5 / 7; }
+.drift[data-hang="1"] .proof-1 { grid-area: 2 / 7 / 4 / 12; } .drift[data-hang="1"] .proof-2 { grid-area: 1 / 1 / 3 / 3; }
+.drift[data-hang="1"] .proof-3 { grid-area: 1 / 3 / 2 / 6; }  .drift[data-hang="1"] .proof-4 { grid-area: 1 / 9 / 2 / 12; }
+.drift[data-hang="1"] .proof-5 { grid-area: 4 / 1 / 5 / 4; }  .drift[data-hang="1"] .proof-6 { grid-area: 1 / 6 / 2 / 9; }
+.drift[data-hang="1"] .proof-7 { grid-area: 4 / 9 / 5 / 13; } .drift[data-hang="1"] .proof-8 { grid-area: 4 / 4 / 5 / 8; }
+.drift[data-hang="1"] .drift-quote { grid-area: 2 / 3 / 4 / 7; }
+.drift[data-hang="2"] .proof-1 { grid-area: 2 / 4 / 4 / 10; } .drift[data-hang="2"] .proof-2 { grid-area: 1 / 1 / 3 / 4; }
+.drift[data-hang="2"] .proof-3 { grid-area: 1 / 10 / 3 / 13; } .drift[data-hang="2"] .proof-4 { grid-area: 1 / 5 / 2 / 8; }
+.drift[data-hang="2"] .proof-5 { grid-area: 3 / 10 / 5 / 13; } .drift[data-hang="2"] .proof-6 { grid-area: 3 / 1 / 4 / 4; }
+.drift[data-hang="2"] .proof-7 { grid-area: 4 / 1 / 5 / 4; }  .drift[data-hang="2"] .proof-8 { grid-area: 1 / 8 / 2 / 10; }
+.drift[data-hang="2"] .drift-quote { grid-area: 4 / 4 / 5 / 10; }
+/* the feature prints from its centre; frames on the right edge hang from it */
+.drift .proof-1 .proof-print { object-position: center; }
+.drift-quote { align-self: end; display: grid; gap: var(--s-2); margin: 0; padding-left: var(--s-3); }
 .drift-words { font-family: var(--font-display); font-size: clamp(1.2rem, 1.9vw, 2.1rem); line-height: 1.1; letter-spacing: -0.015em; max-width: 34ch; text-wrap: pretty; animation: words-in 900ms var(--ease-print) both; }
-.drift-words p::before { content: "\201C"; display: inline-block; width: 0.5em; margin-left: -0.5em; color: var(--ink-violet); }
+.drift-words p::before { content: "C"; display: inline-block; width: 0.5em; margin-left: -0.5em; color: var(--ink-violet); }
 @keyframes words-in { from { opacity: 0; transform: translate3d(0, 0.5rem, 0); } to { opacity: 1; transform: none; } }
 .drift-credit { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-2); font-size: var(--t-label); }
 .drift-turn { display: inline-flex; align-items: baseline; gap: 0.75em; font-variant-numeric: tabular-nums; }
@@ -118,8 +131,6 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 .drift-turn button:hover, .drift-turn button:focus-visible { color: var(--ink-violet); }
 .drift-turn button:first-child:hover { transform: translate3d(-0.2em, 0, 0); }
 .drift-turn button:last-child:hover { transform: translate3d(0.2em, 0, 0); }
-.run.is-3d .proof-plate { max-height: 40svh; }
-.run.is-3d .proof-2 .proof-plate, .run.is-3d .proof-4 .proof-plate { max-height: 52svh; }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
   .proof-plate > .proof-print, .drift-words { animation-duration: 200ms; animation-name: fade-in; }
@@ -142,8 +153,7 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 .collab > p { font-size: var(--t-body); font-style: italic; }
 .client-list { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: var(--gutter); font-size: var(--t-body); line-height: 1.5; }
 .view-works { grid-column: 7 / -1; grid-row: 2 / 4; align-self: end; justify-self: end; margin: 0; font-family: var(--font-display-italic); font-style: italic; font-size: clamp(3rem, 8.4vw, 9rem); line-height: 0.82; letter-spacing: -0.04em; }
-.view-works a { color: inherit; text-decoration: none; display: inline-block; }
-.view-works .fountain-content { display: inline-flex; align-items: baseline; gap: 0.1em; white-space: nowrap; }
+.view-works a { color: var(--ink-display); text-decoration: none; display: inline-flex; align-items: baseline; gap: 0.1em; white-space: nowrap; padding-block: 0.12em; }
 .view-arrow { display: inline-block; transition: transform 500ms var(--ease-print); }
 .view-works a:hover .view-arrow, .view-works a:focus-visible .view-arrow { transform: translate3d(0.12em, 0, 0); }
 .run.is-3d .manifesto-text { font-size: min(var(--t-lead-serif), 5.4svh); }
@@ -152,15 +162,16 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 @media (max-width: 1024px) {
   .manifesto-text { grid-column: 1 / -1; }
   .hero-line { grid-column: 1 / 8; }
-  .drift { grid-template-rows: none; }
-  .proof-1 { grid-column: 1 / 9; grid-row: auto; }
-  .proof-2 { grid-column: 9 / -1; grid-row: span 2; margin-top: 0; }
-  .proof-3 { grid-column: 1 / 5; grid-row: auto; align-self: start; }
-  .proof-4 { grid-column: 5 / 9; grid-row: auto; margin-top: 0; }
-  .proof-5 { display: none; }
-  .drift-quote { grid-column: 1 / -1; grid-row: auto; padding-left: 0; }
-  /* the stacked wall must fit one screen on the press, never cropped by the stage */
-  .run.is-3d .proof-plate, .run.is-3d .proof-2 .proof-plate, .run.is-3d .proof-4 .proof-plate { max-height: 22svh; }
+  /* one hang on tablets: six frames, the feature across the top, the quote under the wall */
+  .drift { --wall: min(58svh, 40rem); grid-template-rows: repeat(3, calc(var(--wall) / 3 - var(--s-2) * 0.67)) auto; }
+  .drift .proof-1, .drift[data-hang] .proof-1 { grid-area: 1 / 1 / 3 / 9; }
+  .drift .proof-2, .drift[data-hang] .proof-2 { grid-area: 1 / 9 / 2 / 13; }
+  .drift .proof-3, .drift[data-hang] .proof-3 { grid-area: 2 / 9 / 3 / 13; }
+  .drift .proof-4, .drift[data-hang] .proof-4 { grid-area: 3 / 1 / 4 / 5; }
+  .drift .proof-5, .drift[data-hang] .proof-5 { grid-area: 3 / 5 / 4 / 9; }
+  .drift .proof-6, .drift[data-hang] .proof-6 { grid-area: 3 / 9 / 4 / 13; }
+  .drift .proof-7, .drift .proof-8 { display: none; }
+  .drift .drift-quote, .drift[data-hang] .drift-quote { grid-area: 4 / 1 / 5 / -1; padding-left: 0; }
   .ledger, .collab { grid-column: 1 / -1; grid-row: auto; }
   .view-works { grid-column: 1 / -1; grid-row: auto; margin-top: var(--s-5); }
 }
@@ -170,29 +181,23 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
   .sheet > * { grid-column: 1 / -1 !important; }
   .view-works { justify-self: start; }
   .ledger { grid-template-columns: repeat(2, auto); row-gap: var(--s-3); }
-  .proof-3 { display: none; }
   .hero-name { white-space: normal; }
-  /* the wall stays a hang on phones: the wide frame across, the two tall ones side by side under it */
-  .drift { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .drift > .proof-2 { grid-column: 1 / 2 !important; }
-  .drift > .proof-4 { grid-column: 2 / 3 !important; margin-top: var(--s-5); }
-  .drift .proof-plate { max-height: 46svh; }
+  /* the wall stays a hang on phones: the feature across, two pairs under it */
+  .drift { --wall: 30rem; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, calc(var(--wall) / 3 - var(--s-2) * 0.67)) auto; }
+  .drift > .proof-1 { grid-area: 1 / 1 / 2 / 3 !important; }
+  .drift > .proof-2 { grid-area: 2 / 1 / 3 / 2 !important; }
+  .drift > .proof-3 { grid-area: 2 / 2 / 3 / 3 !important; }
+  .drift > .proof-4 { grid-area: 3 / 1 / 4 / 2 !important; }
+  .drift > .proof-5 { grid-area: 3 / 2 / 4 / 3 !important; }
+  .drift > .proof-6 { display: none; }
+  .drift > .drift-quote { grid-area: 4 / 1 / 5 / 3 !important; }
 }
 
 /* ---------- 3D: depth inside a sheet ----------
-   --d runs 1 → 0 → -1 as a sheet approaches, holds the camera plane, and passes. Layers slide against each
-   other along it, so a sheet reads as plates hung at different depths, not one flat card. */
-.run.is-3d .sheet > * { will-change: transform; }
-.run.is-3d .hero-name { transform: translate3d(0, calc(var(--d, 0) * -8svh), 0); }
-.run.is-3d .hero-line { transform: translate3d(calc(var(--d, 0) * -3vw), calc(var(--d, 0) * 5svh), 0); }
-.run.is-3d .reel-frame { transform: translate3d(0, calc(var(--d, 0) * -4svh), 0); }
-.run.is-3d .proof-1 { transform: translate3d(0, calc(var(--d, 0) * -6svh), 0); }
-.run.is-3d .proof-2 { transform: translate3d(calc(var(--d, 0) * 3vw), calc(var(--d, 0) * 10svh), 0); }
-.run.is-3d .proof-3 { transform: translate3d(calc(var(--d, 0) * -6vw), calc(var(--d, 0) * 8svh), 0); }
-.run.is-3d .proof-4 { transform: translate3d(calc(var(--d, 0) * 7vw), calc(var(--d, 0) * -5svh), 0); }
-.run.is-3d .proof-5 { transform: translate3d(calc(var(--d, 0) * 5vw), calc(var(--d, 0) * 12svh), 0); }
-.run.is-3d .drift-quote { transform: translate3d(0, calc(var(--d, 0) * 6svh), 0); }
-.run.is-3d .manifesto-text { transform: translate3d(calc(var(--d, 0) * -5vw), 0, 0); }
-.run.is-3d .ledger { transform: translate3d(0, calc(var(--d, 0) * 4svh), 0); }
-.run.is-3d .collab { transform: translate3d(0, calc(var(--d, 0) * 6svh), 0); }
-.run.is-3d .view-works { transform: translate3d(calc(var(--d, 0) * 8vw), calc(var(--d, 0) * 10svh), 0); }
+   One rule for every layer: PrintRun moves each layer radially from the vanishing point by --d (1 ahead → 0 held →
+   -1 passed) times its depth --z. Ahead, layers gather toward the centre; passing, they spread out of frame, the
+   nearest (highest --z) fastest. Same direction everywhere, only the rate differs: that difference is the parallax. */
+.run.is-3d [data-z] { will-change: transform; }
+.run.is-3d.is-measuring [data-z] { transform: none !important; }
+
+/* speed lens: PrintRun blurs each moving layer by its place on a viewport-space ramp (content only) */

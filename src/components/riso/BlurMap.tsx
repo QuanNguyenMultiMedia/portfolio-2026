@@ -12,14 +12,20 @@
 // The browser builds that map from two fractalNoise layers (coarse + fine, fitted to those two lengths) and maps
 // it through MAP_TABLE, a quantile mapping from the browser noise histogram onto AE's clamped one.
 // Lengths scale with the type: each [data-blurmap] element gets a filter for its font size (4px buckets).
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 const COMP_TYPE = 197; // px: the type's rendered size in the comp
 const ROUGH_BORDER = 2.4;
 const ROUGH_SCALE = 11;
-// σ at map = 1, in comp px. AE's is 3.8 (1.1 × 3 × the adjustment layer's scale); pushed further on purpose,
-// so the soft end dissolves the letters into haze.
-const MAX_SIGMA = 15;
+// σ at map = 1, in comp px. AE's is 3.8 (1.1 × 3 × the adjustment layer's scale). 6 (0.03 em) softens a word
+// hard while every letter still reads: the steady state never costs legibility.
+const MAX_SIGMA = 6;
+// Entrance: the whole word starts deep in the haze and settles onto the steady map, once, when it first shows.
+// A Gaussian over the finished stack whose σ eases to 0 (σ 0 passes the input through untouched).
+const INTRO_SIGMA = 28; // comp px: 0.14 em, the word is a soft cloud
+const INTRO_S = 2.4;
+const INTRO_EASE = "0.23 1 0.32 1";
+const introId = (px: number) => `blurmap-${px}-in`;
 // Blur tiers (fractions of MAX_SIGMA), dense at the low end: cross-fading two blurs only reads as one
 // intermediate blur when their σ are close; a wide first step shows as a crisp core inside a glow.
 const TIER_SIGMA = [0.04, 0.1, 0.2, 0.35, 0.55, 0.78, 1];
@@ -36,21 +42,31 @@ const W_COARSE = Math.sqrt(1 - W_FINE * W_FINE);
 const MAP_LO = 0.2824;
 const MAP_HI = 0.7137;
 const MAP_TABLE = "0 0 0 0 0 0 0 0 0 0 0 0 0 0.006 0.033 0.057 0.104 0.151 0.214 0.273 0.309 0.37 0.423 0.483 0.536 0.589 0.641 0.694 0.755 0.807 0.866 0.905 0.957 0.989 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1";
-// Breathing (AE's map is static; the site's moves): the fine layer rotates between two seeds (cos/sin weights
-// keep its variance, so the histogram and the table stay valid), the coarse one slowly rescales, and the
-// window slides so the share of crisp vs soft swells and ebbs. The periods never line up.
-const ROTATE_S = 7.3;
-const FLOW_S = 11.9;
+// Breathing (AE's map is static; the site's moves): each layer rotates between two seeds (cos/sin weights keep
+// its variance, so the histogram and the table stay valid) and the window slides so the share of crisp vs soft
+// swells and ebbs. The periods never line up.
+// Every element's noise starts at its own top-left, and a coarse swell (~3.6 em) is wider than most words, so
+// a single seed parks a whole word in one regime (measured over the name: seed 7 → 81% fully blurred, 0% crisp;
+// seed 61 → 80% crisp). The coarse pair 29 ↔ 113 sweeps the name from 71% crisp through AE's mix (37% crisp /
+// 26% full at 67.5°) to 33% full, never all haze; it rests at 67.5° (also the reduced-motion state).
+const FINE_SEEDS = [19, 43];
+const COARSE_SEEDS = [29, 113];
+const FINE_TURN = [0, 22.5, 45, 67.5, 90, 67.5, 45, 22.5, 0];
+const COARSE_TURN = [67.5, 90, 67.5, 45, 22.5, 0, 22.5, 45, 67.5];
+const FINE_S = 7.3;
+const COARSE_S = 17.9;
 const SWELL_S = 13.7;
 const SWELL = [0, -0.05, 0, 0.04, 0]; // window shift in noise R: negative = more of the word soft
 const EASE = "0.45 0 0.55 1";
 
+const INK_WAIT = 2500; // ms
 const bucket = (px: number) => Math.max(8, Math.round(px / 4) * 4);
 const idFor = (px: number) => `blurmap-${px}`;
 const OPAQUE = "1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1"; // noise alpha varies too: keep R, alpha 1
 const spline = (n: number) => Array(n).fill(EASE).join(";");
-const ROT = [0, 22.5, 45, 67.5, 90, 67.5, 45, 22.5, 0].map((d) => (d * Math.PI) / 180);
-const overRot = (f: (t: number) => number) => ROT.map((t) => f(t).toFixed(4)).join(";");
+const rad = (d: number) => (d * Math.PI) / 180;
+// a·cosθ + b·sinθ + offset keeping the mean at ½
+const turnK = (d: number) => ({ k2: Math.cos(rad(d)), k3: Math.sin(rad(d)), k4: 0.5 * (1 - Math.cos(rad(d)) - Math.sin(rad(d))) });
 const windowMatrix = (shift: number) => {
   const g = 1 / (MAP_HI - MAP_LO);
   return `${g} 0 0 0 ${-g * (MAP_LO + shift)}  0 0 0 0 0  0 0 0 0 0  0 0 0 0 1`;
@@ -64,15 +80,28 @@ function Filter({ px, animate }: { px: number; animate: boolean }) {
       <feDisplacementMap in={input} in2={`${out}n`} scale={ROUGH_BORDER * Math.SQRT2 * k} /* the old two ±½-border passes, in one: independent displacements add in quadrature */ xChannelSelector="R" yChannelSelector="G" result={out} />
     </>
   );
-  const noise = (f: number, seed: number, out: string, flow = false) => (
+  const noise = (f: number, seed: number, out: string) => (
     <>
-      <feTurbulence type="fractalNoise" baseFrequency={f} numOctaves={3} seed={seed} result={`${out}t`}>
-        {flow && animate && <animate attributeName="baseFrequency" dur={`${FLOW_S}s`} repeatCount="indefinite"
-          values={`${f};${f * 0.92};${f * 1.06};${f}`} keyTimes="0;0.4;0.75;1" calcMode="spline" keySplines={spline(3)} />}
-      </feTurbulence>
+      <feTurbulence type="fractalNoise" baseFrequency={f} numOctaves={3} seed={seed} result={`${out}t`} />
       <feColorMatrix in={`${out}t`} type="matrix" values={OPAQUE} result={out} />
     </>
   );
+  // one noise layer that turns between two seeds through the angles in `turn` (degrees), resting on turn[0]
+  const rotor = (f: number, [a, b]: number[], turn: number[], dur: number, out: string) => {
+    const rest = turnK(turn[0]);
+    const track = (key: "k2" | "k3" | "k4") => turn.map((d) => turnK(d)[key].toFixed(4)).join(";");
+    return (
+      <>
+        {noise(f, a, `${out}a`)}
+        {noise(f, b, `${out}b`)}
+        <feComposite in={`${out}a`} in2={`${out}b`} operator="arithmetic" k1={0} k2={rest.k2} k3={rest.k3} k4={rest.k4} result={out}>
+          {animate && (["k2", "k3", "k4"] as const).map((key) => (
+            <animate key={key} attributeName={key} dur={`${dur}s`} repeatCount="indefinite" values={track(key)} />
+          ))}
+        </feComposite>
+      </>
+    );
+  };
   // tier i fades in as the map climbs from TIER_AT[i − 1] to TIER_AT[i]
   const mask = (i: number, out: string) => {
     const lo = i ? TIER_AT[i - 1] : 0;
@@ -87,19 +116,10 @@ function Filter({ px, animate }: { px: number; animate: boolean }) {
     </>
   );
   return (
-    <filter id={idFor(px)} x="-12%" y="-45%" width="124%" height="190%" /* room for the σ-15 haze */ colorInterpolationFilters="sRGB">
+    <filter id={idFor(px)} x="-12%" y="-45%" width="124%" height="190%" /* room for the entrance haze */ colorInterpolationFilters="sRGB">
       {rough(11, "SourceGraphic", "r2")}
-      {noise(F_COARSE / px, 7, "nc", true)}
-      {noise(F_FINE / px, 19, "na")}
-      {noise(F_FINE / px, 43, "nb")}
-      {/* fine = cosθ·A + sinθ·B + an offset that keeps the mean at ½; θ swings 0 → 90° → 0 */}
-      <feComposite in="na" in2="nb" operator="arithmetic" k1={0} k2={1} k3={0} k4={0} result="nf">
-        {animate && <>
-          <animate attributeName="k2" dur={`${ROTATE_S}s`} repeatCount="indefinite" values={overRot(Math.cos)} />
-          <animate attributeName="k3" dur={`${ROTATE_S}s`} repeatCount="indefinite" values={overRot(Math.sin)} />
-          <animate attributeName="k4" dur={`${ROTATE_S}s`} repeatCount="indefinite" values={overRot((t) => 0.5 * (1 - Math.cos(t) - Math.sin(t)))} />
-        </>}
-      </feComposite>
+      {rotor(F_COARSE / px, COARSE_SEEDS, COARSE_TURN, COARSE_S, "nc")}
+      {rotor(F_FINE / px, FINE_SEEDS, FINE_TURN, FINE_S, "nf")}
       <feComposite in="nc" in2="nf" operator="arithmetic" k1={0} k2={W_COARSE} k3={W_FINE} k4={0.5 * (1 - W_COARSE - W_FINE)} result="mix" />
       <feColorMatrix in="mix" type="matrix" values={windowMatrix(0)} result="win">
         {animate && <animate attributeName="values" dur={`${SWELL_S}s`} repeatCount="indefinite"
@@ -113,13 +133,22 @@ function Filter({ px, animate }: { px: number; animate: boolean }) {
           {lerp(i ? `t${i}` : "r2", `b${i + 1}`, `m${i + 1}`, `t${i + 1}`)}
         </Fragment>
       ))}
-      <feMerge><feMergeNode in={`t${TIER_SIGMA.length}`} /></feMerge>
+      <feGaussianBlur in={`t${TIER_SIGMA.length}`} stdDeviation={animate ? INTRO_SIGMA * k : 0}>
+        {animate && <animate id={introId(px)} attributeName="stdDeviation" begin="indefinite" dur={`${INTRO_S}s`} fill="freeze"
+          values={`${INTRO_SIGMA * k};0`} keyTimes="0;1" calcMode="spline" keySplines={INTRO_EASE} />}
+      </feGaussianBlur>
     </filter>
   );
 }
 
+// The haze drifts on SMIL, and every SMIL tick re-runs the whole chain. Left to itself the timeline ticks every
+// display frame (120+ Hz); stepped by hand it re-runs at the fountain's own rate. PrintRun sets html.haze-hold
+// while the camera is off a sheet: the haze holds still there.
+const HAZE_FPS = 24;
+
 export default function BlurMap() {
   const [sizes, setSizes] = useState<number[]>([]);
+  const svgRef = useRef<SVGSVGElement>(null);
   // reduced motion: the same graded map, held still
   const [animate, setAnimate] = useState(false);
 
@@ -132,6 +161,21 @@ export default function BlurMap() {
   }, []);
 
   useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg || !animate) return;
+    svg.pauseAnimations();
+    let last = performance.now();
+    const id = window.setInterval(() => {
+      const now = performance.now();
+      const dt = Math.min(0.25, (now - last) / 1000);
+      last = now;
+      if (document.hidden || document.documentElement.classList.contains("haze-hold")) return;
+      svg.setCurrentTime(svg.getCurrentTime() + dt);
+    }, 1000 / HAZE_FPS);
+    return () => { window.clearInterval(id); svg.unpauseAnimations(); };
+  }, [animate]);
+
+  useEffect(() => {
     let raf = 0;
     const ro = new ResizeObserver(() => schedule());
     const seen = new WeakSet<Element>();
@@ -139,8 +183,8 @@ export default function BlurMap() {
       raf = 0;
       const next = new Set<number>();
       document.querySelectorAll<HTMLElement>("[data-blurmap]").forEach((el) => {
-        if (!seen.has(el)) { seen.add(el); ro.observe(el); }
         const px = bucket(parseFloat(getComputedStyle(el).fontSize));
+        if (!seen.has(el)) { seen.add(el); ro.observe(el); el.dataset.blurmapPx = String(px); io.observe(el); }
         next.add(px);
         // filter only what prints the ink: for fountain-filled type that is the plate's canvas, so the
         // transparent DOM text above it (there for reading and selection) keeps a clean highlight
@@ -153,14 +197,36 @@ export default function BlurMap() {
       });
     };
     const schedule = () => { if (!raf) raf = requestAnimationFrame(scan); };
+    // Entrance: play each size's intro once, when the first element using it is on screen and its ink is up
+    // (fountain type: when the plate goes live; give up waiting after INK_WAIT so nothing stays hazed).
+    const played = new Set<number>();
+    const play = (px: number, tries = 0) => {
+      if (played.has(px)) return;
+      const anim = document.getElementById(introId(px)) as SVGAnimationElement | null;
+      if (!anim) { if (tries < 60) requestAnimationFrame(() => play(px, tries + 1)); return; }
+      played.add(px);
+      anim.beginElement();
+    };
+    const timers = new Set<number>();
+    const io = new IntersectionObserver((entries) => entries.forEach((en) => {
+      if (!en.isIntersecting) return;
+      io.unobserve(en.target);
+      const el = en.target as HTMLElement;
+      const px = Number(el.dataset.blurmapPx);
+      const plate = el.querySelector<HTMLElement>(".ink-fill");
+      if (!plate || plate.hasAttribute("data-live")) return play(px);
+      const watch = new MutationObserver(() => { if (plate.hasAttribute("data-live")) { watch.disconnect(); play(px); } });
+      watch.observe(plate, { attributes: true, attributeFilter: ["data-live"] });
+      timers.add(window.setTimeout(() => { watch.disconnect(); play(px); }, INK_WAIT));
+    }));
     const mo = new MutationObserver(schedule); // route changes bring new display type
     mo.observe(document.body, { childList: true, subtree: true });
     scan();
-    return () => { cancelAnimationFrame(raf); ro.disconnect(); mo.disconnect(); };
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); mo.disconnect(); io.disconnect(); timers.forEach(clearTimeout); };
   }, []);
 
   return (
-    <svg className="sr-only" aria-hidden focusable="false">
+    <svg ref={svgRef} className="sr-only" aria-hidden focusable="false">
       {sizes.map((px) => <Filter key={px} px={px} animate={animate} />)}
     </svg>
   );
