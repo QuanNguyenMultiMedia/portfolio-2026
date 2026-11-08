@@ -1,9 +1,10 @@
 "use client";
 // Home · works & words: eight proof frames hung on the grid, each re-printing a different fragment from the case
 // studies on its own clock, so the sheet never shows the same spread twice. The hang itself re-arranges on a
-// slower clock (three compositions, one feature frame each): every frame glides to its new bay on the house
-// curve (a native FLIP on the Web Animations API, transform only), so a re-hang reads as the wall being
-// re-pinned, never as a jump. The testimonials run as one pull
+// slower clock by one fixed rule: the feature and the left bay hold, the other six frames step one bay clockwise
+// around RING, gliding on the house curve (a native FLIP on the Web Animations API, transform only); the frame
+// leaving the last bay re-prints in the first bay in place. Every move is one bay, so a re-hang reads as the wall
+// being re-pinned, never as a jump. The testimonials run as one pull
 // quote set into the collage, turned by its own counter. Nothing here is a menu: the pieces tease, View Works
 // (next sheet) is the way in.
 // Videos play only while the frame is on screen; under reduced motion the frames hold their first proofs as
@@ -63,8 +64,12 @@ const DECKS: Proof[][] = [
 ];
 // each frame keeps its own clock (ms), offset so the swaps ripple instead of landing together
 const CLOCK = [6200, 7400, 5600, 8100, 6800, 7900, 5900, 8600];
-// the wall re-hangs on its own, slower clock: three compositions (home.css [data-hang])
-const HANGS = 3;
+// the re-hang ring: bays in clockwise order around the right of the wall (home.css [data-bay]); bays 1 and 6 hold
+const RING = [7, 2, 3, 4, 5, 8];
+const bayOf = (slot: number, hang: number) => {
+  const i = RING.indexOf(slot);
+  return i < 0 ? slot : RING[(i + hang) % RING.length];
+};
 const HANG_CLOCK = 15000;
 // the re-pin: a long, soft glide so eight frames moving at once still read as one gesture
 const REHANG_MS = 1400;
@@ -96,7 +101,7 @@ function Frame({ deck, clock, slot }: { deck: Proof[]; clock: number; slot: numb
 
   return (
     // outer box: the grid bay (and PrintRun's depth layer); inner: the print, which glides between bays
-    <div ref={ref} className={`proof proof-${slot}`}>
+    <div ref={ref} className={`proof proof-${slot}`} data-slot={slot} data-bay={slot}>
       <div className="proof-hang">
         <div className="proof-plate">
           {/* keyed: each swap mounts a fresh print, so the in-animation reruns */}
@@ -153,12 +158,19 @@ export default function ProofDrift({ quotes }: { quotes: Testimonial[] }) {
   useLayoutEffect(() => {
     const sheet = wall.current?.closest<HTMLElement>(".drift");
     if (!sheet) return;
-    const prints = Array.from(sheet.querySelectorAll<HTMLElement>(".proof-hang"));
+    const frames = Array.from(sheet.querySelectorAll<HTMLElement>(".proof[data-slot]"));
+    const prints = frames.map((f) => f.querySelector<HTMLElement>(".proof-hang")!);
     const before = prints.map((el) => el.getBoundingClientRect());
-    sheet.dataset.hang = String(hang);
+    frames.forEach((f) => { f.dataset.bay = String(bayOf(Number(f.dataset.slot), hang)); });
     if (reduced()) return;
     prints.forEach((el, i) => {
       const a = before[i], b = el.getBoundingClientRect();
+      // the wrap: last bay to first re-prints in place instead of crossing the wall
+      const slot = Number(frames[i].dataset.slot);
+      if (RING.includes(slot) && bayOf(slot, hang) === RING[0] && Math.abs(a.left - b.left) > 1) {
+        el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: REHANG_MS, easing: REHANG_EASE });
+        return;
+      }
       if (!b.width || !b.height || (Math.abs(a.left - b.left) < 1 && Math.abs(a.top - b.top) < 1 && Math.abs(a.width - b.width) < 1)) return;
       // centre to centre, one uniform scale: a print never squashes on the way
       const dx = a.left + a.width / 2 - (b.left + b.width / 2), dy = a.top + a.height / 2 - (b.top + b.height / 2);
@@ -173,7 +185,7 @@ export default function ProofDrift({ quotes }: { quotes: Testimonial[] }) {
   }, [hang]);
   useEffect(() => {
     if (!wallOn || reduced()) return;
-    const id = window.setInterval(() => setHang((h) => (h + 1) % HANGS), HANG_CLOCK);
+    const id = window.setInterval(() => setHang((h) => (h + 1) % RING.length), HANG_CLOCK);
     return () => window.clearInterval(id);
   }, [wallOn]);
 

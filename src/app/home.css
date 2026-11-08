@@ -89,8 +89,9 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 
 /* ---------- frame 3 · works & words ----------
    Not a menu: eight frames hung on a 12 x 4 wall, one of them the feature, each re-printing a new fragment
-   on its own clock. Every ~15 s the wall re-hangs into another of three compositions ([data-hang], set by
-   ProofDrift): the frames glide to their new bays together (Framer layout), so the shift is the gesture.
+   on its own clock. Every ~15 s the wall re-hangs by one rule: the feature, bay 6 and the quote hold; the other
+   six frames step one bay clockwise around the right of the wall (ProofDrift RING), and the frame at the end of
+   the ring re-prints in the first bay in place. No frame ever crosses the wall.
    Prints sit whole inside their bay (contain), in full colour; the swap lands off register and slides home. */
 .drift { --wall: min(72svh, 46rem); align-content: center; align-items: stretch; grid-template-rows: repeat(4, calc(var(--wall) / 4 - var(--s-2) * 0.75)); row-gap: var(--s-2); }
 .proof { position: relative; min-width: 0; min-height: 0; }
@@ -103,27 +104,21 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 .proof-from { font-size: var(--t-label); animation: words-in 900ms var(--ease-print) both; }
-/* the three hangs (row / column start / row end / column end) */
-.drift .proof-1 { grid-area: 1 / 1 / 3 / 6; }   .drift .proof-2 { grid-area: 1 / 6 / 2 / 8; }
-.drift .proof-3 { grid-area: 1 / 8 / 3 / 10; }  .drift .proof-4 { grid-area: 1 / 10 / 2 / 13; }
-.drift .proof-5 { grid-area: 2 / 10 / 4 / 13; } .drift .proof-6 { grid-area: 3 / 1 / 5 / 3; }
-.drift .proof-7 { grid-area: 2 / 6 / 3 / 8; }   .drift .proof-8 { grid-area: 4 / 7 / 5 / 10; }
+/* the bays (row / column start / row end / column end); ProofDrift moves frames between them by data-bay */
+.drift [data-bay="1"] { grid-area: 1 / 1 / 3 / 6; }
+.drift [data-bay="2"] { grid-area: 1 / 6 / 2 / 8; }
+.drift [data-bay="3"] { grid-area: 1 / 8 / 3 / 10; }
+.drift [data-bay="4"] { grid-area: 1 / 10 / 2 / 13; }
+.drift [data-bay="5"] { grid-area: 2 / 10 / 4 / 13; }
+.drift [data-bay="6"] { grid-area: 3 / 1 / 5 / 3; }
+.drift [data-bay="7"] { grid-area: 2 / 6 / 3 / 8; }
+.drift [data-bay="8"] { grid-area: 4 / 7 / 5 / 10; }
 .drift .drift-quote { grid-area: 3 / 3 / 5 / 7; }
-.drift[data-hang="1"] .proof-1 { grid-area: 2 / 7 / 4 / 12; } .drift[data-hang="1"] .proof-2 { grid-area: 1 / 1 / 3 / 3; }
-.drift[data-hang="1"] .proof-3 { grid-area: 1 / 3 / 2 / 6; }  .drift[data-hang="1"] .proof-4 { grid-area: 1 / 9 / 2 / 12; }
-.drift[data-hang="1"] .proof-5 { grid-area: 4 / 1 / 5 / 4; }  .drift[data-hang="1"] .proof-6 { grid-area: 1 / 6 / 2 / 9; }
-.drift[data-hang="1"] .proof-7 { grid-area: 4 / 9 / 5 / 13; } .drift[data-hang="1"] .proof-8 { grid-area: 4 / 4 / 5 / 8; }
-.drift[data-hang="1"] .drift-quote { grid-area: 2 / 3 / 4 / 7; }
-.drift[data-hang="2"] .proof-1 { grid-area: 2 / 4 / 4 / 10; } .drift[data-hang="2"] .proof-2 { grid-area: 1 / 1 / 3 / 4; }
-.drift[data-hang="2"] .proof-3 { grid-area: 1 / 10 / 3 / 13; } .drift[data-hang="2"] .proof-4 { grid-area: 1 / 5 / 2 / 8; }
-.drift[data-hang="2"] .proof-5 { grid-area: 3 / 10 / 5 / 13; } .drift[data-hang="2"] .proof-6 { grid-area: 3 / 1 / 4 / 4; }
-.drift[data-hang="2"] .proof-7 { grid-area: 4 / 1 / 5 / 4; }  .drift[data-hang="2"] .proof-8 { grid-area: 1 / 8 / 2 / 10; }
-.drift[data-hang="2"] .drift-quote { grid-area: 4 / 4 / 5 / 10; }
 /* the feature prints from its centre; frames on the right edge hang from it */
 .drift .proof-1 .proof-print { object-position: center; }
 .drift-quote { align-self: end; display: grid; gap: var(--s-2); margin: 0; padding-left: var(--s-3); }
 .drift-words { font-family: var(--font-display); font-size: clamp(1.2rem, 1.9vw, 2.1rem); line-height: 1.1; letter-spacing: -0.015em; max-width: 34ch; text-wrap: pretty; animation: words-in 900ms var(--ease-print) both; }
-.drift-words p::before { content: "C"; display: inline-block; width: 0.5em; margin-left: -0.5em; color: var(--ink-violet); }
+.drift-words p::before { content: "\201C"; display: inline-block; width: 0.5em; margin-left: -0.5em; color: var(--ink-violet); }
 @keyframes words-in { from { opacity: 0; transform: translate3d(0, 0.5rem, 0); } to { opacity: 1; transform: none; } }
 .drift-credit { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-2); font-size: var(--t-label); }
 .drift-turn { display: inline-flex; align-items: baseline; gap: 0.75em; font-variant-numeric: tabular-nums; }
@@ -164,14 +159,14 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
   .hero-line { grid-column: 1 / 8; }
   /* one hang on tablets: six frames, the feature across the top, the quote under the wall */
   .drift { --wall: min(58svh, 40rem); grid-template-rows: repeat(3, calc(var(--wall) / 3 - var(--s-2) * 0.67)) auto; }
-  .drift .proof-1, .drift[data-hang] .proof-1 { grid-area: 1 / 1 / 3 / 9; }
-  .drift .proof-2, .drift[data-hang] .proof-2 { grid-area: 1 / 9 / 2 / 13; }
-  .drift .proof-3, .drift[data-hang] .proof-3 { grid-area: 2 / 9 / 3 / 13; }
-  .drift .proof-4, .drift[data-hang] .proof-4 { grid-area: 3 / 1 / 4 / 5; }
-  .drift .proof-5, .drift[data-hang] .proof-5 { grid-area: 3 / 5 / 4 / 9; }
-  .drift .proof-6, .drift[data-hang] .proof-6 { grid-area: 3 / 9 / 4 / 13; }
+  .drift .proof-1 { grid-area: 1 / 1 / 3 / 9; }
+  .drift .proof-2 { grid-area: 1 / 9 / 2 / 13; }
+  .drift .proof-3 { grid-area: 2 / 9 / 3 / 13; }
+  .drift .proof-4 { grid-area: 3 / 1 / 4 / 5; }
+  .drift .proof-5 { grid-area: 3 / 5 / 4 / 9; }
+  .drift .proof-6 { grid-area: 3 / 9 / 4 / 13; }
   .drift .proof-7, .drift .proof-8 { display: none; }
-  .drift .drift-quote, .drift[data-hang] .drift-quote { grid-area: 4 / 1 / 5 / -1; padding-left: 0; }
+  .drift .drift-quote { grid-area: 4 / 1 / 5 / -1; padding-left: 0; }
   .ledger, .collab { grid-column: 1 / -1; grid-row: auto; }
   .view-works { grid-column: 1 / -1; grid-row: auto; margin-top: var(--s-5); }
 }

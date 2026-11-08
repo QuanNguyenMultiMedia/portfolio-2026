@@ -84,10 +84,10 @@ export default function Navbar() {
               href={item.path}
               data-active={isActive}
               aria-current={isActivePath(pathname, item.path) ? "page" : undefined}
-              className={`relative px-4 py-1.5 text-[14px] font-sans tracking-[-0.01em] transition-colors duration-300 ${
+              className={`relative px-4 py-1.5 text-[14px] font-sans tracking-[-0.01em] transition-colors duration-500 ease-(--ease-editorial-sharp) ${
                 isActive
-                  ? ui.hudKeyActive
-                  : `${ui.hudKey} text-background/60 hover:text-background`
+                  ? `${ui.hudKey} border-transparent text-foreground` // ink on the paper box; the box itself is the pill
+                  : `${ui.hudKey} border-transparent text-background/60 hover:text-background`
               }`}
             >
               {item.name}
