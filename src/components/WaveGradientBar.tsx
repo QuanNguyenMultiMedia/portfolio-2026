@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Renderer, Program, Mesh, Triangle } from "ogl";
-import { afterLoadIdle, fastGpu, warmProgram } from "@/lib/gpu";
+import { afterLoadIdle, fastGpu, isPhone, warmProgram } from "@/lib/gpu";
 
 interface WaveGradientBarProps {
   colors: string[];
@@ -162,6 +162,11 @@ export default function WaveGradientBar({
 
   async function mount(): Promise<(() => void) | undefined> {
     if (!containerRef.current) return;
+    // phones hold the three colours as a still gradient: no context, no shader for a 35px bar
+    if (isPhone()) {
+      containerRef.current.style.backgroundImage = `linear-gradient(90deg, ${color1}, ${color2}, ${color3})`;
+      return;
+    }
 
     let renderer: Renderer;
     try {

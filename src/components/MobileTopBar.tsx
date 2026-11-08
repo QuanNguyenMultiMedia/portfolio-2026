@@ -52,8 +52,8 @@ export default function MobileTopBar() {
                 className="w-full h-full flex items-center justify-center text-foreground active:text-foreground transition-colors"
                 aria-label="Go Back"
               >
-                <span className="text-[14px] font-sans -rotate-90">
-                  →
+                <span className="text-[14px] font-sans" aria-hidden>
+                  ←
                 </span>
               </Link>
             </motion.div>

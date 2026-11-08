@@ -5,7 +5,7 @@
 // The shader ports the 01.Title ink layers of MainTitle.aep (see FRAG header); the dither grid is screen-locked.
 
 import { useEffect, useRef } from "react";
-import { afterLoadIdle, fastGpu, warmProgram } from "@/lib/gpu";
+import { afterLoadIdle, fastGpu, isPhone, warmProgram } from "@/lib/gpu";
 
 const FRAG = /* glsl */ `
 // Port of the two ink layers of MainTitle.aep › 01.Title (2800×2443 comp):
@@ -286,7 +286,7 @@ async function start() {
   const screen = new Program(gl, { vertex: VERT, fragment: DITHER, uniforms: { tMap: { value: field.texture }, uDot: { value: 2 }, uLevels: { value: LEVELS } } });
   const screenMesh = new Mesh(gl, { geometry: new Triangle(gl), program: screen });
   let fW = 0, fH = 0;
-  still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  still = isPhone() || window.matchMedia("(prefers-reduced-motion: reduce)").matches; // phones print one still frame
 
   let last = 0, drift = 0, glW = 0, glH = 0;
   const t0 = performance.now();

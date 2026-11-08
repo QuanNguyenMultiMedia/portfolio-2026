@@ -26,11 +26,11 @@ export default function PlayPage() {
             <motion.div
               key={exp.slug}
               {...fx.slideIn(idx)}
-              className="w-fit self-start"
+              className="w-full md:w-fit self-start"
             >
               <Link
                 href={`/play/${exp.slug}`}
-                className="group flex flex-col w-fit self-start transition-all duration-500 ease-(--ease-editorial) max-w-full md:max-w-[340px] 3xl:max-w-[400px]"
+                className="group flex flex-col w-full md:w-fit self-start transition-all duration-500 ease-(--ease-editorial) max-w-full md:max-w-[340px] 3xl:max-w-[400px]"
               >
                 {/* Top Frame: Thumbnail */}
                 <div className={ui.card}>

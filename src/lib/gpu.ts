@@ -4,6 +4,10 @@
 // blocks the main thread for 100-300 ms (driver handshake), so a separate probe context would cost that twice.
 let verdict: boolean | undefined;
 
+/** A phone (narrow, touch-first): the decorative shaders hold still frames there and canvases render at 1x. A
+ * mid-tier phone spent 300-500 ms of main thread per route on the live plates and context setup alone. */
+export const isPhone = () => typeof window !== "undefined" && window.matchMedia("(max-width: 640px), (pointer: coarse) and (max-width: 1024px)").matches;
+
 export function fastGpu(gl: WebGLRenderingContext | WebGL2RenderingContext): boolean {
   if (verdict !== undefined) return verdict;
   const info = gl.getExtension("WEBGL_debug_renderer_info");

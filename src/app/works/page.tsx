@@ -31,13 +31,13 @@ export default function WorksPage() {
         </motion.div>
 
         {/* Main Grid conformed to viewport */}
-        <div className="relative z-10 w-full max-w-none grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 3xl:gap-24 4xl:gap-32 items-stretch flex-1 min-h-0">
+        <div className="relative z-10 w-full max-w-none grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 3xl:gap-24 4xl:gap-32 content-start lg:content-stretch items-start lg:items-stretch flex-1 min-h-0">
           {/* Left Column: Widescreen Viewport & Details */}
           <motion.div
             {...fx.slideIn(0)}
-            className="col-span-full lg:col-span-5 min-w-0 flex flex-col justify-between h-full min-h-0 space-y-6 lg:space-y-8 3xl:space-y-12 items-end text-right pb-2"
+            className="col-span-full lg:col-span-5 min-w-0 flex flex-col justify-between h-full min-h-0 space-y-6 lg:space-y-8 3xl:space-y-12 items-start text-left lg:items-end lg:text-right pb-2"
           >
-            <div className="relative -mx-8 w-[calc(100%+64px)] self-stretch lg:self-auto lg:mx-0 lg:w-full h-[120px] lg:h-auto lg:flex-1 min-h-0 lg:min-h-[260px] 3xl:min-h-[380px] 4xl:min-h-[480px] bg-transparent border-y lg:border border-primary/25 overflow-hidden group transition-all duration-700 mb-6 lg:mb-0 block">
+            <div className="relative -mx-6 w-[calc(100%+48px)] self-stretch lg:self-auto lg:mx-0 lg:w-full aspect-video lg:aspect-auto lg:h-auto lg:flex-1 min-h-0 lg:min-h-[260px] 3xl:min-h-[380px] 4xl:min-h-[480px] bg-transparent border-y lg:border border-primary/25 overflow-hidden group transition-all duration-700 mb-6 lg:mb-0 block">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeProject.slug}
@@ -59,7 +59,7 @@ export default function WorksPage() {
               </AnimatePresence>
             </div>
 
-            <div className="w-full flex-shrink-0 min-h-[6lh]">
+            <div className="w-full flex-shrink-0 min-h-[3lh] lg:min-h-[6lh]">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeProject.slug}
@@ -67,9 +67,9 @@ export default function WorksPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.4, ease: fx.easeSharp }}
-                  className="flex flex-col gap-3 md:gap-4 shrink-0 w-full items-end text-right"
+                  className="flex flex-col gap-3 md:gap-4 shrink-0 w-full items-start text-left lg:items-end lg:text-right"
                 >
-                  <p className={`${t.bodyProse} max-w-[420px] 3xl:max-w-[540px] 4xl:max-w-[680px] text-right ml-auto`}>
+                  <p className={`${t.bodyProse} max-w-[420px] 3xl:max-w-[540px] 4xl:max-w-[680px] lg:text-right lg:ml-auto`}>
                     {activeProject.description}
                   </p>
                 </motion.div>

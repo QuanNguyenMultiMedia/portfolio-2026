@@ -201,6 +201,11 @@ body.riso-paper :focus-visible { outline: 2px solid var(--ink-violet); outline-o
 :is(main, nav) :is(h1, h2, h3, h4, p, ul, ol, dl, li, dd, dt, blockquote, figcaption, a, [data-ink]):not([data-blurmap], [data-blurmap] *, :is(h1, h2, h3, h4, p, ul, ol, dl, li, dd, dt, blockquote, figcaption, a, [data-ink]) *, .sr-only, :has(img, video, canvas, svg)) { filter: url(#ink-edges); }
 /* reading sizes take the fine grade; headings keep the coarser one */
 :is(main, nav) :is(p, ul, ol, dl, li, dd, dt, blockquote, figcaption, a, [data-ink]):not([data-blurmap], [data-blurmap] *, :is(h1, h2, h3, h4, p, ul, ol, dl, li, dd, dt, blockquote, figcaption, a, [data-ink]) *, .sr-only, :has(img, video, canvas, svg)) { filter: url(#ink-edges-fine); }
+/* phones read at 12-16px, where any displacement costs legibility and a raster pass per block: reading text prints
+   clean, headings keep the grain */
+@media (max-width: 640px), (pointer: coarse) and (max-width: 1024px) {
+  :is(main, nav) :is(p, ul, ol, dl, li, dd, dt, blockquote, figcaption, a, [data-ink]) { filter: none !important; }
+}
 .run-stage.is-travelling :is(h1, h2, h3, h4, p, ul, ol, dl, li, dd, dt, blockquote, figcaption, a, [data-ink]) { filter: none; }
 .defocus { filter: blur(clamp(3px, 0.6vw, 9px)); }
 

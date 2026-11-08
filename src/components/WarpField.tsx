@@ -11,7 +11,7 @@
 // Client boundary: mounted once in layout.tsx, outside the view-transition slot (own transition name).
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { afterLoadIdle } from "@/lib/gpu";
+import { afterLoadIdle, isPhone } from "@/lib/gpu";
 import { WARP, WARP_TOTAL, destKey, holdWarp, motionBus, type WarpDir } from "@/lib/warp";
 
 const COUNT = 260;
@@ -60,7 +60,7 @@ export default function WarpField() {
 
       let w = 0, h = 0;
       const resize = () => {
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const dpr = isPhone() ? 1 : Math.min(window.devicePixelRatio || 1, 2); // 1x on phones: a full-screen 2x canvas is 4x the fill
         w = window.innerWidth; h = window.innerHeight;
         canvas.width = w * dpr; canvas.height = h * dpr;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);

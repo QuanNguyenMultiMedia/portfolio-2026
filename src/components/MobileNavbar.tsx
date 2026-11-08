@@ -10,28 +10,32 @@ import { setWarp, heading, setLastPath, motionBus } from "@/lib/warp";
 
 const CHARGE_R = 22;
 const CHARGE_C = 2 * Math.PI * CHARGE_R;
-const CHARGE_MS = 450;
+const CHARGE_MS = 200; // a short dwell so a finger passing over an item does not fire it
+const CAPTURE = 64; // px from an item's centre that still counts as on it
+// one shared context: browsers cap live AudioContexts, and a new one per tick stalled the menu after a few rolls
+let audio: AudioContext | null = null;
+const audioCtx = () => {
+  const C = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+  audio ??= new C();
+  if (audio.state === "suspended") audio.resume().catch(() => {});
+  return audio;
+};
 
 export default function MobileNavbar() {
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [hasInteracted, setHasInteracted] = useState(false);
   const [charge, setCharge] = useState(0);
   const chargeRef = useRef(0);
   const rafRef = useRef(0);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const interacted = localStorage.getItem("mq_menu_interacted") === "true";
-      setHasInteracted(interacted);
-    }
-  }, []);
   
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [touchCenter, setTouchCenter] = useState({ x: 0, y: 0 });
-  const [currentTouch, setCurrentTouch] = useState({ x: 0, y: 0 });
+  // the ray follows the finger by direct DOM writes, not state: a re-render per touchmove made the menu lag
+  const rayRef = useRef<SVGLineElement>(null);
+  const dotRef = useRef<SVGCircleElement>(null);
 
   // Disable body scroll when menu is active
   useEffect(() => {
@@ -85,13 +89,12 @@ export default function MobileNavbar() {
     };
   };
 
-  const handleStart = (clientX: number, clientY: number) => {
+  const handleStart = () => {
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
       setTouchCenter({ x: cx, y: cy });
-      setCurrentTouch({ x: cx, y: cy });
     }
     setIsOpen(true);
     setActiveIndex(null);
@@ -102,42 +105,26 @@ export default function MobileNavbar() {
 
   const handleMove = (clientX: number, clientY: number) => {
     if (!isOpen) return;
-    setCurrentTouch({ x: clientX, y: clientY });
+    rayRef.current?.setAttribute("x2", String(clientX));
+    rayRef.current?.setAttribute("y2", String(clientY));
+    dotRef.current?.setAttribute("cx", String(clientX));
+    dotRef.current?.setAttribute("cy", String(clientY));
 
     const dx = clientX - touchCenter.x;
     const dy = clientY - touchCenter.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-
-    // Only select if finger is dragged outwards
-    if (distance > 60 && distance < 280) {
-      // Calculate angle in degrees
-      let angle = (Math.atan2(dy, dx) * 180) / Math.PI;
-      if (angle < 0) angle += 360;
-
-      let targetIndex = null;
-      let minDiff = Infinity;
-
+    // the item under the finger wins: nearest drawn centre, within reach, once the finger has left the anchor
+    let target: number | null = null;
+    if (Math.hypot(dx, dy) > 60) {
+      let best = CAPTURE;
       NAV_ITEMS.forEach((_, i) => {
-        const itemAngle = startAngle + i * angleStep;
-        let diff = Math.abs(angle - itemAngle);
-        if (diff > 180) diff = 360 - diff;
-        if (diff < minDiff) {
-          minDiff = diff;
-          targetIndex = i;
-        }
+        const c = getCoordinates(i);
+        const d = Math.hypot(dx - c.x, dy - c.y);
+        if (d < best) { best = d; target = i; }
       });
-
-      // Clamp target within angular threshold (max 22 degrees away)
-      if (minDiff < 22 && targetIndex !== null) {
-        if (targetIndex !== activeIndex) {
-          setActiveIndex(targetIndex);
-          playTick();
-        }
-      } else {
-        setActiveIndex(null);
-      }
-    } else {
-      setActiveIndex(null);
+    }
+    if (target !== activeIndex) {
+      setActiveIndex(target);
+      if (target !== null) playTick();
     }
   };
 
@@ -151,8 +138,6 @@ export default function MobileNavbar() {
       setLastPath(target.path);
       router.push(target.path);
       playSuccess();
-      localStorage.setItem("mq_menu_interacted", "true");
-      setHasInteracted(true);
     }
     setIsOpen(false);
     setActiveIndex(null);
@@ -161,8 +146,7 @@ export default function MobileNavbar() {
   // Synthesize micro mechanical ticking for finger rolls
   const playTick = () => {
     try {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-      const ctx = new AudioContextClass();
+      const ctx = audioCtx();
       const now = ctx.currentTime;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -184,8 +168,7 @@ export default function MobileNavbar() {
   // Synthesize soft confirm chime
   const playSuccess = () => {
     try {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-      const ctx = new AudioContextClass();
+      const ctx = audioCtx();
       const now = ctx.currentTime;
       const osc1 = ctx.createOscillator();
       const osc2 = ctx.createOscillator();
@@ -240,7 +223,7 @@ export default function MobileNavbar() {
       window.removeEventListener("touchend", handleEnd);
       window.removeEventListener("mouseup", handleEnd);
     };
-  }, [isOpen, touchCenter, activeIndex]);
+  }, [isOpen, touchCenter, activeIndex, pathname]); // eslint-disable-line react-hooks/exhaustive-deps -- handlers read these
 
   return (
     <>
@@ -261,10 +244,11 @@ export default function MobileNavbar() {
       </nav>
 
       {/* Floating Status Notch / Trigger Button */}
-      <div className="fixed bottom-10 left-6 right-6 z-50 md:hidden pointer-events-none">
-        <div className="w-full bg-background border border-primary/25 px-5 py-4 flex items-center justify-between pointer-events-auto">
+      {/* a slim strip at the thumb: logo and the hold trigger, clear of the home indicator */}
+      <div className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-4 right-4 z-50 md:hidden pointer-events-none">
+        <div className="w-full bg-background border border-primary/25 pl-3 pr-1 py-1 flex items-center justify-between pointer-events-auto">
           <div className="flex items-center gap-3">
-            <div className="w-16 h-8 flex-shrink-0">
+            <div className="w-12 h-6 flex-shrink-0">
               <LogoMark fixed={false} variant="auto" animate={false} className="w-full h-full" />
             </div>
           </div>
@@ -276,16 +260,14 @@ export default function MobileNavbar() {
             onTouchStart={(e) => {
               e.preventDefault();
               if (e.touches.length > 0) {
-                handleStart(e.touches[0].clientX, e.touches[0].clientY);
+                handleStart();
               }
             }}
             onMouseDown={(e) => {
               e.preventDefault();
-              handleStart(e.clientX, e.clientY);
+              handleStart();
             }}
-            className={`font-sans text-[12px] border border-primary/25 py-3.5 bg-background active:bg-primary active:text-background transition-all duration-300 min-h-[44px] select-none cursor-pointer ${
-              hasInteracted ? "min-w-[44px] px-3" : "min-w-[100px] px-5"
-            }`}
+            className="font-sans text-[14px] w-11 h-11 flex items-center justify-center bg-background active:bg-primary active:text-background transition-colors duration-300 select-none cursor-pointer touch-none"
           >
             <span aria-hidden>≡</span>
           </button>
@@ -314,18 +296,20 @@ export default function MobileNavbar() {
             {/* Pointer Ray Vector Line pointing from thumb to finger */}
             <svg className="absolute inset-0 w-full h-full pointer-events-none z-10">
               <line
+                ref={rayRef}
                 x1={touchCenter.x}
                 y1={touchCenter.y}
-                x2={currentTouch.x}
-                y2={currentTouch.y}
+                x2={touchCenter.x}
+                y2={touchCenter.y}
                 stroke="var(--tech-blue)"
                 strokeWidth="1.5"
                 strokeDasharray="4 4"
                 className="opacity-40"
               />
               <circle
-                cx={currentTouch.x}
-                cy={currentTouch.y}
+                ref={dotRef}
+                cx={touchCenter.x}
+                cy={touchCenter.y}
                 r="6"
                 fill="var(--tech-blue)"
                 className="opacity-60"
@@ -334,7 +318,7 @@ export default function MobileNavbar() {
 
             {NAV_ITEMS.map((item, i) => {
               const coords = getCoordinates(i);
-              const isCurrent = pathname === item.path || (item.path !== "/" && pathname.startsWith(item.path));
+              const isCurrent = pathname === item.path || (item.path !== "/" && pathname.startsWith(item.path + "/"));
               const isSelected = activeIndex === i;
 
               return (
