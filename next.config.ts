@@ -29,6 +29,18 @@ const nextConfig: NextConfig = {
 
   // Removed aggressive 60s onDemandEntries page disposal to prevent constant CPU-intensive recompilation of heavy 3D and media modules (Three.js, R3F, GSAP, Mux).
 
+  // The site is served only at www.minhquan.works: on Vercel, every other host (*.vercel.app aliases, deployment
+  // URLs) redirects there, path and query kept. Local dev and `next start` are untouched.
+  async redirects() {
+    if (!process.env.VERCEL) return [];
+    return [{
+      source: "/:path*",
+      missing: [{ type: "host", value: "(www\\.)?minhquan\\.works" }],
+      destination: "https://www.minhquan.works/:path*",
+      permanent: true,
+    }];
+  },
+
   // Dev-only routes (/design-system, /works/builder) are guarded in their server page.tsx via notFound().
   turbopack: {
     root: path.resolve(__dirname),
