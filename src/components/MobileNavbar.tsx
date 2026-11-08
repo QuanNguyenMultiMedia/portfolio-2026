@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import LogoMark from "./LogoMark";
 import { NAV_ITEMS } from "@/lib/navigation";
-import { setWarp, heading } from "@/lib/warp";
+import { setWarp, heading, setLastPath, motionBus } from "@/lib/warp";
 
 const CHARGE_R = 22;
 const CHARGE_C = 2 * Math.PI * CHARGE_R;
@@ -145,7 +145,10 @@ export default function MobileNavbar() {
     if (!isOpen) return;
     if (activeIndex !== null && chargeRef.current >= 1) {
       const target = NAV_ITEMS[activeIndex];
+      // a link exit still waiting to push would land after this and win: cancel it
+      clearTimeout(motionBus.pendingNav);
       setWarp("fwd", heading(pathname, target.path));
+      setLastPath(target.path);
       router.push(target.path);
       playSuccess();
       localStorage.setItem("mq_menu_interacted", "true");

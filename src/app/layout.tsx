@@ -98,14 +98,14 @@ export default function RootLayout({
         className="riso-paper min-h-full"
         suppressHydrationWarning
       >
-        <Fountain className="page-plate" mode="aurora" />
+        <Fountain className="page-plate" />
         <WarpField />
         <KeyFlight />
         <ThemeProvider>
           <ExitChoreographer />
           <SmoothScroll>
               {/* isolate: inks multiply on each other, never on the page fountain (that tinted every element) */}
-              <div className="relative isolate">
+              <div className="relative isolate z-[1]">
                 <GlobalSideBar />
                 <ViewTransition default="sheet">{children}</ViewTransition>
               </div>

@@ -3,7 +3,6 @@
 // One shared OGL context renders every visible fountain into its own 2D canvas,
 // at ~0.6x resolution and 24fps, paused offscreen and when the tab is hidden.
 // The shader ports the 01.Title ink layers of MainTitle.aep (see FRAG header); the dither grid is screen-locked.
-// mode="aurora" draws the far-backdrop light curtains instead (smooth, undithered, low contrast).
 
 import { useEffect, useRef } from "react";
 
@@ -23,7 +22,6 @@ uniform float uTime;
 uniform vec2 uLean;
 uniform float uCell;
 uniform float uDark;
-uniform float uMode;   // 0 = split-fountain wash (the AE port below), 1 = aurora backdrop
 varying vec2 vUv;
 
 const float PI = 3.14159265;
@@ -117,33 +115,7 @@ float bayer4(vec2 c){
   return 0.5;
 }
 
-// Aurora mode: three slow light curtains in the same two ink ramps, smooth (no dither, no cell grid), low
-// contrast. Far backdrop only: it never carries meaning, so it sits at most ~30% over the paper.
-float hash(float n){ return fract(sin(n) * 43758.5453); }
-float noise1(float x){ float i = floor(x), f = fract(x); return mix(hash(i), hash(i + 1.0), f * f * (3.0 - 2.0 * f)); }
-vec3 aurora(vec2 uv){
-  float t = uTime * 0.25;
-  vec3 paper = vec3(1.0 - uDark);
-  vec3 col = paper;
-  for (int i = 0; i < 3; i++) {
-    float fi = float(i);
-    // curtain spine: drifts sideways, folds with height
-    float cx = 0.22 + 0.28 * fi + 0.07 * sin(uv.y * 2.6 + t * (0.6 + 0.2 * fi) + fi * 2.1) + uLean.x * 0.15;
-    float w = 0.10 + 0.04 * sin(t * 0.4 + fi);
-    float body = exp(-pow((uv.x - cx) / w, 2.0));
-    // vertical rays: noise across x, stretched along y, slowly sliding
-    float rays = 0.55 + 0.45 * noise1(uv.x * 38.0 + fi * 11.0 + t * 0.8);
-    // bright lower hem fading upward, like a real curtain
-    float hem = smoothstep(0.05, 0.35, uv.y) * (1.0 - smoothstep(0.35, 0.95, uv.y));
-    float I = clamp(body * rays * hem, 0.0, 1.0);
-    vec3 ink = mod(fi, 2.0) < 0.5 ? rampGreen(0.35 + 0.5 * I) : rampSky(0.3 + 0.5 * I);
-    col = mix(col, ink, I * (0.30 - 0.06 * fi));
-  }
-  return col;
-}
-
 void main(){
-  if (uMode > 0.5) { vec2 auv = vUv; gl_FragColor = vec4(aurora(auv), 1.0); return; }
   vec2 cell = floor(vUv * uRes / uCell);
   vec2 uv = (cell + 0.5) * uCell / uRes;
   uv.y = 1.0 - uv.y;
@@ -183,7 +155,6 @@ type Slot = {
   canvas: HTMLCanvasElement; visible: boolean; lean: [number, number]; target: [number, number];
   clip: boolean; masks: HTMLElement[]; size: [number, number];
   mask: HTMLCanvasElement | null; maskKey: string; sheet: HTMLElement | null; tick: number; faded: boolean;
-  mode: "wash" | "aurora";
 };
 
 // Cut the plate to each mask element's glyphs, at the output resolution, set in its own computed font.
@@ -222,6 +193,16 @@ const FADE_CHECK = 12; // frames between computed-opacity reads (~0.5 s at 24fps
 const slots = new Set<Slot>();
 let started = false;
 let still = false;
+// Aurora behaviour: a route warp is a solar gust through the same ink. The fountain runs faster for the jump
+// and its fields swing along the jump's heading, then settle back to the slow drift. Reversed for Back.
+const GUST_MS = 900; // matches the warp's exit + travel + arrive
+const GUST_SPEED = 2.2; // extra drift speed (x the AE loop) at the gust's peak
+const GUST_LEAN = 0.6; // lean added along the heading at the peak
+let gustT0 = -1e9, gustDir = 1, gustHead: [number, number] = [0, 0];
+const gust = (now: number) => {
+  const u = (now - gustT0) / GUST_MS;
+  return u <= 0 || u >= 1 ? 0 : Math.sin(Math.PI * u) ** 2;
+};
 
 async function start() {
   if (started) return;
@@ -232,20 +213,28 @@ async function start() {
   const program = new Program(gl, {
     vertex: VERT,
     fragment: FRAG,
-    uniforms: { uRes: { value: [1, 1] }, uTime: { value: 0 }, uLean: { value: [0, 0] }, uCell: { value: 4 }, uDark: { value: 0 }, uMode: { value: 0 } },
+    uniforms: { uRes: { value: [1, 1] }, uTime: { value: 0 }, uLean: { value: [0, 0] }, uCell: { value: 4 }, uDark: { value: 0 } },
   });
   const mesh = new Mesh(gl, { geometry: new Triangle(gl), program });
   still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  let last = 0;
+  let last = 0, drift = 0;
   const t0 = performance.now();
+  window.addEventListener("warp", (e) => {
+    const d = (e as CustomEvent<{ dir: "fwd" | "back"; heading: { x: number; y: number } }>).detail;
+    gustDir = d?.dir === "back" ? -1 : 1;
+    gustHead = [d?.heading.x ?? 0, d?.heading.y ?? 0];
+    gustT0 = performance.now();
+  });
   const frame = (now: number) => {
     raf = requestAnimationFrame(frame);
     if (document.hidden || now - last < 1000 / 24) return;
+    const g = still ? 0 : gust(now);
+    drift += g * GUST_SPEED * gustDir * Math.min(0.1, last ? (now - last) / 1000 : 0);
     last = now;
     // settle-in: the ink enters at the AE speed, then eases down to a slow drift (speed 1 → SETTLE, time constant TAU)
     const el = (now - t0) / 1000;
-    const time = still ? 0 : SETTLE * el + (1 - SETTLE) * TAU * (1 - Math.exp(-el / TAU));
+    const time = still ? 0 : SETTLE * el + (1 - SETTLE) * TAU * (1 - Math.exp(-el / TAU)) + drift;
     program.uniforms.uDark.value = document.documentElement.classList.contains("dark") ? 1 : 0;
     const dpr = Math.min(window.devicePixelRatio, 2);
     const scale = dpr * 0.6;
@@ -257,8 +246,8 @@ async function start() {
       // a plate faded fully out (page plate off this spread) costs nothing; sampled, not read every frame
       if (!still && host && s.tick++ % FADE_CHECK === 0) s.faded = getComputedStyle(host).opacity === "0";
       if (!still && s.faded) continue;
-      s.lean[0] += (s.target[0] - s.lean[0]) * 0.06;
-      s.lean[1] += (s.target[1] - s.lean[1]) * 0.06;
+      s.lean[0] += (s.target[0] + gustHead[0] * g * GUST_LEAN * gustDir - s.lean[0]) * 0.06;
+      s.lean[1] += (s.target[1] + gustHead[1] * g * GUST_LEAN * gustDir - s.lean[1]) * 0.06;
       const [rw, rh] = s.size;
       const w = Math.max(2, Math.round(Math.min(rw * scale, 1100)));
       const h = Math.max(2, Math.round(Math.min(rh * scale, 1100 * (rh / Math.max(rw, 1)))));
@@ -271,7 +260,6 @@ async function start() {
       program.uniforms.uTime.value = time;
       program.uniforms.uLean.value = s.lean;
       program.uniforms.uCell.value = Math.max(1, Math.round(4 * scale));
-      program.uniforms.uMode.value = s.mode === "aurora" ? 1 : 0;
       renderer.render({ scene: mesh });
       const ctx = s.canvas.getContext("2d");
       if (ctx) {
@@ -300,7 +288,7 @@ async function start() {
   let raf = requestAnimationFrame(frame);
 }
 
-export default function Fountain({ className = "", children, clipText = false, mode = "wash" }: { className?: string; children?: React.ReactNode; clipText?: boolean; mode?: "wash" | "aurora" }) {
+export default function Fountain({ className = "", children, clipText = false }: { className?: string; children?: React.ReactNode; clipText?: boolean }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -309,7 +297,7 @@ export default function Fountain({ className = "", children, clipText = false, m
     const slot: Slot = {
       canvas, visible: false, lean: [0, 0], target: [0, 0], clip: clipText,
       masks: clipText ? Array.from(canvas.parentElement?.querySelectorAll<HTMLElement>("[data-clip]") ?? []) : [],
-      size: [0, 0], mask: null, maskKey: "", sheet: canvas.closest<HTMLElement>(".sheet"), tick: 0, faded: false, mode,
+      size: [0, 0], mask: null, maskKey: "", sheet: canvas.closest<HTMLElement>(".sheet"), tick: 0, faded: false,
     };
     slots.add(slot);
     // layout size (unaffected by the camera's transforms); a new size or a font swap re-cuts the glyph mask

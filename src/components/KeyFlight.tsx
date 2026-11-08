@@ -24,7 +24,8 @@ export default function KeyFlight() {
         window.dispatchEvent(new CustomEvent("run-step", { detail: { d: key === "w" ? -1 : 1 } }));
         return;
       }
-      if (home && e.key === " ") {
+      // Space keeps its native meaning on a focused control (button, link, notch); only bare page focus opens the sheet
+      if (home && e.key === " " && !(e.target instanceof Element && e.target.closest("a,button,[role=button],summary"))) {
         e.preventDefault();
         window.dispatchEvent(new CustomEvent("run-activate"));
         return;

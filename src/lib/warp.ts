@@ -34,7 +34,7 @@ export function heading(from: string, to: string): Heading {
 }
 
 /** Live motion values shared without React: PrintRun writes the home camera velocity (px/s), WarpField reads it. */
-export const motionBus = { runVelocity: 0 };
+export const motionBus: { runVelocity: number; pendingNav?: number } = { runVelocity: 0 };
 
 let lastPath = typeof window === "undefined" ? "/" : window.location.pathname;
 export const getLastPath = () => lastPath;

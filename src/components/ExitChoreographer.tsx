@@ -7,7 +7,7 @@
 // Opt-outs: data-no-exit on an element skips it (and its subtree); [data-exit] marks a block explicitly.
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { WARP, getLastPath, heading, setLastPath, setWarp } from "@/lib/warp";
+import { WARP, getLastPath, heading, motionBus, setLastPath, setWarp } from "@/lib/warp";
 
 const BLOCKS = "[data-exit], h1, h2, h3, h4, p, li, figure, img, video, canvas, blockquote, button, a, [class*='card'], .printed";
 const MAX = 14; // blocks in flight; the rest leave with the last step
@@ -45,7 +45,13 @@ export default function ExitChoreographer() {
   useEffect(() => {
     let busy = false;
     const onClick = (e: MouseEvent) => {
-      if (busy || document.hidden || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      // a second internal click while an exit runs is swallowed, never a full reload or a second push
+      if (busy) {
+        const b = (e.target as Element | null)?.closest?.("a");
+        if (b && new URL(b.href, location.href).origin === location.origin && b.target !== "_blank") { e.preventDefault(); e.stopPropagation(); }
+        return;
+      }
+      if (document.hidden || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const a = (e.target as Element | null)?.closest?.("a");
       if (!a || a.target === "_blank" || a.hasAttribute("download") || a.closest("[data-no-exit]")) return;
       const url = new URL(a.href, location.href);
@@ -60,7 +66,6 @@ export default function ExitChoreographer() {
       busy = true;
       const to = url.pathname;
       setWarp("fwd", heading(getLastPath(), to));
-      const back = document.documentElement.dataset.warp === "back";
 
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const anims = els.map((el, i) => {
@@ -70,7 +75,7 @@ export default function ExitChoreographer() {
           ? [{ opacity: 1 }, { opacity: 0 }]
           : [
               { opacity: 1, scale: "1" },
-              { opacity: 0, scale: back ? "0.96" : "1.04" },
+              { opacity: 0, scale: "1.04" },
             ];
         return el.animate(frames, { duration: reduce ? 160 : DUR, delay, easing: reduce ? "linear" : EASE, fill: "forwards" });
       });
@@ -78,7 +83,8 @@ export default function ExitChoreographer() {
       router.prefetch(href); // fetch the next route while this one leaves, so the swap lands on time
       // navigate as the last block is halfway out, so the hand-off never sits on an empty sheet
       const total = reduce ? 160 : Math.min(els.length - 1, MAX) * STEP + DUR * 0.45;
-      window.setTimeout(() => {
+      clearTimeout(motionBus.pendingNav);
+      motionBus.pendingNav = window.setTimeout(() => {
         router.push(href);
         setLastPath(to);
         // the old tree unmounts with its animations; release anything that survived (same-layout routes)

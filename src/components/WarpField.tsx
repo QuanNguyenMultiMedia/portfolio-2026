@@ -10,6 +10,7 @@
 // Reduced motion: static dots on home/contacts, no surge. Hidden tab: no frames.
 // Client boundary: mounted once in layout.tsx, outside the view-transition slot (own transition name).
 import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { WARP, WARP_TOTAL, destKey, motionBus, type WarpDir } from "@/lib/warp";
 
 const COUNT = 200;
@@ -34,6 +35,10 @@ function envelope(t: number) {
 
 export default function WarpField() {
   const ref = useRef<HTMLCanvasElement>(null);
+  const wakeRef = useRef<() => void>(() => {});
+  const pathname = usePathname();
+  // a route change (warp or not) settles the field's presence for the new route
+  useEffect(() => { wakeRef.current(); }, [pathname]);
 
   useEffect(() => {
     const canvas = ref.current;
@@ -149,11 +154,10 @@ export default function WarpField() {
     window.addEventListener("resize", resize);
     window.addEventListener("popstate", wake);
     document.addEventListener("visibilitychange", onVis);
-    const poll = window.setInterval(wake, 500); // route changes without events (Next soft nav) still settle presence
+    wakeRef.current = wake;
     wake();
     return () => {
       cancelAnimationFrame(raf);
-      window.clearInterval(poll);
       ro.disconnect();
       window.removeEventListener("warp", onWarp);
       window.removeEventListener("scroll", onScroll);
@@ -168,7 +172,7 @@ export default function WarpField() {
       ref={ref}
       aria-hidden
       className="warp-field"
-      style={{ position: "fixed", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 1, viewTransitionName: "warp-field" }}
+      style={{ position: "fixed", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0, viewTransitionName: "warp-field" }}
     />
   );
 }
