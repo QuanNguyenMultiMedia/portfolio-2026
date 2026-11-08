@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Renderer, Program, Mesh, Triangle } from "ogl";
+import { afterLoadIdle, fastGpu, warmProgram } from "@/lib/gpu";
 
 interface WaveGradientBarProps {
   colors: string[];
@@ -163,7 +164,7 @@ export default function WaveGradientBar({
   color2Ref.current = hexToRgb(color2);
   color3Ref.current = hexToRgb(color3);
 
-  useEffect(() => {
+  async function mount(): Promise<(() => void) | undefined> {
     if (!containerRef.current) return;
 
     let renderer: Renderer;
@@ -198,6 +199,8 @@ export default function WaveGradientBar({
     const container = containerRef.current;
     container.appendChild(canvas);
 
+    await warmProgram(gl, vertex, fragment); // compile off the main thread first; the build below hits the cache
+    if (!containerRef.current) return;
     const geometry = new Triangle(gl);
     const program = new Program(gl, {
       vertex,
@@ -370,7 +373,20 @@ export default function WaveGradientBar({
         console.warn("OGL WebGL resource disposal failed:", e);
       }
     };
-  }, []);
+  }
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const host = containerRef.current;
+    // no GPU (lib/gpu): the bar holds its three colours as a still gradient instead of a CPU-rendered shader
+    if (!fastGpu()) {
+      host.style.backgroundImage = `linear-gradient(180deg, ${color1}, ${color2}, ${color3})`;
+      return;
+    }
+    let dispose: (() => void) | undefined, gone = false;
+    const cancel = afterLoadIdle(() => { mount().then((d) => { if (gone) d?.(); else dispose = d; }); });
+    return () => { gone = true; cancel(); dispose?.(); };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- colours stream in through refs
 
   return (
     <div

@@ -5,6 +5,7 @@
 // The shader ports the 01.Title ink layers of MainTitle.aep (see FRAG header); the dither grid is screen-locked.
 
 import { useEffect, useRef } from "react";
+import { afterLoadIdle, fastGpu, warmProgram } from "@/lib/gpu";
 
 const FRAG = /* glsl */ `
 // Port of the two ink layers of MainTitle.aep › 01.Title (2800×2443 comp):
@@ -205,22 +206,26 @@ const gust = (now: number) => {
 };
 
 // The context and shader compile are the heaviest main-thread work on the page: they wait for load and an idle
-// slot, so first paint and input never queue behind them. The plates fade in on their first frame anyway.
+// slot (lib/gpu afterLoadIdle), so first paint and input never queue behind them. The plates fade in anyway.
 let queued = false;
 function startWhenIdle() {
   if (queued) return;
   queued = true;
-  const go = () => ("requestIdleCallback" in window ? window.requestIdleCallback(() => start(), { timeout: 1500 }) : setTimeout(start, 200));
-  if (document.readyState === "complete") go();
-  else window.addEventListener("load", go, { once: true });
+  afterLoadIdle(() => { start(); });
 }
 
 async function start() {
   if (started) return;
   started = true;
+  // no GPU (lib/gpu): the plates stay down and the DOM ink carries the type, as it does without WebGL
+  if (!fastGpu()) {
+    for (const s of slots) { const host = s.canvas.parentElement; if (host && s.clip) host.dataset.fallback = ""; }
+    return;
+  }
   const { Renderer, Program, Mesh, Triangle } = await import("ogl");
   const renderer = new Renderer({ dpr: 1, alpha: false, antialias: false, preserveDrawingBuffer: true });
   const gl = renderer.gl;
+  await warmProgram(gl, VERT, FRAG); // compile off the main thread first; the build below then hits the cache
   const program = new Program(gl, {
     vertex: VERT,
     fragment: FRAG,
