@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
+import { fx } from "@/lib/designSystem";
 
 interface LogoMarkProps {
   variant?: "default" | "inverted" | "auto" | "on-ink"; // on-ink: sits on an ink-black plate, so it takes the other theme's art
@@ -45,7 +46,7 @@ export default function LogoMark({
         {mounted ? (
           <Image
             src={logoSrc}
-            alt="Minh Quan Logo"
+            alt="Minh Quân Logo"
             fill
             priority
             className="object-contain group-hover:scale-105 transition-transform duration-700"
@@ -73,7 +74,7 @@ export default function LogoMark({
     <motion.div
       initial={shouldAnimate ? { opacity: 0, y: -10 } : { opacity: 1, y: 0 }}
       animate={shouldAnimate ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
-      transition={{ delay: 0.1, duration: 0.8, ease: "easeOut" }}
+      transition={{ delay: 0.1, duration: 0.8, ease: fx.ease }}
       className={containerClasses}
     >
       {content}

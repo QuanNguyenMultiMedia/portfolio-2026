@@ -7,3 +7,4 @@
 - 2026-11-07 · Owner approved: "Approve, run it".
 - 2026-11-07 · Owner added WASD + Space controls → K1 (lane D). Mapping decided by lead: W/S sheets on home, A/D routes, Space opens current sheet.
 - W2: E2 done in riso.css (plates in register at rest; deviation: CSS not Plates.tsx). E1: sampled contrast 11.72:1 everywhere; hint raised to .75 (~5.5:1); works dial titles h3→h2. Owner added: gauntlet must purge AI-slop tics (dividers, eyebrows, spacing, crops) until none remain.
+- Owner: stars back (global trailed-dot field for warp, home scroll, contacts cruise), frame removed, no works items on home. Done in 25988f2. G2 so far: W/S queueing fix in PrintRun.

@@ -16,7 +16,7 @@ export default function PlayPage() {
           {...fx.headerSlideIn}
           className="mb-16 space-y-4 3xl:space-y-6"
         >
-          <h1 className={t.sectionHeaderDisplay}>
+          <h1 className={t.sectionHeaderDisplay} data-blurmap="">
             PLAY
           </h1>
         </motion.div>
@@ -30,7 +30,7 @@ export default function PlayPage() {
             >
               <Link
                 href={`/play/${exp.slug}`}
-                className="group flex flex-col w-fit self-start transition-all duration-500 ease-[var(--ease-editorial)] max-w-full md:max-w-[340px] 3xl:max-w-[400px]"
+                className="group flex flex-col w-fit self-start transition-all duration-500 ease-(--ease-editorial) max-w-full md:max-w-[340px] 3xl:max-w-[400px]"
               >
                 {/* Top Frame: Thumbnail */}
                 <div className={ui.card}>
@@ -47,7 +47,7 @@ export default function PlayPage() {
                 </div>
 
                 {/* Bottom Frame: Name (connected immediately) */}
-                <div className={`${ui.cardFooter} flex items-center justify-between gap-6 w-full min-h-[4.5rem] 3xl:min-h-[5.5rem] 4xl:min-h-[6.5rem] transition-all duration-500 ease-[var(--ease-editorial)]`}>
+                <div className={`${ui.cardFooter} flex items-center justify-between gap-6 w-full min-h-[4.5rem] 3xl:min-h-[5.5rem] 4xl:min-h-[6.5rem] transition-all duration-500 ease-(--ease-editorial)`}>
                   <div className="min-w-0 flex-1">
                     <h2 
                       className={`${t.cardTitle} ${motionTokens.skewHover} leading-[1.2] block`}

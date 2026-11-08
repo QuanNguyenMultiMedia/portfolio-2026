@@ -43,7 +43,7 @@ export default function FreebiesPage() {
             {...fx.headerSlideIn}
             className="mb-16 space-y-4 3xl:space-y-6"
           >
-            <h1 className={t.sectionHeaderDisplay}>
+            <h1 className={t.sectionHeaderDisplay} data-blurmap="">
               Freebies
             </h1>
           </motion.div>

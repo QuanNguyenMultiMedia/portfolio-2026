@@ -25,8 +25,8 @@ export default function TechButton({
   const variants = {
     primary: "border-primary text-foreground hover:text-background",
     secondary:
-      "border-primary/25 text-foreground/60 hover:border-primary hover:text-foreground",
-    ghost: "border-transparent text-foreground/40 hover:text-foreground",
+      "border-primary/25 text-foreground hover:border-primary hover:text-foreground",
+    ghost: "border-transparent text-foreground hover:text-foreground",
   };
 
   const content = (

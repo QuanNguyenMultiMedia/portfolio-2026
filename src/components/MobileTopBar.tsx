@@ -49,7 +49,7 @@ export default function MobileTopBar() {
             >
               <Link
                 href={`/${segments[0]}`}
-                className="w-full h-full flex items-center justify-center text-foreground/45 active:text-foreground transition-colors"
+                className="w-full h-full flex items-center justify-center text-foreground active:text-foreground transition-colors"
                 aria-label="Go Back"
               >
                 <span className="text-[14px] font-sans -rotate-90">
@@ -79,7 +79,7 @@ export default function MobileTopBar() {
           <motion.div
             animate={{ rotate: isDark ? 360 : 0 }}
             transition={{ duration: 0.7, ease: fx.easeSharp }}
-            className="w-3.5 h-3.5 text-foreground/45 group-hover:text-foreground transition-colors"
+            className="w-3.5 h-3.5 text-foreground group-hover:text-foreground transition-colors"
           >
             {isDark ? (
               <svg

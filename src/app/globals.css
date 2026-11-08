@@ -3,12 +3,11 @@
 :root {
   /* Riso Run (docs/design.md): paper ground, ink set. Legacy names kept so every route restyles at once. */
   --background: #f2f3f5; /* --paper */
-  --foreground: #313131; /* --ink-black */
-  --primary: #313131;
+  --foreground: #000; /* --ink-black (measured on the AE boards) */
+  --primary: #000;
   --tech-blue: #3a3efa; /* accent is now --ink-violet */
   --tech-blue-light: #00a8ff;
-  --tech-blue-dark: #3000ff;
-  --border-neutral: rgba(49, 49, 49, 0.18);
+  --border-neutral: rgba(0, 0, 0, 0.18);
   --surface: #f5f7fa; /* --paper-hi */
 
   /* Editorial motion curves — mirror fx.ease / fx.easeSharp in designSystem.ts */
@@ -123,43 +122,6 @@ html.dark {
 
   .lenis.lenis-scrolling iframe {
     pointer-events: none;
-  }
-
-  /* --- ANIMATIONS --- */
-  @keyframes scanline {
-    0% {
-      transform: translateY(-100%);
-    }
-    100% {
-      transform: translateY(1000%);
-    }
-  }
-  .animate-scanline {
-    animation: scanline 8s linear infinite;
-  }
-
-  @keyframes gradient-shift {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-
-  @keyframes pulse-subtle {
-    0%, 100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.7;
-    }
-  }
-  .animate-pulse-subtle {
-    animation: pulse-subtle 3s ease-in-out infinite;
   }
 }
 

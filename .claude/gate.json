@@ -1,0 +1,1 @@
+{ "checks": ["npx tsc --noEmit -p .", "npx vitest run"], "timeout": 300 }

@@ -71,7 +71,7 @@
   --blend: multiply;
 
   /* motion */
-  --ease-print: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-print: var(--ease-editorial);
   --t-register: 850ms;
   --t-ink-stagger: 75ms;
 }

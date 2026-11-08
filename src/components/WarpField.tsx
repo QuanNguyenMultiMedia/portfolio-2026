@@ -71,8 +71,8 @@ export default function WarpField() {
       let base = "", accent = "";
       const readInks = () => {
         const css = getComputedStyle(document.documentElement);
-        base = css.getPropertyValue("--ink-black").trim() || "#000";
-        accent = css.getPropertyValue("--ink-blue").trim() || "#00A8FF";
+        base = css.getPropertyValue("--foreground").trim();
+        accent = css.getPropertyValue("--tech-blue-light").trim();
       };
       readInks();
 

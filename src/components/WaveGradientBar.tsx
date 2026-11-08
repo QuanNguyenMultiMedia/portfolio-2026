@@ -127,11 +127,7 @@ export default function WaveGradientBar({
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Extract up to 3 colors for the grainient
-  const safeColors =
-    colors && colors.length > 0 ? colors : ["#001219", "#005f73", "#0a9396"];
-  const color1 = safeColors[0] || "#FF9FFC";
-  const color2 = safeColors[1] || safeColors[0] || "#5227FF";
-  const color3 = safeColors[2] || safeColors[1] || safeColors[0] || "#B497CF";
+  const [color1, color2 = color1, color3 = color2] = colors;
 
   // Grainient uniform parameters
   const timeSpeed = 0.25;

@@ -10,7 +10,7 @@ export const WARP = { exit: 380, travel: 220, arrive: 300, depth: 1400 } as cons
 export const WARP_TOTAL = WARP.exit + WARP.travel + WARP.arrive;
 
 /** Keyed by the first path segment; order is the route order (index readout, A/D keys). */
-export const DESTS: Record<string, { x: number; y: number; z: number; label: string }> = {
+const DESTS: Record<string, { x: number; y: number; z: number; label: string }> = {
   "": { x: 0, y: 0, z: 0, label: "Home" },
   works: { x: 1, y: 0, z: -1, label: "Works" },
   takes: { x: 1, y: 1, z: -2, label: "Takes" },
@@ -41,12 +41,19 @@ export const getLastPath = () => lastPath;
 export const setLastPath = (p: string) => { lastPath = p; };
 
 let clearTimer: ReturnType<typeof setTimeout> | undefined;
-export function setWarp(dir: WarpDir, h: Heading = { x: 0, y: 0 }) {
+/** `to`: the destination path when known (link clicks, holds), so chrome like the nav box can follow at once. */
+export function setWarp(dir: WarpDir, h: Heading = { x: 0, y: 0 }, to?: string) {
   if (typeof document === "undefined") return;
   document.documentElement.dataset.warp = dir;
-  window.dispatchEvent(new CustomEvent("warp", { detail: { dir, heading: h } }));
+  window.dispatchEvent(new CustomEvent("warp", { detail: { dir, heading: h, to } }));
   clearTimeout(clearTimer);
   clearTimer = setTimeout(clearWarp, WARP_TOTAL + 200);
+}
+/** The new route rendered: keep the direction stamped through its arrival (a slow fetch used to outlast it). */
+export function holdWarp() {
+  if (typeof document === "undefined" || !document.documentElement.dataset.warp) return;
+  clearTimeout(clearTimer);
+  clearTimer = setTimeout(clearWarp, WARP.arrive + 400);
 }
 export function clearWarp() {
   if (typeof document === "undefined") return;

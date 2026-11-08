@@ -1,5 +1,5 @@
 // Share card: the name and the role on the paper, inside the same 1px hairline frame the site carries.
-// Values mirror the riso tokens (--paper #F2F3F5, --ink-black #313131); next/og can't read CSS vars.
+// Values mirror the riso tokens (--paper #F2F3F5, --ink-black #000); next/og can't read CSS vars.
 import { ImageResponse } from "next/og";
 
 export const alt = "Minh Quân | Motion Design & Creative Engineering";
@@ -7,7 +7,7 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const PAPER = "#F2F3F5";
-const INK = "#313131";
+const INK = "#000000";
 
 export default function OpengraphImage() {
   return new ImageResponse(

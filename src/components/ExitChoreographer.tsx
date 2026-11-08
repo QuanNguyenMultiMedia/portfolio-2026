@@ -44,6 +44,15 @@ export default function ExitChoreographer() {
 
   useEffect(() => {
     let busy = false;
+    let inFlight: Animation[] = [];
+    // Back/forward during an exit wins: drop the queued push and put the lifted blocks back
+    const abortExit = () => {
+      if (!busy) return;
+      clearTimeout(motionBus.pendingNav);
+      inFlight.forEach((x) => x.cancel());
+      inFlight = [];
+      busy = false;
+    };
     const onClick = (e: MouseEvent) => {
       // a second internal click while an exit runs is swallowed, never a full reload or a second push
       if (busy) {
@@ -57,15 +66,14 @@ export default function ExitChoreographer() {
       const url = new URL(a.href, location.href);
       if (url.origin !== location.origin || (url.pathname === location.pathname && url.search === location.search)) return;
 
+      // a bare sheet (nothing on the press) still warps: it just has no blocks to lift
       const root = document.querySelector("main");
-      if (!root) return;
-      const els = pick(root);
-      if (!els.length) return;
+      const els = root ? pick(root) : [];
       e.preventDefault();
       e.stopPropagation();
       busy = true;
       const to = url.pathname;
-      setWarp("fwd", heading(getLastPath(), to));
+      setWarp("fwd", heading(getLastPath(), to), to);
 
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const anims = els.map((el, i) => {
@@ -79,16 +87,17 @@ export default function ExitChoreographer() {
             ];
         return el.animate(frames, { duration: reduce ? 160 : DUR, delay, easing: reduce ? "linear" : EASE, fill: "forwards" });
       });
+      inFlight = anims;
       const href = url.pathname + url.search + url.hash;
       router.prefetch(href); // fetch the next route while this one leaves, so the swap lands on time
       // navigate as the last block is halfway out, so the hand-off never sits on an empty sheet
-      const total = reduce ? 160 : Math.min(els.length - 1, MAX) * STEP + DUR * 0.45;
+      const total = reduce ? 160 : Math.max(0, Math.min(els.length - 1, MAX)) * STEP + DUR * 0.45;
       clearTimeout(motionBus.pendingNav);
       motionBus.pendingNav = window.setTimeout(() => {
         router.push(href);
         setLastPath(to);
         // the old tree unmounts with its animations; release anything that survived (same-layout routes)
-        window.setTimeout(() => { anims.forEach((x) => x.cancel()); busy = false; }, 900);
+        window.setTimeout(() => { anims.forEach((x) => x.cancel()); if (inFlight === anims) { inFlight = []; busy = false; } }, 900);
       }, total);
     };
     // warm the route on intent (hover, focus), so the exit never waits on a fetch with the page already bare
@@ -110,11 +119,13 @@ export default function ExitChoreographer() {
     const onEntry = (e: Event) => {
       const ev = e as EntryChange;
       if (ev.navigationType !== "traverse" || !nav?.currentEntry || !ev.from) return;
+      abortExit();
       setWarp(nav.currentEntry.index < ev.from.index ? "back" : "fwd", heading(getLastPath(), location.pathname));
       setLastPath(location.pathname);
     };
     const onPop = () => {
       if (nav) return;
+      abortExit();
       setWarp("back", heading(getLastPath(), location.pathname));
       setLastPath(location.pathname);
     };

@@ -7,31 +7,6 @@ export const NAV_ITEMS = [
   { name: "Contacts", path: "/contacts" },
 ];
 
-export function getBreadcrumb(pathname: string): { directory: string; title: string } {
-  const directory = "MINHQUAN";
-  let title = "HOME";
-
-  if (pathname === "/") {
-    title = "HOME";
-  } else {
-    const activeItem = NAV_ITEMS.find(
-      (item) => item.path !== "/" && pathname.startsWith(item.path)
-    );
-    if (activeItem) {
-      const section = activeItem.name.toUpperCase();
-      const segments = pathname.split("/").filter(Boolean);
-      if (segments.length > 1) {
-        const slug = segments[1].toUpperCase().replace(/-/g, "_");
-        title = `${section} // ${slug}`;
-      } else {
-        title = section;
-      }
-    }
-  }
-
-  return { directory, title };
-}
-
 export interface PathColors {
   colors: string[];
   topic: string;

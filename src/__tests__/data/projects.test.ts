@@ -27,7 +27,8 @@ describe("projects data", () => {
   });
 
   it("each screen has a valid type", () => {
-    const validTypes = new Set(["hero", "image", "details", "video", "bento"]);
+    // mirrors the screen type union in src/data/projects.ts
+    const validTypes = new Set(["hero", "image", "details", "video", "bento", "zine-cover", "editorial-text", "split-gallery", "bento-moodboard", "interactive-preview", "timeline-sequence", "deliverable-breakdown", "zine-outro"]);
     for (const p of projects) {
       for (const screen of p.screens) {
         expect(validTypes.has(screen.type)).toBe(true);

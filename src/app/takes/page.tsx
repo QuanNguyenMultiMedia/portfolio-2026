@@ -12,7 +12,7 @@ export default function TakesPage() {
           style={{ "--i": 0 } as React.CSSProperties}
           className="rise mb-16 space-y-4 3xl:space-y-6"
         >
-          <h1 className={t.sectionHeaderDisplay}>
+          <h1 className={t.sectionHeaderDisplay} data-blurmap="">
             Takes
           </h1>
         </div>

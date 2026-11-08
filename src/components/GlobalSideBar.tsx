@@ -9,11 +9,12 @@ import dynamic from "next/dynamic";
 import { getPathColors } from "@/lib/navigation";
 import { fx } from "@/lib/designSystem";
 
-// WebGL bar is client-only; the placeholder holds its box so nothing shifts.
-const WaveGradientBar = dynamic(() => import("./WaveGradientBar"), {
+// The bar prints the same fountain ink as the page wash: a closer crop, faster drift, an eddy under the cursor.
+const Fountain = dynamic(() => import("./riso/Fountain"), {
   ssr: false,
   loading: () => <div className="absolute inset-0 w-full h-full" />,
 });
+const BAR_INK = { speed: 1.6, phase: 2.4, zoom: 0.45, lean: 1.8, cursor: 1 };
 
 export default function GlobalSideBar() {
   const pathname = usePathname();
@@ -26,7 +27,7 @@ export default function GlobalSideBar() {
   const isDark = resolvedTheme === "dark";
   const isHome = pathname === "/";
   const isIndividualItem = segments.length >= 2;
-  const { colors, topic } = getPathColors(pathname);
+  const { topic } = getPathColors(pathname);
 
   const ease = `cubic-bezier(${fx.easeSharp.join(",")})`;
   const toggleTheme = () => setTheme(isDark ? "light" : "dark");
@@ -44,7 +45,7 @@ export default function GlobalSideBar() {
             transition={{
               duration: isHome ? 0.2 : 0.4,
               delay: isHome ? 0 : 0.6,
-              ease: "linear",
+              ease: fx.ease,
             }}
             className="absolute top-0 right-0 bottom-0 w-[1px] bg-foreground/5 z-[70]"
           />
@@ -61,7 +62,7 @@ export default function GlobalSideBar() {
               >
                 <Link
                   href={`/${segments[0]}`}
-                  className="w-full h-full flex items-center justify-center text-foreground/40 hover:text-foreground transition-colors group"
+                  className="w-full h-full flex items-center justify-center text-foreground hover:text-foreground transition-colors group"
                   aria-label="Go Back"
                 >
                   <span className="text-[14px] font-sans group-hover:-translate-y-0.5 transition-transform">
@@ -88,7 +89,7 @@ export default function GlobalSideBar() {
               <motion.span
                 animate={{ rotate: isDark ? 360 : 0 }}
                 transition={{ duration: 0.7, ease: fx.easeSharp }}
-                className={`block w-3.5 h-3.5 md:w-4 md:h-4 transition-colors duration-300 ${isHome ? "text-primary" : "text-foreground/40"} group-hover:text-foreground group-focus-visible:text-foreground`}
+                className={`block w-3.5 h-3.5 md:w-4 md:h-4 transition-colors duration-300 ${isHome ? "text-primary" : "text-foreground"} group-hover:text-foreground group-focus-visible:text-foreground`}
               >
                 {isDark ? (
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
@@ -128,10 +129,7 @@ export default function GlobalSideBar() {
           </div>
 
           <div className="flex-grow w-full pointer-events-auto relative">
-            <WaveGradientBar
-              colors={colors}
-              className="absolute inset-0 w-full h-full"
-            />
+            <Fountain params={BAR_INK} className="!absolute inset-0 w-full h-full" />
           </div>
 
           {topic && (

@@ -2,7 +2,7 @@
 // Keyed by public path so screens keep plain string srcs.
 export interface WorkMediaMeta { poster: string; w: number; h: number; video: boolean }
 
-export const WORK_MEDIA: Record<string, WorkMediaMeta> = {
+const WORK_MEDIA: Record<string, WorkMediaMeta> = {
   "/works/2026-reel/ui-teaser.mp4": { poster: "/works/2026-reel/ui-teaser.webp", w: 1280, h: 720, video: true },
   "/works/2026-reel/ui-grouptab.mp4": { poster: "/works/2026-reel/ui-grouptab.webp", w: 1280, h: 872, video: true },
   "/works/2026-reel/ui-wallet.mp4": { poster: "/works/2026-reel/ui-wallet.webp", w: 1280, h: 814, video: true },

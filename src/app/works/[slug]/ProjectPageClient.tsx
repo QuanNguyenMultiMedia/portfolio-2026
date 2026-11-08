@@ -195,9 +195,9 @@ function BentoMoodboard({ screen, isMobile }: { screen: Screen; isMobile: boolea
 function BreakdownText({ screen, className = "" }: { screen: Screen; className?: string }) {
   return (
     <div className={`flex flex-col gap-6 ${className}`}>
-      <span className="font-sans text-2xl md:text-3xl font-black text-primary/30 block">{screen.number}</span>
+      <span className="font-sans text-2xl md:text-3xl font-black text-primary block">{screen.number}</span>
       <h3 className={`${t.cardTitle} text-primary`}>{screen.title}</h3>
-      <div className={`${t.bodyProse} text-foreground/80 space-y-4`}>
+      <div className={`${t.bodyProse} text-foreground space-y-4`}>
         {screen.description?.split("\n\n").map((para, i) => <p key={i}>{para}</p>)}
       </div>
     </div>
@@ -308,10 +308,10 @@ function Breakdown({ screen, isMobile }: { screen: Screen; isMobile: boolean }) 
       <div className="h-full w-max pt-16 pb-28 flex flex-col gap-8">
         <div className="flex items-end gap-16 border-b border-primary/25 pb-6 min-w-[48rem]">
           <div className="flex-shrink-0 space-y-3">
-            <span className="font-sans text-2xl md:text-3xl font-black text-primary/30 block">{screen.number}</span>
+            <span className="font-sans text-2xl md:text-3xl font-black text-primary block">{screen.number}</span>
             <h3 className={`${t.cardTitle} text-primary`}>{screen.title}</h3>
           </div>
-          <div className={`${t.bodyProse} text-foreground/80 w-[32rem] flex-shrink-0 space-y-4`}>
+          <div className={`${t.bodyProse} text-foreground w-[32rem] flex-shrink-0 space-y-4`}>
             {screen.description?.split("\n\n").map((para, i) => <p key={i}>{para}</p>)}
           </div>
         </div>
@@ -603,7 +603,7 @@ export default function ProjectPageClient({
               >
                 <div className="pt-8 space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-8 3xl:gap-12">
-                    <div className={`md:col-span-12 md:columns-2 gap-10 ${t.bodyProse} text-foreground/80`}>
+                    <div className={`md:col-span-12 md:columns-2 gap-10 ${t.bodyProse} text-foreground`}>
                       {screen.content?.split("\n\n").map((para, pIdx) => (
                         <p key={pIdx} className="mb-4 inline-block w-full break-inside-avoid">
                           {para}
@@ -638,13 +638,13 @@ export default function ProjectPageClient({
                       : "col-span-4 h-[60vh] flex flex-col justify-between pr-8 border-r border-primary/25"
                   }
                 >
-                  <div className="space-y-2 text-[12px] font-sans text-foreground/50">
+                  <div className="space-y-2 text-[12px] font-sans text-foreground">
                     <div>CLIENT / {project.client}</div>
                     <div>ROLE / {project.role}</div>
                     <div>YEAR / {project.year}</div>
                   </div>
                   <Link href={`/works/${next.slug}`} className="group block space-y-4">
-                    <span aria-hidden className="block text-2xl text-foreground/60 group-hover:text-primary transition-colors">→</span>
+                    <span aria-hidden className="block text-2xl text-foreground group-hover:text-primary transition-colors">→</span>
                     <h4 className={`${t.cardTitle} text-foreground group-hover:text-primary group-hover:translate-x-2 transition-[color,transform] duration-500`}>
                       {next.title}
                     </h4>

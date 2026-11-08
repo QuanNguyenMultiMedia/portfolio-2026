@@ -60,3 +60,7 @@ scratch/test-mobile.js
 /test-results/
 /playwright-report/
 .sprint/
+
+# local agent state and logs
+.claude/settings.local.json
+*.log

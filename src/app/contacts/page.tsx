@@ -286,7 +286,7 @@ const CLICK_LOCK_MS = 200; // briefly ignore re-clicks so a flip can commit
 
 // Shared inner grid for both card faces — the box that holds the two columns.
 const CARD_SHELL =
-  "w-full h-full grid grid-cols-1 lg:grid-cols-12 gap-0 border border-primary/25 bg-background overflow-hidden min-h-[400px] 3xl:min-h-[520px] 4xl:min-h-[620px]";
+  "w-full h-full grid grid-cols-1 md:grid-cols-12 max-md:flex max-md:flex-col max-md:h-[calc(100dvh-15rem)] gap-0 border border-primary/25 bg-background overflow-hidden min-h-[400px] 3xl:min-h-[520px] 4xl:min-h-[620px]";
 
 // The tab-style title chip that sits above the top-right corner of a face.
 function CardBadge({ title }: { title: string }) {
@@ -355,7 +355,7 @@ function EmailLink({ isFlipped, subtitle }: { isFlipped: boolean; subtitle?: str
         />
       </a>
       {subtitle && (
-        <p className={`${t.metaDataLabel} opacity-50 mt-1`}>{subtitle}</p>
+        <p className={`${t.metaDataLabel} mt-1`}>{subtitle}</p>
       )}
     </div>
   );
@@ -468,7 +468,7 @@ export default function ContactsPage() {
 
   return (
     <PageWrapper variant="hero" className="flex flex-col justify-center py-0">
-      <div className="max-w-[900px] 3xl:max-w-[1180px] 4xl:max-w-[1400px] mx-auto px-8 3xl:px-16 4xl:px-24 w-full perspective-[3000px]">
+      <div className="max-w-[900px] 3xl:max-w-[1180px] 4xl:max-w-[1400px] mx-auto px-8 max-md:pb-16 3xl:px-16 4xl:px-24 w-full perspective-[3000px]">
         <motion.div
           className="preserve-3d"
           initial={reduceMotion ? { opacity: 0 } : { opacity: 0, z: -120, rotateY: 12 }}
@@ -545,11 +545,11 @@ export default function ContactsPage() {
               <CardBadge title="Contact" />
 
               <div className={CARD_SHELL}>
-                <div className="lg:col-span-5 p-5 md:p-8 3xl:p-10 4xl:p-12 border-b lg:border-b-0 lg:border-r border-primary/25 flex flex-col justify-between">
-                  <div className="space-y-6 3xl:space-y-10 4xl:space-y-12">
+                <div className="md:col-span-6 lg:col-span-5 shrink-0 p-5 md:p-8 3xl:p-10 4xl:p-12 border-b md:border-b-0 md:border-r border-primary/25 flex flex-col justify-between">
+                  <div className="space-y-4 md:space-y-6 3xl:space-y-10 4xl:space-y-12">
                     <EmailLink isFlipped={isFlipped} />
 
-                    <div className="space-y-4 pt-4">
+                    <div className="space-y-4 md:pt-4">
                       <div className="flex flex-col gap-4 3xl:gap-5">
                         {CONTACT_SOCIALS.map((link) => (
                           <a
@@ -561,7 +561,7 @@ export default function ContactsPage() {
                             onClick={(e) => e.stopPropagation()}
                           >
                             <span className="group-hover:text-tech-blue transition-colors">
-                              <span className="opacity-20 mr-2">{link.id}</span>
+                              <span className="mr-2">{link.id}</span>
                               {link.name}
                             </span>
                             <div className="w-8 h-[0.5px] bg-tech-blue scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500" />
@@ -571,22 +571,22 @@ export default function ContactsPage() {
                     </div>
                   </div>
 
-                  <div className="pt-8 space-y-3">
-                    <p className={`${t.bodyProse} max-w-[240px] 3xl:max-w-[320px] opacity-80`}>
+                  <div className="pt-4 md:pt-8 space-y-3">
+                    <p className={`${t.bodyProse} max-w-[240px] 3xl:max-w-[320px]`}>
                       Multimedia creative designer at the intersection of
                       architecture, motion, and code.
                     </p>
                   </div>
                 </div>
 
-                <div className="lg:col-span-7 p-4 md:p-6 lg:p-8 relative min-h-[300px] lg:min-h-full bg-primary/[0.01]">
-                  <div className="relative w-full h-full min-h-[268px] lg:min-h-0">
+                <div className="md:col-span-6 lg:col-span-7 p-4 md:p-6 lg:p-8 relative flex-1 min-h-40 md:min-h-full bg-primary/[0.01]">
+                  <div className="relative w-full h-full">
                     <Image
                       src="/assets/portrait_sitting.jpg"
                       alt="Minh Quân Portrait"
                       fill
                       priority
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 40vw"
+                      sizes="(max-width: 767px) 100vw, (max-width: 1024px) 50vw, 40vw"
                       className="object-cover mix-blend-print"
                     />
                   </div>
@@ -599,23 +599,26 @@ export default function ContactsPage() {
               <CardBadge title="About" />
 
               <div className={CARD_SHELL}>
-                <div className="lg:col-span-5 p-5 md:p-8 3xl:p-10 4xl:p-12 border-b lg:border-b-0 lg:border-r border-primary/25 flex flex-col justify-between">
-                  <div className="space-y-6 3xl:space-y-10 4xl:space-y-12">
-                    <EmailLink isFlipped={isFlipped} subtitle="Multimedia Designer" />
+                <div className="md:col-span-6 lg:col-span-5 shrink-0 p-5 md:p-8 3xl:p-10 4xl:p-12 border-b md:border-b-0 md:border-r border-primary/25 flex flex-col justify-between">
+                  <div className="space-y-4 md:space-y-6 3xl:space-y-10 4xl:space-y-12">
+                    {/* Phone: the handle already leads the front face; drop it here so the back fits the screen. */}
+                    <div className="max-md:hidden">
+                      <EmailLink isFlipped={isFlipped} subtitle="Multimedia Designer" />
+                    </div>
 
-                    <div className="space-y-4 pt-4">
-                      <div className="space-y-4 3xl:space-y-6">
+                    <div className="space-y-4 md:pt-4">
+                      <div className="space-y-2 md:space-y-4 3xl:space-y-6">
                         {experience.map((exp, i) => (
                           <div key={i} className="space-y-1 group">
                             <div className="flex justify-between items-baseline">
                               <span className={`${t.navItemLabel} ${motionTokens.skewHover}`}>
                                 {exp.company}
                               </span>
-                              <span className={`${t.metaDataLabel} opacity-40`}>
+                              <span className={`${t.metaDataLabel}`}>
                                 {exp.period}
                               </span>
                             </div>
-                            <p className={`${t.metaDataLabel} opacity-75`}>
+                            <p className={`${t.metaDataLabel}`}>
                               {exp.role}
                             </p>
                           </div>
@@ -624,29 +627,29 @@ export default function ContactsPage() {
                     </div>
                   </div>
 
-                  <div className="pt-8 space-y-2">
-                    <p className={`${t.bodyProse} max-w-[240px] 3xl:max-w-[320px] opacity-80`}>
+                  <div className="pt-4 md:pt-8 space-y-2">
+                    <p className={`${t.bodyProse} max-w-[240px] 3xl:max-w-[320px]`}>
                       FPT University / BBA Multimedia Communications
                     </p>
                   </div>
                 </div>
 
-                <div className="lg:col-span-7 p-6 md:p-8 lg:p-10 3xl:p-12 4xl:p-16 flex flex-col justify-center space-y-6 3xl:space-y-8 relative">
+                <div className="md:col-span-6 lg:col-span-7 flex-1 min-h-0 max-md:overflow-y-auto px-5 py-4 md:p-8 lg:p-10 3xl:p-12 4xl:p-16 flex flex-col justify-center space-y-4 md:space-y-6 3xl:space-y-8 relative">
                   <div className="space-y-6 3xl:space-y-8 4xl:space-y-10 relative z-10 max-w-2xl 3xl:max-w-3xl 4xl:max-w-4xl">
                     <div className="space-y-3">
-                      <p className={`${t.heroTagline} font-light leading-relaxed opacity-95 italic`}>
+                      <p className={`${t.heroTagline} font-light leading-relaxed italic`}>
                         &ldquo;I&apos;m a Multimedia Communications creative obsessed with
                         telling stories with a purpose.&rdquo;
                       </p>
                     </div>
 
-                    <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-8 3xl:gap-12 4xl:gap-16">
-                      <p className={`${t.bodyProse} opacity-85`}>
+                    <div className="hidden lg:grid grid-cols-2 gap-8 3xl:gap-12 4xl:gap-16">
+                      <p className={`${t.bodyProse}`}>
                         Since 2020, I&apos;ve been working as a Freelance Motion
                         Graphics Designer, bringing brands&apos; messages to life
                         with dynamic and bold visuals.
                       </p>
-                      <p className={`${t.bodyProse} opacity-85`}>
+                      <p className={`${t.bodyProse}`}>
                         My approach combines strategic communications with
                         high-end aesthetic execution. I believe that every frame
                         should serve a narrative.
@@ -654,7 +657,7 @@ export default function ContactsPage() {
                     </div>
                   </div>
 
-                  <div className="pt-6 3xl:pt-8 flex flex-col gap-2 relative z-10">
+                  <div className="md:pt-6 3xl:pt-8 flex flex-col gap-2 relative z-10">
                     <span className={`${t.monoEyebrow} opacity-50 block`}>DISCIPLINES</span>
                     <div className="flex gap-3">
                       <span className={`border border-primary/25 px-3 py-1 ${t.metaDataLabel} opacity-75`}>

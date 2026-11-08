@@ -115,14 +115,14 @@ export const TYPE_KEYS = [
 
 const INITIAL_TYPOGRAPHY: Record<string, TypographyParams> = {
   mainHeroTitle:        { sizes: { base: 3, md: 4.5, lg: 6.5, xl3: 8.5, xl4: 11 }, tracking: -0.02, weight: 800, leading: 0.75, opacity: 1, casing: "uppercase", italic: false },
-  heroTagline:          { sizes: { base: 1.125, md: 1.25, lg: 1.5, xl3: 1.875, xl4: 2.25 }, tracking: -0.02, weight: 300, leading: 1.625, opacity: 0.9, casing: "normal-case", italic: true },
+  heroTagline:          { sizes: { base: 1.125, md: 1.25, lg: 1.5, xl3: 1.875, xl4: 2.25 }, tracking: -0.02, weight: 300, leading: 1.625, opacity: 1, casing: "normal-case", italic: true },
   sectionHeaderDisplay: { sizes: { base: 1.875, md: 3, lg: 3.75, xl3: 4.5, xl4: 6.5 }, tracking: -0.02, weight: 700, leading: 0.85, opacity: 1, casing: "uppercase", italic: false },
   pageTitle:            { sizes: { base: 1.5, md: 2.25, lg: 3, xl3: 3.75, xl4: 4.5 }, tracking: -0.02, weight: 700, leading: 1, opacity: 1, casing: "uppercase", italic: false },
   cardTitle:            { sizes: { base: 1.125, md: 1.25, lg: 1.5, xl3: 1.875, xl4: 2.25 }, tracking: -0.02, weight: 700, leading: 0.85, opacity: 1, casing: "normal-case", italic: false },
   navItemLabel:         { sizes: { base: 0.75, md: 0.875, lg: 1, xl3: 1, xl4: 1.125 }, tracking: 0.05, weight: 500, leading: 1.2, opacity: 1, casing: "uppercase", italic: false },
-  monoEyebrow:          { sizes: { base: 0.5625, md: 0.5625, lg: 0.5625, xl3: 0.6875, xl4: 0.75 }, tracking: 0.4, weight: 700, leading: 1.2, opacity: 0.6, casing: "uppercase", italic: false },
-  bodyProse:            { sizes: { base: 0.8125, md: 0.875, lg: 1, xl3: 1.125, xl4: 1.25 }, tracking: 0, weight: 300, leading: 1.75, opacity: 0.7, casing: "normal-case", italic: false },
-  metaDataLabel:        { sizes: { base: 0.5, md: 0.5, lg: 0.5, xl3: 0.625, xl4: 0.75 }, tracking: 0.2, weight: 400, leading: 1.2, opacity: 0.3, casing: "uppercase", italic: false },
+  monoEyebrow:          { sizes: { base: 0.5625, md: 0.5625, lg: 0.5625, xl3: 0.6875, xl4: 0.75 }, tracking: 0.4, weight: 700, leading: 1.2, opacity: 1, casing: "uppercase", italic: false },
+  bodyProse:            { sizes: { base: 0.8125, md: 0.875, lg: 1, xl3: 1.125, xl4: 1.25 }, tracking: 0, weight: 300, leading: 1.75, opacity: 1, casing: "normal-case", italic: false },
+  metaDataLabel:        { sizes: { base: 0.5, md: 0.5, lg: 0.5, xl3: 0.625, xl4: 0.75 }, tracking: 0.2, weight: 400, leading: 1.2, opacity: 1, casing: "uppercase", italic: false },
 };
 
 export const DEFAULT_EDITABLE: EditableState = {
@@ -134,8 +134,8 @@ export const DEFAULT_EDITABLE: EditableState = {
     bg: "bg-background text-foreground",
     surface: "bg-surface",
     surfaceGlass: "bg-surface/30 backdrop-blur-md border border-border-neutral",
-    textMuted: "text-foreground/60",
-    textDisabled: "text-foreground/30",
+    textMuted: "text-foreground",
+    textDisabled: "text-foreground line-through",
     accent: "text-tech-blue border-tech-blue/30",
     borderMuted: "border-primary/10",
     borderHover: "group-hover:border-primary/30",
@@ -155,9 +155,9 @@ export const DEFAULT_EDITABLE: EditableState = {
   ui: {
     card: "border border-primary/10 bg-surface/30 p-2.5 3xl:p-4 4xl:p-6 transition-colors duration-500 group-hover:border-primary/30",
     cardFooter: "border-x border-b border-primary/10 bg-surface/10 px-6 py-5 3xl:px-8 3xl:py-7 4xl:px-10 4xl:py-9 transition-colors duration-500 group-hover:border-primary/30 flex justify-between items-center",
-    img: "w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-[1.03] transition-all duration-700 ease-[0.23,1,0.32,1]",
-    imgFade: "object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-out opacity-60 group-hover:opacity-100",
-    arrow: "opacity-40 group-hover:opacity-100 group-hover:translate-x-1.5 transition-all duration-500 ease-[0.23,1,0.32,1]",
+    img: "w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-[1.03] transition-all duration-700 ease-(--ease-editorial-sharp)",
+    imgFade: "object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-(--ease-editorial) opacity-60 group-hover:opacity-100",
+    arrow: "opacity-40 group-hover:opacity-100 group-hover:translate-x-1.5 transition-all duration-500 ease-(--ease-editorial-sharp)",
     backButton: "fixed top-16 left-16 md:top-24 md:left-24 3xl:top-32 3xl:left-32 4xl:top-40 4xl:left-40 z-50",
   },
   motion: { ease: { cx1: 0.16, cy1: 1, cx2: 0.3, cy2: 1 }, easeSharp: { cx1: 0.23, cy1: 1, cx2: 0.32, cy2: 1 } },

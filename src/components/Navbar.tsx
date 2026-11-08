@@ -71,7 +71,7 @@ export default function Navbar() {
         <div
           ref={pillRef}
           aria-hidden
-          className="absolute left-0 top-0 w-px bg-background -z-10 origin-left opacity-0 will-change-transform data-[ready='1']:transition-[transform,opacity] data-[ready='1']:duration-500 data-[ready='1']:ease-[var(--ease-editorial-sharp)] motion-reduce:!transition-none"
+          className="absolute left-0 top-0 w-px bg-background -z-10 origin-left opacity-0 will-change-transform data-[ready='1']:transition-[transform,opacity] data-[ready='1']:duration-500 data-[ready='1']:ease-(--ease-editorial-sharp) motion-reduce:!transition-none"
         />
 
         {/* one ink-edges pass for the whole row (riso.css [data-ink]), not one per link */}

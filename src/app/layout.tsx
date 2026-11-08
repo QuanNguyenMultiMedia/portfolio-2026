@@ -9,6 +9,7 @@ import "../styles/riso.css";
 import { display, productSans } from "./fonts";
 import Fountain from "@/components/riso/Fountain";
 import BlurMap from "@/components/riso/BlurMap";
+import InkEdges from "@/components/riso/InkEdges";
 
 // Internal Components
 import GlobalSideBar from "@/components/GlobalSideBar";
@@ -119,6 +120,8 @@ export default function RootLayout({
             <div className="riso-grain" aria-hidden />
             {/* display-type print stack (MainTitle.aep): Roughen Edges → Compound Blur on the BlurMap */}
             <BlurMap />
+            {/* Roughen Edges on all other type, one global border as in the comp */}
+            <InkEdges />
             <Analytics />
             <SpeedInsights />
         </ThemeProvider>

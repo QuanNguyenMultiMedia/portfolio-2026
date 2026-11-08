@@ -33,7 +33,7 @@ export default function Home() {
       <PrintRun>
         {/* frame 1 · the name printed in the fountain ink, and the line */}
         <section className="sheet hero" aria-labelledby="hero-h">
-          <h1 id="hero-h" className="hero-name t-italic">
+          <h1 id="hero-h" className="hero-name t-italic" data-blurmap="">
             <Fountain className="ink-fill name-fill" clipText><span className="ink-knock" data-clip="">Minh Quân</span></Fountain>
           </h1>
           <p className="hero-line">
@@ -71,11 +71,10 @@ export default function Home() {
             </ul>
           </div>
           <div className="view-works" data-blurmap="">
+            {/* the sign-off word, printed as 12.End prints "See ya!": black display ink, roughened, compound blur */}
             <Link href="/works">
-              <Fountain className="ink-fill" clipText>
-                <span className="ink-knock" data-clip="">View Works</span>
-                <span className="view-arrow ink-knock" data-clip="" aria-hidden>→</span>
-              </Fountain>
+              <span>View Works</span>
+              <span className="view-arrow" aria-hidden>→</span>
             </Link>
           </div>
         </section>

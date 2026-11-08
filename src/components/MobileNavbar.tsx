@@ -147,7 +147,7 @@ export default function MobileNavbar() {
       const target = NAV_ITEMS[activeIndex];
       // a link exit still waiting to push would land after this and win: cancel it
       clearTimeout(motionBus.pendingNav);
-      setWarp("fwd", heading(pathname, target.path));
+      setWarp("fwd", heading(pathname, target.path), target.path);
       setLastPath(target.path);
       router.push(target.path);
       playSuccess();
@@ -366,7 +366,7 @@ export default function MobileNavbar() {
                         ? "bg-tech-blue border-tech-blue text-background scale-110"
                         : isCurrent
                           ? "bg-background border-tech-blue/50 text-tech-blue"
-                          : "bg-background border-primary/25 text-primary/70"
+                          : "bg-background border-primary/25 text-primary"
                     }`}
                   >
                     <span

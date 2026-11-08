@@ -21,8 +21,8 @@ export const colors = {
   bg:           "bg-background text-foreground",
   surface:      "bg-surface",
   surfaceGlass: "bg-surface border-t border-primary", // glass retired: a printed field under a hairline rule
-  textMuted:    "text-foreground/60",
-  textDisabled: "text-foreground/30",
+  textMuted:    "text-foreground", // ink prints solid (MainTitle.aep): hierarchy is size and face, never a paler tint
+  textDisabled: "text-foreground line-through",
   accent:       "text-tech-blue border-tech-blue/30",
   borderMuted:  "border-primary/10",
   borderHover:  "group-hover:border-primary/30",
@@ -46,7 +46,7 @@ export const t = {
   navItemLabel:         "font-sans font-[400] text-[clamp(0.85rem,0.9vw,1rem)] leading-[1.2] tracking-[-0.01em]",
   monoEyebrow:          "font-sans font-[700] text-[clamp(0.75rem,0.8vw,0.9rem)] leading-[1.2] tracking-[0.02em] text-tech-blue",
   bodyProse:            "font-sans font-[400] text-[clamp(0.95rem,1.25vw,1.25rem)] leading-[1.35] tracking-[-0.005em]",
-  metaDataLabel:        "font-sans italic font-[400] text-[clamp(0.8rem,0.85vw,0.95rem)] leading-[1.3] opacity-70",
+  metaDataLabel:        "font-sans italic font-[400] text-[clamp(0.8rem,0.85vw,0.95rem)] leading-[1.3]",
 };
 
 // ─── Layout ──────────────────────────────────────────────────────────────────
@@ -67,9 +67,9 @@ export const layout = {
 export const ui = {
   card:        "border border-primary/10 bg-surface/30 p-2.5 3xl:p-4 4xl:p-6 transition-colors duration-500 group-hover:border-primary/30",
   cardFooter:  "border-x border-b border-primary/10 bg-surface/10 px-6 py-5 3xl:px-8 3xl:py-7 4xl:px-10 4xl:py-9 transition-colors duration-500 group-hover:border-primary/30 flex justify-between items-center",
-  img:         "w-full h-full object-cover mix-blend-multiply group-hover:scale-[1.03] transition-all duration-700 ease-[0.23,1,0.32,1]",
-  imgFade:     "object-cover mix-blend-multiply transition-all duration-700 ease-out opacity-90 group-hover:opacity-100",
-  arrow:       "opacity-40 group-hover:opacity-100 group-hover:translate-x-1.5 transition-all duration-500 ease-[0.23,1,0.32,1]",
+  img:         "w-full h-full object-cover mix-blend-multiply group-hover:scale-[1.03] transition-all duration-700 ease-(--ease-editorial-sharp)",
+  imgFade:     "object-cover mix-blend-multiply transition-all duration-700 ease-(--ease-editorial) opacity-90 group-hover:opacity-100",
+  arrow:       "opacity-40 group-hover:opacity-100 group-hover:translate-x-1.5 transition-all duration-500 ease-(--ease-editorial-sharp)",
   backButton:  "fixed top-16 left-16 md:top-24 md:left-24 3xl:top-32 3xl:left-32 4xl:top-40 4xl:left-40 z-50",
   hudKey:      "rounded-none border border-foreground/30 font-sans transition-colors",
   hudKeyActive: "rounded-none border border-foreground bg-foreground text-background",

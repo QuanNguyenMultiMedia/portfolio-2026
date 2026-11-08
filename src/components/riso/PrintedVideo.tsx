@@ -26,10 +26,8 @@ export default function PrintedVideo({
   useEffect(() => {
     const v = ref.current;
     if (!v) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setUserPaused(true);
-      return;
-    }
+    // reduced motion: never autoplay; the poster holds until the viewer presses play
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting && !userPaused) v.play().catch(() => {});
       else v.pause();

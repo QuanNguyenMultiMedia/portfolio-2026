@@ -1,3 +1,4 @@
+/// <reference types="vitest/globals" />
 import "@testing-library/jest-dom/vitest";
 
 window.AudioContext = window.AudioContext ?? (class MockAudioContext {
@@ -32,7 +33,7 @@ window.AudioContext = window.AudioContext ?? (class MockAudioContext {
   }
   resume() { return Promise.resolve(); }
   close() { return Promise.resolve(); }
-} as unknown as AudioContextConstructor);
+} as unknown as typeof AudioContext);
 
 Object.defineProperty(navigator, "vibrate", {
   value: () => true,

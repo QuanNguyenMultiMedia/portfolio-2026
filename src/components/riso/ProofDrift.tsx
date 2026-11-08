@@ -13,7 +13,7 @@ import { fx } from "@/lib/designSystem";
 import { mediaMeta } from "@/data/workMedia";
 import type { Testimonial } from "@/data/testimonials";
 
-export interface Proof { src: string; from: string }
+interface Proof { src: string; from: string }
 
 // fragments per frame: each frame draws from its own deck so neighbours never collide
 const DECKS: Proof[][] = [

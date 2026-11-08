@@ -174,7 +174,7 @@ export default function PlayPageClient({
               height: `${100 / zoom}%`,
               transform: `scale(${zoom})`,
               transformOrigin: "top left",
-              transition: "filter 1.5s ease, opacity 1.5s ease, transform 0.7s cubic-bezier(0.23, 1, 0.32, 1)",
+              transition: "filter 1.5s ease, opacity 1.5s ease, transform 0.7s var(--ease-editorial-sharp)",
             }}
             className={`absolute top-0 left-0 border-0 z-10 ${
               colorMode === "mono"
@@ -201,7 +201,7 @@ export default function PlayPageClient({
                     <div className="text-[12px] text-red-400/80 font-bold">
                       SANDBOX_UNAVAILABLE
                     </div>
-                    <div className="text-[12px] text-foreground/45">
+                    <div className="text-[12px] text-foreground">
                       FAILED TO RESOLVE: {project.slug.toUpperCase()}
                     </div>
                   </div>
@@ -218,7 +218,7 @@ export default function PlayPageClient({
                 key="loading"
                 initial={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.6, ease: "easeInOut" }}
+                transition={{ duration: 0.6, ease: fx.ease }}
                 className="absolute inset-0 bg-background z-20 flex flex-col items-center justify-center p-8 text-center"
               >
                 {/* Tech scanline in loader */}
@@ -240,10 +240,10 @@ export default function PlayPageClient({
                   </div>
 
                   <div className="space-y-2">
-                    <div className="text-[12px] text-foreground/80 font-bold">
+                    <div className="text-[12px] text-foreground font-bold">
                       INITIALIZING_SANDBOX
                     </div>
-                    <div className="text-[12px] text-foreground/45">
+                    <div className="text-[12px] text-foreground">
                       RESOLVING: {project.slug.toUpperCase()}
                     </div>
                   </div>
@@ -273,7 +273,7 @@ export default function PlayPageClient({
               <button
                 onClick={() => setColorMode("mono")}
                 className={`cursor-pointer hover:text-foreground transition-colors px-1 ${
-                  colorMode === "mono" ? "text-foreground font-bold" : "text-foreground/30"
+                  colorMode === "mono" ? "text-foreground font-bold" : "text-foreground"
                 }`}
               >
                 MONO
@@ -282,7 +282,7 @@ export default function PlayPageClient({
               <button
                 onClick={() => setColorMode("rgb")}
                 className={`cursor-pointer hover:text-foreground transition-colors px-1 ${
-                  colorMode === "rgb" ? "text-foreground font-bold" : "text-foreground/30"
+                  colorMode === "rgb" ? "text-foreground font-bold" : "text-foreground"
                 }`}
               >
                 RGB
@@ -295,7 +295,7 @@ export default function PlayPageClient({
               <button
                 onClick={() => setZoom(0.65)}
                 className={`cursor-pointer hover:text-foreground transition-colors px-1 ${
-                  zoom === 0.65 ? "text-foreground font-bold" : "text-foreground/30"
+                  zoom === 0.65 ? "text-foreground font-bold" : "text-foreground"
                 }`}
               >
                 65%
@@ -304,7 +304,7 @@ export default function PlayPageClient({
               <button
                 onClick={() => setZoom(0.75)}
                 className={`cursor-pointer hover:text-foreground transition-colors px-1 ${
-                  zoom === 0.75 ? "text-foreground font-bold" : "text-foreground/30"
+                  zoom === 0.75 ? "text-foreground font-bold" : "text-foreground"
                 }`}
               >
                 75%
@@ -313,7 +313,7 @@ export default function PlayPageClient({
               <button
                 onClick={() => setZoom(0.85)}
                 className={`cursor-pointer hover:text-foreground transition-colors px-1 ${
-                  zoom === 0.85 ? "text-foreground font-bold" : "text-foreground/30"
+                  zoom === 0.85 ? "text-foreground font-bold" : "text-foreground"
                 }`}
               >
                 85%
@@ -322,7 +322,7 @@ export default function PlayPageClient({
               <button
                 onClick={() => setZoom(1.0)}
                 className={`cursor-pointer hover:text-foreground transition-colors px-1 ${
-                  zoom === 1.0 ? "text-foreground font-bold" : "text-foreground/30"
+                  zoom === 1.0 ? "text-foreground font-bold" : "text-foreground"
                 }`}
               >
                 100%

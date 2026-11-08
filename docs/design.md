@@ -42,7 +42,8 @@ At most three inks per screen, as on a real riso job. Values are the AE fills; n
 
 | Token | Hex | Riso analogue | Plate role |
 |---|---|---|---|
-| `--ink-black` | `#313131` | Black | Body, display serif, rules |
+| `--ink-black` | `#000000` | Black | Body, rules (solid, as AE body layers print: measured core `#000`) |
+| `--ink-display` | `#000` at 92% | Black | Display serif: AE display layers are `#000` at 80%, measured core `#131314` on paper |
 | `--ink-blue` | `#00A8FF` | Aqua / Blue | Project lead (`11` "In-house, 2025–2026…") |
 | `--ink-violet` | `#3A3EFA` | Medium Blue | Closing lines (`12` "Thanks for reaching the end.") |
 | `--ink-indigo` | `#3000FF` | Purple | Under-plate for violet, set off register |
