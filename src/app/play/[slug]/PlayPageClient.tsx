@@ -76,12 +76,6 @@ export default function PlayPageClient({
           isFullscreen ? "w-screen h-screen p-8 md:p-16 bg-background z-50 fixed inset-0" : ""
         }`}
       >
-        {/* Viewfinder Corners (Glued to the Frame) */}
-        <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-primary/25 group-hover:border-foreground/40 z-20 pointer-events-none -translate-x-[1px] -translate-y-[1px] transition-colors duration-300" />
-        <div className="absolute top-0 right-0 w-4 h-4 border-t border-r border-primary/25 group-hover:border-foreground/40 z-20 pointer-events-none translate-x-[1px] -translate-y-[1px] transition-colors duration-300" />
-        <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-primary/25 group-hover:border-foreground/40 z-20 pointer-events-none -translate-x-[1px] translate-y-[1px] transition-colors duration-300" />
-        <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-primary/25 group-hover:border-foreground/40 z-20 pointer-events-none translate-x-[1px] translate-y-[1px] transition-colors duration-300" />
-
         {/* TOP BAR: Sits above the frame normally, drops inside during fullscreen */}
         <div
           className={`absolute w-full flex justify-end items-end pointer-events-none opacity-0 group-hover:opacity-100 transition-all duration-300 z-30 ${
@@ -203,25 +197,12 @@ export default function PlayPageClient({
                 className="absolute inset-0 bg-background z-20 flex flex-col items-center justify-center p-8 text-center"
               >
                 <div className="z-10 flex flex-col items-center gap-8 font-sans max-w-md w-full">
-                  <div className="w-12 h-12 border border-red-500/30 rounded-full flex items-center justify-center">
-                    <span className="text-red-500/80 text-lg">!</span>
-                  </div>
                   <div className="space-y-2">
                     <div className="text-[12px] text-red-400/80 font-bold">
                       SANDBOX_UNAVAILABLE
                     </div>
                     <div className="text-[12px] text-foreground/45">
                       FAILED TO RESOLVE: {project.slug.toUpperCase()}
-                    </div>
-                  </div>
-                  <div className="w-full border-t border-primary/25 pt-4 mt-2 space-y-1 text-left text-[12px] text-foreground/45">
-                    <div className="flex justify-between">
-                      <span>ERROR_TYPE</span>
-                      <span className="text-red-400/60">CONNECTION_REFUSED</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>RESOURCE_PATH</span>
-                      <span className="text-foreground/75 truncate max-w-[200px]" title={project.url}>{project.url}</span>
                     </div>
                   </div>
                   <button

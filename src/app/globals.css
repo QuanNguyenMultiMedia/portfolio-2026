@@ -98,7 +98,7 @@ html.dark {
 
 @layer components {
   .tech-label {
-    @apply font-mono text-[9px] tracking-[0.3em] uppercase font-medium opacity-60;
+    @apply font-sans text-xs opacity-60;
   }
 }
 
