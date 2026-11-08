@@ -1,11 +1,11 @@
 import localFont from "next/font/local";
 
 // Riso Run type (docs/design.md §3). Display face: Junicode 2 variable (SIL OFL, src/fonts/Junicode-OFL.txt),
-// from open-foundry.com/fonts/junicode. wght 300–700, full Latin incl. Vietnamese, true italic.
+// from open-foundry.com/fonts/junicode. wght 300–700, true italic. Served as the web cut (scripts/subset-fonts.py: Latin + Vietnamese, wdth/ENLA pinned).
 export const display = localFont({
   src: [
-    { path: "../fonts/JunicodeVF-Roman.woff2", weight: "300 700", style: "normal" },
-    { path: "../fonts/JunicodeVF-Italic.woff2", weight: "300 700", style: "italic" },
+    { path: "../fonts/JunicodeVF-Roman-web.woff2", weight: "300 700", style: "normal" },
+    { path: "../fonts/JunicodeVF-Italic-web.woff2", weight: "300 700", style: "italic" },
   ],
   variable: "--font-display-face",
   display: "swap",

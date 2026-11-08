@@ -204,6 +204,17 @@ const gust = (now: number) => {
   return u <= 0 || u >= 1 ? 0 : Math.sin(Math.PI * u) ** 2;
 };
 
+// The context and shader compile are the heaviest main-thread work on the page: they wait for load and an idle
+// slot, so first paint and input never queue behind them. The plates fade in on their first frame anyway.
+let queued = false;
+function startWhenIdle() {
+  if (queued) return;
+  queued = true;
+  const go = () => ("requestIdleCallback" in window ? window.requestIdleCallback(() => start(), { timeout: 1500 }) : setTimeout(start, 200));
+  if (document.readyState === "complete") go();
+  else window.addEventListener("load", go, { once: true });
+}
+
 async function start() {
   if (started) return;
   started = true;
@@ -307,12 +318,12 @@ export default function Fountain({ className = "", children, clipText = false }:
     document.fonts?.addEventListener("loadingdone", onFonts);
     const io = new IntersectionObserver(([e]) => {
       slot.visible = e.isIntersecting;
-      if (slot.visible) start();
+      if (slot.visible) startWhenIdle();
     }, { rootMargin: "200px" });
     io.observe(canvas);
-    // no first frame in time (WebGL unavailable): let the DOM text carry the name
+    // no first frame in time (WebGL unavailable; the start waits for load + idle): let the DOM text carry the name
     const host = canvas.parentElement;
-    const fallback = clipText ? window.setTimeout(() => { if (host && !host.dataset.live) host.dataset.fallback = ""; }, 2500) : 0;
+    const fallback = clipText ? window.setTimeout(() => { if (host && !host.dataset.live) host.dataset.fallback = ""; }, 5000) : 0;
     const onMove = (e: PointerEvent) => {
       // lean 3–5% toward the pointer, on a spring (applied in the shared loop)
       slot.target = [(e.clientX / window.innerWidth - 0.5) * 0.35, (e.clientY / window.innerHeight - 0.5) * 0.35];

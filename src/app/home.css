@@ -159,6 +159,8 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
   .proof-4 { grid-column: 5 / 9; grid-row: auto; margin-top: 0; }
   .proof-5 { display: none; }
   .drift-quote { grid-column: 1 / -1; grid-row: auto; padding-left: 0; }
+  /* the stacked wall must fit one screen on the press, never cropped by the stage */
+  .run.is-3d .proof-plate, .run.is-3d .proof-2 .proof-plate, .run.is-3d .proof-4 .proof-plate { max-height: 22svh; }
   .ledger, .collab { grid-column: 1 / -1; grid-row: auto; }
   .view-works { grid-column: 1 / -1; grid-row: auto; margin-top: var(--s-5); }
 }
