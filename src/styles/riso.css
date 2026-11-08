@@ -199,6 +199,8 @@ body.riso-paper :focus-visible { outline: 2px solid var(--ink-violet); outline-o
    nested blocks are already covered by their parent, and blocks holding media would warp the picture. Each
    filtered box is its own raster pass, so a list or a [data-ink] group prints as one block, not item by item. */
 :is(main, nav) :is(h1, h2, h3, h4, p, ul, ol, dl, li, dd, dt, blockquote, figcaption, a, [data-ink]):not([data-blurmap], [data-blurmap] *, :is(h1, h2, h3, h4, p, ul, ol, dl, li, dd, dt, blockquote, figcaption, a, [data-ink]) *, .sr-only, :has(img, video, canvas, svg)) { filter: url(#ink-edges); }
+/* reading sizes take the fine grade; headings keep the coarser one */
+:is(main, nav) :is(p, ul, ol, dl, li, dd, dt, blockquote, figcaption, a, [data-ink]):not([data-blurmap], [data-blurmap] *, :is(h1, h2, h3, h4, p, ul, ol, dl, li, dd, dt, blockquote, figcaption, a, [data-ink]) *, .sr-only, :has(img, video, canvas, svg)) { filter: url(#ink-edges-fine); }
 .run-stage.is-travelling :is(h1, h2, h3, h4, p, ul, ol, dl, li, dd, dt, blockquote, figcaption, a, [data-ink]) { filter: none; }
 .defocus { filter: blur(clamp(3px, 0.6vw, 9px)); }
 
