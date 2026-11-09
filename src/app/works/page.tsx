@@ -23,7 +23,7 @@ export default function WorksPage() {
       <div className="relative w-full max-w-screen-xl 3xl:max-w-[1500px] 4xl:max-w-[1800px] mx-auto h-full flex flex-col justify-start lg:justify-between gap-4 lg:gap-0 pt-12 md:pt-28 pb-16 lg:pb-24 px-6 md:px-16 3xl:px-24 4xl:px-32 overflow-hidden z-10">
         <motion.div
           {...fx.headerSlideIn}
-          className="mb-8 lg:mb-12 space-y-4 3xl:space-y-6 shrink-0"
+          className="mb-8 lg:mb-12 space-y-4 3xl:space-y-6 shrink-0 max-md:sr-only" /* phones: the top bar already names the page; the heading stays for screen readers */
         >
           <h1 className={t.sectionHeaderDisplay} data-blurmap="">
             Works

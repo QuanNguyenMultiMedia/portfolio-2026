@@ -14,7 +14,7 @@ export default function PlayPage() {
         {/* Section title / header */}
         <motion.div
           {...fx.headerSlideIn}
-          className="mb-16 space-y-4 3xl:space-y-6"
+          className="mb-16 space-y-4 3xl:space-y-6 max-md:sr-only" /* phones: the top bar already names the page; the heading stays for screen readers */
         >
           <h1 className={t.sectionHeaderDisplay} data-blurmap="">
             PLAY

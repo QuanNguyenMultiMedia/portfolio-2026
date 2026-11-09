@@ -10,7 +10,7 @@ export default function TakesPage() {
       <div className={layout.page}>
         <div
           style={{ "--i": 0 } as React.CSSProperties}
-          className="rise mb-16 space-y-4 3xl:space-y-6"
+          className="rise mb-16 space-y-4 3xl:space-y-6 max-md:sr-only" /* phones: the top bar already names the page; the heading stays for screen readers */
         >
           <h1 className={t.sectionHeaderDisplay} data-blurmap="">
             Takes
