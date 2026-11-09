@@ -17,6 +17,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import { plateKick } from "@/lib/plate";
 import gsap from "gsap";
 
 // white noise for the click transient (runs in the sound handler, never during render)
@@ -59,6 +60,7 @@ export default function WorkDial({ items, activeIndex, onChange, onOpen }: Props
   const wound = useRef(0);
   const audio = useRef<AudioContext | null>(null);
   const lastTick = useRef(0);
+  const spin = useRef({ rot: 0, t: 0 }); // last painted rotation and time: the spin speed that feeds the plate
   const [dragging, setDragging] = useState(false);
 
   /* ---------- sound + haptics ---------- */
@@ -123,6 +125,9 @@ export default function WorkDial({ items, activeIndex, onChange, onOpen }: Props
   };
 
   const paint = (rot: number) => {
+    const now = performance.now(), s = spin.current;
+    if (s.t && now > s.t) plateKick(((rot - s.rot) * 1000) / Math.max(8, now - s.t), now - s.t);
+    s.rot = rot; s.t = now;
     const R = row.current * 2.5;
     const curve = row.current * 1.5;
     if (knobRef.current) knobRef.current.style.transform = `rotate(${rot}deg)`;
@@ -242,6 +247,7 @@ export default function WorkDial({ items, activeIndex, onChange, onOpen }: Props
     if (!dragging) return;
     setDragging(false);
     lastAngle.current = null;
+    spin.current.t = 0; // the snap to the nearest row is not a spin
     rotation.current = Math.round(rotation.current / sector) * sector;
     setTransition(SNAP);
     paint(rotation.current);

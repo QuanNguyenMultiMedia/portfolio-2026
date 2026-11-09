@@ -6,6 +6,7 @@
 
 import { useEffect, useRef } from "react";
 import { afterLoadIdle, fastGpu, isPhone, warmProgram } from "@/lib/gpu";
+import { plateSpin } from "@/lib/plate";
 
 const FRAG = /* glsl */ `
 // Port of the two ink layers of MainTitle.aep › 01.Title (2800×2443 comp):
@@ -252,6 +253,12 @@ const gust = (now: number) => {
   return u <= 0 || u >= 1 ? 0 : Math.sin(Math.PI * u) ** 2;
 };
 
+// The Works wheel stirs the ink: its spin (lib/plate) drives the drift, signed, so the fields turn with the wheel.
+// Phones, which otherwise print one still frame, run live while the wheel stirs and settle on a new still frame.
+const SPIN_SPEED = 1.6; // extra drift speed (x the AE loop) per unit of spin
+let stir: (() => void) | null = null;
+if (typeof window !== "undefined") window.addEventListener("plate-stir", () => stir?.());
+
 const TRAVEL_HOLD = 0.08; // |sheet depth| past which fountain-filled type stops drawing
 
 // The context and shader compile are the heaviest main-thread work on the page: they wait for load and an idle
@@ -301,11 +308,13 @@ async function start() {
     raf = requestAnimationFrame(frame);
     if (document.hidden || now - last < 1000 / 24) return;
     const g = still ? 0 : gust(now);
-    drift += g * GUST_SPEED * gustDir * Math.min(0.1, last ? (now - last) / 1000 : 0);
+    const step = Math.min(0.1, last ? (now - last) / 1000 : 0);
+    const sp = plateSpin();
+    drift += (g * GUST_SPEED * gustDir + sp * SPIN_SPEED) * step;
     last = now;
     // settle-in: the ink enters at the AE speed, then eases down to a slow drift (speed 1 → SETTLE, time constant TAU)
     const el = (now - t0) / 1000;
-    const time = still ? 0 : SETTLE * el + (1 - SETTLE) * TAU * (1 - Math.exp(-el / TAU)) + drift;
+    const time = still ? drift : SETTLE * el + (1 - SETTLE) * TAU * (1 - Math.exp(-el / TAU)) + drift;
     program.uniforms.uDark.value = document.documentElement.classList.contains("dark") ? 1 : 0;
     const dpr = Math.min(window.devicePixelRatio, 2);
     const scale = dpr * 0.6;
@@ -370,9 +379,10 @@ async function start() {
       }
       if (host && !host.dataset.live) host.dataset.live = ""; // first frame is up: CSS may now lean on it
     }
-    if (still) { cancelAnimationFrame(raf); started = false; }
+    if (still && Math.abs(sp) < 0.01) { cancelAnimationFrame(raf); raf = 0; }
   };
   let raf = requestAnimationFrame(frame);
+  stir = () => { if (!raf) { last = 0; raf = requestAnimationFrame(frame); } };
 }
 
 export default function Fountain({ className = "", children, clipText = false, params }: { className?: string; children?: React.ReactNode; clipText?: boolean; params?: FountainParams }) {

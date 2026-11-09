@@ -229,12 +229,14 @@ body.riso-paper :focus-visible { outline: 2px solid var(--ink-violet); outline-o
    spread asks for it (html.plate-on: set by PrintRun for [data-plate] sheets, and by <PlateOn /> on a route) */
 .fountain.page-plate { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 1200ms var(--ease-print); }
 html.plate-on .fountain.page-plate { opacity: 1; }
+/* a route plate's density is driven per frame (lib/plate: arrives, subsides, the wheel brings it back) */
+html.plate-route .fountain.page-plate { opacity: var(--plate, 1); transition: none; }
 /* dark stock: light ink can only lighten the board, so the plate prints at a lower density there, or the
    type set over it (the manifesto) falls under 3:1. Route plates (<PlateOn />: Works) carry display type only
    and print at full density. */
 html.dark.plate-on:not(.plate-route) .fountain.page-plate { opacity: 0.45; }
 /* over a full-density route plate the type prints in ink black, as in the AE comp, on either stock */
-html.plate-route main { --ink-display: rgb(0 0 0 / 0.92); --ink-black: var(--ink-black-print); --foreground: var(--ink-black-print); --primary: var(--ink-black-print); --color-foreground: var(--ink-black-print); --color-primary: var(--ink-black-print); color: var(--ink-black-print); }
+html.plate-route:not(.plate-faint) main { --ink-display: rgb(0 0 0 / 0.92); --ink-black: var(--ink-black-print); --foreground: var(--ink-black-print); --primary: var(--ink-black-print); --color-foreground: var(--ink-black-print); --color-primary: var(--ink-black-print); color: var(--ink-black-print); }
 @media (prefers-reduced-motion: reduce) { .fountain.page-plate { transition-duration: 200ms; } }
 
 .rule { border: 0; border-top: 1.5px solid var(--ink-black); margin: 0; }
