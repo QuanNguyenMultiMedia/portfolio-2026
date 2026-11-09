@@ -490,8 +490,8 @@ export default function ProjectPageClient({
             key={i}
             className={
               isMobile
-                ? "w-full flex items-center justify-center relative py-8"
-                : `flex-shrink-0 h-screen flex items-center justify-center relative px-12 md:px-24 3xl:px-40 4xl:px-48 border-r border-primary/25
+                ? "w-full flex items-center justify-center relative isolate py-8"
+                : `flex-shrink-0 h-screen flex items-center justify-center relative isolate px-12 md:px-24 3xl:px-40 4xl:px-48 border-r border-primary/25
                 ${screen.type === "zine-cover" ? "w-[85vw] md:w-[85vw] 3xl:w-[80vw]" : ""}
                 ${screen.type === "editorial-text" ? "min-w-[65vw] md:min-w-[65vw] 3xl:min-w-[60vw]" : ""}
                 ${screen.type === "video" ? "min-w-[80vw] md:min-w-[100vw] 3xl:min-w-[90vw]" : ""}
@@ -507,6 +507,15 @@ export default function ProjectPageClient({
               `
             }
           >
+            {/* The project name bled under the cover and outro spreads, overprinted by their copy */}
+            {(screen.type === "zine-cover" || screen.type === "zine-outro") && (
+              <div aria-hidden className={`bleed ${screen.type === "zine-outro" ? "is-low" : ""}`}>
+                <span className="plate fountain-mint rise" style={{ "--i": 0 } as React.CSSProperties}>
+                  {project.title}
+                </span>
+              </div>
+            )}
+
             {/* ZINE COVER SCREEN */}
             {screen.type === "zine-cover" && (
               <div
@@ -565,7 +574,7 @@ export default function ProjectPageClient({
                       </span>
                     ))}
                   </h1>
-                  <p className={t.bodyProse}>{project.description}</p>
+                  <p className={`${t.bodyProse} plate ink-violet`}>{project.description}</p>
                 </div>
 
                 {/* Tall image frame - inset matted print border */}
