@@ -13,6 +13,7 @@
 // it through MAP_TABLE, a quantile mapping from the browser noise histogram onto AE's clamped one.
 // Lengths scale with the type: each [data-blurmap] element gets a filter for its font size (4px buckets).
 import { Fragment, useEffect, useRef, useState } from "react";
+import { isPhone } from "@/lib/gpu";
 
 const COMP_TYPE = 197; // px: the type's rendered size in the comp
 const ROUGH_BORDER = 2.4;
@@ -143,12 +144,14 @@ function Filter({ px, animate }: { px: number; animate: boolean }) {
 
 // The haze drifts on SMIL, and every SMIL tick re-runs the whole chain. Left to itself the timeline ticks every
 // display frame (120+ Hz); stepped by hand it re-runs at the fountain's own rate. PrintRun sets html.haze-hold
-// while the camera is off a sheet: the haze holds still there.
+// while the camera is off a sheet: the haze holds still there. Phones run only the entrance, then hold the map
+// still (as their plates do): the chain re-raster was most of a mid-tier phone's frame.
 const HAZE_FPS = 24;
 
 export default function BlurMap() {
   const [sizes, setSizes] = useState<number[]>([]);
   const svgRef = useRef<SVGSVGElement>(null);
+  const introUntil = useRef(0); // timeline s: phones step the timeline only until the last entrance has played out
   // reduced motion: the same graded map, held still
   const [animate, setAnimate] = useState(false);
 
@@ -165,11 +168,13 @@ export default function BlurMap() {
     if (!svg || !animate) return;
     svg.pauseAnimations();
     let last = performance.now();
+    const phone = isPhone();
     const id = window.setInterval(() => {
       const now = performance.now();
       const dt = Math.min(0.25, (now - last) / 1000);
       last = now;
       if (document.hidden || document.documentElement.classList.contains("haze-hold")) return;
+      if (phone && svg.getCurrentTime() >= introUntil.current) return;
       svg.setCurrentTime(svg.getCurrentTime() + dt);
     }, 1000 / HAZE_FPS);
     return () => { window.clearInterval(id); svg.unpauseAnimations(); };
@@ -206,6 +211,8 @@ export default function BlurMap() {
       if (!anim) { if (tries < 60) requestAnimationFrame(() => play(px, tries + 1)); return; }
       played.add(px);
       anim.beginElement();
+      const svg = svgRef.current;
+      if (svg) introUntil.current = svg.getCurrentTime() + INTRO_S + 0.05;
     };
     const timers = new Set<number>();
     const io = new IntersectionObserver((entries) => entries.forEach((en) => {
