@@ -62,7 +62,8 @@
   --t-body: clamp(0.95rem, 1.25vw, 1.25rem);
   --t-label: clamp(0.75rem, 0.78vw, 0.8rem);  /* captions, kickers, masthead: never under 12px */
   --t-lead-serif: clamp(1.6rem, 3.4vw, 3.6rem); /* pull quote */
-  --t-cover: 20.6vw;                            /* fitted so the cover name fills the 12-col measure */
+  --t-cover: 20.6vw;
+  --t-bleed: clamp(9rem, 40vh, 34rem);          /* project name bled behind a spread (MainTitle.aep NewComps) */                            /* fitted so the cover name fills the 12-col measure */
   --font-display: var(--font-display-face), "Times New Roman", serif;
   --font-display-italic: var(--font-display-face), "Times New Roman", serif;
   --font-text: var(--font-product), "Helvetica Neue", Arial, sans-serif;
@@ -170,6 +171,7 @@ body.riso-paper :focus-visible { outline: 2px solid var(--ink-violet); outline-o
   -webkit-box-decoration-break: clone; box-decoration-break: clone;
 }
 .plate.hard { mix-blend-mode: hard-light; --screen-solid: 1; }
+.plate.fountain-mint { background: linear-gradient(270deg, var(--fountain-mint)); }
 .plate.fountain-herond { background: linear-gradient(180deg, var(--fountain-herond)); }
 
 /* a double-plate lockup: the under-plate is a second ink, out of register */
@@ -229,8 +231,6 @@ body.riso-paper :focus-visible { outline: 2px solid var(--ink-violet); outline-o
    spread asks for it (html.plate-on: set by PrintRun for [data-plate] sheets, and by <PlateOn /> on a route) */
 .fountain.page-plate { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 1200ms var(--ease-print); }
 html.plate-on .fountain.page-plate { opacity: 1; }
-/* a route plate's density is driven per frame (lib/plate: arrives, subsides, the wheel brings it back) */
-html.plate-route .fountain.page-plate { opacity: var(--plate, 1); transition: none; }
 /* dark stock: light ink can only lighten the board, so the plate prints at a lower density there, or the
    type set over it (the manifesto) falls under 3:1. Route plates (<PlateOn />: Works) carry display type only
    and print at full density. */
@@ -238,6 +238,19 @@ html.dark.plate-on:not(.plate-route) .fountain.page-plate { opacity: 0.45; }
 /* over a full-density route plate the type prints in ink black, as in the AE comp, on either stock */
 html.plate-route:not(.plate-faint) main { --ink-display: rgb(0 0 0 / 0.92); --ink-black: var(--ink-black-print); --foreground: var(--ink-black-print); --primary: var(--ink-black-print); --color-foreground: var(--ink-black-print); --color-primary: var(--ink-black-print); color: var(--ink-black-print); }
 @media (prefers-reduced-motion: reduce) { .fountain.page-plate { transition-duration: 200ms; } }
+
+/* ---------- bleed ----------
+   MainTitle.aep project spreads: the project name set huge in the mint fountain, screened, bleeding off the
+   sheet's right edge; the spread's copy overprints it (multiply), so ink over ink darkens. The bleed is the
+   sheet's trim: its own box clips the name, nothing else. Sits behind the spread (the section isolates). */
+.bleed { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; user-select: none; }
+.bleed > .plate {
+  position: absolute; left: 0; top: var(--bleed-top, 14vh);
+  font-family: var(--font-display); font-weight: 400; font-size: var(--t-bleed);
+  line-height: 0.9; letter-spacing: -0.02em; white-space: nowrap;
+}
+.bleed.is-low > .plate { --bleed-top: auto; top: auto; bottom: 8vh; }
+@media (max-width: 767px) { .bleed > .plate { font-size: clamp(6rem, 34vw, 11rem); --bleed-top: 0.5rem; } }
 
 .rule { border: 0; border-top: 1.5px solid var(--ink-black); margin: 0; }
 

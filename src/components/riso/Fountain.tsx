@@ -6,7 +6,7 @@
 
 import { useEffect, useRef } from "react";
 import { afterLoadIdle, fastGpu, isPhone, warmProgram } from "@/lib/gpu";
-import { plateSpin } from "@/lib/plate";
+import { plateLevel, plateMoving, plateSpin } from "@/lib/plate";
 
 const FRAG = /* glsl */ `
 // Port of the two ink layers of MainTitle.aep › 01.Title (2800×2443 comp):
@@ -26,6 +26,7 @@ uniform float uCell;
 uniform float uDark;
 uniform float uZoom;   // span scale of the board rect: <1 prints a closer crop of the ink
 uniform vec3 uPtr;     // cursor in plate uv (y down) + strength: the ink swirls around it
+uniform float uAmt;    // ink on the plate: 1 = the full print; lower, the thin washes dry first and the ink pulls back into its densest cores
 varying vec2 vUv;
 
 const float PI = 3.14159265;
@@ -142,6 +143,10 @@ void main(){
 
   // pass 1 prints the smooth field; the RetroDither screen runs in pass 2 (DITHER) at device resolution
   vec3 skyC = sky.rgb / max(sky.a, 1e-3), grnC = grn.rgb / max(grn.a, 1e-3);
+  // recession: each layer keeps only ink denser than a rising edge (at uAmt = 1 the edge sits below 0: untouched)
+  float edge = mix(1.0, -0.3, uAmt);
+  sky.a *= smoothstep(edge, edge + 0.3, sky.a);
+  grn.a *= smoothstep(edge, edge + 0.3, grn.a);
   vec3 col = vec3(1.0 - uDark); // paper: white multiplies onto light stock, black screens onto dark
   col = mix(col, skyC, sky.a);
   col = mix(col, grnC, grn.a);
@@ -191,6 +196,7 @@ type Slot = {
   mask: HTMLCanvasElement | null; maskKey: string; sheet: HTMLElement | null; tick: number; faded: boolean;
   p: Required<FountainParams>; ptr: [number, number, number]; ptrTarget: [number, number, number];
   field?: import("ogl").RenderTarget;
+  route: boolean; amt: number; // the page plate takes the route plate's level (lib/plate); amt = last printed
 };
 
 // Per-plate tuning: the same ink, printed differently (the sidebar runs it as a narrow, cursor-led strip).
@@ -286,7 +292,7 @@ async function start() {
   const program = new Program(gl, {
     vertex: VERT,
     fragment: FRAG,
-    uniforms: { uRes: { value: [1, 1] }, uTime: { value: 0 }, uLean: { value: [0, 0] }, uCell: { value: 4 }, uDark: { value: 0 }, uZoom: { value: 1 }, uPtr: { value: [0.5, 0.5, 0] } },
+    uniforms: { uRes: { value: [1, 1] }, uTime: { value: 0 }, uLean: { value: [0, 0] }, uCell: { value: 4 }, uDark: { value: 0 }, uZoom: { value: 1 }, uPtr: { value: [0.5, 0.5, 0] }, uAmt: { value: 1 } },
   });
   const mesh = new Mesh(gl, { geometry: new Triangle(gl), program });
   await warmProgram(gl, VERT, DITHER);
@@ -329,6 +335,10 @@ async function start() {
       // a plate faded fully out (page plate off this spread) costs nothing; sampled, not read every frame
       if (!still && host && s.tick++ % FADE_CHECK === 0) s.faded = getComputedStyle(host).opacity === "0";
       if (!still && s.faded) continue;
+      // the route plate recedes in the shader (lib/plate); once it has printed bare paper it stops drawing
+      const amt = s.route ? plateLevel() : 1;
+      if (s.route && amt <= 0.001 && s.amt <= 0.001) continue;
+      s.amt = amt;
       s.lean[0] += (s.target[0] + gustHead[0] * g * GUST_LEAN * gustDir - s.lean[0]) * 0.06;
       s.lean[1] += (s.target[1] + gustHead[1] * g * GUST_LEAN * gustDir - s.lean[1]) * 0.06;
       const [rw, rh] = s.size;
@@ -348,6 +358,7 @@ async function start() {
       program.uniforms.uLean.value = s.lean;
       program.uniforms.uZoom.value = s.p.zoom;
       program.uniforms.uPtr.value = s.ptr;
+      program.uniforms.uAmt.value = amt;
       program.uniforms.uCell.value = 1;
       renderer.render({ scene: mesh, target: field });
       // resizing the GL canvas reallocates its drawing buffer: only when this plate's size differs from the last
@@ -379,7 +390,7 @@ async function start() {
       }
       if (host && !host.dataset.live) host.dataset.live = ""; // first frame is up: CSS may now lean on it
     }
-    if (still && Math.abs(sp) < 0.01) { cancelAnimationFrame(raf); raf = 0; }
+    if (still && Math.abs(sp) < 0.01 && !plateMoving()) { cancelAnimationFrame(raf); raf = 0; }
   };
   let raf = requestAnimationFrame(frame);
   stir = () => { if (!raf) { last = 0; raf = requestAnimationFrame(frame); } };
@@ -395,6 +406,7 @@ export default function Fountain({ className = "", children, clipText = false, p
       canvas, visible: false, lean: [0, 0], target: [0, 0], clip: clipText,
       masks: clipText ? Array.from(canvas.parentElement?.querySelectorAll<HTMLElement>("[data-clip]") ?? []) : [],
       size: [0, 0], mask: null, maskKey: "", sheet: canvas.closest<HTMLElement>(".sheet"), tick: 0, faded: false,
+      route: canvas.parentElement?.classList.contains("page-plate") ?? false, amt: 1,
       p: { ...DEFAULTS, ...params }, ptr: [0.5, 0.5, 0], ptrTarget: [0.5, 0.5, 0],
     };
     slots.add(slot);

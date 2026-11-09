@@ -324,8 +324,8 @@ export default function WorkDial({ items, activeIndex, onChange, onOpen }: Props
                 <h2
                   className={`font-display font-bold tracking-tighter leading-[1.2] truncate origin-left transition-[color,transform] duration-300 group-hover/item:skew-x-[-10deg] text-(--ink-display) ${
                     item.title.length > 15
-                      ? "text-base md:text-2xl lg:text-[1.5rem] xl:text-[1.75rem] 3xl:text-[2.25rem] 4xl:text-[3rem]"
-                      : "text-lg md:text-3xl lg:text-[2.25rem] xl:text-[2.5rem] 3xl:text-[3rem] 4xl:text-[3.75rem]"
+                      ? "text-xl md:text-3xl lg:text-[2rem] xl:text-[2.25rem] 3xl:text-[2.75rem] 4xl:text-[3.5rem]"
+                      : "text-2xl md:text-4xl lg:text-[2.75rem] xl:text-[3rem] 3xl:text-[3.75rem] 4xl:text-[4.5rem]"
                   }`}
                 >
                   {item.title}
