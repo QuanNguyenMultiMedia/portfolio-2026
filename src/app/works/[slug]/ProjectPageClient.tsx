@@ -13,6 +13,7 @@ import useLenis from "@/hooks/useLenis";
 import { useScreenSize } from "@/hooks/useScreenSize";
 import dynamic from "next/dynamic";
 import WorkMedia, { mediaAspect } from "@/components/WorkMedia";
+import BleedName from "@/components/riso/BleedName";
 
 const MuxPlayerWrapper = dynamic(() => import("@/components/MuxPlayerWrapper"), {
   ssr: false,
@@ -415,6 +416,7 @@ export default function ProjectPageClient({
 
   const screens = project.screens;
   // Landscape cover footage gets the wider column, so it never reads as a postage stamp.
+  const print = project.print ?? { fountain: "mint", deck: "ink-violet" };
   const coverWide = mediaAspect(project.coverVideo || project.coverImage || "") > 1.2;
   const next = projects[(projects.findIndex((p) => p.slug === slug) + 1) % projects.length];
 
@@ -490,8 +492,8 @@ export default function ProjectPageClient({
             key={i}
             className={
               isMobile
-                ? "w-full flex items-center justify-center relative isolate py-8"
-                : `flex-shrink-0 h-screen flex items-center justify-center relative isolate px-12 md:px-24 3xl:px-40 4xl:px-48 border-r border-primary/25
+                ? "w-full flex items-center justify-center relative isolate overflow-x-clip py-8"
+                : `flex-shrink-0 h-screen flex items-center justify-center relative isolate ${screen.type === "zine-cover" || screen.type === "zine-outro" ? "overflow-x-clip" : ""} px-12 md:px-24 3xl:px-40 4xl:px-48 border-r border-primary/25
                 ${screen.type === "zine-cover" ? "w-[85vw] md:w-[85vw] 3xl:w-[80vw]" : ""}
                 ${screen.type === "editorial-text" ? "min-w-[65vw] md:min-w-[65vw] 3xl:min-w-[60vw]" : ""}
                 ${screen.type === "video" ? "min-w-[80vw] md:min-w-[100vw] 3xl:min-w-[90vw]" : ""}
@@ -500,22 +502,13 @@ export default function ProjectPageClient({
                 ${screen.type === "bento-moodboard" ? "min-w-[100vw]" : ""}
                 ${screen.type === "interactive-preview" ? "w-[95vw] md:w-[95vw] 3xl:w-[90vw]" : ""}
                 ${screen.type === "timeline-sequence" ? "min-w-[100vw] md:min-w-[100vw] 3xl:min-w-[95vw]" : ""}
-                ${screen.type === "zine-outro" ? "min-w-[85vw] md:min-w-[85vw] 3xl:min-w-[80vw]" : ""}
+                ${screen.type === "zine-outro" ? "w-[100vw]" : ""}
                 ${screen.type === "image" ? "min-w-[80vw] md:min-w-[100vw] 3xl:min-w-[90vw]" : ""}
                 ${screen.type === "bento" ? "min-w-[100vw] md:min-w-[120vw] 3xl:min-w-[110vw]" : ""}
                 ${screen.type === "details" ? "min-w-[50vw] md:min-w-[40vw] 3xl:min-w-[35vw]" : ""}
               `
             }
           >
-            {/* The project name bled under the cover and outro spreads, overprinted by their copy */}
-            {(screen.type === "zine-cover" || screen.type === "zine-outro") && (
-              <div aria-hidden className={`bleed ${screen.type === "zine-outro" ? "is-low" : ""}`}>
-                <span className="plate fountain-mint rise" style={{ "--i": 0 } as React.CSSProperties}>
-                  {project.title}
-                </span>
-              </div>
-            )}
-
             {/* ZINE COVER SCREEN */}
             {screen.type === "zine-cover" && (
               <div
@@ -552,51 +545,43 @@ export default function ProjectPageClient({
                   </div>
                 )}
 
-                {/* Main Content Title */}
+                {/* The name bleeds off the spread's trim, the cover prints over its tail, the deck overprints
+                    both (MainTitle.aep end comps) */}
                 <div
-                  className={
-                    isMobile
-                      ? "w-full space-y-4"
-                      : `${coverWide ? "col-span-4" : "col-span-5"} flex flex-col justify-center gap-8 pl-4`
-                  }
+                  data-axis={isMobile ? "block" : "inline"}
+                  className={isMobile ? "w-full flex flex-col pt-10" : "col-span-9 h-full flex flex-col justify-center pl-4"}
                 >
-                  <h1 className={t.pageTitle}>
-                    {project.title.split(" ").map((word, idx) => (
-                      <span
-                        key={idx}
-                        className={
-                          idx % 2 === 1
-                            ? "italic font-light block ml-6 text-primary"
-                            : "block"
-                        }
-                      >
-                        {word}
-                      </span>
-                    ))}
-                  </h1>
-                  <p className={`${t.bodyProse} plate ink-violet`}>{project.description}</p>
-                </div>
-
-                {/* Tall image frame - inset matted print border */}
-                <div
-                  className={
-                    isMobile
-                      ? "w-full relative border border-primary/25 p-3 bg-background"
-                      : `${coverWide ? "col-span-5" : "col-span-4"} max-h-[78vh] w-full self-center relative border border-primary/25 p-4 md:p-6 bg-background group`
-                  }
-                  style={{ aspectRatio: `${mediaAspect(project.coverVideo || project.coverImage || "")}` }}
-                >
-                  {(project.coverVideo || project.coverImage) && (
-                    <div className="relative w-full h-full">
-                      <WorkMedia
-                        src={project.coverVideo || project.coverImage || ""}
-                        alt={project.title}
-                        sizes="(max-width: 768px) 100vw, 25vw"
-                        priority
-                        className="transition-transform"
-                      />
+                  <BleedName title={project.title} print={print} />
+                  <div
+                    className={
+                      isMobile
+                        ? "flex flex-col gap-8 -mt-[calc(var(--t-bleed)*0.16)]"
+                        : "flex items-start gap-[var(--s-5)] -mt-[calc(var(--t-bleed)*0.36)]"
+                    }
+                  >
+                    <div className={`deck ${isMobile ? "" : "flex-1 min-w-0"}`}>
+                      <p className={`plate ${print.deck}`}>{project.description}</p>
                     </div>
-                  )}
+                    {(project.coverVideo || project.coverImage) && (
+                      <div
+                        className={`relative z-[1] flex-shrink-0 border border-primary/25 bg-background ${
+                          isMobile
+                            ? "w-4/5 self-end p-2"
+                            : `${coverWide ? "w-[42%]" : "w-[26%]"} -mt-[calc(var(--t-bleed)*0.3)] max-h-[60vh] p-3 md:p-4`
+                        }`}
+                        style={{ aspectRatio: `${mediaAspect(project.coverVideo || project.coverImage || "")}` }}
+                      >
+                        <div className="relative w-full h-full">
+                          <WorkMedia
+                            src={project.coverVideo || project.coverImage || ""}
+                            alt={project.title}
+                            sizes="(max-width: 768px) 80vw, 30vw"
+                            priority
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
@@ -629,53 +614,72 @@ export default function ProjectPageClient({
               <Breakdown screen={screen} isMobile={isMobile} />
             )}
 
-            {/* OUTRO / NEXT PROJECT SCREEN */}
+            {/* OUTRO: the end comp (05/08/11). Credits, the name bled across the sheet (or standing in columns),
+                the line of the job overprinting it, and the way on to the next project */}
             {screen.type === "zine-outro" && (
               <div
+                data-axis={isMobile ? "block" : "inline"}
                 className={
                   isMobile
-                    ? "w-full py-12 flex flex-col gap-8 mt-4"
-                    : "w-full h-full py-16 grid grid-cols-12 gap-12 items-center"
+                    ? "w-full py-12 grid grid-cols-1 gap-y-8"
+                    : print.stack
+                      ? "w-full h-full py-16 grid grid-cols-12 grid-rows-[auto_1fr_auto] gap-x-12"
+                      : "w-full h-full py-16 grid grid-cols-12 grid-rows-[auto_1fr_auto_auto_1fr_auto] gap-x-12"
                 }
               >
-                {/* Left: this project's credits, then the next project's title (set beside its
-                    cover, never over it) */}
                 <div
-                  className={
-                    isMobile
-                      ? "w-full space-y-4"
-                      : "col-span-4 h-[60vh] flex flex-col justify-between pr-8 border-r border-primary/25"
-                  }
+                  className={`space-y-2 text-[12px] font-sans text-foreground ${
+                    isMobile ? "" : print.stack ? "col-start-8 col-span-5 row-start-1" : "col-start-1 col-span-4 row-start-1"
+                  }`}
                 >
-                  <div className="space-y-2 text-[12px] font-sans text-foreground">
-                    <div>CLIENT / {project.client}</div>
-                    <div>ROLE / {project.role}</div>
-                    <div>YEAR / {project.year}</div>
-                  </div>
-                  <Link href={`/works/${next.slug}`} className="group block space-y-4">
-                    <span aria-hidden className="block text-2xl text-foreground group-hover:text-primary transition-colors">→</span>
-                    <h4 className={`${t.cardTitle} text-foreground group-hover:text-primary group-hover:translate-x-2 transition-[color,transform] duration-500`}>
-                      {next.title}
-                    </h4>
-                  </Link>
+                  <div>CLIENT / {project.client}</div>
+                  <div>ROLE / {project.role}</div>
+                  <div>YEAR / {project.year}</div>
                 </div>
 
-                {/* Right: the next project's cover as a matted print */}
+                <BleedName
+                  as="div"
+                  title={project.title}
+                  print={print}
+                  stack={print.stack && !isMobile}
+                  className={isMobile ? "" : print.stack ? "col-start-1 col-span-6 row-start-1 row-span-3 self-center" : "col-start-1 col-span-12 row-start-3"}
+                />
+                <div
+                  className={`deck is-lg ${
+                    isMobile
+                      ? "-mt-[calc(var(--t-bleed)*0.16+2rem)]"
+                      : print.stack
+                        ? "col-start-1 col-span-5 row-start-1 row-span-3 self-center"
+                        : "col-start-1 col-span-10 row-start-4 -mt-[calc(var(--t-bleed)*0.45)]"
+                  }`}
+                >
+                  <p className={`plate ${print.deck}`}>
+                    {project.client}, {project.year} — {project.role}.
+                  </p>
+                </div>
+
                 <Link
                   href={`/works/${next.slug}`}
-                  aria-label={next.title}
-                  tabIndex={-1}
-                  className={isMobile ? "w-full block" : "col-span-8 pl-4 h-[60vh] flex items-center justify-center group"}
+                  className={`group grid grid-cols-[auto_1fr] items-end gap-6 ${
+                    isMobile ? "" : print.stack ? "col-start-8 col-span-5 row-start-3" : "col-start-8 col-span-5 row-start-6"
+                  }`}
                 >
                   <Plate
                     src={next.coverVideo || next.coverImage || ""}
-                    sizes="50vw"
-                    className={`transition-transform group-hover:scale-[1.01] ${isMobile ? "w-full" : ""}`}
-                    fit={isMobile ? undefined : { w: "100%", h: "60vh" }}
+                    sizes="20vw"
+                    thin
+                    className="transition-transform duration-500 group-hover:scale-[1.02]"
+                    fit={{ w: isMobile ? "40vw" : "14vw", h: isMobile ? "30vw" : "22vh" }}
                   />
+                  <span className="space-y-3">
+                    <span aria-hidden className="block text-2xl text-foreground group-hover:text-primary group-hover:translate-x-2 transition-[color,transform] duration-500">→</span>
+                    <span className={`block ${t.cardTitle} text-foreground group-hover:text-primary transition-colors duration-500`}>
+                      {next.title}
+                    </span>
+                  </span>
                 </Link>
-            </div>
-          )}
+              </div>
+            )}
 
             {/* Split Gallery Component */}
             {screen.type === "split-gallery" && (

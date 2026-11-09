@@ -49,12 +49,23 @@ export interface Project {
     number?: string;
   }[];
   colors: string[];
+  /**
+   * How the name prints on the cover and outro spreads (MainTitle.aep project comps): the fountain the name is
+   * inked in, the spot ink the deck overprints it with, and whether the name stands as columns of letters.
+   * Names are riso.css tokens (--fountain-*, .ink-*).
+   */
+  print?: {
+    fountain: "mint" | "herond" | "azure" | "electric" | "tide";
+    deck: "ink-violet" | "ink-blue" | "ink-indigo" | "ink-orange" | "ink-coral" | "ink-rose";
+    stack?: boolean;
+  };
 }
 
 export const projects: Project[] = [
   {
     title: "2026 Reel",
     slug: "2026-reel",
+    print: { fountain: "electric", deck: "ink-coral" },
     year: "2026",
     category: "Showreel",
     id: "PRJ_001",
@@ -125,6 +136,7 @@ export const projects: Project[] = [
   {
     title: "Herond Browser",
     slug: "herond-browser",
+    print: { fountain: "herond", deck: "ink-blue", stack: true },
     year: "2024–present",
     category: "UI Motion & Brand Design",
     id: "PRJ_002",
@@ -286,6 +298,7 @@ export const projects: Project[] = [
   {
     title: "Defrasoft",
     slug: "defrasoft",
+    print: { fountain: "mint", deck: "ink-violet" },
     year: "2024–present",
     category: "Performance Creative",
     id: "PRJ_003",
@@ -427,6 +440,7 @@ export const projects: Project[] = [
   {
     title: "Z Cũng Viết",
     slug: "z-cung-viet",
+    print: { fountain: "azure", deck: "ink-orange" },
     year: "2023",
     category: "Design Lead",
     id: "PRJ_004",
@@ -512,6 +526,7 @@ export const projects: Project[] = [
   {
     title: "Select Freelance Work",
     slug: "select-freelance-work",
+    print: { fountain: "tide", deck: "ink-indigo" },
     year: "2020 – Present",
     category: "Motion Commissions",
     id: "PRJ_005",

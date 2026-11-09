@@ -22,11 +22,18 @@
   --ink-rose: #e07ab0;
   --ink-mint: #2aeed4;
   --ink-coral: #ff5c36;
+  --ink-orange: #f0761c; /* 08.ZCungViet_End deck */
   --ink-cream: #e5e6e1;
 
   /* split fountain ramps */
   --fountain-mint: #c2eef7, #75e2f9, #2aeed4, #7debda, #9ad6a4;
   --fountain-herond: #3a3efa, #9b6fd0, #e07ab0;
+  /* project name fountains, read off each project's end comp (left to right along the name) */
+  --fountain-name-mint: #2fd39a, #2aeed4, #3fd6e6, #8fe6f4;   /* 05.Defrasoft_End */
+  --fountain-name-azure: #2a5fd0, #4d86e0, #8fb4ec, #cfe0f7;  /* 08.ZCungViet_End */
+  --fountain-name-herond: #3a3efa, #7a62e0, #c27ac4, #e07ab0; /* 11.HerondLabs_End */
+  --fountain-name-electric: #3000ff, #3a3efa, #2f7dff, #00a8ff;
+  --fountain-name-tide: #0a6f86, #0a9396, #3fbfae, #94d2bd;
 
   /* register: fixed per ink for the whole page (em, so it scales with display type) */
   --reg-black-x: -0.012em;  --reg-black-y: 0.01em;
@@ -63,7 +70,9 @@
   --t-label: clamp(0.75rem, 0.78vw, 0.8rem);  /* captions, kickers, masthead: never under 12px */
   --t-lead-serif: clamp(1.6rem, 3.4vw, 3.6rem); /* pull quote */
   --t-cover: 20.6vw;
-  --t-bleed: clamp(9rem, 40vh, 34rem);          /* project name bled behind a spread (MainTitle.aep NewComps) */                            /* fitted so the cover name fills the 12-col measure */
+  --t-bleed: clamp(8rem, 36vh, 30rem);          /* project name bled across a spread (MainTitle.aep end comps) */
+  --t-deck: clamp(1.5rem, 2.5vw, 3.25rem);      /* the deck that overprints it */
+  --t-deck-lg: clamp(2rem, 4.6vw, 6rem);         /* the end comps' deck: 128px on the 2800px sheet */                            /* fitted so the cover name fills the 12-col measure */
   --font-display: var(--font-display-face), "Times New Roman", serif;
   --font-display-italic: var(--font-display-face), "Times New Roman", serif;
   --font-text: var(--font-product), "Helvetica Neue", Arial, sans-serif;
@@ -152,6 +161,7 @@ body.riso-paper :focus-visible { outline: 2px solid var(--ink-violet); outline-o
 .ink-blue { --ink: var(--ink-blue); --screen: var(--screen-15); --rx: var(--reg-blue-x); --ry: var(--reg-blue-y); }
 .ink-violet { --ink: var(--ink-violet); --screen: var(--screen-75); --rx: var(--reg-violet-x); --ry: var(--reg-violet-y); }
 .ink-indigo { --ink: var(--ink-indigo); --screen: var(--screen-75); --rx: var(--reg-indigo-x); --ry: var(--reg-indigo-y); }
+.ink-orange { --ink: var(--ink-orange); --screen: var(--screen-0); --rx: var(--reg-coral-x); --ry: var(--reg-coral-y); }
 .ink-coral { --ink: var(--ink-coral); --screen: var(--screen-0); --rx: var(--reg-coral-x); --ry: var(--reg-coral-y); }
 .ink-rose { --ink: var(--ink-rose); --screen: var(--screen-0); --rx: var(--reg-rose-x); --ry: var(--reg-rose-y); }
 
@@ -171,7 +181,6 @@ body.riso-paper :focus-visible { outline: 2px solid var(--ink-violet); outline-o
   -webkit-box-decoration-break: clone; box-decoration-break: clone;
 }
 .plate.hard { mix-blend-mode: hard-light; --screen-solid: 1; }
-.plate.fountain-mint { background-image: linear-gradient(270deg, var(--fountain-mint)); }
 .plate.fountain-herond { background: linear-gradient(180deg, var(--fountain-herond)); }
 
 /* a double-plate lockup: the under-plate is a second ink, out of register */
@@ -240,17 +249,87 @@ html.plate-route:not(.plate-faint) main { --ink-display: rgb(0 0 0 / 0.92); --in
 @media (prefers-reduced-motion: reduce) { .fountain.page-plate { transition-duration: 200ms; } }
 
 /* ---------- bleed ----------
-   MainTitle.aep project spreads: the project name set huge in the mint fountain, screened, bleeding off the
-   sheet's right edge; the spread's copy overprints it (multiply), so ink over ink darkens. The bleed is the
-   sheet's trim: its own box clips the name, nothing else. Sits behind the spread (the section isolates). */
-.bleed { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; user-select: none; }
-.bleed > .plate {
-  position: absolute; left: 0; top: var(--bleed-top, 14vh);
-  font-family: var(--font-display); font-weight: 400; font-size: var(--t-bleed);
-  line-height: 0.9; letter-spacing: -0.02em; white-space: nowrap;
+   MainTitle.aep project spreads (03 title, 05/08/11 end): the name huge in the project's fountain, screened,
+   each letter its own pass (BleedName), bleeding off the sheet's trim; the deck overprints name and picture in
+   a spot ink, so ink over ink darkens. Each letter takes its slice of the word's ramp (size n × the letter,
+   positioned at k), which reads as one sweep across the name. */
+.bleed-name { --fountain: var(--fountain-name-mint); position: relative; margin: 0; font-family: var(--font-display);
+  font-weight: 400; font-size: var(--t-bleed); line-height: 0.86; letter-spacing: -0.02em; white-space: nowrap;
+  color: var(--ink-display); pointer-events: none; user-select: none; }
+/* the name is ink, not a block of text: no roughen pass (its letters move, a filter would re-raster each frame,
+   and a filter would isolate them from the paper they multiply into) */
+main .bleed-name { filter: none !important; }
+.bleed-name[data-fountain="azure"] { --fountain: var(--fountain-name-azure); }
+.bleed-name[data-fountain="herond"] { --fountain: var(--fountain-name-herond); }
+.bleed-name[data-fountain="electric"] { --fountain: var(--fountain-name-electric); }
+.bleed-name[data-fountain="tide"] { --fountain: var(--fountain-name-tide); }
+/* portrait sheet: one word to a line, stacked down the page, each still bleeding off the right trim */
+@media (max-width: 767px) {
+  .bleed-name { --t-bleed: clamp(5.5rem, 36vw, 12rem); white-space: normal; line-height: 0.84; }
+  .bleed-name .bleed-word { display: block; white-space: nowrap; margin-right: 0; }
+  .bleed-name .bleed-word:nth-child(even of .bleed-word) { padding-left: 0.18em; }
 }
-.bleed.is-low > .plate { --bleed-top: auto; top: auto; bottom: 8vh; }
-@media (max-width: 767px) { .bleed > .plate { font-size: clamp(6rem, 34vw, 11rem); --bleed-top: 0.5rem; } }
+.bleed-word { display: inline-block; margin-right: 0.22em; }
+.bleed-word:last-child { margin-right: 0; }
+.bleed-letter {
+  display: inline-block;
+  --ink: linear-gradient(90deg, var(--fountain));
+  background-image: var(--ink);
+  background-size: calc(var(--n) * 100%) 100%;
+  background-position: calc(var(--k) / max(var(--n) - 1, 1) * 100%) 0;
+  --screen: var(--screen-45);
+  /* solid in the cores, thinning to bare screen toward the feet: the comp's ink runs out down each letter */
+  -webkit-mask-image: var(--screen), linear-gradient(rgb(0 0 0 / 0.92) 38%, rgb(0 0 0 / 0.1) 92%);
+  mask-image: var(--screen), linear-gradient(rgb(0 0 0 / 0.92) 38%, rgb(0 0 0 / 0.1) 92%);
+  transform: translate3d(0, var(--jy), 0);
+  margin-block: -0.28em -0.32em; /* the plate's paint pad must not open the line box */
+}
+/* columns of letters (11.HerondLabs_End): sized so the longest word stands inside the sheet's height */
+.bleed-name.is-stack { --t-bleed: min(16rem, calc(82vh / (var(--rows) * 0.8))); line-height: 0.8;
+  text-transform: uppercase;
+  display: flex; align-items: flex-start; gap: 0.08em; }
+.bleed-name.is-stack .bleed-word { display: flex; flex-direction: column; align-items: center; margin: 0;
+  transform: translate3d(0, calc(var(--w) * 0.55em), 0); }
+.bleed-name.is-stack .bleed-letter { --jy: 0em; }
+
+/* the deck: a lead in spot ink. The wrapper carries the blend and the drift (a moving element with a blend on
+   itself still blends; a blend inside a moving wrapper would only blend inside it) */
+.deck { position: relative; z-index: 2; mix-blend-mode: var(--blend); }
+.deck > .plate { mix-blend-mode: normal; display: block; margin: 0; font-family: var(--font-text);
+  font-size: var(--t-deck); line-height: 0.98; letter-spacing: -0.03em; text-align: justify; text-align-last: left;
+  hyphens: manual; padding-block: 0.12em; }
+.deck.is-lg > .plate { font-size: var(--t-deck-lg); line-height: 0.95; }
+
+/* entrance: each letter blots in, soft and low, and draws up into register; the deck lands last */
+.bleed-letter { animation: bleed-in 1100ms var(--ease-print) calc(160ms + var(--k) * 55ms) both; }
+@keyframes bleed-in {
+  from { opacity: 0; filter: blur(0.09em); transform: translate3d(0, calc(var(--jy) + 0.22em), 0) scale(1.08, 0.9); }
+  55% { opacity: 1; }
+}
+.deck { animation: deck-in 900ms var(--ease-print) calc(380ms + var(--n, 8) * 40ms) both; }
+@keyframes deck-in { from { opacity: 0; transform: translate3d(0, 0.6rem, 0); } }
+
+/* drift: on the spread's own scroll (inline on the rail, block on phones) the letters fan apart and the deck
+   slides the other way, so the overprint moves through the name as the sheet passes. translate only: the
+   entrance owns transform, and both run on the compositor. */
+@supports (animation-timeline: view()) {
+  .bleed-letter { animation: bleed-in 1100ms var(--ease-print) calc(160ms + var(--k) * 55ms) both,
+    bleed-drift linear both; animation-timeline: auto, view(inline); }
+  .deck { animation: deck-in 900ms var(--ease-print) calc(380ms + var(--n, 8) * 40ms) both, deck-drift linear both;
+    animation-timeline: auto, view(inline); }
+  [data-axis="block"] .bleed-letter, [data-axis="block"] .deck { animation-timeline: auto, view(block); }
+  @keyframes bleed-drift {
+    from { translate: calc((var(--k) - var(--n) / 2) * 0.035em + 0.12em) calc(var(--k) * -0.004em); }
+    to { translate: calc((var(--k) - var(--n) / 2) * -0.035em - 0.12em) calc(var(--k) * 0.004em); }
+  }
+  @keyframes deck-drift { from { translate: -4vw 0; } to { translate: 4vw 0; } }
+  [data-axis="block"] .deck { animation-name: deck-in, deck-drift-y; }
+  @keyframes deck-drift-y { from { translate: 0 1rem; } to { translate: 0 -1rem; } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bleed-letter { animation: sheet-fade 300ms linear both !important; }
+  .deck { animation: sheet-fade 300ms linear 120ms both !important; }
+}
 
 .rule { border: 0; border-top: 1.5px solid var(--ink-black); margin: 0; }
 
