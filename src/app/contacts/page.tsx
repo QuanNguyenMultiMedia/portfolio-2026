@@ -475,6 +475,8 @@ export default function ContactsPage() {
           animate={{ opacity: 1, z: 0, rotateY: 0 }}
           transition={reduceMotion ? { duration: 0.2 } : { type: "spring", stiffness: 100, damping: 28, mass: 0.6, delay: 0.08 }}
         >
+        {/* the idle float is a CSS animation (compositor-run, no per-frame JS); it holds while the card is flipped */}
+        <div className="card-float" data-float={isEntered && !isFlipped && !reduceMotion ? "" : undefined}>
         <motion.div
           ref={containerRef}
           onMouseMove={handleMouseMove}
@@ -494,7 +496,7 @@ export default function ContactsPage() {
           initial={{ y: 900, rotate: -15, rotateX: 35, opacity: 0 }}
           animate={isEntered
             ? {
-                y: isFlipped || reduceMotion ? 0 : [0, -15, 0],
+                y: 0,
                 rotate: 0,
                 rotateX: 0,
                 opacity: 1,
@@ -511,7 +513,6 @@ export default function ContactsPage() {
           }}
           transition={isEntered
             ? {
-                y: { repeat: isFlipped || reduceMotion ? 0 : Infinity, duration: 6, ease: "easeInOut" },
                 rotate: { duration: 0.5 },
                 rotateX: { duration: 0.5 },
               }
@@ -673,6 +674,7 @@ export default function ContactsPage() {
             </CardFace>
           </motion.div>
         </motion.div>
+        </div>
         </motion.div>
       </div>
 

@@ -65,23 +65,31 @@ export default function useLenis(options: UseLenisOptions = {}) {
       (window as any).__lenisInstance = lenis;
     }
 
-    let rafId: number;
-    let isVisible = true;
+    // The loop runs only while Lenis has something to animate: an always-on rAF made the browser service a full
+    // frame (style, animations, paint) every vsync even at rest. Input (virtual-scroll) and scrollTo wake it;
+    // it sleeps once Lenis reports it is no longer smooth-scrolling.
+    // Lenis advances by the time since its last tick: a tick after a sleep would land the whole scroll in one
+    // step, so the first tick after waking is dated one frame back.
+    let rafId = 0, asleep = true;
     function raf(time: number) {
-      if (isVisible) {
-        lenis.raf(time);
-      }
-      rafId = requestAnimationFrame(raf);
+      rafId = 0;
+      if (document.visibilityState !== "visible") { asleep = true; return; }
+      if (asleep) { lenis.time = time - 1000 / 60; asleep = false; }
+      lenis.raf(time);
+      if (lenis.isScrolling === "smooth") rafId = requestAnimationFrame(raf);
+      else asleep = true;
     }
+    const wake = () => { if (!rafId) rafId = requestAnimationFrame(raf); };
+    const scrollTo = lenis.scrollTo.bind(lenis);
+    lenis.scrollTo = (...args: Parameters<Lenis["scrollTo"]>) => { scrollTo(...args); wake(); };
+    const offInput = lenis.on("virtual-scroll", wake);
+    wake();
 
-    rafId = requestAnimationFrame(raf);
-
-    const handleVisibilityChange = () => {
-      isVisible = document.visibilityState === "visible";
-    };
+    const handleVisibilityChange = () => { if (document.visibilityState === "visible") wake(); };
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
+      offInput();
       lenis.destroy();
       cancelAnimationFrame(rafId);
       document.removeEventListener("visibilitychange", handleVisibilityChange);

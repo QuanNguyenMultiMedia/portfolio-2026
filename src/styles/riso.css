@@ -297,3 +297,9 @@ html:not([data-warp]) .riso-grain::before { animation-play-state: paused; }
 @media (prefers-reduced-motion: reduce) {
   .rise { animation: sheet-fade 240ms linear calc(var(--i, 0) * 40ms) both; }
 }
+
+/* contacts card: the idle float, on the compositor (ease-in-out = the old Framer easeInOut) */
+.card-float { transform-style: preserve-3d; animation: card-float 6s ease-in-out infinite paused; }
+.card-float[data-float] { animation-play-state: running; }
+@keyframes card-float { 50% { translate: 0 -15px; } }
+@media (prefers-reduced-motion: reduce) { .card-float { animation: none; } }
