@@ -69,15 +69,6 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
   font-size: var(--t-cover); line-height: 0.82; letter-spacing: -0.045em;
 }
 .run.is-3d .hero-name { font-size: min(var(--t-cover), 30svh); }
-/* display type printed in the fountain ink (the name, View Works): the plate is cut to the [data-clip]
-   glyphs in its own canvas (Fountain clipText), so nothing outside the letters is painted. The DOM text stays
-   for reading and selection, and prints in the plain foreground ink until the shader has a frame up (or without WebGL). */
-.ink-fill { isolation: isolate; will-change: transform; padding-block: 0.16em 0.06em; margin-block: -0.16em -0.06em; } /* room for ascenders and descenders; own layer, so the plate redrawing behind never re-runs its BlurMap chain */
-.ink-fill > canvas { opacity: 0; mix-blend-mode: normal; transition: opacity 900ms var(--ease-print); }
-.ink-knock { color: transparent; transition: color 900ms var(--ease-print); }
-.ink-fill[data-live] > canvas { opacity: 1; }
-/* the DOM ink only prints when the plate cannot (no WebGL, mask failed): never as a flash before the first frame */
-.ink-fill[data-fallback]:not([data-live]) .ink-knock { color: var(--foreground); }
 .name-fill, .name-fill .ink-knock { display: block; }
 .hero-line { grid-column: 1 / 5; align-self: start; font-family: var(--font-display); font-size: var(--t-list); line-height: 1.1; letter-spacing: -0.01em; }
 
