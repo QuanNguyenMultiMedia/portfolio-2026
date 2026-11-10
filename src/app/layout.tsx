@@ -6,6 +6,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 // Styles
 import "./globals.css";
 import "../styles/riso.css";
+import "../styles/works.css";
 import { display, productSans } from "./fonts";
 import Fountain from "@/components/riso/Fountain";
 import BlurMap from "@/components/riso/BlurMap";

@@ -42,7 +42,7 @@ export default function BuilderClient() {
             id: `asset-init-${idx}-${i}`,
             fileName: img,
             type: "image",
-            span: screen.type === "bento" || screen.type === "deliverable-breakdown" ? "span-6" : "span-12"
+            span: screen.type === "deliverable-breakdown" ? "span-6" : "span-12"
           });
         });
       }

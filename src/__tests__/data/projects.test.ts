@@ -28,7 +28,7 @@ describe("projects data", () => {
 
   it("each screen has a valid type", () => {
     // mirrors the screen type union in src/data/projects.ts
-    const validTypes = new Set(["hero", "image", "details", "video", "bento", "zine-cover", "editorial-text", "split-gallery", "bento-moodboard", "interactive-preview", "timeline-sequence", "deliverable-breakdown", "zine-outro"]);
+    const validTypes = new Set(["video", "zine-cover", "editorial-text", "interactive-preview", "deliverable-breakdown", "zine-outro", "process", "loops", "evolution", "library", "matrix", "feed", "store", "roster", "ledger", "timeline", "variants"]);
     for (const p of projects) {
       for (const screen of p.screens) {
         expect(validTypes.has(screen.type)).toBe(true);
@@ -36,15 +36,27 @@ describe("projects data", () => {
     }
   });
 
-  it("bento screens have images array", () => {
+  it("every media src a section names exists in the media index", async () => {
+    const { mediaMeta } = await import("@/data/workMedia");
     for (const p of projects) {
-      for (const screen of p.screens) {
-        if (screen.type === "bento") {
-          expect(screen.images).toBeDefined();
-          expect(screen.images!.length).toBeGreaterThanOrEqual(1);
-        }
+      for (const s of p.screens) {
+        const srcs = [
+          s.src,
+          ...(s.images ?? []),
+          ...(s.items ?? []).flatMap((x) => [x.src, x.variant]),
+          ...(s.extras ?? []).map((x) => x.src),
+          ...(s.groups ?? []).flatMap((g) => g.items.map((x) => x.src)),
+          ...(s.tables ?? []).flatMap((tb) => tb.lines.flatMap((l) => l.cells)),
+        ].filter((x): x is string => !!x && x.startsWith("/"));
+        for (const src of srcs) expect(mediaMeta(src), `${p.slug}: ${src}`).toBeDefined();
       }
     }
+  });
+
+  it("matrix lines carry one cell per axis entry", () => {
+    for (const p of projects)
+      for (const s of p.screens)
+        for (const tb of s.tables ?? []) for (const l of tb.lines) expect(l.cells).toHaveLength(tb.axis.length);
   });
 
   it("each project has a coverImage or a screen with src", () => {

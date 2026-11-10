@@ -1,4 +1,5 @@
 @import "tailwindcss";
+/* works sections live in src/components/works (scanned like the rest of src) */
 
 :root {
   /* Riso Run (docs/design.md): paper ground, ink set. Legacy names kept so every route restyles at once. */

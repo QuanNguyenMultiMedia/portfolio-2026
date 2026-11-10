@@ -1,0 +1,63 @@
+/* ---------- works sections (src/components/works) ----------
+   Entrances are tied to the spread's own scroll (view timelines): a block settles in register as it enters
+   the sheet and stays put after, so scrolling back never replays a fade. Desktop spreads run sideways
+   ([data-axis="inline"]), phones run down the page ([data-axis="block"]). --i staggers a block within its
+   section by sliding its range, so a row of work prints left to right as the sheet arrives. Transform and
+   opacity only. Without view timelines, or under reduced motion, everything simply stands. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-axis="inline"] .wk-in {
+      animation: wk-in-x linear both;
+      animation-timeline: view(inline);
+      animation-range: entry calc(var(--i, 0) * 4%) entry calc(55% + var(--i, 0) * 4%);
+    }
+    [data-axis="block"] .wk-in {
+      animation: wk-in-y linear both;
+      animation-timeline: view(block);
+      animation-range: entry calc(var(--i, 0) * 3%) entry calc(45% + var(--i, 0) * 3%);
+    }
+    /* parallax: a block drifts against the spread while it crosses the sheet (depth, not decoration) */
+    [data-axis="inline"] .wk-drift {
+      animation: wk-drift linear both;
+      animation-timeline: view(inline);
+    }
+  }
+}
+@keyframes wk-in-x { from { opacity: 0; transform: translate3d(6vw, 0, 0); } }
+@keyframes wk-in-y { from { opacity: 0; transform: translate3d(0, 2.5rem, 0); } }
+@keyframes wk-drift { from { translate: 4vw 0; } to { translate: -4vw 0; } }
+
+/* the matted print every piece sits in: hairline frame, paper (or charcoal) mat */
+.wk-plate { position: relative; flex-shrink: 0; border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent); background: var(--paper); transition: border-color 300ms var(--ease-print); }
+.wk-plate.is-dark { background: var(--ink-black-print); }
+.wk-plate:where(button, a):hover, .wk-plate.is-active { border-color: var(--primary); }
+
+/* captions: the asset's own name under it, set small in the text face */
+.wk-cap { font-family: var(--font-text); font-size: var(--t-label); line-height: 1.25; letter-spacing: 0; }
+.wk-num { font-variant-numeric: tabular-nums; }
+
+/* selectable index rows (ledger, chips): the hairline under a row is the state, never a tint */
+.wk-row { position: relative; text-align: left; transition: transform 500ms var(--ease-print); }
+.wk-row::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform 600ms var(--ease-print); }
+.wk-row:hover::after, .wk-row[aria-pressed="true"]::after, .wk-row[aria-selected="true"]::after { transform: scaleX(1); }
+.wk-row:hover, .wk-row[aria-pressed="true"], .wk-row[aria-selected="true"] { transform: translate3d(0.35rem, 0, 0); }
+
+/* stages that swap one piece for another cross-fade in place */
+.wk-swap { transition: opacity 450ms var(--ease-print); }
+
+/* the reel's edit track: a playhead runs the active clip; its width is the clip's running time */
+.wk-clip { position: relative; overflow: hidden; }
+.wk-clip > .wk-head { position: absolute; inset: 0; transform-origin: left; transform: scaleX(0); background: var(--primary); opacity: 0.14; pointer-events: none; }
+.wk-clip[aria-pressed="true"] > .wk-head { animation: wk-head linear forwards; animation-duration: var(--d, 10s); }
+@keyframes wk-head { to { transform: scaleX(1); } }
+
+/* phones: rows of work scroll sideways inside the page, snapping piece to piece */
+.wk-rail { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+.wk-rail::-webkit-scrollbar { display: none; }
+.wk-rail > * { scroll-snap-align: start; }
+
+@media (prefers-reduced-motion: reduce) {
+  .wk-row, .wk-row::after, .wk-swap, .wk-plate { transition-duration: 1ms; }
+  .wk-row:hover, .wk-row[aria-pressed="true"], .wk-row[aria-selected="true"] { transform: none; }
+  .wk-clip[aria-pressed="true"] > .wk-head { animation: none; transform: scaleX(1); opacity: 0.08; }
+}
