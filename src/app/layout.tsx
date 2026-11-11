@@ -11,6 +11,7 @@ import { display, productSans } from "./fonts";
 import Fountain from "@/components/riso/Fountain";
 import BlurMap from "@/components/riso/BlurMap";
 import InkEdges from "@/components/riso/InkEdges";
+import { COVER_SCRIPT } from "@/lib/cover";
 
 // Internal Components
 import GlobalSideBar from "@/components/GlobalSideBar";
@@ -87,6 +88,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${productSans.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
+        {/* the cover gate, before first paint: home, first visit this session (lib/cover, Book) */}
+        <script dangerouslySetInnerHTML={{ __html: COVER_SCRIPT }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

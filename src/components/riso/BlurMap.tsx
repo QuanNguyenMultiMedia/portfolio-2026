@@ -13,6 +13,7 @@
 // it through MAP_TABLE, a quantile mapping from the browser noise histogram onto AE's clamped one.
 // Lengths scale with the type: each [data-blurmap] element gets a filter for its font size (4px buckets).
 import { Fragment, useEffect, useRef, useState } from "react";
+import { afterCover, covered } from "@/lib/cover";
 import { isPhone } from "@/lib/gpu";
 
 const COMP_TYPE = 197; // px: the type's rendered size in the comp
@@ -217,10 +218,13 @@ export default function BlurMap() {
       if (svg) introUntil.current = svg.getCurrentTime() + INTRO_S + 0.05;
     };
     const timers = new Set<number>();
+    const gated = new Set<() => void>();
     const io = new IntersectionObserver((entries) => entries.forEach((en) => {
       if (!en.isIntersecting) return;
       io.unobserve(en.target);
       const el = en.target as HTMLElement;
+      // display type under the cover hazes in when the cover is turned, not unseen behind it
+      if (covered() && !el.closest(".book")) { gated.add(afterCover(() => io.observe(el))); return; }
       const px = Number(el.dataset.blurmapPx);
       const plate = el.querySelector<HTMLElement>(".ink-fill");
       if (!plate || plate.hasAttribute("data-live")) return play(px);
@@ -231,7 +235,7 @@ export default function BlurMap() {
     const mo = new MutationObserver(schedule); // route changes bring new display type
     mo.observe(document.body, { childList: true, subtree: true });
     scan();
-    return () => { cancelAnimationFrame(raf); ro.disconnect(); mo.disconnect(); io.disconnect(); timers.forEach(clearTimeout); };
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); mo.disconnect(); io.disconnect(); timers.forEach(clearTimeout); gated.forEach((off) => off()); };
   }, []);
 
   return (

@@ -1,0 +1,111 @@
+/* The cover (Book): MainTitle.aep › 01.Title as the portfolio's front cover. A paper leaf hinged on its left edge
+   (the spine) over the first spread, its free edge swinging into the page as it turns; the mint fountain board inset by the board margin; the lockup centred a little
+   above the middle, sized by the board's width (container units, riso.css cover tokens). Shown only while
+   html[data-cover] is set (lib/cover), so without script, or once turned this session, it never prints.
+   Print-in: the plate rolls on under a paper sheet that runs off it; the lockup's parts settle in reading order
+   (--o); the divider draws to the load progress (Book writes its scale); the hint arrives once the page is ready. */
+
+.book {
+  display: none;
+  position: fixed; inset: 0; z-index: 90; /* before hydration the dialog is non-modal: over the nav and frame */
+  width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
+  background: transparent; color: var(--ink-black); overflow: hidden;
+  perspective: var(--cover-depth); perspective-origin: 0% 50%;
+}
+html[data-cover] .book, .book[data-held] { display: block; } /* held: mounted, until the turn completes */
+.book::backdrop { background: transparent; }
+
+.book-leaf {
+  position: absolute; inset: 0; transform-origin: 0 50%; 
+  will-change: transform, opacity; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none;
+}
+.book-leaf[data-drag] { cursor: grabbing; }
+.book-leaf[data-turning] .book-name { filter: url(#ink-edges) !important; } /* Book: the blur map smears off-plane */
+.book-front { position: absolute; inset: 0; background: var(--paper); overflow: hidden; }
+/* the grunge plate tops the cover as it tops every comp: the global tooth's look, scoped to the leaf */
+.book .book-tooth { position: absolute; z-index: 3; }
+/* swinging in, the cover turns away from the light: ink black, multiplied, darkest at the free edge */
+.book-shade {
+  position: absolute; inset: 0; z-index: 4; pointer-events: none; opacity: 0;
+  background: linear-gradient(90deg, transparent 10%, color-mix(in srgb, var(--ink-black-print) 30%, transparent));
+  mix-blend-mode: multiply;
+}
+
+/* ---------- the board ---------- */
+.book-board {
+  position: absolute; inset: var(--margin); container-type: size;
+  display: grid; place-items: center; padding-bottom: 8cqh; /* the comp's lockup sits a little above centre */
+  /* type over a full-density plate prints in ink black on either stock, as in the comp (riso.css, plate-route) */
+  --ink-black: var(--ink-black-print); --ink-display: var(--ink-display-print); color: var(--ink-black);
+}
+/* the plate before the shader has a frame up (and without WebGL): the fountain ramp, multiplied onto the paper */
+.book-board::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(150deg, var(--fountain-mint)); mix-blend-mode: var(--blend);
+  transition: opacity 900ms var(--ease-print);
+}
+.book-board:has(.book-plate[data-live])::before { opacity: 0; }
+.fountain.book-plate { position: absolute; inset: 0; }
+.book-plate > canvas { opacity: 0; transition: opacity 900ms var(--ease-print); }
+.book-plate[data-live] > canvas { opacity: 1; }
+/* the drum pass: a paper sheet over the board runs off downward and the ink is there under it */
+.book-board::after {
+  content: ""; position: absolute; inset: -1px; z-index: 1; background: var(--paper); pointer-events: none;
+  transform-origin: 50% 100%; animation: book-roll var(--t-cover-plate) var(--ease-print) 120ms both;
+}
+@keyframes book-roll { from { transform: scaleY(1); } to { transform: scaleY(0); } }
+
+/* ---------- the lockup ---------- */
+.book-lockup { position: relative; z-index: 2; width: var(--cover-rule); display: grid; pointer-events: none; }
+.book-line, .book-by {
+  margin: 0; font-family: var(--font-text); font-size: var(--t-cover-line); line-height: 0.98; letter-spacing: -0.018em;
+}
+.book-by { justify-self: end; margin-top: 0.12em; }
+.book-rule { display: block; height: max(1px, 0.21cqi); margin-top: 0.55em; background: color-mix(in srgb, var(--ink-black) 18%, transparent); }
+.book-rule > span {
+  display: block; height: 100%; background: var(--ink-black);
+  transform: scaleX(0); transform-origin: 0 50%; transition: transform 700ms var(--ease-print);
+}
+.book-name {
+  margin: 0.06em 0 0; display: grid; font-family: var(--font-display); font-weight: 400;
+  font-size: var(--t-cover-name); line-height: var(--cover-leading); letter-spacing: -0.03em;
+  color: var(--ink-display); transform: skewX(var(--cover-skew)); transform-origin: 0 100%;
+  padding-block: 0.3em 0.2em; /* the overprinted lines' ascenders and descenders stay inside the filter box */
+}
+.book-name > span { display: block; white-space: nowrap; }
+.book-name > span:nth-child(2) { padding-left: 0.6em; }
+.book-name > span:nth-child(3) { padding-left: 1.3em; }
+
+/* print-in: each part settles in reading order on the house curve, after the plate is down (cue-settle, fade-in: home.css) */
+.book-line, .book-by, .book-name > span {
+  animation: cue-settle var(--t-register) var(--ease-print) calc(var(--t-cover-plate) * 0.55 + var(--o, 0) * var(--t-ink-stagger) * 2) both;
+}
+
+/* ---------- the way in ---------- */
+.book-turn {
+  position: absolute; z-index: 2; right: var(--s-3); bottom: var(--s-3);
+  display: inline-flex; align-items: baseline; gap: 0.5em; min-height: 2.75rem; padding: 0.6em 0.2em;
+  border: 0; background: none; color: var(--ink-black); font: inherit; font-size: var(--t-body); cursor: pointer;
+  opacity: 0; transform: translate3d(0, var(--cue-rise), 0); pointer-events: none;
+  transition: opacity var(--t-cue-fade) var(--ease-print), transform var(--t-register) var(--ease-print);
+}
+.book[data-ready] .book-turn { opacity: 1; transform: none; pointer-events: auto; }
+.book-turn:focus-visible { opacity: 1; transform: none; } /* reachable before it is offered: keys never wait */
+.book-turn-arrow { display: inline-block; transition: transform 500ms var(--ease-print); }
+.book-turn:is(:hover, :focus-visible) .book-turn-arrow { transform: translate3d(-0.3em, 0, 0); }
+.book[data-ready] .book-turn-arrow { animation: book-nudge 2.4s var(--ease-print) 1.2s infinite; }
+@keyframes book-nudge { 0%, 60%, 100% { transform: none; } 30% { transform: translate3d(-0.35em, 0, 0); } }
+
+@media (max-width: 640px) {
+  /* a portrait board: the lockup takes the width the comp gives it on landscape, at sizes a phone reads */
+  .book-lockup { width: min(100%, 78cqi); --t-cover-line: clamp(1rem, 6.2cqi, 1.5rem); --t-cover-name: clamp(2.6rem, 17cqi, 4rem); }
+  .book-turn { left: var(--s-3); right: var(--s-3); justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book-board::after { animation: none; transform: scaleY(0); }
+  .book-line, .book-by, .book-name > span { animation: fade-in 240ms linear 0s both; }
+  .book-rule > span, .book-turn { transition-duration: 200ms; }
+  .book-turn { transform: none; }
+  .book[data-ready] .book-turn-arrow { animation: none; }
+}

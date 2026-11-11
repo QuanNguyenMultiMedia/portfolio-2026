@@ -15,6 +15,7 @@
      fountain it printed grey instead of darkening the ink under it. */
   --ink-black: #000;
   --ink-black-print: #000; /* never flips with the theme */
+  --ink-display-print: rgb(0 0 0 / 0.92); /* display type over a full-density plate, either stock */
   --ink-display: rgb(0 0 0 / 0.92); /* display type: translucent black, so the ink under it darkens as on the board */
   --ink-blue: #00a8ff;
   --ink-violet: #3a3efa;
@@ -91,6 +92,17 @@
   --t-lift-stagger: 30ms;
   --ease-lift: cubic-bezier(0.7, 0, 0.84, 0);
   --cue-rise: 1.5rem;    /* how far a part settles onto the sheet (cues, turns, quotes) */
+
+  /* the cover (Book: MainTitle.aep › 01.Title, the 2800 px board). Lockup sizes are the comp's share of the
+     board's width (cqi of the board); phones keep a floor so the lockup still reads at 375 px */
+  --t-cover-line: clamp(1rem, 3.4cqi, 3rem);       /* "a motion + design portfolio": 95 px of 2800 */
+  --t-cover-name: clamp(2.6rem, 6.4cqi, 7rem);     /* the name: 197 px of 2800 in Lastik; Junicode sets wider, so fitted to end on the divider as NGUYEN does */
+  --cover-rule: 28.5cqi;                           /* the divider: 797 px of 2800 */
+  --cover-skew: -24deg;                            /* the title animator's Skew 24, on the roman */
+  --cover-leading: 0.5;                            /* the name's three lines overprint (baselines 0.46–0.53 em apart) */
+  --cover-depth: 160vmax;                          /* perspective of the turn: enough depth to read as a leaf swinging in, not a squash */
+  --t-cover-turn: 1100ms;                          /* a full turn, released or pressed */
+  --t-cover-plate: 1100ms;                         /* the fountain plate rolls on under the paper */
 }
 
 /* ---------- dark stock ----------
@@ -252,7 +264,7 @@ html.plate-on .fountain.page-plate { opacity: 1; }
    and print at full density. */
 html.dark.plate-on:not(.plate-route) .fountain.page-plate { opacity: 0.45; }
 /* over a full-density route plate the type prints in ink black, as in the AE comp, on either stock */
-html.plate-route:not(.plate-faint) main { --ink-display: rgb(0 0 0 / 0.92); --ink-black: var(--ink-black-print); --foreground: var(--ink-black-print); --primary: var(--ink-black-print); --color-foreground: var(--ink-black-print); --color-primary: var(--ink-black-print); color: var(--ink-black-print); }
+html.plate-route:not(.plate-faint) main { --ink-display: var(--ink-display-print); --ink-black: var(--ink-black-print); --foreground: var(--ink-black-print); --primary: var(--ink-black-print); --color-foreground: var(--ink-black-print); --color-primary: var(--ink-black-print); color: var(--ink-black-print); }
 @media (prefers-reduced-motion: reduce) { .fountain.page-plate { transition-duration: 200ms; } }
 
 /* ---------- fountain-filled display type (shared: the home name, View Works, the project names) ---------- */

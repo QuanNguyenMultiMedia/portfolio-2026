@@ -1,11 +1,13 @@
-// Home: the print run, led by the work. Three sheets: the showreel under a one-line masthead (the name and the line,
-// set small) with the manifesto beside it, the works in rotation (one sheet that prints each case study in turn,
-// in that project's own inks, its chapters opening the case page at each one), and the record with the clients'
+// Home: the print run, opened by the cover (Book: 01.Title, turned on its spine). Three sheets: the hero (the name
+// in fountain ink overprinting the reel, the line overprinting the name, the statement and the ways in beside it),
+// the works in rotation (one sheet that prints each case study in turn, in that project's own inks, its chapters opening the case page at each one), and the record with the clients'
 // words and the way into Works. Printed as sheets of one riso job (docs/design.md) and stacked in depth;
 // PrintRun floats the camera through them. Under reduced motion, on phones and on short screens they read top to bottom.
-// Server component; client islands: PrintRun (camera, page-fountain scope), PrintedVideo, WorkRotation, ClientWords, RegisterObserver.
+// Server component; client islands: Book (the cover), BleedName's plate, PrintRun (camera, page-fountain scope), PrintedVideo, WorkRotation, ClientWords, RegisterObserver.
 import Link from "next/link";
 import { preload } from "react-dom";
+import BleedName from "@/components/riso/BleedName";
+import Book from "@/components/riso/Book";
 import ClientWords from "@/components/riso/ClientWords";
 import Plates from "@/components/riso/Plates";
 import PrintedVideo from "@/components/riso/PrintedVideo";
@@ -69,30 +71,40 @@ export default function Home() {
   preload(reel.coverImage ?? "/media/showreel.jpg", { as: "image", fetchPriority: "high" });
   return (
     <main className="home">
+      {/* the front cover, first visit of a session (lib/cover): turned to open the first spread */}
+      <Book poster={reel.coverImage ?? "/media/showreel.jpg"} />
       <PrintRun>
-        {/* sheet 1 · the masthead, the reel and the statement beside it. Parts are cued in reading order (--o):
-            the camera prints them in and lifts them off (home.css, cues) */}
-        <section className="sheet cover" aria-labelledby="hero-h">
-          <div className="cover-mast" data-o="" style={cue(0)}>
-            <h1 id="hero-h" className="cover-name t-italic">Minh Quân</h1>
-            <p className="cover-line">
-              loves <Plates over="ink-blue" under="ink-violet" i={1}>moving</Plates> things around.
-            </p>
+        {/* sheet 1 · the hero. The name, in the cover's fountain ink across the measure, overprints the foot of
+            the reel; the line overprints the name in a spot ink, so ink over ink makes the third colour
+            (design.md §2, Overprint). The statement and the ways in sit in the quiet zone beside the reel.
+            Parts are cued (--o): the reel presses in, then the name, the line, the quiet zone (home.css, cues).
+            Under the cover (Book) the cues hold until the cover is turned. */}
+        <section className="sheet hero" aria-labelledby="hero-h">
+          <div className="hero-name" data-o="" style={cue(1)}>
+            <BleedName id="hero-h" title="Minh Quân" print={{ fountain: "tide", deck: "ink-violet" }} params={{ cursor: 1 }} density={0.45} />
           </div>
-          <div className="reel-frame cue-press" data-o="" style={cue(1)}>
+          <p className="hero-line t-lead" data-o="" style={cue(2)}>
+            <Plates over="ink-violet" under="ink-indigo" i={1}>loves moving things around.</Plates>
+          </p>
+          <div className="hero-reel cue-press" data-o="" style={cue(0)}>
             <PrintedVideo src={reel.coverVideo ?? "/media/showreel.mp4"} poster={reel.coverImage ?? "/media/showreel.jpg"} label="Showreel 2026" aspect="1280 / 720" sound />
           </div>
-          <p className="cover-cap" data-o="" style={cue(2)}>
-            <Link href={`/works/${reel.slug}`}>
-              <span>{reel.title}</span>
-              <span className="view-arrow" aria-hidden>→</span>
-            </Link>
-            <span>{reel.category}, {reel.year}</span>
-          </p>
-          <p className="manifesto-text" data-o="" style={cue(3)}>
-            My craft is in making people stay and rewind. I believe motion and interaction is the{" "}
-            <Plates over="ink-violet" under="ink-indigo" i={2}>soul</Plates> of each brand, product, and experience.
-          </p>
+          <div className="hero-quiet" data-o="" style={cue(3)}>
+            <p className="hero-statement">
+              My craft is in making people stay and rewind. I believe motion and interaction is the{" "}
+              <Plates over="ink-violet" under="ink-indigo" i={2}>soul</Plates> of each brand, product, and experience.
+            </p>
+            <div className="hero-ways">
+              <Link href="/works" className="hero-cta">
+                <span>View Works</span>
+                <span className="view-arrow" aria-hidden>→</span>
+              </Link>
+              <Link href={`/works/${reel.slug}`} className="hero-reel-link">
+                <span>{reel.title}</span>
+                <span className="view-arrow" aria-hidden>→</span>
+              </Link>
+            </div>
+          </div>
         </section>
 
         {/* sheet 2 · the works in rotation: every case study, one turn each */}

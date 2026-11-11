@@ -5,7 +5,7 @@
 // blur stack on the plate ([data-blurmap]), which also plays the haze entrance. Each letter is its own cut
 // ([data-clip]); every letter holds the baseline. Colorama is a gradient map per project (RAMPS). `stack` stands each word as a column of capitals (11.HerondLabs_End).
 import { useId } from "react";
-import Fountain from "./Fountain";
+import Fountain, { type FountainParams } from "./Fountain";
 import type { Project } from "@/data/projects";
 
 // Colorama, ported as a gradient map: the plate's luminance (dense ink → bare paper) through each project's ramp,
@@ -28,17 +28,24 @@ export default function BleedName({
   stack = false,
   as: Tag = "h1",
   className = "",
+  id,
+  params,
+  density = 0,
 }: {
   title: string;
   print: NonNullable<Project["print"]>;
   stack?: boolean;
   as?: "h1" | "h2" | "div";
   className?: string;
+  id?: string;
+  params?: FountainParams; // on top of the per-print phase and crop (e.g. a cursor eddy on the home name)
+  density?: number; // heavier ink: shifts the plate down its ramp toward the dense end (0 = as the end comps print)
 }) {
   const ramp = RAMPS[print.fountain];
   const mapId = `ramp-${useId().replace(/:/g, "")}`;
   return (
     <Tag
+      id={id}
       className={`bleed-name ${stack ? "is-stack" : ""} ${className}`}
       data-fountain={print.fountain}
       data-blurmap=""
@@ -51,9 +58,9 @@ export default function BleedName({
             <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0 0 0 1 0" />
             {/* the mint ink only spans luminance ≈ 0.6–0.95: stretch 0.62–0.95 to the full ramp, densest core to paper */}
             <feComponentTransfer>
-              <feFuncR type="linear" slope="3" intercept="-1.85" />
-              <feFuncG type="linear" slope="3" intercept="-1.85" />
-              <feFuncB type="linear" slope="3" intercept="-1.85" />
+              <feFuncR type="linear" slope="3" intercept={-1.85 - density} />
+              <feFuncG type="linear" slope="3" intercept={-1.85 - density} />
+              <feFuncB type="linear" slope="3" intercept={-1.85 - density} />
             </feComponentTransfer>
             <feComponentTransfer>
               <feFuncR type="table" tableValues={channel(ramp, 0)} />
@@ -65,7 +72,7 @@ export default function BleedName({
       ) : null}
       <Fountain
         className="ink-fill bleed-fill"
-        clipText params={{ phase: PHASE[print.fountain], zoom: 0.45 }}
+        clipText params={{ phase: PHASE[print.fountain], zoom: 0.45, ...params }}
       >
         {title.split(" ").map((word, w) => (
           <span key={w} aria-hidden className="bleed-word" style={{ "--w": w } as React.CSSProperties}>
