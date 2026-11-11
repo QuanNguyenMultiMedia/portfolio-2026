@@ -46,10 +46,6 @@
 .wk-swap { transition: opacity 450ms var(--ease-print); }
 
 /* the reel's edit track: a playhead runs the active clip; its width is the clip's running time */
-.wk-clip { position: relative; overflow: hidden; }
-.wk-clip > .wk-head { position: absolute; inset: 0; transform-origin: left; transform: scaleX(0); background: var(--primary); opacity: 0.14; pointer-events: none; }
-.wk-clip[aria-pressed="true"] > .wk-head { animation: wk-head linear forwards; animation-duration: var(--d, 10s); }
-@keyframes wk-head { to { transform: scaleX(1); } }
 
 /* phones: rows of work scroll sideways inside the page, snapping piece to piece */
 .wk-rail { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
@@ -59,5 +55,45 @@
 @media (prefers-reduced-motion: reduce) {
   .wk-row, .wk-row::after, .wk-swap, .wk-plate { transition-duration: 1ms; }
   .wk-row:hover, .wk-row[aria-pressed="true"], .wk-row[aria-selected="true"] { transform: none; }
-  .wk-clip[aria-pressed="true"] > .wk-head { animation: none; transform: scaleX(1); opacity: 0.08; }
+}
+
+/* the black board (AE 10.HerondLabs_UIFilmBreakdown, 10.3 social): black stock that never flips with the
+   theme, its type in the cream that knocks out of it */
+:root { --wk-board-ink: #e5e6e1; --wk-phone-radius: 1.25rem; }
+.wk-board { background: var(--ink-black-print); color: var(--wk-board-ink); }
+
+/* Screens: a long in-app screen scrolls inside its phone window and holds while pointed at */
+.wk-phone { overflow: hidden; border-radius: var(--wk-phone-radius); background: var(--ink-black-print); }
+.wk-phone.is-long .wk-phone-scroll { animation: wk-phone-scroll 18s var(--ease-print) infinite; will-change: transform; }
+.wk-phone.is-long:hover .wk-phone-scroll,
+.wk-phone.is-long:focus-visible .wk-phone-scroll { animation-play-state: paused; }
+@keyframes wk-phone-scroll {
+  0%, 12% { transform: translate3d(0, 0, 0); }
+  50%, 62% { transform: translate3d(0, var(--travel), 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* Wall: each column drifts up to its foot and eases back; pointing at the wall holds it */
+.wk-wall-col { animation: wk-wall-drift var(--pace) var(--ease-print) var(--delay) infinite alternate; will-change: transform; }
+.wk-wall:hover .wk-wall-col { animation-play-state: paused; }
+@keyframes wk-wall-drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, var(--drift, 0px), 0); } }
+
+/* Cuts: a cut on the edit track, inked by its act; the one playing is full strength */
+.wk-cut { background: var(--cut); opacity: 0.35; transition: opacity 200ms var(--ease-print); min-width: 1px; }
+.wk-cut:hover, .wk-cut:focus-visible, .wk-cut.is-now { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .wk-phone.is-long { overflow-y: auto; }
+  .wk-phone.is-long .wk-phone-scroll, .wk-wall-col { animation: none; }
+}
+
+/* Carousel: the batch on a ring, turning; pointing at it or focusing a cut holds it */
+.wk-ring-stage { perspective: 220vw; }
+.wk-ring { transform-style: preserve-3d; transform: rotateX(-6deg); animation: wk-ring-turn 72s linear infinite; will-change: transform; }
+.wk-ring-stage:hover .wk-ring, .wk-ring:focus-within { animation-play-state: paused; }
+.wk-ring-card { transform: rotateY(var(--turn)) translateZ(var(--radius)); }
+@keyframes wk-ring-turn { from { transform: rotateX(-6deg) rotateY(0deg); } to { transform: rotateX(-6deg) rotateY(-360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .wk-ring { animation: none; transform: none; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--s-2); width: 100% !important; aspect-ratio: auto !important; }
+  .wk-ring-card { position: relative; transform: none; aspect-ratio: 9 / 16; }
 }

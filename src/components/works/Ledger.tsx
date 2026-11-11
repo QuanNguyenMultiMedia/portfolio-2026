@@ -6,6 +6,10 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Head, Plate, Rail, pad2, aspectOf, type SectionProps } from "./kit";
 import type { MediaItem } from "@/data/projects";
 
+/** a contents list elsewhere on the page names a client: the ledger comes into view with that client's work up */
+export const LEDGER_OPEN = "wk-ledger-open";
+const NONE: NonNullable<SectionProps["screen"]["groups"]> = [];
+
 /** Fit a client's pieces into the stage box: one row, or two when one would leave them small. */
 function Stage({ items, w, h }: { items: MediaItem[]; w: number; h: number }) {
   const gap = 12;
@@ -30,10 +34,21 @@ function Stage({ items, w, h }: { items: MediaItem[]; w: number; h: number }) {
 }
 
 export default function Ledger({ screen, isMobile, ink, n }: SectionProps) {
-  const entries = screen.groups ?? [];
+  const entries = screen.groups ?? NONE;
   const [at, setAt] = useState(0);
   const box = useRef<HTMLDivElement>(null);
   const [dim, setDim] = useState({ w: 0, h: 0 });
+  const root = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const open = (e: Event) => {
+      const i = entries.findIndex((x) => x.label === (e as CustomEvent<string>).detail);
+      if (i < 0) return;
+      setAt(i);
+      root.current?.closest("section")?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", inline: "start", block: "start" });
+    };
+    window.addEventListener(LEDGER_OPEN, open);
+    return () => window.removeEventListener(LEDGER_OPEN, open);
+  }, [entries]);
   useEffect(() => {
     const el = box.current;
     if (!el) return;
@@ -52,7 +67,7 @@ export default function Ledger({ screen, isMobile, ink, n }: SectionProps) {
 
   if (isMobile) {
     return (
-      <div className="w-full flex flex-col gap-[var(--s-4)]">
+      <div ref={root} className="w-full flex flex-col gap-[var(--s-4)]">
         <Head screen={screen} ink={ink} n={n} variant="stack" />
         <ul className="flex flex-col">
           {entries.map((e, i) => (
@@ -82,7 +97,7 @@ export default function Ledger({ screen, isMobile, ink, n }: SectionProps) {
 
   const cur = entries[Math.max(at, 0)];
   return (
-    <div className="h-full py-16 pb-24 flex items-center gap-[var(--s-6)]">
+    <div ref={root} className="h-full py-16 pb-24 flex items-center gap-[var(--s-6)]">
       <Head screen={screen} ink={ink} n={n} />
       <ul role="tablist" aria-orientation="vertical" aria-label={screen.title} className="flex flex-col gap-[var(--s-2)] self-center w-max">
         {entries.map((e, i) => (

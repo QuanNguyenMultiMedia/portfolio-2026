@@ -294,6 +294,8 @@ html.plate-route:not(.plate-faint) main { --ink-display: rgb(0 0 0 / 0.92); --in
   font-size: var(--t-deck); line-height: 0.98; letter-spacing: -0.03em; text-align: justify; text-align-last: left;
   hyphens: manual; padding-block: 0.12em; --screen-solid: 0.9; }
 .deck.is-lg > .plate { font-size: var(--t-deck-lg); line-height: 0.95; }
+/* a deck set in a narrow field (the cover) runs ragged: justified at that measure it opens rivers */
+.deck.is-ragged > .plate { text-align: left; }
 .deck { animation: deck-in 900ms var(--ease-print) 900ms both; }
 @keyframes deck-in { from { opacity: 0; transform: translate3d(0, 0.6rem, 0); } }
 

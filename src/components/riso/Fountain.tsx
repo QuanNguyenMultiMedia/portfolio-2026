@@ -417,7 +417,8 @@ export default function Fountain({ className = "", children, clipText = false, p
     document.fonts?.addEventListener("loadingdone", onFonts);
     const io = new IntersectionObserver(([e]) => {
       slot.visible = e.isIntersecting;
-      if (slot.visible) startWhenIdle();
+      // a phone prints one still frame and stops; a plate that scrolls in later needs its own frame printed
+      if (slot.visible) { startWhenIdle(); stir?.(); }
     }, { rootMargin: "200px" });
     io.observe(canvas);
     // no first frame in time (WebGL unavailable; the start waits for load + idle): let the DOM text carry the name

@@ -44,7 +44,7 @@ const DECKS: Proof[][] = [
   [
     { src: "/works/2026-reel/type-logo.mp4", from: "2026 Reel" },
     { src: "/works/select-freelance-work/monthly-spend.mp4", from: "Select Freelance" },
-    { src: "/works/herond-browser/day-peace.mp4", from: "Herond Browser" },
+    { src: "/works/herond-browser/cut-shortads-peaceandquiet.mp4", from: "Herond Browser" },
   ],
   [
     { src: "/works/2026-reel/ui-shield.mp4", from: "2026 Reel" },

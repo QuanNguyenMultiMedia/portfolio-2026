@@ -73,14 +73,32 @@ export function Captioned({ item, size, sizes, i = 0, tone }: { item: MediaItem;
   );
 }
 
-/** Section head: the number in the project's spot ink, the title, the copy. `column` stands beside the work on
- * a spread; `stack` heads it on a phone. */
+/** The running label over a note: the chapter in the project's ink, then the section's name, both small. */
+export function Kicker({ screen, ink, n, onDark }: { screen: Screen; ink: Ink; n?: number; onDark?: boolean }) {
+  if (!screen.title) return null;
+  return (
+    <h2 className="wk-cap flex flex-wrap items-baseline gap-x-2 m-0 font-normal">
+      {screen.chapter && <span className={`plate ${ink}`}>{screen.chapter}</span>}
+      {n !== undefined && <span className="wk-num opacity-60">{pad2(n)}</span>}
+      {/* a section that opens its chapter under the chapter's own name says it once */}
+      {screen.title !== screen.chapter && (
+        <span className={onDark ? "text-[var(--wk-board-ink)]" : "text-foreground"}>{screen.title}</span>
+      )}
+    </h2>
+  );
+}
+
+/** The copy that sits with a board's work (AE content boards): no headline, a small running label and the
+ * body in the text face, set low in an empty field of paper so the work carries the board. `column` stands
+ * beside the work on a spread; `stack` precedes it on a phone. */
 export function Head({
   screen,
   ink,
   n,
   variant = "column",
   className = "",
+  paras: only,
+  onDark,
   children,
 }: {
   screen: Screen;
@@ -88,25 +106,22 @@ export function Head({
   n?: number;
   variant?: "column" | "stack";
   className?: string;
+  /** the paragraphs this note carries, when a board splits its copy across two corners */
+  paras?: string[];
+  /** set on a dark board (paper-coloured type) */
+  onDark?: boolean;
   children?: ReactNode;
 }) {
-  const paras = (screen.description ?? "").split("\n\n").filter(Boolean);
+  const paras = only ?? (screen.description ?? "").split("\n\n").filter(Boolean);
   return (
     <header
       className={`wk-in flex flex-col gap-[var(--s-3)] ${
-        variant === "column"
-          ? "w-[clamp(17rem,22vw,26rem)] flex-shrink-0 self-stretch justify-center pr-[var(--s-5)] border-r border-primary/25"
-          : "w-full"
+        variant === "column" ? "w-[clamp(15rem,19vw,23rem)] flex-shrink-0 self-stretch justify-end pb-[var(--s-2)]" : "w-full"
       } ${className}`}
     >
-      {n !== undefined && (
-        <span aria-hidden className={`plate ${ink} font-display text-[length:var(--t-display-col)] leading-[0.8] self-start`}>
-          {pad2(n)}
-        </span>
-      )}
-      {screen.title && <h2 className={`${t.cardTitle} text-primary`}>{screen.title}</h2>}
+      <Kicker screen={screen} ink={ink} n={n} onDark={onDark} />
       {paras.length > 0 && (
-        <div className={`${t.bodyProse} text-foreground space-y-[var(--s-2)] max-w-[36ch]`}>
+        <div className={`${t.bodyProse} ${onDark ? "text-[var(--wk-board-ink)]" : "text-foreground"} space-y-[var(--s-2)] max-w-[38ch]`}>
           {paras.map((p, i) => (
             <p key={i}>{p}</p>
           ))}

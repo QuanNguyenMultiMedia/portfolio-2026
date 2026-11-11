@@ -18,10 +18,16 @@ import Library from "@/components/works/Library";
 import Matrix from "@/components/works/Matrix";
 import Feed from "@/components/works/Feed";
 import Store from "@/components/works/Store";
-import Roster from "@/components/works/Roster";
 import Ledger from "@/components/works/Ledger";
-import Timeline from "@/components/works/Timeline";
 import Variants from "@/components/works/Variants";
+import Stages from "@/components/works/Stages";
+import Orbit from "@/components/works/Orbit";
+import Screens from "@/components/works/Screens";
+import Wall from "@/components/works/Wall";
+import Cuts from "@/components/works/Cuts";
+import Carousel from "@/components/works/Carousel";
+import Screening from "@/components/works/Screening";
+import Info, { chapterId } from "@/components/works/Info";
 
 const MuxPlayerWrapper = dynamic(() => import("@/components/MuxPlayerWrapper"), {
   ssr: false,
@@ -38,13 +44,21 @@ const MODULES: Partial<Record<Screen["type"], (p: SectionProps) => React.ReactNo
   matrix: Matrix,
   feed: Feed,
   store: Store,
-  roster: Roster,
   ledger: Ledger,
-  timeline: Timeline,
   variants: Variants,
+  stages: Stages,
+  orbit: Orbit,
+  screens: Screens,
+  wall: Wall,
+  cuts: Cuts,
+  carousel: Carousel,
+  screening: Screening,
 };
 
 // Photo essays and mixed print sets: `feature` stands its first piece at full height, the rest as lanes after it.
+// Boards that print edge to edge: their ground covers the whole section, so the section adds no gutter.
+const BLEED: Screen["type"][] = ["editorial-text", "stages", "wall"];
+
 function Breakdown({ screen, isMobile, ink, n }: SectionProps) {
   const images = (screen.images ?? []).map((src) => ({ src }));
   const feature = (screen.layout ?? "wall") === "feature";
@@ -225,18 +239,22 @@ export default function ProjectPageClient({
           const Module = MODULES[screen.type];
           const sp: SectionProps = { screen, isMobile, ink: print.deck, n: numbers[i] };
           const spread = screen.type === "zine-cover" || screen.type === "zine-outro";
+          const opensChapter = !!screen.chapter && screens.findIndex((x) => x.chapter === screen.chapter) === i;
           return (
           <section
             key={i}
+            id={opensChapter ? chapterId(screen.chapter!) : undefined}
             aria-label={screen.title}
             className={
               isMobile
                 ? "w-full flex items-center justify-center relative isolate overflow-x-clip py-8"
-                : `flex-shrink-0 h-screen flex items-center justify-center relative isolate px-12 md:px-24 3xl:px-40 4xl:px-48 border-r border-primary/25 ${
+                : `flex-shrink-0 h-screen flex items-center justify-center relative isolate border-r border-primary/25 ${
+                    BLEED.includes(screen.type) ? "" : "px-12 md:px-24 3xl:px-40 4xl:px-48"
+                  } ${
                     spread ? "overflow-x-clip" : ""
                   } ${screen.type === "zine-cover" ? "w-[85vw] 3xl:w-[80vw]" : ""} ${
                     screen.type === "zine-outro" ? "w-[100vw]" : ""
-                  } ${screen.type === "editorial-text" ? "min-w-[65vw] 3xl:min-w-[60vw]" : ""}`
+                  }`
             }
           >
             {/* ZINE COVER SCREEN */}
@@ -252,13 +270,9 @@ export default function ProjectPageClient({
                 {!isMobile && (
                   <div className="col-span-3 h-full flex flex-col justify-between border-r border-primary/25 pr-8">
                     <div className="space-y-4">
-                      <div className="text-[12px] font-sans text-primary">{project.category}</div>
-                      <div className="text-[12px] font-sans opacity-40">
-                        YEAR / {project.year}
-                      </div>
-                      <div className="text-[12px] font-sans opacity-40">
-                        CLIENT / {project.client}
-                      </div>
+                      <div className={`wk-cap plate ${print.deck}`}>{project.category}</div>
+                      <div className="wk-cap opacity-60">YEAR / {project.year}</div>
+                      <div className="wk-cap opacity-60">CLIENT / {project.client}</div>
                     </div>
                     <div className="space-y-3">
                       <div className="flex flex-col gap-1.5">
@@ -275,21 +289,15 @@ export default function ProjectPageClient({
                   </div>
                 )}
 
-                {/* The name bleeds off the spread's trim, the cover prints over its tail, the deck overprints
-                    both (MainTitle.aep end comps) */}
+                {/* The name bleeds off the spread's trim and nothing prints over it: the deck and the cover sit
+                    under the name, in the paper it leaves */}
                 <div
                   data-axis={isMobile ? "block" : "inline"}
-                  className={isMobile ? "w-full flex flex-col pt-10" : "col-span-9 h-full flex flex-col justify-center pl-4"}
+                  className={isMobile ? "w-full flex flex-col gap-8 pt-10" : "col-span-9 h-full flex flex-col justify-center gap-[var(--s-5)] pl-4"}
                 >
                   <BleedName title={project.title} print={print} />
-                  <div
-                    className={
-                      isMobile
-                        ? "flex flex-col gap-8 -mt-[calc(var(--t-bleed)*0.16)]"
-                        : "flex items-start gap-[var(--s-5)] -mt-[calc(var(--t-bleed)*0.36)]"
-                    }
-                  >
-                    <div className={`deck ${isMobile ? "" : "flex-1 min-w-0"}`}>
+                  <div className={isMobile ? "flex flex-col gap-8" : "flex items-start gap-[var(--s-5)]"}>
+                    <div className={`deck is-ragged ${isMobile ? "" : "flex-1 min-w-0"}`}>
                       <p className={`plate ${print.deck}`}>{project.description}</p>
                     </div>
                     {(project.coverVideo || project.coverImage) && (
@@ -297,7 +305,7 @@ export default function ProjectPageClient({
                         className={`relative z-[1] flex-shrink-0 border border-primary/25 bg-background ${
                           isMobile
                             ? "w-4/5 self-end p-2"
-                            : `${coverWide ? "w-[42%]" : "w-[26%]"} -mt-[calc(var(--t-bleed)*0.3)] max-h-[60vh] p-3 md:p-4`
+                            : `${coverWide ? "w-[38%]" : "w-[22%]"} max-h-[40vh] p-3 md:p-4`
                         }`}
                         style={{ aspectRatio: `${mediaAspect(project.coverVideo || project.coverImage || "")}` }}
                       >
@@ -316,33 +324,10 @@ export default function ProjectPageClient({
               </div>
             )}
 
-            {/* EDITORIAL: the opening paragraph set as a lead in the display face, the rest as reading text under it */}
-            {screen.type === "editorial-text" && (() => {
-              const [lead, ...rest] = (screen.content ?? "").split("\n\n");
-              return (
-                <div
-                  className={
-                    isMobile
-                      ? "w-full flex flex-col gap-[var(--s-4)]"
-                      : "w-full h-full py-16 pb-24 grid grid-cols-12 gap-x-[var(--s-5)] content-center"
-                  }
-                >
-                  <p className={`wk-in font-display text-[length:var(--t-lead-serif)] leading-[1.04] tracking-[-0.01em] text-foreground ${isMobile ? "" : "col-span-9 max-w-[24ch]"}`}>
-                    {lead}
-                  </p>
-                  {rest.length > 0 && (
-                    <div
-                      className={`wk-in ${t.bodyProse} text-foreground space-y-[var(--s-2)] max-w-[38ch] ${isMobile ? "" : "col-start-7 col-span-6 mt-[var(--s-5)]"}`}
-                      style={{ "--i": 2 } as React.CSSProperties}
-                    >
-                      {rest.map((para, k) => (
-                        <p key={k}>{para}</p>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })()}
+            {/* INFO (AE Info boards 04 / 07 / 10): see components/works/Info */}
+            {screen.type === "editorial-text" && (
+              <Info screen={screen} project={project} isMobile={isMobile} opened={screens.map((x) => x.chapter ?? "")} />
+            )}
 
             {screen.type === "deliverable-breakdown" && <Breakdown {...sp} />}
             {screen.type === "video" && <Film {...sp} />}
@@ -363,7 +348,7 @@ export default function ProjectPageClient({
                 }
               >
                 <div
-                  className={`space-y-2 text-[12px] font-sans text-foreground ${
+                  className={`space-y-2 wk-cap text-foreground ${
                     isMobile ? "" : print.stack ? "col-start-8 col-span-5 row-start-1" : "col-start-1 col-span-4 row-start-1"
                   }`}
                 >
@@ -379,13 +364,14 @@ export default function ProjectPageClient({
                   stack={print.stack && !isMobile}
                   className={isMobile ? "" : print.stack ? "col-start-1 col-span-6 row-start-1 row-span-3 self-center" : "col-start-1 col-span-12 row-start-3"}
                 />
+                {/* the deck reads in its own field, never over the name */}
                 <div
                   className={`deck is-lg ${
                     isMobile
-                      ? "-mt-[calc(var(--t-bleed)*0.16+2rem)]"
+                      ? ""
                       : print.stack
-                        ? "col-start-1 col-span-5 row-start-1 row-span-3 self-center"
-                        : "col-start-1 col-span-10 row-start-4 -mt-[calc(var(--t-bleed)*0.45)]"
+                        ? "col-start-8 col-span-5 row-start-2 self-center"
+                        : "col-start-1 col-span-10 row-start-4 mt-[var(--s-4)]"
                   }`}
                 >
                   <p className={`plate ${print.deck}`}>
