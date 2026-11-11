@@ -1,7 +1,7 @@
-// Home: the print run, led by the work. Four sheets: the showreel under a one-line masthead (the name and the line,
-// set small), the manifesto with the clients' words under it, the works in rotation (one sheet that prints each
-// case study in turn, in that project's own inks, its contents opening the case page at each chapter), and the
-// record with the way into Works. Printed as sheets of one riso job (docs/design.md) and stacked in depth;
+// Home: the print run, led by the work. Three sheets: the showreel under a one-line masthead (the name and the line,
+// set small) with the manifesto beside it, the works in rotation (one sheet that prints each case study in turn,
+// in that project's own inks, its chapters opening the case page at each one), and the record with the clients'
+// words and the way into Works. Printed as sheets of one riso job (docs/design.md) and stacked in depth;
 // PrintRun floats the camera through them. Under reduced motion, on phones and on short screens they read top to bottom.
 // Server component; client islands: PrintRun (camera, page-fountain scope), PrintedVideo, WorkRotation, ClientWords, RegisterObserver.
 import Link from "next/link";
@@ -42,7 +42,8 @@ const PLATES: Record<string, string[]> = {
 };
 
 const [reel, ...cases] = projects;
-const reg = (i: number) => ({ "--i": i }) as React.CSSProperties;
+// a part's place in its sheet's choreography
+const cue = (o: number) => ({ "--o": o }) as React.CSSProperties;
 
 // each case as the rotation prints it: its credits, its pressed cover, and its contents, read off the case page
 // itself (the Info board's chapters, each an address on that page; a ledger's clients where it has no chapters)
@@ -69,56 +70,53 @@ export default function Home() {
   return (
     <main className="home">
       <PrintRun>
-        {/* frame 1 · the reel, under the masthead: the name and the line read as one sentence */}
+        {/* sheet 1 · the masthead, the reel and the statement beside it. Parts are cued in reading order (--o):
+            the camera prints them in and lifts them off (home.css, cues) */}
         <section className="sheet cover" aria-labelledby="hero-h">
-          <div className="cover-mast">
-            <h1 id="hero-h" className="cover-name t-italic cover-in" style={reg(0)}>Minh Quân</h1>
-            <p className="cover-line cover-in" style={reg(1)}>
+          <div className="cover-mast" data-o="" style={cue(0)}>
+            <h1 id="hero-h" className="cover-name t-italic">Minh Quân</h1>
+            <p className="cover-line">
               loves <Plates over="ink-blue" under="ink-violet" i={1}>moving</Plates> things around.
             </p>
           </div>
-          <div className="reel-frame">
-            <PrintedVideo className="cover-in" src={reel.coverVideo ?? "/media/showreel.mp4"} poster={reel.coverImage ?? "/media/showreel.jpg"} label="Showreel 2026" aspect="1280 / 720" sound />
+          <div className="reel-frame cue-press" data-o="" style={cue(1)}>
+            <PrintedVideo src={reel.coverVideo ?? "/media/showreel.mp4"} poster={reel.coverImage ?? "/media/showreel.jpg"} label="Showreel 2026" aspect="1280 / 720" sound />
           </div>
-          <p className="cover-cap">
-            <Link href={`/works/${reel.slug}`} className="cover-in" style={reg(3)}>
+          <p className="cover-cap" data-o="" style={cue(2)}>
+            <Link href={`/works/${reel.slug}`}>
               <span>{reel.title}</span>
               <span className="view-arrow" aria-hidden>→</span>
             </Link>
-            <span className="cover-in" style={reg(4)}>{reel.category}, {reel.year}</span>
+            <span>{reel.category}, {reel.year}</span>
           </p>
-        </section>
-
-        {/* sheet 2 · the statement, and the clients' words under it as the proof */}
-        <section className="sheet manifesto" aria-label="Manifesto">
-          <p className="manifesto-text reg-fade" data-reg="" style={reg(0)}>
+          <p className="manifesto-text" data-o="" style={cue(3)}>
             My craft is in making people stay and rewind. I believe motion and interaction is the{" "}
-            <Plates over="ink-violet" under="ink-indigo" i={1}>soul</Plates> of each brand, product, and experience.
+            <Plates over="ink-violet" under="ink-indigo" i={2}>soul</Plates> of each brand, product, and experience.
           </p>
-          <div className="manifesto-words">
-            <ClientWords quotes={TESTIMONIALS} />
-          </div>
         </section>
 
-        {/* sheet 3 · the works in rotation: every case study, one turn each */}
+        {/* sheet 2 · the works in rotation: every case study, one turn each */}
         <section className="sheet rotation" aria-label="Selected work">
           <WorkRotation works={ROTATION} />
         </section>
 
-        {/* last sheet · the record and the way in: the ledger, the collaborators, View Works */}
+        {/* last sheet · the record, the clients' words, and the way in */}
         <section className="sheet close" aria-label="Record">
-          <dl className="ledger">
+          <dl className="ledger" data-o="" style={cue(0)}>
             {STATS.map((s) => (
               <div key={s.label}><dd>{s.value}</dd><dt>{s.label}</dt></div>
             ))}
           </dl>
-          <div className="collab">
+          <div className="close-words" data-o="" style={cue(1)}>
+            <ClientWords quotes={TESTIMONIALS} />
+          </div>
+          <div className="collab" data-o="" style={cue(2)}>
             <p>Trusted Collaborators</p>
             <ul className="client-list">
               {BRANDS.map((b) => <li key={b}>{b}</li>)}
             </ul>
           </div>
-          <div className="view-works" data-blurmap="">
+          <div className="view-works" data-blurmap="" data-o="" style={cue(3)}>
             {/* the sign-off word, printed as 12.End prints "See ya!": black display ink, roughened, compound blur */}
             <Link href="/works">
               <span>View Works</span>

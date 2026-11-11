@@ -105,11 +105,12 @@ export default function WorkRotation({ works }: { works: RotationWork[] }) {
         {/* the cover, pressed in: a second, pointer-only way into the case; a sideways swipe turns the sheet */}
         <Link
           href={`/works/${w.slug}`}
-          className="rot-media"
+          className="rot-media cue-press"
+          data-o=""
           tabIndex={-1}
           aria-hidden
           draggable={false}
-          style={{ "--n": w.plates.length } as React.CSSProperties}
+          style={{ "--n": w.plates.length, "--o": 0 } as React.CSSProperties}
           onPointerDown={(e) => { swipe.current = { x: e.clientX, turned: false }; }}
           onPointerUp={(e) => {
             const dx = e.clientX - swipe.current.x;
@@ -128,7 +129,8 @@ export default function WorkRotation({ works }: { works: RotationWork[] }) {
         </Link>
 
         {/* what it was, for whom and when, then its chapters: each opens the case page at it */}
-        <div className="rot-side" key={w.slug}>
+        <div className="rot-side" data-o="" style={{ "--o": 1 } as React.CSSProperties}>
+          <div className="rot-side-in" key={w.slug}>
           <p className="rot-desc rot-in" style={{ "--k": 0 } as React.CSSProperties}>{w.description}</p>
           <p className="rot-credit rot-in" style={{ "--k": 1 } as React.CSSProperties}>{w.client}, {w.year}</p>
           <ul className="rot-contents" data-many={w.contents.length > 4 ? "" : undefined}>
@@ -138,10 +140,11 @@ export default function WorkRotation({ works }: { works: RotationWork[] }) {
               </li>
             ))}
           </ul>
+          </div>
         </div>
 
         {/* the name, in the project's own fountain (as its case cover prints it): the way in */}
-        <h2 className="rot-name">
+        <h2 className="rot-name" data-o="" style={{ "--o": 2 } as React.CSSProperties}>
           <Link href={`/works/${w.slug}`} aria-label={w.title}>
             <BleedName key={w.slug} as="div" title={w.title} print={w.print} className="rot-name-in" />
             <span className="view-arrow" aria-hidden>→</span>
@@ -150,7 +153,7 @@ export default function WorkRotation({ works }: { works: RotationWork[] }) {
       </div>
 
       {/* the index along the foot: every case by name; the held one's rule fills as its turn runs */}
-      <div className="rot-tabs" role="tablist" aria-label="Case studies" onKeyDown={onTabKey}>
+      <div className="rot-tabs" data-o="" style={{ "--o": 3 } as React.CSSProperties} role="tablist" aria-label="Case studies" onKeyDown={onTabKey}>
         {works.map((x, k) => (
           <button
             key={x.slug}

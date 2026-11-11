@@ -210,6 +210,9 @@ and stays inside the print metaphor:
   `cubic-bezier(0.16, 1, 0.3, 1)`, with inks staggered 60–90 ms apart (one drum after another).
 - Fountain plates drift slowly and continuously; they don't react to scroll speed.
 - Grain animates at 12 fps, never 60.
+- The home run: only the camera moves sheets; nothing inside a sheet is displaced by the travel. Each part of a sheet
+  is cued instead: printing in, in reading order, on `--ease-print` over `--t-register`, `--t-ink-stagger` apart;
+  lifting off quicker on `--ease-lift`; media print in under a paper wipe. One rule set for every sheet (home.css, cues).
 - Reduced motion: plates appear already in register with a 200 ms fade; fountains and grain hold a single frame.
   Screens and offsets stay, since they're static print properties.
 

@@ -1,5 +1,5 @@
-/* Home: the print run (design.md §2–4, §7), led by the work. Four sheets on a strict 12-column grid: the reel,
-   the manifesto, the works in rotation, the record.
+/* Home: the print run (design.md §2–4, §7), led by the work. Three sheets on a strict 12-column grid: the reel
+   and the manifesto, the works in rotation, the record with the clients' words.
    Flow mode (default, phones, short screens, reduced motion): sheets read top to bottom, each opened by a
    hairline rule. 3D mode (.run.is-3d, set by PrintRun): sheets stack in depth inside a sticky stage and the
    camera dollies through them; sheets carry ink only, so they overprint each other (multiply) in passing. */
@@ -40,10 +40,9 @@
 .run.is-3d:not([data-painted]) .sheet + .sheet, .run.is-3d .sheet[data-off] { opacity: 0; visibility: hidden; }
 /* keyboard users (html.kbd, set by PrintRun on Tab) keep every sheet focusable: focus calls the camera to it */
 html.kbd .run.is-3d .sheet { visibility: visible; }
-.run.is-3d .sheet:nth-child(1) { z-index: 4; }
-.run.is-3d .sheet:nth-child(2) { z-index: 3; }
-.run.is-3d .sheet:nth-child(3) { z-index: 2; }
-.run.is-3d .sheet:nth-child(4) { z-index: 1; }
+.run.is-3d .sheet:nth-child(1) { z-index: 3; }
+.run.is-3d .sheet:nth-child(2) { z-index: 2; }
+.run.is-3d .sheet:nth-child(3) { z-index: 1; }
 /* misregistration is driven by depth: far sheets print wide off register, and settle at the camera plane */
 .run.is-3d .plates > .under { transition: none; transform: translate3d(calc(var(--rx) * var(--mis, 1)), calc(var(--ry) * var(--mis, 1)), 0); }
 
@@ -60,42 +59,29 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 }
 .video-toggle:hover, .video-toggle:focus-visible { background: var(--ink-black); color: var(--paper); }
 
-/* ---------- frame 1 · the reel under the masthead ---------- */
-/* the name and the line run as one sentence at list size; the reel takes the sheet, its caption is the way in */
-.cover { --reel-w: min(100%, calc(63svh * 16 / 9)); align-content: center; row-gap: var(--s-2); }
+/* ---------- sheet 1 · the reel, and the statement beside it ----------
+   The name and the line run as one sentence at list size across the head; the reel takes columns 1–7 with its
+   caption under it (the way into the reel); the manifesto stands in the quiet zone 9–12 on the reel's foot. */
+.cover { --reel-w: min(100%, calc(52svh * 16 / 9)); align-content: center; row-gap: var(--s-3); }
 .cover-mast {
-  grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.28em;
+  grid-column: 1 / -1; grid-row: 1; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.28em;
   font-family: var(--font-display); font-size: var(--t-list); line-height: 1.1; letter-spacing: -0.01em;
 }
 .cover-name { margin: 0; font-size: inherit; font-weight: 400; line-height: inherit; letter-spacing: inherit; }
-.reel-frame { grid-column: 1 / -1; width: var(--reel-w); }
-.cover-cap { grid-column: 1 / -1; width: var(--reel-w); display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); font-size: var(--t-body); }
-/* the entrance: each part of the cover settles up onto the sheet, one after another. Transform only, so the
-   masthead and the reel poster are painted from the first frame (an opacity fade here delayed first paint). */
-.cover-in { animation: cover-in var(--t-register) var(--ease-print) calc(var(--i, 0) * var(--t-ink-stagger)) both; }
-.reel-frame .cover-in { --i: 2; }
-@keyframes cover-in { from { transform: translate3d(0, 1.5rem, 0); } }
-@media (prefers-reduced-motion: reduce) { .cover-in { animation: none; } }
+.reel-frame { grid-column: 1 / 8; grid-row: 2; width: var(--reel-w); }
+.cover-cap { grid-column: 1 / 8; grid-row: 3; width: var(--reel-w); display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); font-size: var(--t-body); }
 .cover-cap a { color: inherit; text-decoration: none; display: inline-flex; align-items: baseline; gap: 0.4em; padding-block: 0.35em; }
-
-/* ---------- sheet 2 · the statement ----------
-   The manifesto set large across eleven columns, indented into the sheet; the clients' words hang under a
-   hairline in the quiet half, the proof under the claim. */
-.manifesto { align-content: center; row-gap: var(--s-6); }
 .manifesto-text {
-  grid-column: 1 / 12; z-index: 1;
-  font-family: var(--font-display); font-size: var(--t-lead); line-height: 1.02; letter-spacing: -0.025em;
-  text-indent: 4ch; text-wrap: pretty; mix-blend-mode: var(--blend);
+  grid-column: 9 / -1; grid-row: 2; align-self: end; z-index: 1;
+  font-family: var(--font-display); font-size: calc(var(--t-lead-serif) * 0.8); line-height: 1.08; letter-spacing: -0.015em;
+  text-indent: 2ch; text-wrap: pretty; mix-blend-mode: var(--blend);
 }
 .manifesto-text .plates { text-indent: 0; } /* the indent opens the paragraph only, never the inline lockup */
-.manifesto-words { grid-column: 7 / -1; border-top: 1px solid var(--ink-black); padding-top: var(--s-2); }
-.run.is-3d .manifesto-text { font-size: min(var(--t-lead), 7.4svh); }
 
 /* the client quotes: one pull quote, turned by its own counter */
 .words { display: grid; gap: var(--s-2); margin: 0; }
-.words-quote { margin: 0; font-family: var(--font-display); font-size: clamp(1.2rem, 1.9vw, 2.1rem); line-height: 1.1; letter-spacing: -0.015em; max-width: 34ch; text-wrap: pretty; animation: words-in 900ms var(--ease-print) both; }
+.words-quote { margin: 0; font-family: var(--font-display); font-size: clamp(1.2rem, 1.9vw, 2.1rem); line-height: 1.1; letter-spacing: -0.015em; max-width: 34ch; text-wrap: pretty; animation: cue-settle var(--t-register) var(--ease-print) both; }
 .words-quote p::before { content: "\201C"; display: inline-block; width: 0.5em; margin-left: -0.5em; color: var(--ink-violet); }
-@keyframes words-in { from { opacity: 0; transform: translate3d(0, 0.5rem, 0); } to { opacity: 1; transform: none; } }
 .words-credit { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-2); font-size: var(--t-label); }
 .words-turn { display: inline-flex; align-items: baseline; gap: 0.75em; font-variant-numeric: tabular-nums; }
 .words-turn button { font: inherit; padding: 0.15em 0.4em; border: 0; background: none; color: inherit; cursor: pointer; transition: transform 300ms var(--ease-print), color 300ms var(--ease-print); }
@@ -129,14 +115,15 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 /* the press feed: each plate is laid in under a paper sheet that runs off it, one after another */
 .rot-plate::before {
   content: ""; position: absolute; inset: 0; z-index: 2; background: var(--paper); transform-origin: 100% 50%;
-  animation: rot-feed 900ms var(--ease-print) calc(var(--k, 0) * 90ms) both; pointer-events: none;
+  animation: rot-feed var(--t-register) var(--ease-print) calc(var(--k, 0) * var(--t-ink-stagger)) both; pointer-events: none;
 }
-.rot-plate > :is(video, img) { animation: rot-press 1400ms var(--ease-print) calc(var(--k, 0) * 90ms) both; transition: transform 700ms var(--ease-print); }
+.rot-plate > :is(video, img) { animation: rot-press calc(var(--t-register) * 1.6) var(--ease-print) calc(var(--k, 0) * var(--t-ink-stagger)) both; transition: transform 700ms var(--ease-print); }
 .rot-media:hover .rot-plate > :is(video, img), .rot:has(.rot-name a:is(:hover, :focus-visible)) .rot-plate > :is(video, img) { transform: scale(1.025); }
 @keyframes rot-feed { from { transform: scaleX(1); } to { transform: scaleX(0); } }
-@keyframes rot-press { from { transform: scale(1.08); } }
+@keyframes rot-press { from { transform: scale(1.06); } }
 
-.rot-side { grid-column: 9 / -1; grid-row: 1; display: grid; gap: var(--s-2); }
+.rot-side { grid-column: 9 / -1; grid-row: 1; }
+.rot-side-in { display: grid; gap: var(--s-2); }
 .rot-desc { font-size: var(--t-body); line-height: 1.35; max-width: 42ch; text-wrap: pretty; }
 .rot-credit { font-size: var(--t-body); line-height: 1.35; font-style: italic; }
 .rot-contents { list-style: none; margin: var(--s-2) 0 0; padding: 0; border-top: 1px solid var(--ink-black); }
@@ -157,12 +144,11 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 .rot-name .bleed-fill > canvas { -webkit-mask-image: none; mask-image: none; }
 .rot-name .view-arrow { font-size: 0.5em; color: var(--ink); }
 .rot-name a:is(:hover, :focus-visible) .view-arrow, .rot:has(.rot-media:hover) .rot-name .view-arrow { transform: translate3d(0.2em, 0, 0); }
-.rot-name-in { animation: rot-rise 1000ms var(--ease-print) 120ms both; }
-@keyframes rot-rise { from { opacity: 0; transform: translate3d(-0.03em, 0.22em, 0); } }
+.rot-name-in { animation: cue-settle var(--t-register) var(--ease-print) calc(var(--t-cue-lead) + var(--t-ink-stagger)) both; }
 
 /* turn-in for the quiet zone: each line settles a beat after the one before */
-.rot-in { animation: rot-in 700ms var(--ease-print) calc(80ms + var(--k, 0) * var(--t-ink-stagger)) both; }
-@keyframes rot-in { from { opacity: 0; transform: translate3d(0, 0.6em, 0); } }
+.rot-in { animation: cue-settle var(--t-register) var(--ease-print) calc(var(--t-cue-lead) + var(--k, 0) * var(--t-ink-stagger)) both; }
+@keyframes cue-settle { from { opacity: 0; transform: translate3d(0, var(--cue-rise), 0); } }
 
 /* the index: the cases by name, three columns each. Its rule is the timer: the held turn's fills in the deck ink
    while the sheet runs, and the turn moves on when it is full (WorkRotation listens for the end) */
@@ -197,26 +183,29 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
   .rot-tab-title, .rot-contents a { transition: none; }
 }
 
-/* ---------- last sheet · the record and the way in ----------
-   The record as one ledger line over a hairline, the collaborators under it, and View Works in the display ink
-   on the baseline of the quiet half. */
-.close { align-content: center; grid-template-rows: auto auto; row-gap: var(--s-5); }
+/* ---------- last sheet · the record, the clients' words, the way in ----------
+   The record as one ledger line over a hairline with the clients' words on their own rule in the quiet zone; the
+   collaborators under the record, and View Works in the display ink on the baseline of the quiet half. */
+.close { align-content: center; grid-template-rows: auto auto; row-gap: var(--s-6); }
 .ledger { grid-column: 1 / 8; grid-row: 1; margin: 0; padding-top: var(--s-2); border-top: 1px solid var(--ink-black); display: grid; grid-template-columns: repeat(4, auto); justify-content: start; column-gap: var(--s-5); align-self: start; }
 .ledger > div { display: grid; }
 .ledger dd { margin: 0; font-family: var(--font-display); font-size: var(--t-lead); line-height: 1; letter-spacing: -0.02em; }
 .ledger dt { order: 2; font-size: var(--t-label); margin-top: 0.3em; }
+.close-words { grid-column: 9 / -1; grid-row: 1; padding-top: var(--s-2); border-top: 1px solid var(--ink-black); }
 .collab { grid-column: 1 / 6; grid-row: 2; align-self: end; display: grid; gap: var(--s-1); }
 .collab > p { font-size: var(--t-body); font-style: italic; }
 .client-list { list-style: none; margin: 0; padding: 0; columns: 2; column-gap: var(--gutter); font-size: var(--t-body); line-height: 1.5; }
-.view-works { grid-column: 7 / -1; grid-row: 1 / 3; align-self: end; justify-self: end; margin: 0; font-family: var(--font-display-italic); font-style: italic; font-size: clamp(3rem, 8.4vw, 9rem); line-height: 0.82; letter-spacing: -0.04em; }
+.view-works { grid-column: 7 / -1; grid-row: 2; align-self: end; justify-self: end; margin: 0; font-family: var(--font-display-italic); font-style: italic; font-size: clamp(3rem, 8.4vw, 9rem); line-height: 0.82; letter-spacing: -0.04em; }
 .view-works a { color: var(--ink-display); text-decoration: none; display: inline-flex; align-items: baseline; gap: 0.1em; white-space: nowrap; padding-block: 0.12em; }
 .view-arrow { display: inline-block; transition: transform 500ms var(--ease-print); }
 .view-works a:hover .view-arrow, .view-works a:focus-visible .view-arrow { transform: translate3d(0.12em, 0, 0); }
 
 /* ---------- tablet ---------- */
 @media (max-width: 1024px) {
-  .manifesto-text { grid-column: 1 / -1; }
-  .manifesto-words { grid-column: 5 / -1; }
+  .cover { --reel-w: 100%; }
+  .reel-frame, .cover-cap { grid-column: 1 / -1; }
+  .manifesto-text { grid-column: 1 / 11; grid-row: 4; font-size: var(--t-lead-serif); }
+  .close-words { grid-column: 1 / -1; grid-row: auto; }
   .rot { --rot-h: 40svh; }
   .rot-media { grid-column: 1 / 8; }
   .rot-side { grid-column: 8 / -1; }
@@ -227,7 +216,8 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 @media (max-width: 1024px) and (orientation: portrait) {
   .rot { --rot-h: 34svh; }
   .rot-media { grid-column: 1 / -1; }
-  .rot-side { grid-column: 1 / -1; grid-row: 2; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); align-items: start; }
+  .rot-side { grid-column: 1 / -1; grid-row: 2; }
+  .rot-side-in { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); align-items: start; }
   .rot-contents { grid-column: 1 / -1; }
   .rot-name { grid-row: 3; }
 }
@@ -237,6 +227,7 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
   .sheet > * { grid-column: 1 / -1 !important; }
   .view-works { justify-self: start; }
   .ledger { grid-template-columns: repeat(2, auto); row-gap: var(--s-3); }
+  .cover > *, .close > * { grid-row: auto !important; }
   .rot { --t-entry: var(--t-body); grid-template-columns: minmax(0, 1fr); }
   .rot-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: var(--s-2); padding-top: var(--s-6); }
   .rot-tab { grid-column: span 1; }
@@ -246,7 +237,7 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
   /* every turn holds the same height on the page (the content after it never jumps): the cover box, two lines of
      name and four rows of chapters are reserved whatever the case fills; the description stays on the case page */
   .rot { --rot-h: 34svh; --t-name: clamp(2.5rem, 12vw, 4.5rem); }
-  .rot-side { grid-row: 3; grid-template-columns: minmax(0, 1fr); }
+  .rot-side { grid-row: 3; }
   .rot-desc { display: none; }
   .rot-credit { min-height: 2lh; }
   .rot-name { grid-row: 2; min-height: calc(2 * 0.86em); }
@@ -260,33 +251,54 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 
 /* ---------- flow mode (phones, short screens, reduced motion): one spread per screen ----------
    The desktop run shows one sheet at a time; read top to bottom, each sheet still gets the whole screen, opens on a
-   hairline, and composes inside it with paper to spare. The scroll itself drives the print: the masthead lifts away,
-   the manifesto hangs in, the rotation's cover presses up to size, and the sign-off slides onto the sheet. All compositor-only
-   (transform, opacity) on the scroll timeline; without scroll timelines or under reduced motion it reads static. */
+   hairline, and composes inside it with paper to spare. Its parts are cued like the run's (below). */
 .run:not(.is-3d) .sheet { min-height: 100svh; align-content: center; padding-block: var(--s-7); }
 .run:not(.is-3d) .sheet + .sheet { border-top: 1px solid var(--ink-black); }
 .run:not(.is-3d) .cover { padding-block: var(--s-7) var(--s-6); }
-.run:not(.is-3d) .close { row-gap: var(--s-6); }
-.run:not(.is-3d) .close > :is(.ledger, .collab, .view-works) { margin-top: 0; }
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .run:not(.is-3d) .cover-mast { animation: flow-lift linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
-    .run:not(.is-3d) .manifesto > * { animation: flow-hang linear both; animation-timeline: view(); animation-range: entry 0% entry 80%; }
-    .run:not(.is-3d) .rot-media { animation: flow-press linear both; animation-timeline: view(); animation-range: entry 0% cover 40%; transform-origin: 0 100%; }
-    .run:not(.is-3d) .close > * { animation: flow-hang linear both; animation-timeline: view(); animation-range: entry 0% entry 80%; }
-    .run:not(.is-3d) .close > .view-works { animation-name: flow-slide; animation-range: entry 0% cover 40%; }
-  }
-}
-@keyframes flow-lift { to { transform: translate3d(0, -14svh, 0); opacity: 0; } }
-@keyframes flow-press { from { transform: scale(0.84); } to { transform: none; } }
-@keyframes flow-hang { from { opacity: 0; transform: translate3d(0, 2.5rem, 0); } to { opacity: 1; transform: none; } }
-@keyframes flow-slide { from { opacity: 0; transform: translate3d(-24%, 0, 0); } to { opacity: 1; transform: none; } }
 
-/* ---------- 3D: depth inside a sheet ----------
-   One rule for every layer: PrintRun moves each layer radially from the vanishing point by --d (1 ahead → 0 held →
-   -1 passed) times its depth --z. Ahead, layers gather toward the centre; passing, they spread out of frame, the
-   nearest (highest --z) fastest. Same direction everywhere, only the rate differs: that difference is the parallax. */
-.run.is-3d [data-z] { will-change: transform; }
-.run.is-3d.is-measuring [data-z] { transform: none !important; }
+/* ---------- cues: every part of every sheet prints in and lifts off the same way ----------
+   Only the camera moves sheets; nothing inside one is displaced by the travel. PrintRun marks the sheet on the press
+   data-cue="in", one still ahead "ahead", one passed "past" (flow mode: an observer). A part ([data-o]) prints in,
+   in reading order (--o, one drum after another), settling up onto the sheet on the print curve; it lifts off
+   faster, upward, on the lift curve, all but together, as a sheet is pulled from the drum. Come back to a passed
+   sheet and its parts drop back in from above: the motion always follows the travel. Media (.cue-press) print in
+   under a paper sheet that runs off them, as the rotation's covers do on each turn. Transform and opacity only.
+   Without script ([data-cued] unset) every part simply stands. */
+.run[data-cued] .sheet [data-o] {
+  transition:
+    opacity var(--t-lift) var(--ease-lift) calc(var(--o, 0) * var(--t-lift-stagger)),
+    transform var(--t-lift) var(--ease-lift) calc(var(--o, 0) * var(--t-lift-stagger));
+}
+.run[data-cued] .sheet[data-cue="in"] [data-o] {
+  transition:
+    opacity var(--t-cue-fade) var(--ease-print) calc(var(--t-cue-lead) + var(--o, 0) * var(--t-ink-stagger)),
+    transform var(--t-register) var(--ease-print) calc(var(--t-cue-lead) + var(--o, 0) * var(--t-ink-stagger));
+}
+.run[data-cued] .sheet[data-cue="ahead"] [data-o] { opacity: 0; transform: translate3d(0, var(--cue-rise), 0); }
+.run[data-cued] .sheet[data-cue="past"] [data-o] { opacity: 0; transform: translate3d(0, calc(var(--cue-rise) * -0.6), 0); }
+/* media stay put and are covered instead: the paper runs back over them as they leave, and off them as they print */
+.run[data-cued] .sheet[data-cue] [data-o].cue-press { opacity: 1; transform: none; }
+.cue-press { position: relative; }
+.run[data-cued] .cue-press::before {
+  content: ""; position: absolute; inset: 0; z-index: 3; background: var(--paper); pointer-events: none;
+  transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform var(--t-lift) var(--ease-lift) calc(var(--o, 0) * var(--t-lift-stagger));
+}
+.run[data-cued] .sheet:is([data-cue="ahead"], [data-cue="past"]) .cue-press::before { transform: scaleX(1); }
+.run[data-cued] .sheet[data-cue="in"] .cue-press::before {
+  transform-origin: 100% 50%;
+  transition: transform var(--t-register) var(--ease-print) calc(var(--t-cue-lead) + var(--o, 0) * var(--t-ink-stagger));
+}
+/* the first sheet on load: the same settle, transform only, so the masthead and the reel poster paint from the
+   first frame (an opacity fade here delayed first paint). Backwards fill: once played, the cues own the parts. */
+.cover [data-o] { animation: cue-first var(--t-register) var(--ease-print) calc(var(--t-cue-lead) + var(--o, 0) * var(--t-ink-stagger)) backwards; }
+@keyframes cue-first { from { transform: translate3d(0, var(--cue-rise), 0); } }
+@media (prefers-reduced-motion: reduce) {
+  /* the same states, as a short fade in place: no travel, no stagger held at zero, no paper */
+  .run[data-cued] .sheet [data-o], .run[data-cued] .sheet[data-cue="in"] [data-o] { transition: opacity 200ms var(--ease-print) 0s; }
+  .run[data-cued] .sheet[data-cue] [data-o] { transform: none; }
+  .run[data-cued] .cue-press::before { display: none; }
+  .cover [data-o] { animation: none; }
+}
 
 /* speed lens: PrintRun blurs each moving layer by its place on a viewport-space ramp (content only) */

@@ -83,6 +83,14 @@
   --ease-print: var(--ease-editorial);
   --t-register: 850ms;
   --t-ink-stagger: 75ms;
+  /* cues (home.css): a part printing in rides --t-register on --ease-print; lifting off is quicker, on an
+     accelerating curve, the parts all but together */
+  --t-cue-fade: 600ms;
+  --t-cue-lead: 140ms;   /* the camera settles before the first part prints */
+  --t-lift: 480ms;
+  --t-lift-stagger: 30ms;
+  --ease-lift: cubic-bezier(0.7, 0, 0.84, 0);
+  --cue-rise: 1.5rem;    /* how far a part settles onto the sheet (cues, turns, quotes) */
 }
 
 /* ---------- dark stock ----------
