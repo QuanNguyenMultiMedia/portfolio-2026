@@ -3,7 +3,7 @@
 // through RetroDither), and an adjustment layer roughens and diffuses the result. Here the same three parts are
 // the site's own: the fountain shader (Fountain clipText) cut to the glyphs, then BlurMap's roughen → compound
 // blur stack on the plate ([data-blurmap]), which also plays the haze entrance. Each letter is its own cut
-// ([data-clip]), so the baselines step a little as on the boards. Colorama is a gradient map per project (RAMPS). `stack` stands each word as a column of capitals (11.HerondLabs_End).
+// ([data-clip]); every letter holds the baseline. Colorama is a gradient map per project (RAMPS). `stack` stands each word as a column of capitals (11.HerondLabs_End).
 import { useId } from "react";
 import Fountain from "./Fountain";
 import type { Project } from "@/data/projects";
@@ -19,8 +19,6 @@ const RAMPS: Partial<Record<NonNullable<Project["print"]>["fountain"], string[]>
 };
 const channel = (ramp: string[], i: number) => ramp.map((h) => (parseInt(h.slice(1 + i * 2, 3 + i * 2), 16) / 255).toFixed(3)).join(" ");
 
-// per-letter baseline step, in em: a fixed sequence, so server and client print the same sheet
-const STEP = [0, 0.03, -0.02, 0.01, 0.05, 0.035, -0.015, 0.02, -0.03, 0.04, 0.005, -0.025];
 // a different frame of the loop for each project, so no two names print the same ink
 const PHASE: Record<NonNullable<Project["print"]>["fountain"], number> = { mint: 0, azure: 1.7, herond: 3.1, electric: 4.4, tide: 5.6 };
 
@@ -37,7 +35,6 @@ export default function BleedName({
   as?: "h1" | "h2" | "div";
   className?: string;
 }) {
-  let k = 0;
   const ramp = RAMPS[print.fountain];
   const mapId = `ramp-${useId().replace(/:/g, "")}`;
   return (
@@ -73,19 +70,11 @@ export default function BleedName({
         {title.split(" ").map((word, w) => (
           <span key={w} aria-hidden className="bleed-word" style={{ "--w": w } as React.CSSProperties}>
             {/* the plate's mask is cut from each letter's text, so capitals are set in the text, never by CSS */}
-            {Array.from(stack ? word.toUpperCase() : word).map((ch, c) => {
-              const i = k++;
-              return (
-                <span
-                  key={c}
-                  data-clip=""
-                  className="ink-knock bleed-letter"
-                  style={{ "--jy": `${STEP[i % STEP.length]}em` } as React.CSSProperties}
-                >
-                  {ch}
-                </span>
-              );
-            })}
+            {Array.from(stack ? word.toUpperCase() : word).map((ch, c) => (
+              <span key={c} data-clip="" className="ink-knock bleed-letter">
+                {ch}
+              </span>
+            ))}
           </span>
         ))}
       </Fountain>

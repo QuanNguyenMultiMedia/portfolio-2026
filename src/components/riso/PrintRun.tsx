@@ -24,8 +24,9 @@ const ENABLED = "(min-width: 768px) and (min-height: 600px) and (prefers-reduced
 // layer depth inside a sheet: how fast it parts from the vanishing point as the camera passes (1 = the sheet's own plane)
 const LAYERS: [string, number][] = [
   [".cover-mast", 1.7], [".reel-frame", 1], [".cover-cap", 1.5],
-  [".work-media", 1], [".work-side", 1.6], [".work-title", 1.9],
-  [".manifesto-text", 1], [".ledger", 1.3], [".collab", 1.5], [".view-works", 1.9],
+  [".manifesto-text", 1], [".manifesto-words", 1.6],
+  [".rot-credits", 1.4], [".rot-media", 1], [".rot-side", 1.6], [".rot-name", 1.9], [".rot-tabs", 1.3],
+  [".ledger", 1.3], [".collab", 1.5], [".view-works", 1.9],
 ];
 const HOLD = 0.08; // |camera offset| from the nearest sheet, in sheets, inside which it counts as held
 const SPREAD = 0.55; // radial travel per unit depth, in sheet widths/heights at |d| = 1

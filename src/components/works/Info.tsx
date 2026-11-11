@@ -14,7 +14,9 @@ import { aspectOf, type Screen } from "./kit";
 import type { Project } from "@/data/projects";
 import { t } from "@/lib/designSystem";
 
-export const chapterId = (c: string) => `ch-${c.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+import { chapterId } from "@/lib/chapters";
+
+export { chapterId };
 
 /** where each collage piece sits, as on the boards: one lead piece, the rest tucked around it */
 const SPOTS: CSSProperties[] = [

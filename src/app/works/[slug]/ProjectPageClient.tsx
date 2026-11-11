@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, use } from "react";
+import { useEffect, useRef, use } from "react";
 import Link from "next/link";
 import { projects } from "@/data/projects";
 import { t } from "@/lib/designSystem";
@@ -151,6 +151,14 @@ export default function ProjectPageClient({
   // frame is what made it stutter. 1:1 with the pointer while held, then a flick carries on
   // through Lenis's own easing. A drag past the threshold swallows the click it ends on.
   const drag = useRef({ active: false, moved: false, x: 0, scroll: 0, lastX: 0, lastT: 0, v: 0 });
+
+  // arriving on a chapter's address (/works/<slug>#ch-…, the home rotation's contents): open the spread at it
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (!id.startsWith("ch-")) return;
+    const raf = requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ behavior: "instant" as ScrollBehavior, inline: "start", block: "start" }));
+    return () => cancelAnimationFrame(raf);
+  }, [slug]);
 
   const project = projects.find((p) => p.slug === slug);
 

@@ -272,13 +272,12 @@ html.plate-route:not(.plate-faint) main { --ink-display: rgb(0 0 0 / 0.92); --in
 .bleed-fill > canvas { -webkit-mask-image: linear-gradient(90deg, #000 20%, rgb(0 0 0 / 0.45)); mask-image: linear-gradient(90deg, #000 20%, rgb(0 0 0 / 0.45)); }
 .bleed-word { display: inline-block; margin-right: 0.22em; }
 .bleed-word:last-child { margin-right: 0; }
-.bleed-letter { display: inline-block; position: relative; top: var(--jy); }
+.bleed-letter { display: inline-block; } /* every letter on the baseline: no per-letter stepping, anywhere */
 /* columns of capitals (11.HerondLabs_End), sized so the longest word stands inside the sheet's height */
 .bleed-name.is-stack { --t-bleed: min(16rem, 12.5vh); line-height: 0.8; }
 .bleed-name.is-stack .fountain-content { display: flex; align-items: flex-start; gap: 0.08em; }
 .bleed-name.is-stack .bleed-word { display: flex; flex-direction: column; align-items: center; margin: 0;
   margin-top: calc(var(--w) * 0.55em); } /* margin, not an offset: the plate's box must hold the column */
-.bleed-name.is-stack .bleed-letter { top: 0; }
 /* portrait sheet: one word to a line, stacked down the page, each still bleeding off the right trim */
 @media (max-width: 767px) {
   .bleed-name { --t-bleed: clamp(5.5rem, 36vw, 12rem); line-height: 0.84; }

@@ -132,6 +132,11 @@ Display serif at 0.85–0.95 leading. Lead sans at 1.0 leading, −0.02em. Body 
 
 ### Type behaviours
 
+- **Every letter holds the baseline.** No per-letter baseline stepping, jitter or scattered glyphs, anywhere: the
+  wobble read as broken type. Roughen and compound blur stay light enough that Junicode keeps its drawn shape
+  (BlurMap: border 0.8, σ 2.4 comp px), legibility before AE fidelity.
+- **No eyebrows or counters.** No index numerals (01, 02 / 04), kicker labels over headings, or category lines under
+  titles. Type size, rules and position carry the order.
 - **Double-plate lockups.** Display words print twice in two inks, off register (see Register).
 - **Overprinted stacks.** Project names run as stacked serif capitals (`11` "HEROND / BROWSER") printed over the
   sans lead, so the overlap creates a third colour.

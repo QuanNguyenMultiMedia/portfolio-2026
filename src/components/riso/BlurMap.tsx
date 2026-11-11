@@ -16,11 +16,13 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { isPhone } from "@/lib/gpu";
 
 const COMP_TYPE = 197; // px: the type's rendered size in the comp
-const ROUGH_BORDER = 2.4;
+// AE's border is 2.4; at that strength on the web the serifs wobble and the face stops reading as Junicode. A third of
+// it keeps the ink edge (no vector-clean outline) while every stroke, serif and bowl holds its drawn shape.
+const ROUGH_BORDER = 0.8;
 const ROUGH_SCALE = 11;
-// σ at map = 1, in comp px. AE's is 3.8 (1.1 × 3 × the adjustment layer's scale). 6 (0.03 em) softens a word
-// hard while every letter still reads: the steady state never costs legibility.
-const MAX_SIGMA = 6;
+// σ at map = 1, in comp px. AE's is 3.8 (1.1 × 3 × the adjustment layer's scale). 2.4 (0.012 em): the haze
+// breathes across the word as a soft ink edge, never as a smear, so the letterforms stay legible at every size.
+const MAX_SIGMA = 2.4;
 // Entrance: the whole word starts deep in the haze and settles onto the steady map, once, when it first shows.
 // A Gaussian over the finished stack whose σ eases to 0 (σ 0 passes the input through untouched).
 const INTRO_SIGMA = 28; // comp px: 0.14 em, the word is a soft cloud
