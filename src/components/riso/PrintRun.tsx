@@ -23,9 +23,8 @@ const ENABLED = "(min-width: 768px) and (min-height: 600px) and (prefers-reduced
 
 // layer depth inside a sheet: how fast it parts from the vanishing point as the camera passes (1 = the sheet's own plane)
 const LAYERS: [string, number][] = [
-  [".hero-name", 1], [".hero-line", 1.7],
-  [".reel-frame", 1.1],
-  [".proof-1", 0.8], [".proof-2", 1.5], [".proof-3", 1.2], [".proof-4", 1.8], [".proof-5", 1.4], [".proof-6", 1.6], [".proof-7", 0.9], [".proof-8", 1.3], [".drift-quote", 1.1],
+  [".cover-mast", 1.7], [".reel-frame", 1], [".cover-cap", 1.5],
+  [".work-media", 1], [".work-side", 1.6], [".work-title", 1.9],
   [".manifesto-text", 1], [".ledger", 1.3], [".collab", 1.5], [".view-works", 1.9],
 ];
 const HOLD = 0.08; // |camera offset| from the nearest sheet, in sheets, inside which it counts as held
@@ -269,8 +268,7 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
     mq.addEventListener("change", setup);
     window.addEventListener("scroll", wake, { passive: true });
     window.addEventListener("resize", onResize);
-    window.addEventListener("run-measure", onResize); // a sheet re-laid itself out (the works wall re-hangs)
-    window.addEventListener("pointermove", onPointer, { passive: true });
+        window.addEventListener("pointermove", onPointer, { passive: true });
     run.addEventListener("focusin", onFocus);
     window.addEventListener("keydown", onTab);
     window.addEventListener("run-goto", onGoto);
@@ -288,7 +286,6 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
       mq.removeEventListener("change", setup);
       window.removeEventListener("scroll", wake);
       window.removeEventListener("resize", onResize);
-      window.removeEventListener("run-measure", onResize);
       window.removeEventListener("pointermove", onPointer);
       run.removeEventListener("focusin", onFocus);
       io.disconnect();

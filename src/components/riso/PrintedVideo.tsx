@@ -1,7 +1,8 @@
 "use client";
-// Work footage printed onto the page: muted loop that plays only on screen,
+// Work footage printed onto the page: muted loop that plays only while its sheet holds the view (useSheetLive),
 // holds its poster under reduced motion, with a pause/play control so nothing is inert.
 import { useEffect, useRef, useState } from "react";
+import { useSheetLive } from "@/hooks/useSheetLive";
 
 export default function PrintedVideo({
   src,
@@ -22,19 +23,16 @@ export default function PrintedVideo({
   const [playing, setPlaying] = useState(false);
   const [userPaused, setUserPaused] = useState(false);
   const [muted, setMuted] = useState(true);
+  const live = useSheetLive(ref);
 
   useEffect(() => {
     const v = ref.current;
     if (!v) return;
     // reduced motion: never autoplay; the poster holds until the viewer presses play
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting && !userPaused) v.play().catch(() => {});
-      else v.pause();
-    }, { threshold: 0.2 });
-    io.observe(v);
-    return () => io.disconnect();
-  }, [userPaused]);
+    if (live && !userPaused) v.play().catch(() => {});
+    else v.pause();
+  }, [live, userPaused]);
 
   const toggle = () => {
     const v = ref.current;

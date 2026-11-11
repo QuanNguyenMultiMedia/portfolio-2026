@@ -69,7 +69,6 @@
   --t-body: clamp(0.95rem, 1.25vw, 1.25rem);
   --t-label: clamp(0.75rem, 0.78vw, 0.8rem);  /* captions, kickers, masthead: never under 12px */
   --t-lead-serif: clamp(1.6rem, 3.4vw, 3.6rem); /* pull quote */
-  --t-cover: 20.6vw;
   --t-bleed: clamp(8rem, 36vh, 30rem);          /* project name bled across a spread (MainTitle.aep end comps) */
   --t-deck: clamp(1.5rem, 2.5vw, 3.25rem);      /* the deck that overprints it */
   --t-deck-lg: clamp(2rem, 4.6vw, 6rem);         /* the end comps' deck: 128px on the 2800px sheet */                            /* fitted so the cover name fills the 12-col measure */
