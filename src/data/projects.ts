@@ -60,7 +60,8 @@ export interface Project {
       | "wall" // a dense wall of cuts on black, drifting, as on the AE social board (items)
       | "cuts" // a reel and its edit decision list: every cut at its timecode, by act (src, cuts)
       | "carousel" // portrait ads on a turning ring, as on the AE carousel board (items)
-      | "screening"; // full-length films with their sound, one monitor and a programme (items)
+      | "screening" // full-length films with their sound, one monitor and a programme (items)
+      | "trail"; // work at volume on one stacked, snaking trail; hover lifts a piece whole (items, or tables flattened)
     // Standard properties
     title?: string;
     /** evolution: names what its extras are (where it was built) */
@@ -527,9 +528,9 @@ export const projects: Project[] = [
           { src: "/works/defrasoft/ad-360tracker-featurevideo-886x19.mp4", label: "360 Tracker" },
         ],
       },
-      // static ads: each creative across its formats, then concepts across the audiences they were cut for
+      // static ads: each creative across its formats, then the audiences they were cut for, on one trail
       {
-        type: "matrix",
+        type: "trail",
         chapter: "Motion Graphic Ads",
         title: "Performance Ads",
         description: "The work here was less about craft per piece and more about judgment at volume — knowing when something was good enough to ship and when it needed another pass.",
@@ -590,7 +591,7 @@ export const projects: Project[] = [
           { src: "/works/defrasoft/aso-phone-6finals.webp" },
         ],
       },
-      // 04.Defrasoft_info_lottieRive: the editor, its state machine, then the screens they run in
+      // 04.Defrasoft_info_lottieRive: the editor, its state machine, then the animation running in the app (frozen Figma stills of animated screens dropped: a still cannot show motion)
       {
         type: "process",
         chapter: "In-App Animation",
@@ -604,48 +605,30 @@ export const projects: Project[] = [
             items: [
               { src: "/works/defrasoft/voicely-onboarding.mp4" },
               { src: "/works/defrasoft/x-apppub-gifs-screenrecording-07-21-2026-11-08-38-1.mp4" },
-              { src: "/works/defrasoft/x-overlord-home-7522-64358.webp" },
-              { src: "/works/defrasoft/x-overlord-iap-5-with-anim-1818-28551.webp" },
-              { src: "/works/defrasoft/x-overlord-iap-5-with-anim-847-4331.webp" },
-              { src: "/works/defrasoft/x-overlord-mail-2-2-847-4454.webp" },
-              { src: "/works/defrasoft/x-overlord-file-type-7522-64631.webp" },
             ],
           },
         ],
       },
-      // 04.Defrasoft_info_AI: led by the AE board of the batch
+      // 04.Defrasoft_info_AI: one take per character (re-rolls of the same face dropped), on one trail
       {
-        type: "feed",
+        type: "trail",
         chapter: "AI UGC Generation",
         title: "AI UGC",
         description: "These talking head shots were generated with Google Veo 3.1 as soon as it became feasible at scale to do so. I used Claude to come up with the hooks and plugged those into Google Flow.\n\nI try to lean into the absurdity that AI provide instead of trying to mimic real life. Dude falling from the sky while trying to tell you about a new app? Heck yea.",
-        src: "/media/defrasoft-ads.mp4",
-        groups: [
-          {
-            label: "Veo 3.1",
-            items: [
-              { src: "/works/defrasoft/x-ai-dm-20251120140617-001.mp4" },
-              { src: "/works/defrasoft/x-ai-this-app-modegear-202512150916-tz3yc.mp4" },
-              { src: "/works/defrasoft/cover.mp4" },
-              { src: "/works/defrasoft/x-ai-if-you-have-202512150913-7fsh1.mp4" },
-              { src: "/works/defrasoft/x-ai-vertical-video-handheld-202512150912-opu.mp4" },
-              { src: "/works/defrasoft/x-ai-i-downloaded-modegear-202512091657-0wod8.mp4" },
-              { src: "/works/defrasoft/ugc.mp4" },
-              { src: "/works/defrasoft/ugc-you-dmshe.mp4" },
-              { src: "/works/defrasoft/x-ai-but-i-felt-202512091619-s7tj9.mp4" },
-              { src: "/works/defrasoft/ugc-didnt-kkzb9.mp4" },
-              { src: "/works/defrasoft/x-ai-dont-tell-the-202512091619-vjvw3.mp4" },
-              { src: "/works/defrasoft/ugc-i-evdcz.mp4" },
-              { src: "/works/defrasoft/x-ai-i-honestly-wasnt-202512091619-z1491.mp4" },
-              { src: "/works/defrasoft/x-ai-download.mp4" },
-              { src: "/works/defrasoft/ugc-just-7slt8.mp4" },
-              { src: "/works/defrasoft/x-ai-37cbe297-caae-4705-8006-54ff1212f3b0.mp4" },
-              { src: "/works/defrasoft/x-ai-it-bypasses-the-202512150913-4oheu.mp4" },
-              { src: "/works/defrasoft/x-ai-vertical-video-handheld-202512150912-194.mp4" },
-              { src: "/works/defrasoft/x-ai-0ad4aa3b-9721-4943-abb4-964a3c8c0b4f.mp4" },
-              { src: "/works/defrasoft/x-ai-0ba69811-fef2-40b6-9fe7-29a605f8bf3f.mp4" },
-            ],
-          },
+        items: [
+          { src: "/works/defrasoft/x-ai-dm-20251120140617-001.mp4" },
+          { src: "/works/defrasoft/cover.mp4" },
+          { src: "/works/defrasoft/x-ai-if-you-have-202512150913-7fsh1.mp4" },
+          { src: "/works/defrasoft/x-ai-vertical-video-handheld-202512150912-opu.mp4" },
+          { src: "/works/defrasoft/x-ai-i-downloaded-modegear-202512091657-0wod8.mp4" },
+          { src: "/works/defrasoft/ugc.mp4" },
+          { src: "/works/defrasoft/x-ai-but-i-felt-202512091619-s7tj9.mp4" },
+          { src: "/works/defrasoft/ugc-i-evdcz.mp4" },
+          { src: "/works/defrasoft/x-ai-download.mp4" },
+          { src: "/works/defrasoft/x-ai-37cbe297-caae-4705-8006-54ff1212f3b0.mp4" },
+          { src: "/works/defrasoft/x-ai-vertical-video-handheld-202512150912-194.mp4" },
+          { src: "/works/defrasoft/x-ai-0ad4aa3b-9721-4943-abb4-964a3c8c0b4f.mp4" },
+          { src: "/works/defrasoft/x-ai-0ba69811-fef2-40b6-9fe7-29a605f8bf3f.mp4" },
         ],
       },
       { type: "zine-outro" },

@@ -16,12 +16,15 @@ export default function WorkMedia({
   alt = "",
   sizes = "(max-width: 768px) 100vw, 50vw",
   priority = false,
+  eager = false,
   className = "",
 }: {
   src: string;
   alt?: string;
   sizes?: string;
   priority?: boolean;
+  /** load now: for pieces placed by transform each frame, which lazy loading never sees arrive */
+  eager?: boolean;
   className?: string;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
@@ -66,6 +69,7 @@ export default function WorkMedia({
       fill
       sizes={sizes}
       priority={priority}
+      loading={eager && !priority ? "eager" : undefined}
       className={`${fitClass} ${className}`}
     />
   );

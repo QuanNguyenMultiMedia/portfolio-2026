@@ -421,3 +421,12 @@ html:not([data-warp]) .riso-grain::before { animation-play-state: paused; }
 .card-float[data-float] { animation-play-state: running; }
 @keyframes card-float { 50% { translate: 0 -15px; } }
 @media (prefers-reduced-motion: reduce) { .card-float { animation: none; } }
+
+/* a project's cover travelling from the previous outro's thumbnail into its own cover (ProjectPageClient):
+   the one piece that persists across the cut, so it moves on the print curve while the sheets swap round it */
+::view-transition-group(.cover-morph) { animation-duration: 760ms; animation-timing-function: var(--ease-print); z-index: 5; }
+::view-transition-old(.cover-morph) { animation: sheet-fade 300ms var(--ease-print) both reverse; }
+::view-transition-new(.cover-morph) { animation: sheet-fade 300ms var(--ease-print) both; }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(.cover-morph) { animation-duration: 0s; }
+}

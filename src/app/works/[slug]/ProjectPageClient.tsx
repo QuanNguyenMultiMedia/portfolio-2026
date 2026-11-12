@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, use } from "react";
+import { useEffect, useRef, use, ViewTransition } from "react";
 import Link from "next/link";
 import { projects } from "@/data/projects";
 import { t } from "@/lib/designSystem";
@@ -27,6 +27,7 @@ import Wall from "@/components/works/Wall";
 import Cuts from "@/components/works/Cuts";
 import Carousel from "@/components/works/Carousel";
 import Screening from "@/components/works/Screening";
+import Trail from "@/components/works/Trail";
 import Info, { chapterId } from "@/components/works/Info";
 
 const MuxPlayerWrapper = dynamic(() => import("@/components/MuxPlayerWrapper"), {
@@ -53,11 +54,12 @@ const MODULES: Partial<Record<Screen["type"], (p: SectionProps) => React.ReactNo
   cuts: Cuts,
   carousel: Carousel,
   screening: Screening,
+  trail: Trail,
 };
 
 // Photo essays and mixed print sets: `feature` stands its first piece at full height, the rest as lanes after it.
 // Boards that print edge to edge: their ground covers the whole section, so the section adds no gutter.
-const BLEED: Screen["type"][] = ["editorial-text", "stages", "wall"];
+const BLEED: Screen["type"][] = ["editorial-text", "stages", "wall", "trail"];
 
 function Breakdown({ screen, isMobile, ink, n }: SectionProps) {
   const images = (screen.images ?? []).map((src) => ({ src }));
@@ -172,7 +174,8 @@ export default function ProjectPageClient({
   // sections that carry a head are numbered in reading order
   let count = 0;
   const numbers = screens.map((s) => (s.title && s.type !== "zine-cover" && s.type !== "zine-outro" ? ++count : undefined));
-  const coverWide = mediaAspect(project.coverVideo || project.coverImage || "") > 1.2;
+  const coverAspect = mediaAspect(project.coverVideo || project.coverImage || "");
+  const coverWide = coverAspect > 1.2;
   const next = projects[(projects.findIndex((p) => p.slug === slug) + 1) % projects.length];
 
   const handlePointerDown = (e: React.PointerEvent) => {
@@ -301,31 +304,38 @@ export default function ProjectPageClient({
                     under the name, in the paper it leaves */}
                 <div
                   data-axis={isMobile ? "block" : "inline"}
-                  className={isMobile ? "w-full flex flex-col gap-8 pt-10" : "col-span-9 h-full flex flex-col justify-center gap-[var(--s-5)] pl-4"}
+                  className={isMobile ? "w-full flex flex-col gap-8 pt-10" : "col-span-9 h-full flex flex-col gap-[var(--s-5)] pl-4"}
                 >
                   <BleedName title={project.title} print={print} />
-                  <div className={isMobile ? "flex flex-col gap-8" : "flex items-start gap-[var(--s-5)]"}>
-                    <div className={`deck is-ragged ${isMobile ? "" : "flex-1 min-w-0"}`}>
+                  {/* the cover is the work: it takes all the height the name leaves, and it is the same print the
+                      previous project's outro showed small, so arriving from there it grows into place */}
+                  <div
+                    className={isMobile ? "flex flex-col gap-8" : "flex-1 min-h-0 flex items-end gap-[var(--s-5)] [container-type:size]"}
+                  >
+                    <div className={`deck is-ragged ${isMobile ? "" : "flex-1 min-w-0 self-start"}`}>
                       <p className={`plate ${print.deck}`}>{project.description}</p>
                     </div>
                     {(project.coverVideo || project.coverImage) && (
-                      <div
-                        className={`relative z-[1] flex-shrink-0 border border-primary/25 bg-background ${
-                          isMobile
-                            ? "w-4/5 self-end p-2"
-                            : `${coverWide ? "w-[38%]" : "w-[22%]"} max-h-[40vh] p-3 md:p-4`
-                        }`}
-                        style={{ aspectRatio: `${mediaAspect(project.coverVideo || project.coverImage || "")}` }}
-                      >
-                        <div className="relative w-full h-full">
-                          <WorkMedia
-                            src={project.coverVideo || project.coverImage || ""}
-                            alt={project.title}
-                            sizes="(max-width: 768px) 80vw, 30vw"
-                            priority
-                          />
+                      <ViewTransition name={`cover-${project.slug}`} share="cover-morph">
+                        <div
+                          className={`relative z-[1] flex-shrink-0 border border-primary/25 bg-background ${
+                            isMobile ? "w-4/5 self-end p-2" : "p-3 md:p-4"
+                          }`}
+                          style={{
+                            aspectRatio: `${coverAspect}`,
+                            ...(isMobile ? {} : { width: `min(${coverWide ? 62 : 46}cqw, calc(100cqh * ${coverAspect.toFixed(4)}))` }),
+                          }}
+                        >
+                          <div className="relative w-full h-full">
+                            <WorkMedia
+                              src={project.coverVideo || project.coverImage || ""}
+                              alt={project.title}
+                              sizes="(max-width: 768px) 80vw, 50vw"
+                              priority
+                            />
+                          </div>
                         </div>
-                      </div>
+                      </ViewTransition>
                     )}
                   </div>
                 </div>
@@ -393,12 +403,15 @@ export default function ProjectPageClient({
                     isMobile ? "" : print.stack ? "col-start-8 col-span-5 row-start-3" : "col-start-8 col-span-5 row-start-6"
                   }`}
                 >
-                  <Plate
-                    src={next.coverVideo || next.coverImage || ""}
-                    sizes="20vw"
-                    className="transition-transform duration-500 group-hover:scale-[1.02]"
-                    size={{ fit: [isMobile ? "40vw" : "14vw", isMobile ? "30vw" : "22vh"] }}
-                  />
+                  {/* the next project's cover, named the same as its own cover: following it, it grows into place */}
+                  <ViewTransition name={`cover-${next.slug}`} share="cover-morph">
+                    <Plate
+                      src={next.coverVideo || next.coverImage || ""}
+                      sizes="20vw"
+                      className="transition-transform duration-500 group-hover:scale-[1.02]"
+                      size={{ fit: [isMobile ? "40vw" : "14vw", isMobile ? "30vw" : "22vh"] }}
+                    />
+                  </ViewTransition>
                   <span className="space-y-3">
                     <span aria-hidden className="block text-2xl text-foreground group-hover:text-primary group-hover:translate-x-2 transition-[color,transform] duration-500">→</span>
                     <span className={`block ${t.cardTitle} text-foreground group-hover:text-primary transition-colors duration-500`}>

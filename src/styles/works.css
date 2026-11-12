@@ -97,3 +97,16 @@
   .wk-ring { animation: none; transform: none; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--s-2); width: 100% !important; aspect-ratio: auto !important; }
   .wk-ring-card { position: relative; transform: none; aspect-ratio: 9 / 16; }
 }
+
+/* trail (Trail.tsx): every piece is placed by the loop; the card itself only carries focus and the cursor */
+.wk-trail-card { will-change: transform; transform-origin: 50% 50%; cursor: zoom-in; outline: none; }
+.wk-trail-card:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+
+/* store (Store.tsx): the screenshot set swipes through the listing's band on its own, one shot every ~3s */
+.wk-store-run { animation: wk-store-swipe calc(var(--n) * 3s) linear infinite; will-change: transform; }
+.wk-store-band:hover .wk-store-run { animation-play-state: paused; }
+@keyframes wk-store-swipe { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .wk-store-run { animation: none; }
+  .wk-store-band { overflow-x: auto; scrollbar-width: none; }
+}
