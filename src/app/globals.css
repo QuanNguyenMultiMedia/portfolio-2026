@@ -21,7 +21,7 @@ html.dark {
   --background: #161618; /* --paper */
   --foreground: #e6e4df; /* --ink-black on dark stock */
   --primary: #e6e4df;
-  --tech-blue: #8c8fff; /* --ink-violet on dark stock */
+  --tech-blue: #7684ff; /* --ink-violet on dark stock */
   --border-neutral: rgba(230, 228, 223, 0.18);
   --surface: #1c1c1f; /* --paper-hi */
 }

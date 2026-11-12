@@ -34,7 +34,7 @@ export default function GlobalSideBar() {
 
   return (
     <div
-      className={`fixed left-0 top-24 bottom-0 z-[60] flex-col w-6 md:w-8 pointer-events-none transition-opacity duration-300 hidden md:flex ${mounted ? "opacity-100" : "opacity-0"}`}
+      className={`vt-chrome-side fixed left-0 top-24 bottom-0 z-[60] flex-col w-6 md:w-8 pointer-events-none transition-opacity duration-300 hidden md:flex ${mounted ? "opacity-100" : "opacity-0"}`}
     >
       {!mounted ? null : (
         <>

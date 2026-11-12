@@ -1,6 +1,6 @@
 // Home: the print run, opened by the cover (Book: 01.Title, opened on its spine). Four sheets: the hero (the name
 // in the cover's mint fountain over the reel printed full-spread and pale, the line in black over the name's tail,
-// the statement and the ways in), the reel (the same footage drawn back to its own proportions, at full density,
+// the statement and the way in), the reel (the same footage drawn back to its own proportions, at full density,
 // as large as the screen allows; scrolling on, it flies back into the distance and is gone),
 // the works in rotation (one sheet that prints each case study in turn, in that project's own inks, its chapters opening the case page at each one), and the record with the clients'
 // words and the way into Works. Printed as sheets of one riso job (docs/design.md) and stacked in depth;
@@ -82,7 +82,7 @@ export default function Home() {
             frame out to the screen's edges and lays a paper wash over it; in flow mode the poster stands in, .hero-bg).
             The cover's fountain prints over the footage at part density (.hero-plate), so the type always sits on ink.
             The name, in the cover's mint fountain across the measure, sits on the foot of the spread; the line, in
-            black, rides the name's tail. The statement and the ways in sit in the quiet zone above the name.
+            black, rides the name's tail. The statement and the way in sit in the quiet zone above the name.
             Parts are cued (--o): the name, the line, the quiet zone (home.css, cues). Under the cover (Book) the
             cues hold until the cover is opened. */}
         <section className="sheet hero" aria-labelledby="hero-h">
@@ -93,22 +93,16 @@ export default function Home() {
           <div className="hero-name" data-o="" style={cue(1)}>
             <BleedName id="hero-h" title="Minh Quân" print={{ fountain: "mint", deck: "ink-violet" }} params={{ cursor: 1 }} />
           </div>
-          <p className="hero-line t-lead" data-o="" style={cue(2)}>loves moving things around.</p>
+          <p className="hero-line t-lead" data-o="" style={cue(2)}><span className="plate ink">loves moving things around.</span></p>
           <div className="hero-quiet" data-o="" style={cue(3)}>
             <p className="hero-statement">
               My craft is in making people stay and rewind. I believe motion and interaction is the{" "}
               <Plates over="ink-violet" under="ink-indigo" i={2}>soul</Plates> of each brand, product, and experience.
             </p>
-            <div className="hero-ways">
-              <Link href="/works" className="hero-cta">
-                <span>View Works</span>
-                <span className="view-arrow" aria-hidden>→</span>
-              </Link>
-              <Link href={`/works/${reel.slug}`} className="hero-reel-link">
-                <span>{reel.title}</span>
-                <span className="view-arrow" aria-hidden>→</span>
-              </Link>
-            </div>
+            <Link href="/works" className="hero-cta">
+              <span>View Works</span>
+              <span className="view-arrow" aria-hidden>→</span>
+            </Link>
           </div>
         </section>
 

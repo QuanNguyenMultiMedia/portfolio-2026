@@ -1,6 +1,7 @@
 "use client";
 // Home · the clients' words: one pull quote set beside the freelance work it speaks about, turned by its own
-// counter. It turns on a clock until the reader takes the counter; under reduced motion it turns only by hand.
+// arrows (no counter: design.md §3). It turns on a clock until the reader takes the arrows; under reduced motion it
+// turns only by hand. The quote and its credit are announced as they turn.
 import { useEffect, useState } from "react";
 import type { Testimonial } from "@/data/testimonials";
 
@@ -20,13 +21,12 @@ export default function ClientWords({ quotes }: { quotes: Testimonial[] }) {
   const cur = quotes[q];
 
   return (
-    <figure className="words" aria-roledescription="carousel" aria-label="What clients say">
+    <figure className="words" aria-roledescription="carousel" aria-label="What clients say" aria-live="polite">
       <blockquote key={cur.brand} className="words-quote"><p>{cur.quote}</p></blockquote>
       <figcaption className="words-credit">
         <span>{cur.brand}</span>
         <span className="words-turn">
           <button type="button" onClick={() => turn(-1)} aria-label="Previous testimonial">←</button>
-          <span aria-live="polite">{String(q + 1).padStart(2, "0")} / {String(quotes.length).padStart(2, "0")}</span>
           <button type="button" onClick={() => turn(1)} aria-label="Next testimonial">→</button>
         </span>
       </figcaption>

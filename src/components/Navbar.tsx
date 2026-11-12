@@ -58,7 +58,7 @@ export default function Navbar() {
   }, [current]);
 
   return (
-    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 hidden md:flex flex-col items-end w-max">
+    <div className="vt-chrome-nav fixed bottom-8 left-1/2 -translate-x-1/2 z-50 hidden md:flex flex-col items-end w-max">
       <nav
         ref={navRef}
         aria-label="Primary"

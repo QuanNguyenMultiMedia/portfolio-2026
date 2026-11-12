@@ -1,6 +1,7 @@
 "use client";
 // Work footage printed onto the page: muted loop that plays only while its sheet holds the view (useSheetLive),
-// holds its poster under reduced motion, with a pause/play control so nothing is inert.
+// holds its poster under reduced motion, with a pause/play control so nothing is inert. The footage fades in once
+// its poster (or first frame) has decoded, so a late poster never cuts in over the ground.
 import { useEffect, useRef, useState } from "react";
 import { useSheetLive } from "@/hooks/useSheetLive";
 
@@ -24,6 +25,16 @@ export default function PrintedVideo({
   const [userPaused, setUserPaused] = useState(false);
   const [muted, setMuted] = useState(true);
   const live = useSheetLive(ref);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const img = new Image();
+    const done = () => setReady(true);
+    img.onload = done; img.onerror = done;
+    img.src = poster;
+    if (img.complete) done();
+    return () => { img.onload = img.onerror = null; };
+  }, [poster]);
 
   useEffect(() => {
     const v = ref.current;
@@ -42,7 +53,7 @@ export default function PrintedVideo({
   };
 
   return (
-    <figure className={`printed-video ${className}`} style={{ aspectRatio: aspect }}>
+    <figure className={`printed-video ${className}`} style={{ aspectRatio: aspect }} data-ready={ready ? "" : undefined}>
       <div className="printed" style={{ width: "100%", height: "100%" }}>
         <video
           ref={ref}
@@ -53,6 +64,7 @@ export default function PrintedVideo({
           playsInline
           preload="none"
           aria-label={label}
+          onLoadedData={() => setReady(true)}
           onPlay={() => setPlaying(true)}
           onPause={() => setPlaying(false)}
         />

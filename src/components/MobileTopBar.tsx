@@ -34,7 +34,7 @@ export default function MobileTopBar() {
 
   return (
     <div
-      className="fixed top-0 left-0 right-0 h-9 z-[60] flex items-center bg-background border-b border-primary/10 md:hidden"
+      className="vt-chrome-top fixed top-0 left-0 right-0 h-9 z-[60] flex items-center bg-background border-b border-primary/10 md:hidden"
     >
       {/* Back Button (left side, shown only inside individual items) */}
       <div className="w-9 h-full flex-shrink-0 flex items-center justify-center">

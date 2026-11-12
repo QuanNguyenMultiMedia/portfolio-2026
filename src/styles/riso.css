@@ -108,15 +108,16 @@
 /* ---------- dark stock ----------
    The same job printed on black board: the paper turns charcoal, the black plate becomes a bone-white ink,
    and every ink screens onto the stock instead of multiplying into it. Blue-violet inks are mixed lighter so
-   they still read on the dark ground (AA against --paper). */
+   they still read on the dark ground (AA against --paper), and both stay on the blue side (green above red): the
+   violet/indigo lockup screens the two together, and a purple indigo lifted the pair to lavender. */
 html.dark {
   --paper: #161618;
   --paper-hi: #1c1c1f;
   --paper-shade: #2c2d33;
   --ink-black: #e6e4df;
   --ink-display: #e6e4df;
-  --ink-violet: #8c8fff;
-  --ink-indigo: #9a7dff;
+  --ink-violet: #7684ff; /* 5.6:1 on --paper */
+  --ink-indigo: #4d63ff; /* under-plate only; screened with violet it prints #9fb4ff */
   --ink-cream: #2a2a2c;
   --blend: screen;
 }
@@ -243,6 +244,9 @@ body.riso-paper :focus-visible { outline: 2px solid var(--ink-violet); outline-o
 /* photos print as ink: the whole plate multiplies onto the field, so its paper-grey ground takes the ink under it */
 .printed { position: relative; overflow: hidden; background: var(--paper); mix-blend-mode: var(--blend); }
 .printed > video, .printed > img { display: block; width: 100%; height: 100%; object-fit: cover; mix-blend-mode: var(--blend); }
+/* PrintedVideo: the footage fades in once its poster has decoded, never cuts in late */
+.printed-video video { transition: opacity 420ms var(--ease-print); }
+.printed-video:not([data-ready]) video { opacity: 0; }
 .printed::after { /* the black plate's screen over the photo, very light */
   content: ""; position: absolute; inset: 0; pointer-events: none;
   background: var(--ink-black); opacity: 0.12; mix-blend-mode: var(--blend);
@@ -359,11 +363,20 @@ html:not([data-warp]) [data-reg].is-in .under { transform: translate3d(0, 0, 0);
    already pushed each block toward the viewer, so the old snapshot is bare and only Back animates it (falling
    away). The new page arrives from depth: 120px of Z under perspective, never a zoom, never a flash: the ground
    colour is continuous because the root snapshot does not animate. Direction from html[data-warp].
-   WarpField and the frame have their own transition names and stay live; the nav and the aurora sit outside. */
+   WarpField and the chrome (side bar, nav) have their own transition names and stay live. Every named group paints
+   over the root snapshot, so chrome left in root would sit under the page's snapshot until the transition ends
+   (home's reel ground is opaque: the bar and nav dropped out on arrival); named, it keeps its place above the page. */
+.vt-chrome-side { view-transition-name: chrome-side; }
+.vt-chrome-nav { view-transition-name: chrome-nav; }
+.vt-chrome-top { view-transition-name: chrome-top; }
+.vt-chrome-dock { view-transition-name: chrome-dock; }
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
-::view-transition-group(warp-field), ::view-transition-group(frame) { animation: none; }
-::view-transition-old(warp-field), ::view-transition-old(frame) { display: none; }
-::view-transition-new(warp-field), ::view-transition-new(frame) { animation: none; }
+::view-transition-group(warp-field), ::view-transition-group(chrome-side), ::view-transition-group(chrome-nav),
+::view-transition-group(chrome-top), ::view-transition-group(chrome-dock) { animation: none; }
+::view-transition-old(warp-field), ::view-transition-old(chrome-side), ::view-transition-old(chrome-nav),
+::view-transition-old(chrome-top), ::view-transition-old(chrome-dock) { display: none; }
+::view-transition-new(warp-field), ::view-transition-new(chrome-side), ::view-transition-new(chrome-nav),
+::view-transition-new(chrome-top), ::view-transition-new(chrome-dock) { animation: none; }
 ::view-transition-group(.sheet) { animation-duration: 0s; }
 ::view-transition-old(.sheet) { animation: warp-out 220ms var(--ease-exit, cubic-bezier(0.7, 0, 0.84, 0)) both; }
 ::view-transition-new(.sheet) { animation: warp-in-fwd 300ms var(--ease-print) 80ms both; }

@@ -245,7 +245,7 @@ export default function MobileNavbar() {
 
       {/* Floating Status Notch / Trigger Button */}
       {/* the desktop ink bar at the thumb: logo and the hold trigger, clear of the home indicator */}
-      <div className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-4 right-4 z-50 md:hidden pointer-events-none">
+      <div className="vt-chrome-dock fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-4 right-4 z-50 md:hidden pointer-events-none">
         <div className="w-full bg-foreground text-background pl-3 pr-1 py-1 flex items-center justify-between pointer-events-auto">
           <div className="flex items-center gap-3">
             <div className="w-12 h-6 flex-shrink-0">
