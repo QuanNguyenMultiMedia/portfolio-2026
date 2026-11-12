@@ -85,6 +85,10 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 .fountain.hero-plate { position: absolute; inset: 0; z-index: 1; pointer-events: none; mix-blend-mode: lighten; opacity: var(--hero-ink); }
 .fountain.hero-plate > canvas { filter: grayscale(1) sepia(0.22) contrast(0.6) brightness(1.4); }
 .hero { --hero-ink: 0.85; --hero-paper: 0.12; }
+/* dark stock: the same plate as a charcoal wash, laid on by darken, so the footage's light is held down and the
+   bone-white ink and the screened mint read over it */
+html.dark .fountain.hero-plate { mix-blend-mode: darken; }
+html.dark .fountain.hero-plate > canvas { filter: grayscale(1) sepia(0.22) contrast(0.6) brightness(0.32); }
 .run.is-3d .sheet.hero { align-content: end; } /* the name sits on the spread's foot, the reel open above it */
 .hero-name { grid-column: 1 / -1; grid-row: 2; z-index: 2; pointer-events: none; }
 .hero-name .bleed-name { --t-bleed: var(--hero-name); font-family: var(--font-display-italic); font-style: italic; letter-spacing: -0.035em; }
