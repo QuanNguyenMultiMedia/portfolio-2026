@@ -100,8 +100,7 @@
   --cover-rule: 28.5cqi;                           /* the divider: 797 px of 2800 */
   --cover-skew: -24deg;                            /* the title animator's Skew 24, on the roman */
   --cover-leading: 0.5;                            /* the name's three lines overprint (baselines 0.46–0.53 em apart) */
-  --cover-depth: 400vmax;                          /* perspective of the opening: deep enough that the lifting edge never swells past the screen */
-  --t-cover-turn: 1000ms;                          /* the cover opening, one click */
+  --t-cover-pass: 900ms;                           /* the cover opening: the camera passes through it (Book) */
   --t-cover-plate: 1100ms;                         /* the fountain plate rolls on under the paper */
 }
 

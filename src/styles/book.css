@@ -1,5 +1,5 @@
-/* The cover (Book): MainTitle.aep › 01.Title as the portfolio's front cover. A paper leaf hinged on its left edge
-   (the spine) over the first spread, its free edge lifting toward the reader as it opens; the mint fountain board
+/* The cover (Book): MainTitle.aep › 01.Title as the portfolio's front cover. Sheet zero of the run, over the first
+   spread: it opens as the camera passes through it (Book), under the run's own perspective; the mint fountain board
    inset by the board margin; the lockup centred a little above the middle, sized by the board's width (container
    units, riso.css cover tokens). Shown only while html[data-cover] is set (lib/cover), so without script, or once
    opened this session, it never prints.
@@ -12,17 +12,16 @@
   position: fixed; inset: 0; z-index: 90; /* before hydration the dialog is non-modal: over the nav and frame */
   width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
   background: transparent; color: var(--ink-black); overflow: hidden;
-  perspective: var(--cover-depth); perspective-origin: 0% 50%;
+  perspective: 1000px; perspective-origin: 50% 46%; /* the run's camera (home.css, the stage) */
 }
-html[data-cover] .book, .book[data-held] { display: block; } /* held: mounted, until the turn completes */
+html[data-cover] .book, .book[data-held] { display: block; } /* held: mounted, until the pass completes */
 .book::backdrop { background: transparent; }
 
 .book-leaf {
-  position: absolute; inset: 0; transform-origin: 0 50%; 
+  position: absolute; inset: 0;
   will-change: transform, opacity; cursor: pointer; user-select: none; -webkit-user-select: none;
-  backface-visibility: hidden; /* edge-on and past it, the leaf is gone */
 }
-.book-leaf[data-turning] .book-name { filter: url(#ink-edges) !important; } /* Book: the blur map smears off-plane */
+.book-leaf[data-passing] .book-name { filter: url(#ink-edges) !important; } /* Book: the blur map smears in projection */
 .book-front { position: absolute; inset: 0; background: var(--paper); overflow: hidden; }
 /* the grunge plate tops the cover as it tops every comp: the global tooth's look, scoped to the leaf */
 .book .book-tooth { position: absolute; z-index: 3; }

@@ -6,24 +6,26 @@
 // The plate comes first: the board holds bare paper until the fountain shader has its first frame up (or has given
 // way to the CSS ramp), and only then does anything print: the plate rolls on, the lockup settles in. The divider is
 // the loader: it draws to the page's real progress (the plate, fonts, the reel poster, window load).
-// One click anywhere on the cover opens it (or the hint, Enter, Space, ← or Escape). It opens as a cover does: hinged
-// on its spine, the free edge lifting toward the reader and over, once, on the house curve. Partway through the turn
+// One click anywhere on the cover opens it (or the hint, a scroll down, Enter, Space, ↓, → or Escape). It opens the
+// way the run moves through every sheet (PrintRun): the cover is sheet zero, and the camera passes through it, the
+// sheet coming forward along Z and lifting off the press as it nears, on the house curve. Partway through the pass
 // the first spread starts printing (html[data-cover] lifts, cover-open fires). Scrolling stays held from the first
 // frame until the hero has printed in (html[data-lock], Lenis stopped, wheel and touch swallowed).
 // Client boundary: focus (a modal <dialog>), the scroll hold and the turn. Per-frame writes go straight to style.
-// Reduced motion: the cover fades instead of turning; the print-in is a fade.
+// Reduced motion: the cover fades instead of passing; the print-in is a fade.
 import { useEffect, useRef, useState } from "react";
 import { fx } from "@/lib/designSystem";
 import { COVER_ATTR, COVER_EVENT, COVER_KEY, LOCK_ATTR } from "@/lib/cover";
 import Fountain from "./Fountain";
 import "@/styles/book.css";
 
-const PRINT_AT = 0.35; // share of the turn at which the first spread starts printing, while the cover swings clear
+const PRINT_AT = 0.3; // share of the pass at which the first spread starts printing, while the cover clears
 const MIN_PRINT = 1500; // ms after the plate is down: the lockup's own print-in plays out before the hint arrives
 const PLATE_WAIT = 4500; // ms: no shader frame by then (no WebGL, a stalled GPU): print on the CSS ramp
 const GIVE_UP = 7000; // ms after the plate: ready whatever is still loading
-const TURN_MS = 1000; // --t-cover-turn
-const TURN_DEG = 100; // past edge-on: the leaf is gone (backface hidden) before the curve settles
+const PASS_MS = 900; // --t-cover-pass
+const PASS_Z = 560; // px of Z toward the camera (the run's 1000px perspective): 0.4 of a sheet's depth, where PrintRun has a passing sheet gone
+const PASS_FADE = 0.7; // share of the pass by which the sheet is off the press
 const HERO_SETTLE = 900; // ms after the cover is gone: the hero's parts print in before scrolling is handed back
 
 // the house curve (designSystem fx.ease), solved for x → y
@@ -42,7 +44,7 @@ function bezier([x1, y1, x2, y2]: readonly number[]) {
     return fy(Math.min(1, Math.max(0, t)));
   };
 }
-const easeTurn = bezier(fx.easeSharp);
+const easePass = bezier(fx.easeSharp);
 
 type LenisLike = { stop: () => void; start: () => void };
 const lenis = () => (window as unknown as { lenis?: LenisLike }).lenis;
@@ -80,16 +82,18 @@ export default function Book({ poster }: { poster: string }) {
       lenis()?.start();
     };
 
-    let turn = 0, raf = 0, printed = false, done = false, ready = false, plated = false;
+    let pass = 0, raf = 0, printed = false, done = false, ready = false, plated = false;
 
-    const write = (t: number) => {
-      turn = t;
-      if (reduce) leaf.style.opacity = (1 - t).toFixed(3);
+    const write = (t: number, k: number) => {
+      pass = t;
+      if (reduce) leaf.style.opacity = (1 - k).toFixed(3);
       else {
-        leaf.style.transform = `rotateY(${(-TURN_DEG * t).toFixed(2)}deg)`;
-        // BlurMap's compound blur samples its map in the page plane: off-plane it smears, so the name prints with
-        // its roughen only while it turns (book.css)
-        leaf.toggleAttribute("data-turning", t > 0.02);
+        leaf.style.transform = `translate3d(0,0,${(PASS_Z * t).toFixed(1)}px)`;
+        const f = Math.min(1, k / PASS_FADE);
+        leaf.style.opacity = (1 - f * f * (3 - 2 * f)).toFixed(3);
+        // BlurMap's compound blur samples its map in the page plane: in projection it smears, so the name prints
+        // with its roughen only while it passes (book.css)
+        leaf.toggleAttribute("data-passing", t > 0.02);
       }
       if (!printed && t >= PRINT_AT) print();
     };
@@ -106,16 +110,16 @@ export default function Book({ poster }: { poster: string }) {
       releaseTimer = window.setTimeout(release, reduce ? 250 : HERO_SETTLE);
     };
     const open = () => {
-      if (done || turn > 0) return;
-      const ms = reduce ? 260 : TURN_MS, t0 = performance.now();
-      const ease = reduce ? (x: number) => x : easeTurn;
+      if (done || pass > 0) return;
+      const ms = reduce ? 260 : PASS_MS, t0 = performance.now();
+      const ease = reduce ? (x: number) => x : easePass;
       const step = (now: number) => {
         const k = Math.min(1, (now - t0) / ms);
-        write(ease(k));
+        write(ease(k), k);
         if (k < 1) raf = requestAnimationFrame(step);
         else finish();
       };
-      write(0.0001);
+      write(0.0001, 0.0001);
       raf = requestAnimationFrame(step);
     };
 
@@ -161,12 +165,19 @@ export default function Book({ poster }: { poster: string }) {
     if (document.readyState === "complete") onLoad();
     else window.addEventListener("load", onLoad, { once: true });
 
-    // ---- the way in: one click anywhere, or the keys ----
+    // ---- the way in: one click anywhere, a scroll on (the camera moves as it does through the run), or the keys ----
     const click = (e: MouseEvent) => { if (e.button === 0) open(); };
     const cancel = (e: Event) => { e.preventDefault(); open(); };
     const key = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft" || e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); }
+      if (["ArrowDown", "ArrowRight", "PageDown", "Enter", " "].includes(e.key)) { e.preventDefault(); open(); }
     };
+    const wheel = (e: WheelEvent) => { if (e.deltaY > 4) open(); };
+    let touchY = 0;
+    const touchStart = (e: TouchEvent) => { touchY = e.touches[0]?.clientY ?? 0; };
+    const touchMove = (e: TouchEvent) => { if (touchY - (e.touches[0]?.clientY ?? touchY) > 24) open(); };
+    window.addEventListener("wheel", wheel, { passive: true });
+    window.addEventListener("touchstart", touchStart, { passive: true });
+    window.addEventListener("touchmove", touchMove, { passive: true });
     leaf.addEventListener("click", click);
     dialog.addEventListener("cancel", cancel);
     dialog.addEventListener("keydown", key);
@@ -177,11 +188,14 @@ export default function Book({ poster }: { poster: string }) {
       window.clearTimeout(giveUp);
       window.clearTimeout(releaseTimer);
       window.removeEventListener("load", onLoad);
+      window.removeEventListener("wheel", wheel);
+      window.removeEventListener("touchstart", touchStart);
+      window.removeEventListener("touchmove", touchMove);
       leaf.removeEventListener("click", click);
       dialog.removeEventListener("cancel", cancel);
       dialog.removeEventListener("keydown", key);
       release();
-      // leaving mid-turn (a route change): never strand the first spread under a held gate
+      // leaving mid-pass (a route change): never strand the first spread under a held gate
       if (!printed) root.removeAttribute(COVER_ATTR);
     };
   }, [poster]);
