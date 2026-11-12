@@ -6,9 +6,14 @@
 //   column (04.Defrasoft_info)   a fountain column down the right edge, the names in paper, ragged
 //   board  (07.Zcungviet_Info 2) the whole board black, the names scattered on staggered baselines
 //   intro  (02. Intro)           the copy on a fountain plate, a contents list under a rule: the page's own index
-import type { CSSProperties } from "react";
+// Every strip prints as the boards print it: the column is the fountain plate itself (the shader, dithered) with the
+// names knocked out of it to bare paper; on the band and the board the names are the fountain ink cut to their
+// glyphs (Fountain clipText, through the project's ramp) on black stock. A filled list is one cut, so it enters as
+// one block: a per-name entrance would slide the letters off the plate's cut.
+import { useId, type CSSProperties } from "react";
 import WorkMedia from "@/components/WorkMedia";
 import Fountain from "@/components/riso/Fountain";
+import { PHASE, RampFilter, hasRamp } from "@/components/riso/BleedName";
 import { LEDGER_OPEN } from "./Ledger";
 import { aspectOf, type Screen } from "./kit";
 import type { Project } from "@/data/projects";
@@ -70,12 +75,12 @@ export default function Info({
   opened: string[];
 }) {
   const setting = screen.info ?? "band";
-  const ramp = project.print?.ramp;
   const chapters = screen.chapters ?? [];
-  const ink = (k: number) =>
-    setting === "band" && ramp
-      ? `color-mix(in oklab, ${ramp[0]} ${100 - (k * 100) / Math.max(1, chapters.length - 1)}%, ${ramp[1]})`
-      : "var(--wk-board-ink)";
+  const fountain = project.print?.fountain ?? "mint";
+  const filled = setting === "band" || setting === "board"; // the names print in the fountain ink, on black stock
+  const mapId = `chapters-${useId().replace(/:/g, "")}`;
+  // the column's plate: its own frame of the loop, a closer crop, the ink turning under the pointer
+  const plate = <Fountain className="!absolute inset-0 w-full h-full" params={{ phase: PHASE[fountain] + 0.8, zoom: 0.6, cursor: 1 }} />;
 
   const copy = (
     <div className="flex flex-col gap-[var(--s-4)]">
@@ -95,8 +100,7 @@ export default function Info({
     </div>
   );
 
-  const list = chapters.length > 0 && (
-    <nav aria-label={`${project.title}: parts`}>
+  const names = chapters.length > 0 && (
       <ol
         className={`m-0 p-0 list-none ${
           setting === "board" && !isMobile
@@ -124,9 +128,18 @@ export default function Info({
                 : "text-[length:var(--t-display-col)]"
           } ${
             setting === "band" && !isMobile ? "whitespace-nowrap" : setting === "board" && !isMobile ? "" : "max-w-[12ch]"
-          } ${opened.includes(c) ? "wk-row" : ""}`;
+          } ${opened.includes(c) ? "wk-row" : ""} ${setting === "column" ? "wk-knock" : ""}`;
+          // a filled name is cut word by word: the plate's mask sets one line per [data-clip] element
+          const text = filled
+            ? c.split(" ").map((w, i) => (
+                <span key={i}>
+                  {i > 0 && " "}
+                  <span data-clip="" className="ink-knock inline-block">{w}</span>
+                </span>
+              ))
+            : c;
           return (
-            <li key={c} className="wk-in" style={{ "--i": 4 + k, ...step } as CSSProperties}>
+            <li key={c} className={filled ? "" : "wk-in"} style={{ "--i": 4 + k, ...step } as CSSProperties}>
               {opened.includes(c) ? (
                 <a
                   href={`#${chapterId(c)}`}
@@ -137,19 +150,31 @@ export default function Info({
                     to.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", inline: "start", block: "start" });
                   }}
                   className={cls}
-                  style={{ color: ink(k) }}
                 >
-                  {c}
+                  {text}
                 </a>
               ) : (
-                <span className={cls} style={{ color: ink(k) }}>
-                  {c}
+                <span className={cls}>
+                  {text}
                 </span>
               )}
             </li>
           );
         })}
       </ol>
+  );
+  const list = names && (
+    <nav aria-label={`${project.title}: parts`}>
+      {filled ? (
+        <div className="wk-in" style={{ "--i": 4, filter: `${hasRamp(fountain) ? `url(#${mapId}) ` : ""}url(#ink-edges)` } as CSSProperties}>
+          <RampFilter id={mapId} fountain={fountain} density={0.3} />
+          <Fountain className="ink-fill wk-chapters" clipText params={{ phase: PHASE[fountain] + 0.4, zoom: 0.45, cursor: 1 }}>
+            {names}
+          </Fountain>
+        </div>
+      ) : (
+        names
+      )}
     </nav>
   );
 
@@ -202,21 +227,17 @@ export default function Info({
 
   if (isMobile) {
     return (
-      <div className={`w-full flex flex-col gap-[var(--s-5)] ${setting === "board" ? "wk-board -mx-6 px-6 py-[var(--s-6)]" : ""}`} style={setting === "board" ? { width: "calc(100% + 3rem)" } : undefined}>
+      // the page clips each section to its column (overflow-x: clip), so a strip sits in the column, inset on its own
+      <div className={`w-full flex flex-col gap-[var(--s-5)] ${setting === "board" ? "wk-board px-[var(--s-3)] py-[var(--s-6)]" : ""}`}>
         {copy}
         {collage}
         {list && (
           <div
-            className={setting === "board" ? "" : "-mx-6 px-6 py-[var(--s-5)]"}
-            style={
-              setting === "band"
-                ? { background: "var(--ink-black-print)", width: "calc(100% + 3rem)" }
-                : setting === "column"
-                  ? { background: `linear-gradient(180deg, var(--fountain-${project.print?.fountain ?? "mint"}))`, width: "calc(100% + 3rem)" }
-                  : undefined
-            }
+            className={setting === "board" ? "" : "relative px-[var(--s-3)] py-[var(--s-5)]"}
+            style={setting === "band" ? { background: "var(--ink-black-print)" } : undefined}
           >
-            {list}
+            {setting === "column" && plate}
+            <div className="relative">{list}</div>
           </div>
         )}
       </div>
@@ -236,8 +257,9 @@ export default function Info({
             </div>
           )}
         </div>
-        <div className="col-span-5 h-full px-[var(--s-5)] py-16 pb-24 flex flex-col justify-center" style={{ background: `linear-gradient(180deg, var(--fountain-${project.print?.fountain ?? "mint"}))` }}>
-          {list}
+        <div className="relative col-span-5 h-full px-[var(--s-5)] py-16 pb-24 flex flex-col justify-center">
+          {plate}
+          <div className="relative">{list}</div>
         </div>
       </div>
     );

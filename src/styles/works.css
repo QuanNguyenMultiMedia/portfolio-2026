@@ -110,3 +110,13 @@
   .wk-store-run { animation: none; }
   .wk-store-band { overflow-x: auto; scrollbar-width: none; }
 }
+
+/* Info strips (Info.tsx). The column: the names knock out of the fountain plate to bare paper, the edge bloomed as
+   the board's adjustment layer diffuses it. The band and the board: the names are the fountain ink cut to their
+   glyphs, so their DOM text stays transparent; the hairline under a chapter prints in the board's cream, and the
+   row holds still on hover (a moving name would slide off its cut). */
+.wk-knock { color: var(--paper); text-shadow: 0 0 0.12em color-mix(in srgb, var(--paper) 55%, transparent); }
+.fountain.wk-chapters { mix-blend-mode: normal; } /* on black stock: multiplied, the plate would print nothing */
+.wk-chapters .wk-row::after { background: var(--wk-board-ink); }
+.wk-chapters .wk-row:hover { transform: none; }
+.wk-chapters[data-fallback]:not([data-live]) .ink-knock { color: var(--wk-board-ink); }

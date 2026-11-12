@@ -20,7 +20,33 @@ const RAMPS: Partial<Record<NonNullable<Project["print"]>["fountain"], string[]>
 const channel = (ramp: string[], i: number) => ramp.map((h) => (parseInt(h.slice(1 + i * 2, 3 + i * 2), 16) / 255).toFixed(3)).join(" ");
 
 // a different frame of the loop for each project, so no two names print the same ink
-const PHASE: Record<NonNullable<Project["print"]>["fountain"], number> = { mint: 0, azure: 1.7, herond: 3.1, electric: 4.4, tide: 5.6 };
+export const PHASE: Record<NonNullable<Project["print"]>["fountain"], number> = { mint: 0, azure: 1.7, herond: 3.1, electric: 4.4, tide: 5.6 };
+
+/** Colorama for a fountain plate: the project's ramp as an SVG gradient map, applied by `filter: url(#id)` on the
+ *  plate's wrapper. Renders nothing for the mint plate (the shader's own palette). */
+export function RampFilter({ id, fountain, density = 0 }: { id: string; fountain: NonNullable<Project["print"]>["fountain"]; density?: number }) {
+  const ramp = RAMPS[fountain];
+  if (!ramp) return null;
+  return (
+    <svg width="0" height="0" aria-hidden className="absolute">
+      <filter id={id} colorInterpolationFilters="sRGB">
+        <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0 0 0 1 0" />
+        {/* the mint ink only spans luminance ≈ 0.6–0.95: stretch 0.62–0.95 to the full ramp, densest core to paper */}
+        <feComponentTransfer>
+          <feFuncR type="linear" slope="3" intercept={-1.85 - density} />
+          <feFuncG type="linear" slope="3" intercept={-1.85 - density} />
+          <feFuncB type="linear" slope="3" intercept={-1.85 - density} />
+        </feComponentTransfer>
+        <feComponentTransfer>
+          <feFuncR type="table" tableValues={channel(ramp, 0)} />
+          <feFuncG type="table" tableValues={channel(ramp, 1)} />
+          <feFuncB type="table" tableValues={channel(ramp, 2)} />
+        </feComponentTransfer>
+      </filter>
+    </svg>
+  );
+}
+export const hasRamp = (fountain: NonNullable<Project["print"]>["fountain"]) => Boolean(RAMPS[fountain]);
 
 export default function BleedName({
   title,
@@ -52,24 +78,7 @@ export default function BleedName({
       aria-label={title}
       style={ramp ? { filter: `url(#${mapId})` } : undefined}
     >
-      {ramp ? (
-        <svg width="0" height="0" aria-hidden className="absolute">
-          <filter id={mapId} colorInterpolationFilters="sRGB">
-            <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0 0 0 1 0" />
-            {/* the mint ink only spans luminance ≈ 0.6–0.95: stretch 0.62–0.95 to the full ramp, densest core to paper */}
-            <feComponentTransfer>
-              <feFuncR type="linear" slope="3" intercept={-1.85 - density} />
-              <feFuncG type="linear" slope="3" intercept={-1.85 - density} />
-              <feFuncB type="linear" slope="3" intercept={-1.85 - density} />
-            </feComponentTransfer>
-            <feComponentTransfer>
-              <feFuncR type="table" tableValues={channel(ramp, 0)} />
-              <feFuncG type="table" tableValues={channel(ramp, 1)} />
-              <feFuncB type="table" tableValues={channel(ramp, 2)} />
-            </feComponentTransfer>
-          </filter>
-        </svg>
-      ) : null}
+      <RampFilter id={mapId} fountain={print.fountain} density={density} />
       <Fountain
         className="ink-fill bleed-fill"
         clipText params={{ phase: PHASE[print.fountain], zoom: 0.45, ...params }}
