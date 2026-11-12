@@ -27,6 +27,7 @@ uniform float uDark;
 uniform float uZoom;   // span scale of the board rect: <1 prints a closer crop of the ink
 uniform vec3 uPtr;     // cursor in plate uv (y down) + strength: the ink swirls around it
 uniform float uAmt;    // ink on the plate: 1 = the full print; lower, the thin washes dry first and the ink pulls back into its densest cores
+uniform float uCrescent; // 1 = the ink pools into a crescent along the bottom and right edges (Contacts); 0 = the full plate
 varying vec2 vUv;
 
 const float PI = 3.14159265;
@@ -147,6 +148,21 @@ void main(){
   float edge = mix(1.0, -0.3, uAmt);
   sky.a *= smoothstep(edge, edge + 0.3, sky.a);
   grn.a *= smoothstep(edge, edge + 0.3, grn.a);
+  if (uCrescent > 0.5) {
+    // crescent: two equal discs, the second slid up-left of the first, measured from the bottom-right corner in
+    // units of the shorter side (so it keeps its shape at any aspect, and a phone holds it in its bottom square). The outer arc sits just inside the corner, the horns trail
+    // off along the bottom and right edges. It waxes and wanes once per AE loop (~44 s at the settled drift), and
+    // both edges follow the ink's own density, so the wash pools and recedes unevenly, never as a clean ring.
+    float b = sin(uTime * 2.0 * PI / LOOP), b2 = cos(uTime * 2.0 * PI / LOOP);
+    vec2 c = (uv - 1.0) * vec2(va, 1.0) / min(va, 1.0);
+    vec2 co = vec2(-0.78, -0.74);
+    vec2 off = vec2(-0.24 - 0.05 * b2, -0.22 + 0.04 * b2) * (1.0 + 0.16 * b);
+    float wob = 0.06 * (grn.a - 0.5) + 0.04 * (sky.a - 0.5);
+    float m = (1.0 - smoothstep(0.88, 1.05, length(c - co) + wob))
+            * smoothstep(0.96, 1.12, length(c - co - off) - wob);
+    sky.a *= m;
+    grn.a *= m;
+  }
   vec3 col = vec3(1.0 - uDark); // paper: white multiplies onto light stock, black screens onto dark
   col = mix(col, skyC, sky.a);
   col = mix(col, grnC, grn.a);
@@ -292,7 +308,7 @@ async function start() {
   const program = new Program(gl, {
     vertex: VERT,
     fragment: FRAG,
-    uniforms: { uRes: { value: [1, 1] }, uTime: { value: 0 }, uLean: { value: [0, 0] }, uCell: { value: 4 }, uDark: { value: 0 }, uZoom: { value: 1 }, uPtr: { value: [0.5, 0.5, 0] }, uAmt: { value: 1 } },
+    uniforms: { uRes: { value: [1, 1] }, uTime: { value: 0 }, uLean: { value: [0, 0] }, uCell: { value: 4 }, uDark: { value: 0 }, uZoom: { value: 1 }, uPtr: { value: [0.5, 0.5, 0] }, uAmt: { value: 1 }, uCrescent: { value: 0 } },
   });
   const mesh = new Mesh(gl, { geometry: new Triangle(gl), program });
   await warmProgram(gl, VERT, DITHER);
@@ -321,7 +337,10 @@ async function start() {
     // settle-in: the ink enters at the AE speed, then eases down to a slow drift (speed 1 → SETTLE, time constant TAU)
     const el = (now - t0) / 1000;
     const time = still ? drift : SETTLE * el + (1 - SETTLE) * TAU * (1 - Math.exp(-el / TAU)) + drift;
-    program.uniforms.uDark.value = document.documentElement.classList.contains("dark") ? 1 : 0;
+    const cls = document.documentElement.classList;
+    program.uniforms.uDark.value = cls.contains("dark") ? 1 : 0;
+    // the Contacts crescent (PlateCrescent); a route plate or home's surge taking the plate over prints it whole
+    const crescent = cls.contains("plate-crescent") && !cls.contains("plate-route") && !cls.contains("plate-surge");
     const dpr = Math.min(window.devicePixelRatio, 2);
     const scale = dpr * 0.6;
     for (const s of slots) {
@@ -359,6 +378,7 @@ async function start() {
       program.uniforms.uZoom.value = s.p.zoom;
       program.uniforms.uPtr.value = s.ptr;
       program.uniforms.uAmt.value = amt;
+      program.uniforms.uCrescent.value = s.route && crescent ? 1 : 0;
       program.uniforms.uCell.value = 1;
       renderer.render({ scene: mesh, target: field });
       // resizing the GL canvas reallocates its drawing buffer: only when this plate's size differs from the last

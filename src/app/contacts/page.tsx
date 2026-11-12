@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { motion, useMotionValue, useSpring, useTransform, animate, useReducedMotion, type MotionValue } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
+import PlateCrescent from "@/components/riso/PlateCrescent";
 import { t, motion as motionTokens, fx } from "@/lib/designSystem";
 
 // --- GooeyText cursor-warp tuning (px / unitless) ---
@@ -344,7 +345,7 @@ function EmailLink({ isFlipped, subtitle }: { isFlipped: boolean; subtitle?: str
     <div className="space-y-2 @container">
       <a
         href="mailto:quannguyenhere@gmail.com"
-        className="pointer-events-auto flex flex-col gap-1.5 py-8 -my-5 group"
+        className="flex flex-col gap-1.5 py-8 -my-5 group"
         onClick={(e) => e.stopPropagation()}
       >
         <GooeyText
@@ -468,15 +469,19 @@ export default function ContactsPage() {
 
   return (
     <PageWrapper variant="hero" className="flex flex-col justify-center py-0">
+      <PlateCrescent />
       <div className="max-w-[900px] 3xl:max-w-[1180px] 4xl:max-w-[1400px] mx-auto px-8 max-md:pb-16 3xl:px-16 4xl:px-24 w-full perspective-[3000px]">
+        {/* The wrappers above the card share its 3D context, so once the card turns past 90° Chrome's hit test lands
+            on them instead of the back face and the click never reaches the card. They take no pointer events; the
+            card takes them back, and each face (CardFace) hands them only to the side that faces the viewer. */}
         <motion.div
-          className="preserve-3d"
+          className="preserve-3d pointer-events-none"
           initial={reduceMotion ? { opacity: 0 } : { opacity: 0, z: -120, rotateY: 12 }}
           animate={{ opacity: 1, z: 0, rotateY: 0 }}
           transition={reduceMotion ? { duration: 0.2 } : { type: "spring", stiffness: 100, damping: 28, mass: 0.6, delay: 0.08 }}
         >
         {/* the idle float is a CSS animation (compositor-run, no per-frame JS); it holds while the card is flipped */}
-        <div className="card-float" data-float={isEntered && !isFlipped && !reduceMotion ? "" : undefined}>
+        <div className="card-float pointer-events-none" data-float={isEntered && !isFlipped && !reduceMotion ? "" : undefined}>
         <motion.div
           ref={containerRef}
           onMouseMove={handleMouseMove}
@@ -491,7 +496,7 @@ export default function ContactsPage() {
               flipFrom(50, 50); // keyboard flip pivots from the card center
             }
           }}
-          className="relative w-full cursor-pointer preserve-3d will-change-transform"
+          className="relative w-full cursor-pointer preserve-3d will-change-transform pointer-events-auto"
           suppressHydrationWarning
           initial={{ y: 900, rotate: -15, rotateX: 35, opacity: 0 }}
           animate={isEntered
@@ -558,7 +563,7 @@ export default function ContactsPage() {
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`group flex items-center justify-between ${t.metaDataLabel} transition-colors duration-300 pointer-events-auto py-2 px-4 -my-2 -mx-4`}
+                            className={`group flex items-center justify-between ${t.metaDataLabel} transition-colors duration-300 py-2 px-4 -my-2 -mx-4`}
                             onClick={(e) => e.stopPropagation()}
                           >
                             <span className="group-hover:text-tech-blue transition-colors">
