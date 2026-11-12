@@ -396,7 +396,8 @@ async function start() {
   stir = () => { if (!raf) { last = 0; raf = requestAnimationFrame(frame); } };
 }
 
-export default function Fountain({ className = "", children, clipText = false, params }: { className?: string; children?: React.ReactNode; clipText?: boolean; params?: FountainParams }) {
+// eager: the plate is the first thing on screen (the cover) and everything else waits on it, so it starts at once
+export default function Fountain({ className = "", children, clipText = false, params, eager = false }: { className?: string; children?: React.ReactNode; clipText?: boolean; params?: FountainParams; eager?: boolean }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -418,7 +419,7 @@ export default function Fountain({ className = "", children, clipText = false, p
     const io = new IntersectionObserver(([e]) => {
       slot.visible = e.isIntersecting;
       // a phone prints one still frame and stops; a plate that scrolls in later needs its own frame printed
-      if (slot.visible) { startWhenIdle(); stir?.(); }
+      if (slot.visible) { if (eager) void start(); else startWhenIdle(); stir?.(); }
     }, { rootMargin: "200px" });
     io.observe(canvas);
     // no first frame in time (WebGL unavailable; the start waits for load + idle): let the DOM text carry the name

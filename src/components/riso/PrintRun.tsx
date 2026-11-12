@@ -13,6 +13,10 @@
 // Camera speed drives the speed lens: a GPU blur on each moving layer (the sheets' ink only, so paper and fountain
 // behind stay sharp), weighted by a radial ramp in viewport space: sharp at the centre, soft toward the rim.
 // (An SVG filter over the whole stage looked the same but re-ran every text filter inside it on the CPU each frame.)
+// The reel sheet ([data-reel]) travels on its own path: it sits at the camera plane from the start, its frame scaled out
+// to fill the screen under the hero, pale under a paper wash; as the camera reaches it the frame draws in to its own
+// proportions at full density; as the camera moves on, the reel flies back into the distance, shrinking, and is
+// taken off the press. It never passes the camera.
 // Below 768px, on short screens and under reduced motion the same sheets read as a vertical page (CSS).
 import { useEffect, useRef } from "react";
 import { motionBus } from "@/lib/warp";
@@ -31,6 +35,11 @@ const LENS = { vmax: 2000, rise: 14, fall: 5, blur: 10, step: 0.5 }; // speed â†
 const LENS_R = 0.7, LENS_IN = 0.36, LENS_OUT = 0.92;
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const smooth = (v: number) => v * v * (3 - 2 * v);
+
+// the reel: the hero's wash, the black border some of the footage carries (1152 of 1280 px: cropped off at full
+// spread), how far back it flies (px of depth at the next sheet), and where along that it fades off the press
+const REEL = { wash: 0.5, crop: 1280 / 1152, far: 6000, fadeFrom: 0.5, fadeTo: 0.92 };
 
 type Spring = { x: number; v: number };
 // semi-implicit Euler, sub-stepped so a long frame never explodes the spring
@@ -57,7 +66,7 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
     // the cued parts are also what the lens blurs: each by where it sits on the viewport ramp
     type Layer = { el: HTMLElement; nx: number; ny: number; hw: number; hh: number; blur: number };
     const layers: Layer[][] = sheets.map((sh) =>
-      Array.from(sh.querySelectorAll<HTMLElement>("[data-o]")).map((el) => ({ el, nx: 0, ny: 0, hw: 0, hh: 0, blur: 0 })));
+      Array.from(sh.querySelectorAll<HTMLElement>("[data-o]:not([data-nolens])")).map((el) => ({ el, nx: 0, ny: 0, hw: 0, hh: 0, blur: 0 })));
     const cue = (el: HTMLElement, state: "ahead" | "in" | "past") => { if (el.dataset.cue !== state) el.dataset.cue = state; };
     let speed = 0; // 0..1, smoothed |camera velocity|
     // under travel the ink-edge filters drop (riso.css): a url() filter beside a changing blur re-runs every step
@@ -77,6 +86,11 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
       else L.el.style.removeProperty("filter");
     };
 
+    // the reel sheet, and its frame's layout box (offsets: unaffected by the camera's transforms)
+    const reelAt = sheets.findIndex((sh) => sh.hasAttribute("data-reel"));
+    const reelScale = reelAt >= 0 ? sheets[reelAt].querySelector<HTMLElement>(".reel-scale") : null;
+    const reelBox = { cover: 1, dx: 0, dy: 0 };
+
     const cam: Spring = { x: 0, v: 0 };
     const lookX: Spring = { x: 0, v: 0 };
     const lookY: Spring = { x: 0, v: 0 };
@@ -91,6 +105,7 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
       top = run.getBoundingClientRect().top + window.scrollY;
       span = Math.max(1, run.offsetHeight - window.innerHeight);
       // each layer's centre relative to the vanishing point, as a fraction of its sheet (projection-invariant)
+      measureReel();
       sheets.forEach((sh, i) => {
         const s = sh.getBoundingClientRect();
         const ox = s.left + s.width * 0.5, oy = s.top + s.height * 0.46;
@@ -101,6 +116,40 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
           L.hw = r.width / s.width / 2; L.hh = r.height / s.height / 2;
         }
       });
+    };
+    const measureReel = () => {
+      if (!reelScale) return;
+      const frame = reelScale.parentElement as HTMLElement;
+      const w = frame.offsetWidth, h = frame.offsetHeight;
+      if (!w || !h) return;
+      const vw = window.innerWidth, vh = stage.clientHeight || window.innerHeight;
+      // cover the screen, past the look-around shift and the footage's own border
+      reelBox.cover = Math.max((vw + 4 * LOOK.shift) / w, (vh + 4 * LOOK.shift) / h) * REEL.crop;
+      reelBox.dx = vw / 2 - (frame.offsetLeft + w / 2);
+      reelBox.dy = vh / 2 - (frame.offsetTop + h / 2);
+    };
+    // the reel's own path: u = camera position relative to the reel sheet, in sheets (-1 = hero held, 0 = focused)
+    const paintReel = (el: HTMLElement, u: number) => {
+      let z = 0, s = 1, e = 1, opacity = 1;
+      if (u <= 0) {
+        e = smooth(clamp(1 + u));
+        s = reelBox.cover + (1 - reelBox.cover) * e;
+      } else {
+        const k = clamp(u);
+        z = -REEL.far * Math.pow(k, 1.5);
+        opacity = 1 - smooth(clamp((k - REEL.fadeFrom) / (REEL.fadeTo - REEL.fadeFrom)));
+      }
+      el.style.transform = `translate3d(${lookX.x * LOOK.shift * e}px,${lookY.x * LOOK.shift * e}px,${z.toFixed(1)}px)`;
+      el.style.opacity = opacity.toFixed(3);
+      el.toggleAttribute("data-off", opacity <= 0);
+      el.toggleAttribute("data-focus", Math.abs(u) < 0.35);
+      el.style.setProperty("--d", "0");
+      el.style.pointerEvents = Math.abs(u) < 0.3 ? "auto" : "none";
+      cue(el, u < 1 ? "in" : "past");
+      if (reelScale) {
+        reelScale.style.transform = `translate3d(${(reelBox.dx * (1 - e)).toFixed(1)}px,${(reelBox.dy * (1 - e)).toFixed(1)}px,0) scale(${s.toFixed(4)})`;
+        reelScale.style.setProperty("--wash", (REEL.wash * (1 - e)).toFixed(3));
+      }
     };
     const target = () => clamp((window.scrollY - top) / span) * (n - 1) * DEPTH;
 
@@ -115,6 +164,7 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
       for (let i = 0; i < n; i++) {
         const el = sheets[i];
         const d = (i * DEPTH - cam.x) / DEPTH; // >0 ahead of the camera, <0 passed
+        if (i === reelAt) { paintReel(el, -d); continue; }
         const ahead = clamp(d);
         // the next sheet stays unprinted until the camera is well on its way to it: no ghost behind the held sheet
         const opacity = d < 0 ? clamp(1 + d / 0.4) : clamp(1 - d / 0.6);
@@ -166,7 +216,8 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
       run.classList.remove("is-3d");
       root.classList.remove("run-3d");
       run.removeAttribute("data-painted");
-      sheets.forEach((el) => { el.removeAttribute("style"); el.removeAttribute("data-off"); });
+      sheets.forEach((el) => { el.removeAttribute("style"); el.removeAttribute("data-off"); el.removeAttribute("data-focus"); });
+      reelScale?.removeAttribute("style");
       stage.style.removeProperty("perspective-origin");
       layers.flat().forEach((L) => lensLayer(L, 0));
       travelling = false; stage.classList.remove("is-travelling");

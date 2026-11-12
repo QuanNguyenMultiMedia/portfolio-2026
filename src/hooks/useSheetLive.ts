@@ -1,7 +1,7 @@
 "use client";
 // True while an element is on screen and, inside the 3D print run, while its sheet is the one the camera holds.
 // In the run every sheet sits stacked in the viewport, so an IntersectionObserver alone reports them all as
-// visible: PrintRun's run-index names the held sheet, and only that sheet's footage plays.
+// visible: PrintRun's run-index names the held sheet, and only that sheet's footage plays (the reel also under the hero).
 import { useEffect, useState, type RefObject } from "react";
 import { afterCover } from "@/lib/cover";
 
@@ -23,7 +23,9 @@ export function useSheetLive(ref: RefObject<HTMLElement | null>, threshold = 0.2
     // and under the cover (lib/cover) it waits for the cover to be turned: nothing plays unseen behind it
     let offCover = () => {};
     const settle = () => { idle = window.setTimeout(() => { offCover = afterCover(() => { ready = true; update(); }); }, 200); };
-    const update = () => setLive(ready && seen && (!run?.classList.contains("is-3d") || near === mine));
+    // the reel (data-reel) is also the hero's ground: it plays from the first sheet until the camera has passed it
+    const reel = sheet?.hasAttribute("data-reel") ?? false;
+    const update = () => setLive(ready && seen && (!run?.classList.contains("is-3d") || near === mine || (reel && near < mine)));
     if (document.readyState === "complete") settle();
     else window.addEventListener("load", settle, { once: true });
     const io = new IntersectionObserver(([e]) => { seen = e.isIntersecting; update(); }, { threshold });

@@ -43,6 +43,7 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 .run.is-3d .sheet:nth-child(1) { z-index: 3; }
 .run.is-3d .sheet:nth-child(2) { z-index: 2; }
 .run.is-3d .sheet:nth-child(3) { z-index: 1; }
+.run.is-3d .sheet.reel { z-index: 0; } /* the reel is the ground: the hero prints over it, the next sheet arrives over it */
 /* misregistration is driven by depth: far sheets print wide off register, and settle at the camera plane */
 .run.is-3d .plates > .under { transition: none; transform: translate3d(calc(var(--rx) * var(--mis, 1)), calc(var(--ry) * var(--mis, 1)), 0); }
 
@@ -60,39 +61,48 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 .video-toggle:hover, .video-toggle:focus-visible { background: var(--ink-black); color: var(--paper); }
 
 /* ---------- sheet 1 · the hero ----------
-   Read in this order: the name, the line, the proof, the way in. The name (BleedName, the cover's fountain
-   deepened to the tide ramp so its cores hold 3:1 on paper, cut to the glyphs) runs across the full measure at the title size and overprints the foot of the reel,
-   which stands in columns 6–12; the line, in violet over indigo, overprints the name's tail, so ink over ink makes
-   the third colour. The quiet zone (1–4) holds the statement and the ways in, on the reel's foot line. */
+   Read in this order: the name, the line, the statement, the way in. The reel prints under the whole spread, pale
+   (in the run: the reel sheet's frame, scaled out by PrintRun; in flow mode: its poster, .hero-bg). The name
+   (BleedName, the cover's mint fountain cut to the glyphs) runs across the full measure on the spread's foot; the
+   line, in black, rides the name's tail. The quiet zone (1–5) holds the statement and the ways in, above the name. */
 .hero {
   --hero-name: var(--t-display-xl);
-  --hero-reel-h: min(46svh, calc((100vw - 2 * var(--margin)) * 7 / 12 * 9 / 16));
-  align-content: center; row-gap: 0;
+  position: relative; align-content: end; row-gap: var(--s-2);
 }
-.hero-reel { grid-column: 6 / -1; grid-row: 1; justify-self: end; width: calc(var(--hero-reel-h) * 16 / 9); }
-.hero-reel video { transition: transform 700ms var(--ease-print); }
-.hero-reel:hover video { transform: scale(1.025); }
-.hero-name {
-  grid-column: 1 / -1; grid-row: 2; position: relative; z-index: 2; pointer-events: none;
-  margin-top: calc(var(--hero-name) * -0.38); /* the name's cap band lands on the reel's foot */
-}
+.hero > :not(.hero-bg) { position: relative; z-index: 1; }
+/* flow mode's ground: the reel's poster, printed pale (the run draws the reel itself under the hero) */
+.hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.hero-bg > img { object-fit: cover; transform: scale(1.12); mix-blend-mode: var(--blend); } /* past the footage's own border */
+.hero-bg::after { content: ""; position: absolute; inset: 0; background: var(--paper); opacity: 0.5; }
+.run.is-3d .hero-bg { visibility: hidden; }
+.run.is-3d .sheet.hero { align-content: end; } /* the name sits on the spread's foot, the reel open above it */
+.hero-name { grid-column: 1 / -1; grid-row: 2; z-index: 2; pointer-events: none; }
 .hero-name .bleed-name { --t-bleed: var(--hero-name); font-family: var(--font-display-italic); font-style: italic; letter-spacing: -0.035em; }
-/* dark stock: inks screen onto charcoal, so a deepened ramp would sink into the board. The name prints the
-   fountain's own light ink there (BleedName's ramp filter is inline: only !important reaches it) */
-html.dark .hero-name .bleed-name { filter: none !important; }
-/* full density along the whole name: the case pages' falloff would leave its tail pale on the reel */
+/* full density along the whole name: the case pages' falloff would leave its tail pale */
 .hero-name .bleed-fill > canvas { -webkit-mask-image: none; mask-image: none; }
 .hero-line {
-  grid-column: 7 / -1; grid-row: 2; justify-self: end; align-self: end; position: relative; z-index: 3;
-  margin-bottom: calc(var(--hero-name) * 0.1); white-space: nowrap;
+  grid-column: 7 / -1; grid-row: 2; justify-self: end; align-self: end; z-index: 3;
+  margin-bottom: calc(var(--hero-name) * 0.1); white-space: nowrap; color: var(--ink-black);
 }
-.hero-quiet { grid-column: 1 / 5; grid-row: 1; align-self: end; display: grid; gap: var(--s-4); padding-bottom: calc(var(--hero-name) * 0.42); }
+.hero-quiet { grid-column: 1 / 6; grid-row: 1; align-self: end; display: grid; gap: var(--s-4); }
 .hero-statement { font-size: var(--t-body); line-height: 1.35; max-width: 34ch; text-wrap: pretty; }
 .hero-ways { display: grid; justify-items: start; gap: var(--s-1); }
 .hero-cta, .hero-reel-link { color: var(--ink-black); text-decoration: none; display: inline-flex; align-items: baseline; gap: 0.3em; }
 .hero-cta { font-family: var(--font-display-italic); font-style: italic; font-size: var(--t-list); line-height: 1; letter-spacing: -0.02em; padding-block: 0.12em; }
 .hero-reel-link { font-size: var(--t-body); padding-block: 0.4em; }
 .hero-cta:is(:hover, :focus-visible) .view-arrow, .hero-reel-link:is(:hover, :focus-visible) .view-arrow { transform: translate3d(0.15em, 0, 0); }
+
+/* ---------- sheet 2 · the reel ----------
+   The footage at its own proportions, as large as the sheet takes it: the full measure, or the full height between
+   the sheet's margins. In the run PrintRun drives the frame (.reel-scale: scaled out under the hero, drawn in here)
+   and the paper wash (--wash); its controls show only while it is the sheet in focus. */
+.reel { grid-template-columns: minmax(0, 1fr); place-items: center; align-content: center; }
+.reel-frame { width: min(100%, calc((100svh - var(--s-5) - var(--s-7)) * 16 / 9)); }
+.reel-scale { position: relative; transform-origin: 50% 50%; will-change: transform; }
+.reel-wash { position: absolute; inset: 0; z-index: 1; background: var(--paper); opacity: var(--wash, 0); pointer-events: none; }
+.reel .video-controls { z-index: 2; transition: opacity var(--t-cue-fade) var(--ease-print); }
+.run.is-3d .reel:not([data-focus]) .video-controls { opacity: 0; visibility: hidden; transition-duration: 200ms; }
+html.kbd .run.is-3d .reel .video-controls { opacity: 1; visibility: visible; }
 
 /* the client quotes: one pull quote, turned by its own counter */
 .words { display: grid; gap: var(--s-2); margin: 0; }
@@ -218,11 +228,9 @@ html.dark .hero-name .bleed-name { filter: none !important; }
 
 /* ---------- tablet ---------- */
 @media (max-width: 1024px) {
-  .hero { --hero-name: clamp(4.5rem, 17vw, 22rem); --hero-reel-h: min(40svh, calc((100vw - 2 * var(--margin)) * 9 / 16)); }
-  .hero-reel { grid-column: 1 / -1; }
-  .hero-name { margin-top: calc(var(--hero-name) * -0.24); } /* a full-width reel: the name only bites its foot */
+  .hero { --hero-name: clamp(4.5rem, 17vw, 22rem); }
   .hero-line { grid-column: 4 / -1; }
-  .hero-quiet { grid-column: 1 / -1; grid-row: 3; padding: var(--s-3) 0 0; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); align-items: end; }
+  .hero-quiet { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); align-items: end; }
   .close-words { grid-column: 1 / -1; grid-row: auto; }
   .rot { --rot-h: 40svh; }
   .rot-media { grid-column: 1 / 8; }
@@ -246,12 +254,10 @@ html.dark .hero-name .bleed-name { filter: none !important; }
   .view-works { justify-self: start; }
   .ledger { grid-template-columns: repeat(2, auto); row-gap: var(--s-3); }
   .hero > *, .close > * { grid-row: auto !important; }
-  /* the phone hero reads down: the name (one word to a line, the bleed's phone cut), the line, the reel, the way in */
+  /* the phone hero reads down: the way in, then the name (one word to a line, the bleed's phone cut), the line */
   .hero { row-gap: var(--s-3); }
-  .hero-name { margin-top: 0; }
+  .hero-quiet { order: -1; grid-template-columns: minmax(0, 1fr); }
   .hero-line { justify-self: start; white-space: normal; margin: calc(var(--s-4) * -1) 0 0; }
-  .hero-reel { width: 100%; }
-  .hero-quiet { grid-template-columns: minmax(0, 1fr); padding: 0; }
   .rot { --t-entry: var(--t-body); grid-template-columns: minmax(0, 1fr); }
   .rot-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: var(--s-2); padding-top: var(--s-6); }
   .rot-tab { grid-column: span 1; }
@@ -278,7 +284,7 @@ html.dark .hero-name .bleed-name { filter: none !important; }
    hairline, and composes inside it with paper to spare. Its parts are cued like the run's (below). */
 .run:not(.is-3d) .sheet { min-height: 100svh; align-content: center; padding-block: var(--s-7); }
 .run:not(.is-3d) .sheet + .sheet { border-top: 1px solid var(--ink-black); }
-.run:not(.is-3d) .hero { padding-block: var(--s-7) var(--s-6); }
+.run:not(.is-3d) .hero { padding-block: var(--s-7) var(--s-6); align-content: end; }
 
 /* ---------- cues: every part of every sheet prints in and lifts off the same way ----------
    Only the camera moves sheets; nothing inside one is displaced by the travel. PrintRun marks the sheet on the press
@@ -301,7 +307,7 @@ html.dark .hero-name .bleed-name { filter: none !important; }
 .run[data-cued] .sheet[data-cue="ahead"] [data-o] { opacity: 0; transform: translate3d(0, var(--cue-rise), 0); }
 .run[data-cued] .sheet[data-cue="past"] [data-o] { opacity: 0; transform: translate3d(0, calc(var(--cue-rise) * -0.6), 0); }
 /* media stay put and are covered instead: the paper runs back over them as they leave, and off them as they print */
-.run[data-cued] .sheet[data-cue] [data-o].cue-press { opacity: 1; transform: none; }
+.run[data-cued] .sheet[data-cue] [data-o].cue-press, .run[data-cued] .sheet[data-cue] [data-o]:has(> .cue-press) { opacity: 1; transform: none; }
 .cue-press { position: relative; }
 .run[data-cued] .cue-press::before {
   content: ""; position: absolute; inset: 0; z-index: 3; background: var(--paper); pointer-events: none;
@@ -319,9 +325,9 @@ html.dark .hero-name .bleed-name { filter: none !important; }
 @keyframes cue-first { from { transform: translate3d(0, var(--cue-rise), 0); } }
 /* under the cover (Book) the first sheet holds unprinted: when the cover lifts, its parts print in through the
    sheet's own cue transition, in their order, and the reel's paper runs off it */
-html[data-cover] { overflow: hidden; }
+html[data-cover], html[data-lock] { overflow: hidden; } /* Book holds scrolling until the hero has printed */
 html[data-cover] .hero [data-o] { animation: none; opacity: 0; transform: translate3d(0, var(--cue-rise), 0); }
-html[data-cover] .run[data-cued] .sheet.hero .cue-press::before { transform: scaleX(1); transition: none; }
+html[data-cover] .run[data-cued] .sheet.reel .cue-press::before { transform: scaleX(1); transition: none; }
 @media (prefers-reduced-motion: reduce) {
   /* the same states, as a short fade in place: no travel, no stagger held at zero, no paper */
   .run[data-cued] .sheet [data-o], .run[data-cued] .sheet[data-cue="in"] [data-o] { transition: opacity 200ms var(--ease-print) 0s; }

@@ -1,9 +1,11 @@
 /* The cover (Book): MainTitle.aep › 01.Title as the portfolio's front cover. A paper leaf hinged on its left edge
-   (the spine) over the first spread, its free edge swinging into the page as it turns; the mint fountain board inset by the board margin; the lockup centred a little
-   above the middle, sized by the board's width (container units, riso.css cover tokens). Shown only while
-   html[data-cover] is set (lib/cover), so without script, or once turned this session, it never prints.
-   Print-in: the plate rolls on under a paper sheet that runs off it; the lockup's parts settle in reading order
-   (--o); the divider draws to the load progress (Book writes its scale); the hint arrives once the page is ready. */
+   (the spine) over the first spread, its free edge lifting toward the reader as it opens; the mint fountain board
+   inset by the board margin; the lockup centred a little above the middle, sized by the board's width (container
+   units, riso.css cover tokens). Shown only while html[data-cover] is set (lib/cover), so without script, or once
+   opened this session, it never prints.
+   Print-in waits for the plate (.book[data-plate], set by Book once the shader has a frame up): until then the board
+   is bare paper. Then the plate rolls on under a paper sheet that runs off it, the lockup's parts settle in reading
+   order (--o), the divider draws to the load progress (Book writes its scale), the hint arrives once ready. */
 
 .book {
   display: none;
@@ -17,19 +19,13 @@ html[data-cover] .book, .book[data-held] { display: block; } /* held: mounted, u
 
 .book-leaf {
   position: absolute; inset: 0; transform-origin: 0 50%; 
-  will-change: transform, opacity; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none;
+  will-change: transform, opacity; cursor: pointer; user-select: none; -webkit-user-select: none;
+  backface-visibility: hidden; /* edge-on and past it, the leaf is gone */
 }
-.book-leaf[data-drag] { cursor: grabbing; }
 .book-leaf[data-turning] .book-name { filter: url(#ink-edges) !important; } /* Book: the blur map smears off-plane */
 .book-front { position: absolute; inset: 0; background: var(--paper); overflow: hidden; }
 /* the grunge plate tops the cover as it tops every comp: the global tooth's look, scoped to the leaf */
 .book .book-tooth { position: absolute; z-index: 3; }
-/* swinging in, the cover turns away from the light: ink black, multiplied, darkest at the free edge */
-.book-shade {
-  position: absolute; inset: 0; z-index: 4; pointer-events: none; opacity: 0;
-  background: linear-gradient(90deg, transparent 10%, color-mix(in srgb, var(--ink-black-print) 30%, transparent));
-  mix-blend-mode: multiply;
-}
 
 /* ---------- the board ---------- */
 .book-board {
@@ -42,9 +38,9 @@ html[data-cover] .book, .book[data-held] { display: block; } /* held: mounted, u
 .book-board::before {
   content: ""; position: absolute; inset: 0;
   background: linear-gradient(150deg, var(--fountain-mint)); mix-blend-mode: var(--blend);
-  transition: opacity 900ms var(--ease-print);
+  opacity: 0; transition: opacity 900ms var(--ease-print);
 }
-.book-board:has(.book-plate[data-live])::before { opacity: 0; }
+.book-board:has(.book-plate[data-fallback])::before { opacity: 1; }
 .fountain.book-plate { position: absolute; inset: 0; }
 .book-plate > canvas { opacity: 0; transition: opacity 900ms var(--ease-print); }
 .book-plate[data-live] > canvas { opacity: 1; }
@@ -61,7 +57,7 @@ html[data-cover] .book, .book[data-held] { display: block; } /* held: mounted, u
   margin: 0; font-family: var(--font-text); font-size: var(--t-cover-line); line-height: 0.98; letter-spacing: -0.018em;
 }
 .book-by { justify-self: end; margin-top: 0.12em; }
-.book-rule { display: block; height: max(1px, 0.21cqi); margin-top: 0.55em; background: color-mix(in srgb, var(--ink-black) 18%, transparent); }
+.book-rule { transition: opacity 400ms var(--ease-print); display: block; height: max(1px, 0.21cqi); margin-top: 0.55em; background: color-mix(in srgb, var(--ink-black) 18%, transparent); }
 .book-rule > span {
   display: block; height: 100%; background: var(--ink-black);
   transform: scaleX(0); transform-origin: 0 50%; transition: transform 700ms var(--ease-print);
@@ -75,6 +71,11 @@ html[data-cover] .book, .book[data-held] { display: block; } /* held: mounted, u
 .book-name > span { display: block; white-space: nowrap; }
 .book-name > span:nth-child(2) { padding-left: 0.6em; }
 .book-name > span:nth-child(3) { padding-left: 1.3em; }
+
+/* nothing prints before the plate: every print-in holds at its first frame (bare paper, lockup unset) */
+.book:not([data-plate]) :is(.book-line, .book-by, .book-name > span) { animation-play-state: paused; }
+.book:not([data-plate]) .book-board::after { animation-play-state: paused; }
+.book:not([data-plate]) .book-rule { opacity: 0; } /* the loader too: the plate is the first thing that prints */
 
 /* print-in: each part settles in reading order on the house curve, after the plate is down (cue-settle, fade-in: home.css) */
 .book-line, .book-by, .book-name > span {
@@ -92,9 +93,7 @@ html[data-cover] .book, .book[data-held] { display: block; } /* held: mounted, u
 .book[data-ready] .book-turn { opacity: 1; transform: none; pointer-events: auto; }
 .book-turn:focus-visible { opacity: 1; transform: none; } /* reachable before it is offered: keys never wait */
 .book-turn-arrow { display: inline-block; transition: transform 500ms var(--ease-print); }
-.book-turn:is(:hover, :focus-visible) .book-turn-arrow { transform: translate3d(-0.3em, 0, 0); }
-.book[data-ready] .book-turn-arrow { animation: book-nudge 2.4s var(--ease-print) 1.2s infinite; }
-@keyframes book-nudge { 0%, 60%, 100% { transform: none; } 30% { transform: translate3d(-0.35em, 0, 0); } }
+.book-turn:is(:hover, :focus-visible) .book-turn-arrow, .book-leaf:hover .book-turn-arrow { transform: translate3d(0.3em, 0, 0); }
 
 @media (max-width: 640px) {
   /* a portrait board: the lockup takes the width the comp gives it on landscape, at sizes a phone reads */
@@ -107,5 +106,4 @@ html[data-cover] .book, .book[data-held] { display: block; } /* held: mounted, u
   .book-line, .book-by, .book-name > span { animation: fade-in 240ms linear 0s both; }
   .book-rule > span, .book-turn { transition-duration: 200ms; }
   .book-turn { transform: none; }
-  .book[data-ready] .book-turn-arrow { animation: none; }
 }

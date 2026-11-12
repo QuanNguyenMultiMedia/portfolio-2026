@@ -1,16 +1,19 @@
-// Home: the print run, opened by the cover (Book: 01.Title, turned on its spine). Three sheets: the hero (the name
-// in fountain ink overprinting the reel, the line overprinting the name, the statement and the ways in beside it),
+// Home: the print run, opened by the cover (Book: 01.Title, opened on its spine). Four sheets: the hero (the name
+// in the cover's mint fountain over the reel printed full-spread and pale, the line in black over the name's tail,
+// the statement and the ways in), the reel (the same footage drawn back to its own proportions, at full density,
+// as large as the screen allows; scrolling on, it flies back into the distance and is gone),
 // the works in rotation (one sheet that prints each case study in turn, in that project's own inks, its chapters opening the case page at each one), and the record with the clients'
 // words and the way into Works. Printed as sheets of one riso job (docs/design.md) and stacked in depth;
 // PrintRun floats the camera through them. Under reduced motion, on phones and on short screens they read top to bottom.
-// Server component; client islands: Book (the cover), BleedName's plate, PrintRun (camera, page-fountain scope), PrintedVideo, WorkRotation, ClientWords, RegisterObserver.
+// Server component; client islands: Book (the cover), BleedName's plate, PrintRun (camera, the reel's own travel, page-fountain scope), PrintedVideo, WorkRotation, ClientWords, RegisterObserver.
+import Image from "next/image";
 import Link from "next/link";
 import { preload } from "react-dom";
 import BleedName from "@/components/riso/BleedName";
 import Book from "@/components/riso/Book";
 import ClientWords from "@/components/riso/ClientWords";
-import Plates from "@/components/riso/Plates";
 import PrintedVideo from "@/components/riso/PrintedVideo";
+import Plates from "@/components/riso/Plates";
 import PrintRun from "@/components/riso/PrintRun";
 import RegisterObserver from "@/components/riso/RegisterObserver";
 import WorkRotation, { type RotationWork } from "@/components/riso/WorkRotation";
@@ -74,21 +77,20 @@ export default function Home() {
       {/* the front cover, first visit of a session (lib/cover): turned to open the first spread */}
       <Book poster={reel.coverImage ?? "/media/showreel.jpg"} />
       <PrintRun>
-        {/* sheet 1 · the hero. The name, in the cover's fountain ink across the measure, overprints the foot of
-            the reel; the line overprints the name in a spot ink, so ink over ink makes the third colour
-            (design.md §2, Overprint). The statement and the ways in sit in the quiet zone beside the reel.
-            Parts are cued (--o): the reel presses in, then the name, the line, the quiet zone (home.css, cues).
-            Under the cover (Book) the cues hold until the cover is turned. */}
+        {/* sheet 1 · the hero. The reel prints under the whole spread, pale (PrintRun scales the reel sheet's
+            frame out to the screen's edges and lays a paper wash over it; in flow mode the poster stands in, .hero-bg).
+            The name, in the cover's mint fountain across the measure, sits on the foot of the spread; the line, in
+            black, rides the name's tail. The statement and the ways in sit in the quiet zone above the name.
+            Parts are cued (--o): the name, the line, the quiet zone (home.css, cues). Under the cover (Book) the
+            cues hold until the cover is opened. */}
         <section className="sheet hero" aria-labelledby="hero-h">
+          <div className="hero-bg" aria-hidden>
+            <Image src={reel.coverImage ?? "/media/showreel.jpg"} alt="" fill sizes="100vw" loading="eager" />
+          </div>
           <div className="hero-name" data-o="" style={cue(1)}>
-            <BleedName id="hero-h" title="Minh Quân" print={{ fountain: "tide", deck: "ink-violet" }} params={{ cursor: 1 }} density={0.45} />
+            <BleedName id="hero-h" title="Minh Quân" print={{ fountain: "mint", deck: "ink-violet" }} params={{ cursor: 1 }} />
           </div>
-          <p className="hero-line t-lead" data-o="" style={cue(2)}>
-            <Plates over="ink-violet" under="ink-indigo" i={1}>loves moving things around.</Plates>
-          </p>
-          <div className="hero-reel cue-press" data-o="" style={cue(0)}>
-            <PrintedVideo src={reel.coverVideo ?? "/media/showreel.mp4"} poster={reel.coverImage ?? "/media/showreel.jpg"} label="Showreel 2026" aspect="1280 / 720" sound />
-          </div>
+          <p className="hero-line t-lead" data-o="" style={cue(2)}>loves moving things around.</p>
           <div className="hero-quiet" data-o="" style={cue(3)}>
             <p className="hero-statement">
               My craft is in making people stay and rewind. I believe motion and interaction is the{" "}
@@ -103,6 +105,18 @@ export default function Home() {
                 <span>{reel.title}</span>
                 <span className="view-arrow" aria-hidden>→</span>
               </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* sheet 2 · the reel, focused: its own proportions, as large as the screen takes it. In the run this one
+            footage is also the hero's ground and leaves by flying back into the distance (PrintRun, data-reel):
+            it never passes the camera as the other sheets do. */}
+        <section className="sheet reel" data-reel="" aria-label="Showreel">
+          <div className="reel-frame" data-o="" data-nolens="" style={cue(0)}>
+            <div className="reel-scale cue-press">
+              <PrintedVideo src={reel.coverVideo ?? "/media/showreel.mp4"} poster={reel.coverImage ?? "/media/showreel.jpg"} label="Showreel 2026" aspect="1280 / 720" sound />
+              <div className="reel-wash" aria-hidden />
             </div>
           </div>
         </section>

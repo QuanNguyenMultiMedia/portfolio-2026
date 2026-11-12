@@ -3,6 +3,7 @@
 // the first spread that would play behind the cover (the name's haze, the reel) waits for the cover to be turned.
 export const COVER_ATTR = "data-cover";
 export const COVER_EVENT = "cover-open";
+export const LOCK_ATTR = "data-lock"; // scrolling held while the cover is up and the hero prints in (Book)
 export const COVER_KEY = "cover-open"; // sessionStorage: the cover was turned this session
 
 /** Runs before first paint (layout <head>): home, first visit this session, script on. */
