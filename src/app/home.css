@@ -71,14 +71,20 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 }
 .hero > :not(.hero-bg) { position: relative; z-index: 1; }
 /* flow mode's ground: the reel's poster, printed pale (the run draws the reel itself under the hero) */
-.hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; isolation: isolate; }
 .hero-bg > img { object-fit: cover; transform: scale(1.12); mix-blend-mode: var(--blend); } /* past the footage's own border */
 .hero-bg::after { content: ""; position: absolute; inset: 0; background: var(--paper); opacity: var(--hero-paper); }
 .run.is-3d .hero-bg { visibility: hidden; }
 .run.is-3d .hero-bg .hero-plate { opacity: 0; } /* the run's ground is the reel sheet's own plate */
 /* the fountain over the footage: laid on (normal), not multiplied, so a dark frame still reads as the cover's ink */
-.fountain.hero-plate { position: absolute; inset: 0; z-index: 1; pointer-events: none; mix-blend-mode: normal; opacity: var(--hero-ink); }
-.hero { --hero-ink: 0.5; --hero-paper: 0.2; }
+/* The plate is the cover's fountain re-inked as 12.End's pale warm wash (design.md §2, Split fountain): the blooms'
+   shapes, no mint. The name prints its mint over it by multiply, so the ground under the name has to stay light;
+   a mint plate there swallowed it. Laid on by lighten: wherever the frame is darker than the wash (a dark scene, the
+   footage's own border) the wash prints instead, and only the footage's light passes through it, so the ground is
+   always light. Compositor filters only (a url() gradient map re-ran on the CPU every frame). */
+.fountain.hero-plate { position: absolute; inset: 0; z-index: 1; pointer-events: none; mix-blend-mode: lighten; opacity: var(--hero-ink); }
+.fountain.hero-plate > canvas { filter: grayscale(1) sepia(0.22) contrast(0.6) brightness(1.4); }
+.hero { --hero-ink: 0.85; --hero-paper: 0.12; }
 .run.is-3d .sheet.hero { align-content: end; } /* the name sits on the spread's foot, the reel open above it */
 .hero-name { grid-column: 1 / -1; grid-row: 2; z-index: 2; pointer-events: none; }
 .hero-name .bleed-name { --t-bleed: var(--hero-name); font-family: var(--font-display-italic); font-style: italic; letter-spacing: -0.035em; }
@@ -103,7 +109,7 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 .reel { grid-template-columns: minmax(0, 1fr); place-items: center; align-content: center; }
 .reel-frame { width: min(100%, calc((100svh - var(--s-5) - var(--s-7)) * 16 / 9)); }
 .reel-scale { position: relative; transform-origin: 50% 50%; will-change: transform; }
-.reel { --hero-ink: 0.5; --hero-paper: 0.2; } /* the same ground as the flow hero's */
+.reel { --hero-ink: 0.85; --hero-paper: 0.12; } /* the same ground as the flow hero's */
 .reel-frame { position: relative; z-index: 0; }
 .reel-wash { position: absolute; inset: 0; z-index: 1; background: var(--paper); opacity: calc(var(--wash, 0) * var(--hero-paper)); pointer-events: none; }
 .fountain.reel-plate { opacity: calc(var(--wash, 0) * var(--hero-ink)); }
