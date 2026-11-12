@@ -12,6 +12,7 @@ import { preload } from "react-dom";
 import BleedName from "@/components/riso/BleedName";
 import Book from "@/components/riso/Book";
 import ClientWords from "@/components/riso/ClientWords";
+import Fountain from "@/components/riso/Fountain";
 import PrintedVideo from "@/components/riso/PrintedVideo";
 import Plates from "@/components/riso/Plates";
 import PrintRun from "@/components/riso/PrintRun";
@@ -79,6 +80,7 @@ export default function Home() {
       <PrintRun>
         {/* sheet 1 · the hero. The reel prints under the whole spread, pale (PrintRun scales the reel sheet's
             frame out to the screen's edges and lays a paper wash over it; in flow mode the poster stands in, .hero-bg).
+            The cover's fountain prints over the footage at part density (.hero-plate), so the type always sits on ink.
             The name, in the cover's mint fountain across the measure, sits on the foot of the spread; the line, in
             black, rides the name's tail. The statement and the ways in sit in the quiet zone above the name.
             Parts are cued (--o): the name, the line, the quiet zone (home.css, cues). Under the cover (Book) the
@@ -86,6 +88,7 @@ export default function Home() {
         <section className="sheet hero" aria-labelledby="hero-h">
           <div className="hero-bg" aria-hidden>
             <Image src={reel.coverImage ?? "/media/showreel.jpg"} alt="" fill sizes="100vw" loading="eager" />
+            <Fountain className="hero-plate" params={{ phase: 2.4 }} />
           </div>
           <div className="hero-name" data-o="" style={cue(1)}>
             <BleedName id="hero-h" title="Minh Quân" print={{ fountain: "mint", deck: "ink-violet" }} params={{ cursor: 1 }} />
@@ -119,6 +122,9 @@ export default function Home() {
               <div className="reel-wash" aria-hidden />
             </div>
           </div>
+          {/* the hero's ground: the cover's fountain printed over the footage, so the type sits on ink, not on
+              whatever frame the reel happens to show; it lifts as the reel comes into focus (--wash, PrintRun) */}
+          <Fountain className="hero-plate reel-plate" params={{ phase: 2.4 }} />
         </section>
 
         {/* sheet 2 · the works in rotation: every case study, one turn each */}

@@ -73,8 +73,12 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 /* flow mode's ground: the reel's poster, printed pale (the run draws the reel itself under the hero) */
 .hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
 .hero-bg > img { object-fit: cover; transform: scale(1.12); mix-blend-mode: var(--blend); } /* past the footage's own border */
-.hero-bg::after { content: ""; position: absolute; inset: 0; background: var(--paper); opacity: 0.5; }
+.hero-bg::after { content: ""; position: absolute; inset: 0; background: var(--paper); opacity: var(--hero-paper); }
 .run.is-3d .hero-bg { visibility: hidden; }
+.run.is-3d .hero-bg .hero-plate { opacity: 0; } /* the run's ground is the reel sheet's own plate */
+/* the fountain over the footage: laid on (normal), not multiplied, so a dark frame still reads as the cover's ink */
+.fountain.hero-plate { position: absolute; inset: 0; z-index: 1; pointer-events: none; mix-blend-mode: normal; opacity: var(--hero-ink); }
+.hero { --hero-ink: 0.5; --hero-paper: 0.2; }
 .run.is-3d .sheet.hero { align-content: end; } /* the name sits on the spread's foot, the reel open above it */
 .hero-name { grid-column: 1 / -1; grid-row: 2; z-index: 2; pointer-events: none; }
 .hero-name .bleed-name { --t-bleed: var(--hero-name); font-family: var(--font-display-italic); font-style: italic; letter-spacing: -0.035em; }
@@ -99,7 +103,11 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 .reel { grid-template-columns: minmax(0, 1fr); place-items: center; align-content: center; }
 .reel-frame { width: min(100%, calc((100svh - var(--s-5) - var(--s-7)) * 16 / 9)); }
 .reel-scale { position: relative; transform-origin: 50% 50%; will-change: transform; }
-.reel-wash { position: absolute; inset: 0; z-index: 1; background: var(--paper); opacity: var(--wash, 0); pointer-events: none; }
+.reel { --hero-ink: 0.5; --hero-paper: 0.2; } /* the same ground as the flow hero's */
+.reel-frame { position: relative; z-index: 0; }
+.reel-wash { position: absolute; inset: 0; z-index: 1; background: var(--paper); opacity: calc(var(--wash, 0) * var(--hero-paper)); pointer-events: none; }
+.fountain.reel-plate { opacity: calc(var(--wash, 0) * var(--hero-ink)); }
+.run:not(.is-3d) .reel-plate { display: none; }
 .reel .video-controls { z-index: 2; transition: opacity var(--t-cue-fade) var(--ease-print); }
 .run.is-3d .reel:not([data-focus]) .video-controls { opacity: 0; visibility: hidden; transition-duration: 200ms; }
 html.kbd .run.is-3d .reel .video-controls { opacity: 1; visibility: visible; }

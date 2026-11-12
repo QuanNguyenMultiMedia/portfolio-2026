@@ -393,7 +393,8 @@ async function start() {
     if (still && Math.abs(sp) < 0.01 && !plateMoving()) { cancelAnimationFrame(raf); raf = 0; }
   };
   let raf = requestAnimationFrame(frame);
-  stir = () => { if (!raf) { last = 0; raf = requestAnimationFrame(frame); } };
+  // a stir also re-reads every plate's opacity now, so a plate just switched on prints from the next frame
+  stir = () => { for (const s of slots) s.faded = false; if (!raf) { last = 0; raf = requestAnimationFrame(frame); } };
 }
 
 // eager: the plate is the first thing on screen (the cover) and everything else waits on it, so it starts at once

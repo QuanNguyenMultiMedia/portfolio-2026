@@ -16,9 +16,11 @@
 // The reel sheet ([data-reel]) travels on its own path: it sits at the camera plane from the start, its frame scaled out
 // to fill the screen under the hero, pale under a paper wash; as the camera reaches it the frame draws in to its own
 // proportions at full density; as the camera moves on, the reel flies back into the distance, shrinking, and is
-// taken off the press. It never passes the camera.
+// taken off the press. It never passes the camera. While it flies back the page fountain crashes in behind it, stirred
+// by the camera's speed, and ebbs once the next sheet holds (lib/plate, plateSurge).
 // Below 768px, on short screens and under reduced motion the same sheets read as a vertical page (CSS).
 import { useEffect, useRef } from "react";
+import { plateCalm, plateSurge } from "@/lib/plate";
 import { motionBus } from "@/lib/warp";
 import IndexRail from "./IndexRail";
 
@@ -39,7 +41,9 @@ const smooth = (v: number) => v * v * (3 - 2 * v);
 
 // the reel: the hero's wash, the black border some of the footage carries (1152 of 1280 px: cropped off at full
 // spread), how far back it flies (px of depth at the next sheet), and where along that it fades off the press
-const REEL = { wash: 0.5, crop: 1280 / 1152, far: 6000, fadeFrom: 0.5, fadeTo: 0.92 };
+const REEL = { crop: 1280 / 1152, far: 6000, fadeFrom: 0.5, fadeTo: 0.92 };
+// the surge: in by SURGE_IN of the way back, out from SURGE_OUT as the next sheet arrives; stirred at least this hard
+const SURGE_IN = 0.22, SURGE_OUT = 0.72, SURGE_STIR = 1.3, SURGE_GAIN = 1.6;
 
 type Spring = { x: number; v: number };
 // semi-implicit Euler, sub-stepped so a long frame never explodes the spring
@@ -148,8 +152,13 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
       cue(el, u < 1 ? "in" : "past");
       if (reelScale) {
         reelScale.style.transform = `translate3d(${(reelBox.dx * (1 - e)).toFixed(1)}px,${(reelBox.dy * (1 - e)).toFixed(1)}px,0) scale(${s.toFixed(4)})`;
-        reelScale.style.setProperty("--wash", (REEL.wash * (1 - e)).toFixed(3));
       }
+      // the hero's ground: the paper wash and the fountain over the footage, both lifting as it comes into focus
+      el.style.setProperty("--wash", (1 - e).toFixed(3));
+      // the fountain wave behind the reel as it flies back
+      const k = u <= 0 || u >= 1 ? 0 : smooth(clamp(u / SURGE_IN)) * (1 - smooth(clamp((u - SURGE_OUT) / (1 - SURGE_OUT))));
+      const v = cam.v / DEPTH; // sheets per second
+      plateSurge(k, k > 0 ? (v < 0 ? -1 : 1) * Math.max(Math.abs(v) * SURGE_GAIN, SURGE_STIR * k) : 0);
     };
     const target = () => clamp((window.scrollY - top) / span) * (n - 1) * DEPTH;
 
@@ -218,6 +227,7 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
       run.removeAttribute("data-painted");
       sheets.forEach((el) => { el.removeAttribute("style"); el.removeAttribute("data-off"); el.removeAttribute("data-focus"); });
       reelScale?.removeAttribute("style");
+      plateCalm();
       stage.style.removeProperty("perspective-origin");
       layers.flat().forEach((L) => lensLayer(L, 0));
       travelling = false; stage.classList.remove("is-travelling");

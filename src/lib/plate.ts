@@ -3,6 +3,8 @@
 // lingers a moment when the wheel stops, then ebbs. The spin also stirs the ink (Fountain reads plateSpin()).
 // One rAF loop eases the level and sleeps once everything settles; Fountain reads plateLevel() each frame.
 // Below FAINT the type over it goes back to the stock's own ink (the print-black override is for type over ink).
+// Home's surge (plateSurge, driven by PrintRun while the reel flies back): the same plate crashes in, flooding fast
+// and stirred hard, and ebbs slowly once the camera lets go of it. A route plate (plateIn) always takes over.
 const HOLD = 1.6; // s at full density after arrival
 const RAMP = 1.2; // s: arrival fade-in, the plate's old CSS transition
 const TAU = 2.4; // s: ebb time constant
@@ -13,6 +15,9 @@ const EASE = 0.14; // per-frame approach of the shown density to the charge: swe
 const SPIN_TAU = 0.45; // s: how long the ink keeps stirring after the wheel stops
 const FAINT = 0.45; // below this the type leaves the print-black override (the dark-stock plate density)
 
+const SURGE_RISE = 12; // 1/s: the wave floods in within ~0.2 s
+const SURGE_FALL = 0.8; // s: ebb time constant once the next sheet holds
+let surge = 0, surging = false;
 let charge = 0, shown = 0, spin = 0, level = 1, reset = 0, t0 = 0, last = 0, lastKick = -1e9, raf = 0, on = false;
 
 const write = (v: number) => {
@@ -38,8 +43,54 @@ const frame = (now: number) => {
 
 const wake = () => { if (on && !raf) { last = performance.now(); raf = requestAnimationFrame(frame); } };
 
+const surgeFrame = (now: number) => {
+  raf = 0;
+  if (!surging) return;
+  const dt = Math.min(0.1, (now - last) / 1000);
+  last = now;
+  const rate = surge > shown ? 1 - Math.exp(-dt * SURGE_RISE) : 1 - Math.exp(-dt / SURGE_FALL);
+  shown += (surge - shown) * rate;
+  spin *= Math.exp(-dt / SPIN_TAU);
+  const live = shown > 0.01 || surge > 0.002 || Math.abs(spin) > 0.01;
+  write(live ? shown : 0);
+  if (live) { raf = requestAnimationFrame(surgeFrame); return; }
+  plateCalm();
+};
+
+const endSurge = () => {
+  surging = false; surge = 0; spin = 0;
+  document.documentElement.classList.remove("plate-surge");
+};
+
+/** Home's reel surge: `k` 0..1 how far the wave is in, `stir` the signed speed it is driven at (~-2..2). Call
+ * every frame the camera moves; once k drops the wave ebbs on its own and the plate goes back to rest. */
+export function plateSurge(k: number, stir: number) {
+  if (on) return; // a route plate owns the level
+  if (!surging) {
+    if (k <= 0.001) return;
+    clearTimeout(reset);
+    surging = true; shown = 0; spin = 0;
+    write(0);
+    document.documentElement.classList.add("plate-surge");
+    window.dispatchEvent(new Event("plate-stir")); // the shared loop wakes and re-reads the plate's opacity at once
+  }
+  surge = k;
+  if (Math.abs(stir) > Math.abs(spin)) spin = Math.max(-2, Math.min(2, stir));
+  if (!raf) { last = performance.now(); raf = requestAnimationFrame(surgeFrame); }
+}
+
+/** Ends a surge at once (the run unmounting): the plate is taken off and returns to full ink for other routes. */
+export function plateCalm() {
+  if (!surging) return;
+  cancelAnimationFrame(raf); raf = 0;
+  endSurge();
+  write(0);
+  reset = window.setTimeout(() => { if (!on && !surging) level = 1; }, 1300);
+}
+
 export function plateIn() {
   clearTimeout(reset);
+  if (surging) { cancelAnimationFrame(raf); raf = 0; endSurge(); }
   on = true; charge = shown = 1; spin = 0; t0 = performance.now(); lastKick = -1e9;
   write(0);
   wake();

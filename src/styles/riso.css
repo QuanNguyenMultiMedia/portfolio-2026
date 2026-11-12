@@ -263,6 +263,9 @@ html.plate-on .fountain.page-plate { opacity: 1; }
    type set over it (the manifesto) falls under 3:1. Route plates (<PlateOn />: Works) carry display type only
    and print at full density. */
 html.dark.plate-on:not(.plate-route) .fountain.page-plate { opacity: 0.45; }
+/* home's surge (lib/plate): the plate is on at once and its ink level carries the wave in and out */
+html.plate-surge .fountain.page-plate { opacity: 1; transition-duration: 0ms; }
+html.dark.plate-surge .fountain.page-plate { opacity: 0.45; }
 /* over a full-density route plate the type prints in ink black, as in the AE comp, on either stock */
 html.plate-route:not(.plate-faint) main { --ink-display: var(--ink-display-print); --ink-black: var(--ink-black-print); --foreground: var(--ink-black-print); --primary: var(--ink-black-print); --color-foreground: var(--ink-black-print); --color-primary: var(--ink-black-print); color: var(--ink-black-print); }
 @media (prefers-reduced-motion: reduce) { .fountain.page-plate { transition-duration: 200ms; } }
