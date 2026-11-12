@@ -253,6 +253,11 @@ body.riso-paper :focus-visible { outline: 2px solid var(--ink-violet); outline-o
   -webkit-mask-image: var(--screen-45); mask-image: var(--screen-45);
 }
 .printed.duotone > img { filter: saturate(0.8) contrast(1.05) brightness(1.05); }
+/* dark stock: footage and photos print as laid-on plates, not screened into the charcoal (a screen can never print
+   darker than the board, so every black read as the paper's grey), and the black plate's screen stays black ink
+   (--ink-black flips to bone-white here, which veiled the image instead of texturing it) */
+html.dark .printed, html.dark .printed > :is(video, img) { mix-blend-mode: normal; }
+html.dark .printed::after { background: var(--ink-black-print); mix-blend-mode: multiply; }
 
 .fountain { position: relative; overflow: hidden; background: linear-gradient(135deg, var(--fountain-mint)); }
 .fountain > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; image-rendering: pixelated; mix-blend-mode: var(--blend); }
