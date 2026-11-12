@@ -112,6 +112,14 @@ vec4 layer(vec2 p, vec2 pos, vec2 scl, float rotDeg, float dirDeg, bool green){
   return acc / 12.0;
 }
 
+// value noise and a 3-octave fbm, 0..1 (the Contacts crescent's pour)
+float hash(vec2 p){ vec3 q = fract(vec3(p.xyx) * 0.1031); q += dot(q, q.yzx + 33.33); return fract((q.x + q.y) * q.z); }
+float vnoise(vec2 p){
+  vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + 1.0), f.x), f.y);
+}
+float fbm(vec2 p){ return 0.5 * vnoise(p) + 0.3 * vnoise(p * 2.03 + 5.2) + 0.2 * vnoise(p * 4.01 - 3.7); }
+
 float bayer4(vec2 c){
   int x = int(mod(c.x, 4.0)); int y = int(mod(c.y, 4.0));
   int i = x + y * 4;
@@ -149,24 +157,32 @@ void main(){
   sky.a *= smoothstep(edge, edge + 0.3, sky.a);
   grn.a *= smoothstep(edge, edge + 0.3, grn.a);
   if (uCrescent > 0.5) {
-    // crescent: two equal discs, the second slid up-left of the first, measured from the bottom-right corner in
-    // units of the shorter side (so it keeps its shape at any aspect, and a phone holds it in its bottom square). The outer arc sits just inside the corner, the horns trail
-    // off along the bottom and right edges. It waxes and wanes once per AE loop (~44 s at the settled drift), and
-    // both edges follow the ink's own density, so the wash pools and recedes unevenly, never as a clean ring.
-    float b = sin(uTime * 2.0 * PI / LOOP), b2 = cos(uTime * 2.0 * PI / LOOP);
+    // crescent, hand-poured: the ink fills the bottom-right corner outright and is bitten out by a disc anchored up
+    // and to the left, so its inner edge is the concave arc and its horns thin out along the bottom and right edges.
+    // Measured from the corner in units of the shorter side (any aspect keeps the shape; a phone holds it in its
+    // bottom square). The space is warped by slow noise, the bite swells and pinches along the arc, the bottom horn
+    // runs longer than the right one, and the edge feathers by its own amount, so no two stretches of it match.
+    // The noise drifts with the ink and the whole crescent waxes and wanes once per AE loop (~44 s settled).
+    float tt = uTime * 0.25;
+    float b = sin(uTime * 2.0 * PI / LOOP);
     vec2 c = (uv - 1.0) * vec2(va, 1.0) / min(va, 1.0);
-    vec2 co = vec2(-0.78, -0.74);
-    vec2 off = vec2(-0.24 - 0.05 * b2, -0.22 + 0.04 * b2) * (1.0 + 0.16 * b);
-    float wob = 0.06 * (grn.a - 0.5) + 0.04 * (sky.a - 0.5);
-    float m = (1.0 - smoothstep(0.88, 1.05, length(c - co) + wob))
-            * smoothstep(0.96, 1.12, length(c - co - off) - wob);
+    c += (vec2(fbm(c * 1.7 + vec2(tt, 3.1)), fbm(c * 1.7 + vec2(8.7, -tt))) - 0.5) * 0.28; // the pour wanders
+    vec2 co = vec2(-0.82, -0.70);
+    float a = atan(c.y - co.y, c.x - co.x);                       // position along the arc
+    float swell = 0.42 + 0.78 * fbm(vec2(a * 2.3, tt * 0.6 + 1.7)); // thickness: pools and pinches
+    vec2 off = vec2(-0.17, -0.28) * swell * (1.0 + 0.18 * b);       // tipped toward the bottom: the long horn
+    float wob = 0.07 * (grn.a - 0.5) + 0.05 * (sky.a - 0.5);
+    float fi = 0.05 + 0.2 * fbm(c * 4.0 + tt * 0.5);               // the washed edge: soft here, crisp there
+    float m = smoothstep(1.0 - fi * 0.3, 1.0 + fi, length(c - co - off) - wob);
+    m *= 1.0 - smoothstep(1.15, 1.65, length(c) + wob * 2.0); // the horns end; a wide screen grows no second pool
     sky.a *= m;
     grn.a *= m;
   }
   vec3 col = vec3(1.0 - uDark); // paper: white multiplies onto light stock, black screens onto dark
   col = mix(col, skyC, sky.a);
   col = mix(col, grnC, grn.a);
-  gl_FragColor = vec4(col, 1.0);
+  // alpha carries the ink coverage, so the screen pass can leave bare paper unprinted (the crescent)
+  gl_FragColor = vec4(col, uCrescent > 0.5 ? max(sky.a, grn.a) : 1.0);
 }
 `;
 
@@ -179,6 +195,8 @@ precision highp float;
 uniform sampler2D tMap;
 uniform float uDot;
 uniform float uLevels;
+uniform float uGate;  // 1: screen only where there is ink (field alpha), bare paper stays clean paper
+uniform float uPaper; // the stock under the plate: 1 light (multiply), 0 dark (screen)
 varying vec2 vUv;
 float bayer4(vec2 c){
   int x = int(mod(c.x, 4.0)); int y = int(mod(c.y, 4.0));
@@ -196,7 +214,10 @@ void main(){
   vec3 p3 = fract(vec3(d.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); // hash without sine (no diagonal bands)
   float j = fract((p3.x + p3.y) * p3.z) - 0.5;
   vec3 th = vec3(bayer4(d), bayer4(d + vec2(2.0, 1.0)), bayer4(d + vec2(1.0, 3.0))) - 0.5 + j * 0.6;
-  gl_FragColor = vec4(clamp(floor(col * uLevels + 0.5 + th) / uLevels, 0.0, 1.0), 1.0);
+  vec3 dots = clamp(floor(col * uLevels + 0.5 + th) / uLevels, 0.0, 1.0);
+  // gated: the coverage itself is screened, so the ink's edge breaks into dots and the paper beyond takes none
+  if (uGate > 0.5) dots = mix(vec3(uPaper), dots, step(bayer4(d + vec2(3.0, 2.0)) + j * 0.5, texture2D(tMap, vUv).a * 1.02));
+  gl_FragColor = vec4(dots, 1.0);
 }`;
 
 const VERT = /* glsl */ `
@@ -314,7 +335,7 @@ async function start() {
   await warmProgram(gl, VERT, DITHER);
   // each plate keeps its own field target, and the GL canvas only ever grows: plates of different sizes (the page
   // wash and the sidebar strip) used to resize both every frame, reallocating buffers twice per plate per frame
-  const screen = new Program(gl, { vertex: VERT, fragment: DITHER, uniforms: { tMap: { value: null as unknown as import("ogl").Texture }, uDot: { value: 2 }, uLevels: { value: LEVELS } } });
+  const screen = new Program(gl, { vertex: VERT, fragment: DITHER, uniforms: { tMap: { value: null as unknown as import("ogl").Texture }, uDot: { value: 2 }, uLevels: { value: LEVELS }, uGate: { value: 0 }, uPaper: { value: 1 } } });
   const screenMesh = new Mesh(gl, { geometry: new Triangle(gl), program: screen });
   still = isPhone() || window.matchMedia("(prefers-reduced-motion: reduce)").matches; // phones print one still frame
 
@@ -379,6 +400,8 @@ async function start() {
       program.uniforms.uPtr.value = s.ptr;
       program.uniforms.uAmt.value = amt;
       program.uniforms.uCrescent.value = s.route && crescent ? 1 : 0;
+      screen.uniforms.uGate.value = s.route && crescent ? 1 : 0;
+      screen.uniforms.uPaper.value = 1 - program.uniforms.uDark.value;
       program.uniforms.uCell.value = 1;
       renderer.render({ scene: mesh, target: field });
       // resizing the GL canvas reallocates its drawing buffer: only when this plate's size differs from the last
