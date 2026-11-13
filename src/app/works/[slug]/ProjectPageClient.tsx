@@ -263,8 +263,8 @@ export default function ProjectPageClient({
                   }`
             }
           >
-            {/* ZINE COVER SCREEN: the spread is as wide as the name, so the name prints whole; the cover stands
-                the full height of the sheet beside it */}
+            {/* ZINE COVER SCREEN: the name stacks a word to a line and the spread is as wide as its longest word, so
+                it prints whole; the cover stands the full height of the sheet beside it */}
             {screen.type === "zine-cover" && (
               <div className={isMobile ? "w-full flex flex-col gap-6" : "h-full py-16 flex gap-12"}>
                 {/* Desktop Left: running metadata */}
@@ -293,9 +293,9 @@ export default function ProjectPageClient({
                 {/* nothing prints over the name: the deck sits under it, in the paper it leaves */}
                 <div
                   data-axis={isMobile ? "block" : "inline"}
-                  className={isMobile ? "w-full flex flex-col gap-8 pt-10" : "h-full flex flex-col justify-between gap-[var(--s-5)] pl-4"}
+                  className={isMobile ? "w-full flex flex-col gap-8 pt-10" : "h-full flex flex-col gap-[var(--s-6)] pl-4"}
                 >
-                  <BleedName title={project.title} print={print} />
+                  <BleedName title={project.title} print={print} className="is-cover" />
                   <div className={`deck is-ragged ${isMobile ? "" : "max-w-[30vw]"}`}>
                     <p className={`plate ${print.deck}`}>{project.description}</p>
                   </div>

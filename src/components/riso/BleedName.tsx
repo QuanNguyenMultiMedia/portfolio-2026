@@ -75,8 +75,9 @@ export default function BleedName({
       data-blurmap=""
       aria-label={title}
       style={{
-        // the longest word, for the portrait sheet's fit (riso.css)
+        // the longest word and the word count, for the stacked fits (riso.css)
         "--fit": Math.max(...title.split(" ").map((w) => w.length)),
+        "--lines": title.split(" ").length,
         ...(ramp ? { filter: `url(#${mapId})` } : {}),
       } as React.CSSProperties}
     >

@@ -304,6 +304,11 @@ html.plate-route:not(.plate-faint) main { --ink-display: var(--ink-display-print
 .bleed-word { display: inline-block; margin-right: 0.22em; }
 .bleed-word:last-child { margin-right: 0; }
 .bleed-letter { display: inline-block; } /* every letter on the baseline: no per-letter stepping, anywhere */
+/* the case cover: one word to a line, a masthead above the deck, sized so three lines still leave the deck its room */
+@media (min-width: 768px) {
+  .bleed-name.is-cover { --t-bleed: min(26vh, calc(56vh / var(--lines, 1))); }
+  .bleed-name.is-cover .bleed-word { display: block; margin-right: 0; }
+}
 /* portrait sheet: one word to a line, stacked down the page, the longest word (--fit letters, at under 0.44em a letter
    with the even words' indent) still inside the sheet's 1.5rem gutters */
 @media (max-width: 767px) {
