@@ -1,9 +1,7 @@
 export const NAV_ITEMS = [
   { name: "Home", path: "/" },
   { name: "Works", path: "/works" },
-  { name: "Takes", path: "/takes" },
-  { name: "Play", path: "/play" },
-  { name: "Freebies", path: "/freebies" },
+  { name: "Garden", path: "/garden" },
   { name: "Contacts", path: "/contacts" },
 ];
 

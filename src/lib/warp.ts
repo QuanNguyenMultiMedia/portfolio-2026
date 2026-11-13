@@ -13,9 +13,7 @@ export const WARP_TOTAL = WARP.exit + WARP.travel + WARP.arrive;
 const DESTS: Record<string, { x: number; y: number; z: number; label: string }> = {
   "": { x: 0, y: 0, z: 0, label: "Home" },
   works: { x: 1, y: 0, z: -1, label: "Works" },
-  takes: { x: 1, y: 1, z: -2, label: "Takes" },
-  play: { x: -1, y: 1, z: -2, label: "Play" },
-  freebies: { x: -1, y: 0, z: -1, label: "Freebies" },
+  garden: { x: -1, y: 1, z: -2, label: "Garden" },
   contacts: { x: 0, y: -1, z: -3, label: "Contacts" },
 };
 export const DEST_KEYS = Object.keys(DESTS);

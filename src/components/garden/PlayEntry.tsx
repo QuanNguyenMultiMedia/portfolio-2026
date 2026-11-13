@@ -1,20 +1,21 @@
 "use client";
 
-import { use, useState, useRef } from "react";
+// Client boundary: the sandbox viewer holds frame, zoom and colour state around a live iframe.
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { playItems } from "@/data/play";
-import { notFound } from "next/navigation";
+import type { PlayItem } from "@/data/play";
 import { useScreenSize } from "@/hooks/useScreenSize";
 import { fx } from "@/lib/designSystem";
 
-export default function PlayPageClient({
-  params,
+type Sibling = { slug: string; title: string };
+
+export default function PlayEntry({
+  project, prevProject, nextProject, index, count,
 }: {
-  params: Promise<{ slug: string }>;
+  project: PlayItem; prevProject: Sibling; nextProject: Sibling; index: number; count: number;
 }) {
-  const { slug } = use(params);
-  
+
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [colorMode, setColorMode] = useState<"mono" | "rgb">("mono");
@@ -23,22 +24,6 @@ export default function PlayPageClient({
   const [zoom, setZoom] = useState<number>(0.75);
   const screenSize = useScreenSize();
   const iframeRef = useRef<HTMLIFrameElement>(null);
-
-  const currentIndex = playItems.findIndex((p) => p.slug === slug);
-  const project = playItems[currentIndex];
-
-  if (!project) {
-    notFound();
-  }
-
-  const prevProject =
-    currentIndex > 0
-      ? playItems[currentIndex - 1]
-      : playItems[playItems.length - 1];
-  const nextProject =
-    currentIndex < playItems.length - 1
-      ? playItems[currentIndex + 1]
-      : playItems[0];
 
   const handleReload = () => {
     setIsLoading(true);
@@ -123,10 +108,10 @@ export default function PlayPageClient({
           {/* Bottom Left: Counter */}
           <div className="pointer-events-auto flex gap-2 items-baseline">
             <span className="font-sans text-[14px] 3xl:text-lg 4xl:text-xl">
-              {(currentIndex + 1).toString().padStart(2, "0")}
+              {(index + 1).toString().padStart(2, "0")}
             </span>
             <span className="font-sans text-[12px] 3xl:text-xs 4xl:text-sm mb-[1px] opacity-44">
-              / {playItems.length.toString().padStart(2, "0")}
+              / {count.toString().padStart(2, "0")}
             </span>
           </div>
         </div>
@@ -138,7 +123,8 @@ export default function PlayPageClient({
           }`}
         >
           <Link
-            href={`/play/${prevProject.slug}`}
+            href={`/garden/${prevProject.slug}`}
+            aria-label={prevProject.title}
             className="block p-4 3xl:p-6 4xl:p-8 group/nav bg-background hover:bg-background transition-colors rounded-none border border-transparent hover:border-primary/25"
           >
             <div className="w-3 h-3 3xl:w-4.5 3xl:h-4.5 4xl:w-6 4xl:h-6 border-l border-t border-foreground/30 group-hover/nav:border-foreground transition-colors -rotate-45" />
@@ -152,7 +138,8 @@ export default function PlayPageClient({
           }`}
         >
           <Link
-            href={`/play/${nextProject.slug}`}
+            href={`/garden/${nextProject.slug}`}
+            aria-label={nextProject.title}
             className="block p-4 3xl:p-6 4xl:p-8 group/nav bg-background hover:bg-background transition-colors rounded-none border border-transparent hover:border-primary/25"
           >
             <div className="w-3 h-3 3xl:w-4.5 3xl:h-4.5 4xl:w-6 4xl:h-6 border-r border-t border-foreground/30 group-hover/nav:border-foreground transition-colors rotate-45" />

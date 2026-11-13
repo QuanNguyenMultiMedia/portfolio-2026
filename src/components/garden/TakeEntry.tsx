@@ -1,21 +1,9 @@
 import Image from "next/image";
-import { notFound } from "next/navigation";
-import { takes } from "@/data/takes";
-import Link from "next/link";
-import { layout, ui, t } from "@/lib/designSystem";
+import type { Take } from "@/data/takes";
+import { layout, t } from "@/lib/designSystem";
 
-export default async function PostPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  const post = takes.find((t) => t.slug === slug);
-
-  if (!post) {
-    notFound();
-  }
-
+/** A take in the garden: the essay as an editorial sheet (Server Component). */
+export default function TakeEntry({ post }: { post: Take }) {
   // Split content into paragraphs for rendering
   const paragraphs = post.content.split("\n\n");
 

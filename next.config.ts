@@ -32,8 +32,13 @@ const nextConfig: NextConfig = {
   // The site is served only at www.minhquan.works: on Vercel, every other host (*.vercel.app aliases, deployment
   // URLs) redirects there, path and query kept. Local dev and `next start` are untouched.
   async redirects() {
-    if (!process.env.VERCEL) return [];
-    return [{
+    // Takes, Play and Freebies grew into one garden: old links land on the same entry (or the bed, filtered).
+    const garden = ["takes", "play", "freebies"].flatMap((kind) => [
+      { source: `/${kind}`, destination: `/garden?kind=${kind}`, permanent: true },
+      { source: `/${kind}/:slug`, destination: "/garden/:slug", permanent: true },
+    ]);
+    if (!process.env.VERCEL) return garden;
+    return [...garden, {
       source: "/:path*",
       missing: [{ type: "host", value: "(www\\.)?minhquan\\.works" }],
       destination: "https://www.minhquan.works/:path*",

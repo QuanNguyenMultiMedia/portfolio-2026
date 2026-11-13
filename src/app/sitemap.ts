@@ -1,7 +1,6 @@
 import { MetadataRoute } from "next";
 import { projects } from "@/data/projects";
-import { takes } from "@/data/takes";
-import { playItems } from "@/data/play";
+import { garden, opensInPlace } from "@/data/garden";
 
 export const dynamic = "force-static";
 
@@ -12,9 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/contacts",
     "/design-system",
-    "/freebies",
-    "/play",
-    "/takes",
+    "/garden",
     "/works",
   ].map((route) => ({
     url: `${baseUrl}${route}`,
@@ -30,19 +27,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  const takeRoutes = takes.map((t) => ({
-    url: `${baseUrl}/takes/${t.slug}`,
+  const gardenRoutes = garden.filter((e) => !opensInPlace(e)).map((e) => ({
+    url: `${baseUrl}/garden/${e.slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
 
-  const playRoutes = playItems.map((p) => ({
-    url: `${baseUrl}/play/${p.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.5,
-  }));
-
-  return [...staticRoutes, ...projectRoutes, ...takeRoutes, ...playRoutes];
+  return [...staticRoutes, ...projectRoutes, ...gardenRoutes];
 }

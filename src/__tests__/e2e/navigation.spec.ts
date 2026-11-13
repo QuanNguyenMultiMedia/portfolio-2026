@@ -14,14 +14,14 @@ test.describe("Navigation", () => {
     await expect(page.locator("main")).toBeVisible();
   });
 
-  test("navbar has 6 navigation items", async ({ page }) => {
+  test("navbar has 4 navigation items", async ({ page }) => {
     await page.goto("/");
     const navLinks = page.locator("nav a");
-    await expect(navLinks).toHaveCount(6);
+    await expect(navLinks).toHaveCount(4);
   });
 
   test("all nav links navigate to correct pages", async ({ page }) => {
-    const routes = ["/works", "/takes", "/play", "/freebies", "/contacts"];
+    const routes = ["/works", "/garden", "/contacts"];
 
     for (const route of routes) {
       await page.goto(route);
@@ -44,17 +44,20 @@ test.describe("Works Page", () => {
   });
 });
 
-test.describe("Takes Page", () => {
-  test("renders essay list with 6 items", async ({ page }) => {
+test.describe("Garden Page", () => {
+  test("plants every take, play and freebie, and filters by kind", async ({ page }) => {
+    await page.goto("/garden");
+    await expect(page.locator('main a[href^="/garden/"]')).toHaveCount(10);
+
+    await expect(page.locator('main button[aria-haspopup="dialog"]')).toHaveCount(8);
+
+    await page.goto("/garden?kind=takes");
+    await expect(page.locator('main a[href^="/garden/"]')).toHaveCount(6);
+  });
+
+  test("old section links land in the garden", async ({ page }) => {
     await page.goto("/takes");
-    await page.waitForTimeout(500);
-
-    const essayRows = page.locator('[class*="grid"] a, [class*="grid"] article');
-    const count = await essayRows.count();
-
-    // Should have content - at minimum the page rendered
-    await expect(page.locator("main")).toBeVisible();
-    expect(count).toBeGreaterThan(0);
+    await expect(page).toHaveURL(/\/garden\?kind=takes$/);
   });
 });
 
