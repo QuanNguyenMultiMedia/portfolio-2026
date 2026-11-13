@@ -3,7 +3,7 @@
 // through RetroDither), and an adjustment layer roughens and diffuses the result. Here the same three parts are
 // the site's own: the fountain shader (Fountain clipText) cut to the glyphs, then BlurMap's roughen → compound
 // blur stack on the plate ([data-blurmap]), which also plays the haze entrance. Each letter is its own cut
-// ([data-clip]); every letter holds the baseline. Colorama is a gradient map per project (RAMPS). `stack` stands each word as a column of capitals (11.HerondLabs_End).
+// ([data-clip]); every letter holds the baseline. Colorama is a gradient map per project (RAMPS).
 import { useId } from "react";
 import Fountain, { type FountainParams } from "./Fountain";
 import type { Project } from "@/data/projects";
@@ -51,7 +51,6 @@ export const hasRamp = (fountain: NonNullable<Project["print"]>["fountain"]) => 
 export default function BleedName({
   title,
   print,
-  stack = false,
   as: Tag = "h1",
   className = "",
   id,
@@ -60,7 +59,6 @@ export default function BleedName({
 }: {
   title: string;
   print: NonNullable<Project["print"]>;
-  stack?: boolean;
   as?: "h1" | "h2" | "div";
   className?: string;
   id?: string;
@@ -72,11 +70,15 @@ export default function BleedName({
   return (
     <Tag
       id={id}
-      className={`bleed-name ${stack ? "is-stack" : ""} ${className}`}
+      className={`bleed-name ${className}`}
       data-fountain={print.fountain}
       data-blurmap=""
       aria-label={title}
-      style={ramp ? { filter: `url(#${mapId})` } : undefined}
+      style={{
+        // the longest word, for the portrait sheet's fit (riso.css)
+        "--fit": Math.max(...title.split(" ").map((w) => w.length)),
+        ...(ramp ? { filter: `url(#${mapId})` } : {}),
+      } as React.CSSProperties}
     >
       <RampFilter id={mapId} fountain={print.fountain} density={density} />
       <Fountain
@@ -85,8 +87,7 @@ export default function BleedName({
       >
         {title.split(" ").map((word, w) => (
           <span key={w} aria-hidden className="bleed-word" style={{ "--w": w } as React.CSSProperties}>
-            {/* the plate's mask is cut from each letter's text, so capitals are set in the text, never by CSS */}
-            {Array.from(stack ? word.toUpperCase() : word).map((ch, c) => (
+            {Array.from(word).map((ch, c) => (
               <span key={c} data-clip="" className="ink-knock bleed-letter">
                 {ch}
               </span>

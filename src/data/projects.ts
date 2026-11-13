@@ -95,14 +95,13 @@ export interface Project {
   }[];
   colors: string[];
   /**
-   * How the name prints on the cover and outro spreads (MainTitle.aep project comps): the fountain the name is
-   * inked in, the spot ink the deck overprints it with, and whether the name stands as columns of letters.
+   * How the name prints on the cover spread (MainTitle.aep project comps): the fountain the name is inked in and
+   * the spot ink the deck overprints it with.
    * Names are riso.css tokens (--fountain-*, .ink-*).
    */
   print?: {
     fountain: "mint" | "herond" | "azure" | "electric" | "tide";
     deck: "ink-violet" | "ink-blue" | "ink-indigo" | "ink-orange" | "ink-coral" | "ink-rose";
-    stack?: boolean;
     /** the two inks the chapter band ramps between (10.HerondLabs_Info: coral to violet) */
     ramp?: [string, string];
   };
@@ -185,7 +184,7 @@ export const projects: Project[] = [
   {
     title: "Herond Browser",
     slug: "herond-browser",
-    print: { fountain: "herond", deck: "ink-blue", stack: true, ramp: ["var(--ink-coral)", "var(--ink-violet)"] },
+    print: { fountain: "herond", deck: "ink-blue", ramp: ["var(--ink-coral)", "var(--ink-violet)"] },
     year: "2024–present",
     category: "UI Motion & Brand Design",
     id: "PRJ_002",

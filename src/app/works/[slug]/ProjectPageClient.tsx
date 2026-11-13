@@ -169,13 +169,11 @@ export default function ProjectPageClient({
   }
 
   const screens = project.screens;
-  // Landscape cover footage gets the wider column, so it never reads as a postage stamp.
   const print = project.print ?? { fountain: "mint", deck: "ink-violet" };
   // sections that carry a head are numbered in reading order
   let count = 0;
   const numbers = screens.map((s) => (s.title && s.type !== "zine-cover" && s.type !== "zine-outro" ? ++count : undefined));
   const coverAspect = mediaAspect(project.coverVideo || project.coverImage || "");
-  const coverWide = coverAspect > 1.2;
   const next = projects[(projects.findIndex((p) => p.slug === slug) + 1) % projects.length];
 
   const handlePointerDown = (e: React.PointerEvent) => {
@@ -249,7 +247,6 @@ export default function ProjectPageClient({
         {screens.map((screen, i) => {
           const Module = MODULES[screen.type];
           const sp: SectionProps = { screen, isMobile, ink: print.deck, n: numbers[i] };
-          const spread = screen.type === "zine-cover" || screen.type === "zine-outro";
           const opensChapter = !!screen.chapter && screens.findIndex((x) => x.chapter === screen.chapter) === i;
           return (
           <section
@@ -261,25 +258,18 @@ export default function ProjectPageClient({
                 ? "w-full flex items-center justify-center relative isolate overflow-x-clip py-8"
                 : `flex-shrink-0 h-screen flex items-center justify-center relative isolate border-r border-primary/25 ${
                     BLEED.includes(screen.type) ? "" : "px-12 md:px-24 3xl:px-40 4xl:px-48"
-                  } ${
-                    spread ? "overflow-x-clip" : ""
-                  } ${screen.type === "zine-cover" ? "w-[85vw] 3xl:w-[80vw]" : ""} ${
+                  } ${screen.type === "zine-cover" ? "min-w-[85vw] 3xl:min-w-[80vw]" : ""} ${
                     screen.type === "zine-outro" ? "w-[100vw]" : ""
                   }`
             }
           >
-            {/* ZINE COVER SCREEN */}
+            {/* ZINE COVER SCREEN: the spread is as wide as the name, so the name prints whole; the cover stands
+                the full height of the sheet beside it */}
             {screen.type === "zine-cover" && (
-              <div
-                className={
-                  isMobile
-                    ? "w-full flex flex-col gap-6"
-                    : "w-full h-full py-16 grid grid-cols-12 gap-12 items-center"
-                }
-              >
+              <div className={isMobile ? "w-full flex flex-col gap-6" : "h-full py-16 flex gap-12"}>
                 {/* Desktop Left: running metadata */}
                 {!isMobile && (
-                  <div className="col-span-3 h-full flex flex-col justify-between border-r border-primary/25 pr-8">
+                  <div className="w-[18vw] flex-shrink-0 h-full flex flex-col justify-between border-r border-primary/25 pr-8">
                     <div className="space-y-4">
                       <div className={`wk-cap plate ${print.deck}`}>{project.category}</div>
                       <div className="wk-cap opacity-60">YEAR / {project.year}</div>
@@ -300,45 +290,40 @@ export default function ProjectPageClient({
                   </div>
                 )}
 
-                {/* The name bleeds off the spread's trim and nothing prints over it: the deck and the cover sit
-                    under the name, in the paper it leaves */}
+                {/* nothing prints over the name: the deck sits under it, in the paper it leaves */}
                 <div
                   data-axis={isMobile ? "block" : "inline"}
-                  className={isMobile ? "w-full flex flex-col gap-8 pt-10" : "col-span-9 h-full flex flex-col gap-[var(--s-5)] pl-4"}
+                  className={isMobile ? "w-full flex flex-col gap-8 pt-10" : "h-full flex flex-col justify-between gap-[var(--s-5)] pl-4"}
                 >
                   <BleedName title={project.title} print={print} />
-                  {/* the cover is the work: it takes all the height the name leaves, and it is the same print the
-                      previous project's outro showed small, so arriving from there it grows into place */}
-                  <div
-                    className={isMobile ? "flex flex-col gap-8" : "flex-1 min-h-0 flex items-end gap-[var(--s-5)] [container-type:size]"}
-                  >
-                    <div className={`deck is-ragged ${isMobile ? "" : "flex-1 min-w-0 self-start"}`}>
-                      <p className={`plate ${print.deck}`}>{project.description}</p>
-                    </div>
-                    {(project.coverVideo || project.coverImage) && (
-                      <ViewTransition name={`cover-${project.slug}`} share="cover-morph">
-                        <div
-                          className={`relative z-[1] flex-shrink-0 border border-primary/25 bg-background ${
-                            isMobile ? "w-4/5 self-end p-2" : "p-3 md:p-4"
-                          }`}
-                          style={{
-                            aspectRatio: `${coverAspect}`,
-                            ...(isMobile ? {} : { width: `min(${coverWide ? 62 : 46}cqw, calc(100cqh * ${coverAspect.toFixed(4)}))` }),
-                          }}
-                        >
-                          <div className="relative w-full h-full">
-                            <WorkMedia
-                              src={project.coverVideo || project.coverImage || ""}
-                              alt={project.title}
-                              sizes="(max-width: 768px) 80vw, 50vw"
-                              priority
-                            />
-                          </div>
-                        </div>
-                      </ViewTransition>
-                    )}
+                  <div className={`deck is-ragged ${isMobile ? "" : "max-w-[30vw]"}`}>
+                    <p className={`plate ${print.deck}`}>{project.description}</p>
                   </div>
                 </div>
+                {/* the cover is the work: the whole height of the sheet, and the same print the previous project's
+                    outro showed small, so arriving from there it grows into place */}
+                {(project.coverVideo || project.coverImage) && (
+                  <ViewTransition name={`cover-${project.slug}`} share="cover-morph">
+                    <div
+                      className={`relative z-[1] flex-shrink-0 border border-primary/25 bg-background ${
+                        isMobile ? "w-full p-2" : "self-center p-3 md:p-4"
+                      }`}
+                      style={{
+                        aspectRatio: `${coverAspect}`,
+                        ...(isMobile ? {} : { width: `min(72vw, calc((100svh - 8rem) * ${coverAspect.toFixed(4)}))` }),
+                      }}
+                    >
+                      <div className="relative w-full h-full">
+                        <WorkMedia
+                          src={project.coverVideo || project.coverImage || ""}
+                          alt={project.title}
+                          sizes={isMobile ? "100vw" : "72vw"}
+                          priority
+                        />
+                      </div>
+                    </div>
+                  </ViewTransition>
+                )}
               </div>
             )}
 
@@ -352,46 +337,23 @@ export default function ProjectPageClient({
             {screen.type === "interactive-preview" && <InteractivePreview {...sp} />}
             {Module && <Module {...sp} />}
 
-            {/* OUTRO: the end comp (05/08/11). Credits, the name bled across the sheet (or standing in columns),
-                the line of the job overprinting it, and the way on to the next project */}
+            {/* OUTRO: the end comp (05/08/11). Credits, the line of the job, and the way on to the next project.
+                The name prints once, on the cover */}
             {screen.type === "zine-outro" && (
               <div
-                data-axis={isMobile ? "block" : "inline"}
                 className={
                   isMobile
                     ? "w-full py-12 grid grid-cols-1 gap-y-8"
-                    : print.stack
-                      ? "w-full h-full py-16 grid grid-cols-12 grid-rows-[auto_1fr_auto] gap-x-12"
-                      : "w-full h-full py-16 grid grid-cols-12 grid-rows-[auto_1fr_auto_auto_1fr_auto] gap-x-12"
+                    : "w-full h-full py-16 grid grid-cols-12 grid-rows-[auto_1fr_auto_1fr_auto] gap-x-12"
                 }
               >
-                <div
-                  className={`space-y-2 wk-cap text-foreground ${
-                    isMobile ? "" : print.stack ? "col-start-8 col-span-5 row-start-1" : "col-start-1 col-span-4 row-start-1"
-                  }`}
-                >
+                <div className={`space-y-2 wk-cap text-foreground ${isMobile ? "" : "col-start-1 col-span-4 row-start-1"}`}>
                   <div>CLIENT / {project.client}</div>
                   <div>ROLE / {project.role}</div>
                   <div>YEAR / {project.year}</div>
                 </div>
 
-                <BleedName
-                  as="div"
-                  title={project.title}
-                  print={print}
-                  stack={print.stack && !isMobile}
-                  className={isMobile ? "" : print.stack ? "col-start-1 col-span-6 row-start-1 row-span-3 self-center" : "col-start-1 col-span-12 row-start-3"}
-                />
-                {/* the deck reads in its own field, never over the name */}
-                <div
-                  className={`deck is-lg ${
-                    isMobile
-                      ? ""
-                      : print.stack
-                        ? "col-start-8 col-span-5 row-start-2 self-center"
-                        : "col-start-1 col-span-10 row-start-4 mt-[var(--s-4)]"
-                  }`}
-                >
+                <div className={`deck is-lg ${isMobile ? "" : "col-start-1 col-span-10 row-start-3"}`}>
                   <p className={`plate ${print.deck}`}>
                     {project.client}, {project.year} — {project.role}.
                   </p>
@@ -400,7 +362,7 @@ export default function ProjectPageClient({
                 <Link
                   href={`/works/${next.slug}`}
                   className={`group grid grid-cols-[auto_1fr] items-end gap-6 ${
-                    isMobile ? "" : print.stack ? "col-start-8 col-span-5 row-start-3" : "col-start-8 col-span-5 row-start-6"
+                    isMobile ? "" : "col-start-8 col-span-5 row-start-5"
                   }`}
                 >
                   {/* the next project's cover, named the same as its own cover: following it, it grows into place */}
