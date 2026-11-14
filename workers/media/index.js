@@ -10,9 +10,22 @@ export default {
     const cache = caches.default;
     const ranged = request.headers.has("range");
     const cacheKey = new Request(url.origin + url.pathname, { method: "GET" });
-    if (!ranged && request.method === "GET") {
-      const hit = await cache.match(cacheKey);
+    // Video is always fetched with Range, so ranges must be answered from the cache too (the edge slices the cached
+    // full object into a 206). On a ranged miss, warm the cache with the full object in the background.
+    if (request.method === "GET") {
+      const hit = await cache.match(ranged ? new Request(cacheKey.url, { headers: { range: request.headers.get("range") } }) : cacheKey);
       if (hit) return hit;
+      if (ranged) ctx.waitUntil(env.MEDIA.get(key).then((full) => {
+        if (!full) return;
+        const h = new Headers();
+        full.writeHttpMetadata(h);
+        h.set("etag", full.httpEtag);
+        h.set("accept-ranges", "bytes");
+        h.set("access-control-allow-origin", "*");
+        if (!h.has("cache-control")) h.set("cache-control", "public, max-age=31536000, immutable");
+        h.set("content-length", String(full.size));
+        return cache.put(cacheKey, new Response(full.body, { headers: h }));
+      }));
     }
 
     const obj = request.method === "HEAD"
