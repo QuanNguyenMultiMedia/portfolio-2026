@@ -22,7 +22,11 @@ export default function ClientWords({ quotes }: { quotes: Testimonial[] }) {
 
   return (
     <figure className="words" aria-roledescription="carousel" aria-label="What clients say" aria-live="polite">
-      <blockquote key={cur.brand} className="words-quote"><p>{cur.quote}</p></blockquote>
+      {/* every quote sits in one cell, unseen, so the cell holds the tallest: a turn never resizes the sheet */}
+      <div className="words-stage">
+        {quotes.map((x) => <p key={x.brand} className="words-quote words-sizer" aria-hidden>{x.quote}</p>)}
+        <blockquote key={cur.brand} className="words-quote"><p>{cur.quote}</p></blockquote>
+      </div>
       <figcaption className="words-credit">
         <span>{cur.brand}</span>
         <span className="words-turn">

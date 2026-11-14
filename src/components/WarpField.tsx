@@ -23,6 +23,8 @@ const SURGE = 14000; // world units / s at warp peak
 const RUN_GAIN = 6; // world units per px of camera travel on home
 const TRAIL_FADE = 0.18; // per-frame fade of the previous frame: the trail length
 
+const A_STEPS = 10; // alpha levels the stars are batched into (0..0.7)
+type Bucket = { accent: boolean; a: number; size: number; trail: number[]; dot: number[]; used: boolean };
 type Star = { x: number; y: number; z: number; accent: boolean; px?: number; py?: number };
 
 function envelope(t: number) {
@@ -77,6 +79,7 @@ export default function WarpField() {
       readInks();
 
       let raf = 0, last = 0, frame = 0;
+      const buckets = new Map<number, Bucket>();
       let pulseT0 = -1e9, dir: WarpDir = "fwd";
       // the surge holds at full travel until the new route has rendered (a slow fetch no longer lands the page
       // after the stars have already settled); HOLD_MAX caps the wait
@@ -96,9 +99,13 @@ export default function WarpField() {
         return k === "" || k === "contacts";
       };
 
+      // phones draw the field at 30 fps (a full-screen 2D pass each frame was most of a phone's contacts budget);
+      // the trail fade is per elapsed time, so the streaks keep their length at either rate
+      const minStep = isPhone() ? 1000 / 30 - 2 : 0;
       const draw = (now: number) => {
         raf = 0;
         if (document.hidden) return;
+        if (last && now - last < minStep) { raf = requestAnimationFrame(draw); return; }
         const dt = Math.min(0.05, last ? (now - last) / 1000 : 1 / 60);
         last = now;
         if (++frame % 60 === 0) readInks();
@@ -119,12 +126,16 @@ export default function WarpField() {
 
         // fade the previous frame toward transparent: that residue is the trail
         ctx.globalCompositeOperation = "destination-out";
-        ctx.fillStyle = `rgba(0,0,0,${reduce.matches ? 1 : TRAIL_FADE + (1 - Math.min(1, Math.abs(speed) / 2000)) * 0.5})`;
+        const fade = TRAIL_FADE + (1 - Math.min(1, Math.abs(speed) / 2000)) * 0.5; // per 60 fps frame
+        ctx.fillStyle = `rgba(0,0,0,${reduce.matches ? 1 : (1 - Math.pow(1 - fade, dt * 60)).toFixed(3)})`;
         ctx.fillRect(0, 0, w, h);
         ctx.globalCompositeOperation = "source-over";
 
         const cx = w / 2, cy = h / 2;
         const dz = speed * dt;
+        // stars batch by ink, alpha step and width step into a handful of paths: one stroke/fill per bucket, not
+        // one per star (260 state changes and draw calls a frame were most of a phone's frame on contacts)
+        buckets.forEach((b) => { b.used = false; b.trail.length = 0; b.dot.length = 0; });
         for (const s of stars) {
           s.z += dz;
           let wrapped = false;
@@ -138,17 +149,33 @@ export default function WarpField() {
           const nearFade = Math.max(0, Math.min(1, (-s.z - 50) / 150));
           const a = Math.min(0.55, 0.6 * fog * nearFade) * presence * (s.accent ? 1.25 : 0.85);
           if (a <= 0.01) { s.px = undefined; continue; }
-          ctx.globalAlpha = a;
-          const col = s.accent ? accent : base;
-          if (s.px !== undefined && s.py !== undefined && Math.hypot(x - s.px, y - s.py) < 300) {
-            ctx.strokeStyle = col; ctx.lineWidth = size * 2; ctx.lineCap = "round";
-            ctx.beginPath(); ctx.moveTo(s.px, s.py); ctx.lineTo(x, y); ctx.stroke();
-          } else {
-            ctx.fillStyle = col;
-            ctx.beginPath(); ctx.arc(x, y, size, 0, Math.PI * 2); ctx.fill();
-          }
+          const ai = Math.min(A_STEPS, Math.round(a * A_STEPS / 0.7)), si = Math.round(size * 4);
+          const key = (s.accent ? 1 : 0) + ai * 2 + si * 64;
+          let b = buckets.get(key);
+          if (!b) { b = { accent: s.accent, a: (ai * 0.7) / A_STEPS, size: si / 4, trail: [], dot: [], used: false }; buckets.set(key, b); }
+          b.used = true;
+          if (s.px !== undefined && s.py !== undefined && Math.hypot(x - s.px, y - s.py) < 300) b.trail.push(s.px, s.py, x, y);
+          else b.dot.push(x, y);
           s.px = x; s.py = y;
         }
+        ctx.lineCap = "round";
+        buckets.forEach((b) => {
+          if (!b.used || b.a <= 0) return;
+          const col = b.accent ? accent : base;
+          ctx.globalAlpha = b.a;
+          if (b.trail.length) {
+            ctx.strokeStyle = col; ctx.lineWidth = b.size * 2;
+            ctx.beginPath();
+            for (let i = 0; i < b.trail.length; i += 4) { ctx.moveTo(b.trail[i], b.trail[i + 1]); ctx.lineTo(b.trail[i + 2], b.trail[i + 3]); }
+            ctx.stroke();
+          }
+          if (b.dot.length) {
+            ctx.fillStyle = col;
+            ctx.beginPath();
+            for (let i = 0; i < b.dot.length; i += 2) { ctx.moveTo(b.dot[i] + b.size, b.dot[i + 1]); ctx.arc(b.dot[i], b.dot[i + 1], b.size, 0, Math.PI * 2); }
+            ctx.fill();
+          }
+        });
         ctx.globalAlpha = 1;
 
         // keep running while anything moves or is still visible; otherwise stop until woken

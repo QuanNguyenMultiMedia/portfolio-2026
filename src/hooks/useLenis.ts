@@ -36,6 +36,11 @@ export default function useLenis(options: UseLenisOptions = {}) {
       return;
     }
 
+    // Touch-only devices scroll the page natively (Lenis leaves touch alone), yet its native-scroll handler and
+    // scroll fan-out still ran on every scroll event: a phone's whole scroll budget goes to the compositor instead.
+    // The horizontal case page keeps Lenis (it maps the wheel and drag onto the x axis).
+    if (orientation === "vertical" && !wrapperRef && window.matchMedia("(hover: none) and (pointer: coarse)").matches) return;
+
     const wrapper = wrapperRef?.current || undefined;
     if (wrapper) {
       const computedStyle = window.getComputedStyle(wrapper);

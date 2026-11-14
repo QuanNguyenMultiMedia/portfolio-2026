@@ -230,7 +230,7 @@ void main(){ vUv = uv; gl_Position = vec4(position, 0.0, 1.0); }`;
 type Slot = {
   canvas: HTMLCanvasElement; visible: boolean; lean: [number, number]; target: [number, number];
   clip: boolean; masks: HTMLElement[]; size: [number, number];
-  mask: HTMLCanvasElement | null; maskKey: string; sheet: HTMLElement | null; tick: number; faded: boolean;
+  mask: HTMLCanvasElement | null; maskKey: string; sheet: HTMLElement | null; tick: number; faded: boolean; at: number; pxy: [number, number] | null;
   p: Required<FountainParams>; ptr: [number, number, number]; ptrTarget: [number, number, number];
   field?: import("ogl").RenderTarget;
   route: boolean; amt: number; // the page plate takes the route plate's level (lib/plate); amt = last printed
@@ -281,7 +281,7 @@ const LEVELS = 3; // steps per channel: the board's coarse, chromatic palette
 const MAX_OUT = 2560; // device px cap for the printed plate
 const SETTLE = 0.16; // resting speed vs the AE loop: one turn in ~44 s, inside design.md's 40–90 s drift
 const TAU = 5; // s: how long the entrance takes to settle
-const FADE_CHECK = 12; // frames between computed-opacity reads (~0.5 s at 24fps): never a style flush per frame
+const FADE_CHECK = 500; // ms between computed-opacity reads: never a style flush per frame
 const slots = new Set<Slot>();
 let started = false;
 let still = false;
@@ -300,23 +300,42 @@ const gust = (now: number) => {
 // Phones, which otherwise print one still frame, run live while the wheel stirs and settle on a new still frame.
 const SPIN_SPEED = 1.6; // extra drift speed (x the AE loop) per unit of spin
 let stir: (() => void) | null = null;
+// One pointer listener for every plate (not one each): a finger drags the page, it does not point, so touch moves
+// cost nothing. Lean 3–5% toward the pointer, on a spring (applied in the shared loop); the eddy's hit test reads
+// layout, so the loop does it once per print rather than once per event.
+const onPointer = (e: PointerEvent) => {
+  if (e.pointerType !== "mouse") return;
+  const x = e.clientX / window.innerWidth - 0.5, y = e.clientY / window.innerHeight - 0.5;
+  for (const s of slots) {
+    const k = 0.35 * s.p.lean;
+    s.target = [x * k, y * k];
+    if (s.p.cursor) s.pxy = [e.clientX, e.clientY];
+  }
+};
+if (typeof window !== "undefined") window.addEventListener("pointermove", onPointer, { passive: true });
 if (typeof window !== "undefined") window.addEventListener("plate-stir", () => stir?.());
 
+const PLATE_MS = 1000 / 24; // each plate's print interval
+const PLATE_MS_STILL = 1000 / 12; // phones: a live print (arrival, a stir) runs at half rate, then holds
 const TRAVEL_HOLD = 0.08; // |sheet depth| past which fountain-filled type stops drawing
 
 // The context and shader compile are the heaviest main-thread work on the page: they wait for load and an idle
 // slot (lib/gpu afterLoadIdle), so first paint and input never queue behind them. The plates fade in anyway.
 let queued = false;
+// the GL library downloads while the start waits out the settle: fetched from the first plate's mount, run later
+let oglLoad: Promise<typeof import("ogl")> | null = null;
+const loadOgl = () => (oglLoad ??= import("ogl"));
 function startWhenIdle() {
   if (queued) return;
   queued = true;
+  void loadOgl();
   afterLoadIdle(() => { start(); });
 }
 
 async function start() {
   if (started) return;
   started = true;
-  const { Renderer, Program, Mesh, Triangle, RenderTarget } = await import("ogl");
+  const { Renderer, Program, Mesh, Triangle, RenderTarget } = await loadOgl();
   const renderer = new Renderer({ dpr: 1, alpha: false, antialias: false, preserveDrawingBuffer: true });
   const gl = renderer.gl;
   // no GPU (lib/gpu): the plates stay down and the DOM ink carries the type, as it does without WebGL
@@ -339,7 +358,7 @@ async function start() {
   const screenMesh = new Mesh(gl, { geometry: new Triangle(gl), program: screen });
   still = isPhone() || window.matchMedia("(prefers-reduced-motion: reduce)").matches; // phones print one still frame
 
-  let last = 0, drift = 0;
+  let last = 0, drift = 0, calmAt = Infinity;
   const t0 = performance.now();
   window.addEventListener("warp", (e) => {
     const d = (e as CustomEvent<{ dir: "fwd" | "back"; heading: { x: number; y: number } }>).detail;
@@ -349,7 +368,18 @@ async function start() {
   });
   const frame = (now: number) => {
     raf = requestAnimationFrame(frame);
-    if (document.hidden || now - last < 1000 / 24) return;
+    if (document.hidden) return;
+    // Each plate still prints at 24 fps, but on its own phase: printing every plate in one frame stacked all
+    // their GPU work (field, screen, copy, glyph cut, then BlurMap's chain) into one long frame 24 times a
+    // second. Spread over the frames between, each frame carries only its share.
+    const rafDt = last ? now - last : 1000 / 60;
+    let live = 0;
+    for (const s of slots) if (s.visible) live++;
+    // a still phone stops once the plate is calm and every plate has printed the calm state
+    const calm = still && Math.abs(plateSpin()) < 0.01 && !plateMoving();
+    if (!calm) calmAt = Infinity; else if (calmAt === Infinity) calmAt = now;
+    let behind = false;
+    let budget = still ? Infinity : Math.max(1, Math.ceil((live * Math.min(rafDt, PLATE_MS)) / PLATE_MS));
     const g = still ? 0 : gust(now);
     const step = Math.min(0.1, last ? (now - last) / 1000 : 0);
     const sp = plateSpin();
@@ -373,11 +403,15 @@ async function start() {
       if (s.clip && s.sheet && Math.abs(parseFloat(s.sheet.style.getPropertyValue("--d")) || 0) > TRAVEL_HOLD) continue;
       const host = s.canvas.parentElement;
       // a plate faded fully out (page plate off this spread) costs nothing; sampled, not read every frame
-      if (!still && host && s.tick++ % FADE_CHECK === 0) s.faded = getComputedStyle(host).opacity === "0";
+      if (!still && host && now - s.tick >= FADE_CHECK) { s.tick = now; s.faded = getComputedStyle(host).opacity === "0"; }
       if (!still && s.faded) continue;
       // the route plate recedes in the shader (lib/plate); once it has printed bare paper it stops drawing
       const amt = s.route ? plateLevel() : 1;
       if (s.route && amt <= 0.001 && s.amt <= 0.001) continue;
+      // phones print every due plate at once (they print rarely); either way no plate prints faster than 24 fps
+      if (now - s.at < (still ? PLATE_MS_STILL : PLATE_MS) - 2 || budget <= 0) { if (s.at < calmAt) behind = true; continue; }
+      budget--;
+      s.at = now;
       s.amt = amt;
       s.lean[0] += (s.target[0] + gustHead[0] * g * GUST_LEAN * gustDir - s.lean[0]) * 0.06;
       s.lean[1] += (s.target[1] + gustHead[1] * g * GUST_LEAN * gustDir - s.lean[1]) * 0.06;
@@ -391,6 +425,17 @@ async function start() {
       const field = (s.field ??= new RenderTarget(gl, { width: w, height: h }));
       if (field.width !== w || field.height !== h) field.setSize(w, h);
       program.uniforms.uRes.value = [w, h];
+      if (s.pxy) {
+        // the eddy follows the pointer while it is over the plate (plus a margin), and lets go when it leaves
+        const r = host ? host.getBoundingClientRect() : null;
+        const [x, y] = s.pxy;
+        s.pxy = null;
+        if (r) {
+          const m = 48;
+          const over = x > r.left - m && x < r.right + m && y > r.top - m && y < r.bottom + m;
+          s.ptrTarget = [(x - r.left) / Math.max(1, r.width), (y - r.top) / Math.max(1, r.height), over ? s.p.cursor ?? 0 : 0];
+        }
+      }
       s.ptr[0] += (s.ptrTarget[0] - s.ptr[0]) * 0.18;
       s.ptr[1] += (s.ptrTarget[1] - s.ptr[1]) * 0.18;
       s.ptr[2] += (s.ptrTarget[2] - s.ptr[2]) * 0.08;
@@ -433,11 +478,11 @@ async function start() {
       }
       if (host && !host.dataset.live) host.dataset.live = ""; // first frame is up: CSS may now lean on it
     }
-    if (still && Math.abs(sp) < 0.01 && !plateMoving()) { cancelAnimationFrame(raf); raf = 0; }
+    if (calm && !behind) { cancelAnimationFrame(raf); raf = 0; }
   };
   let raf = requestAnimationFrame(frame);
   // a stir also re-reads every plate's opacity now, so a plate just switched on prints from the next frame
-  stir = () => { for (const s of slots) s.faded = false; if (!raf) { last = 0; raf = requestAnimationFrame(frame); } };
+  stir = () => { for (const s of slots) { s.faded = false; s.at = 0; } if (!raf) { last = 0; raf = requestAnimationFrame(frame); } };
 }
 
 // eager: the plate is the first thing on screen (the cover) and everything else waits on it, so it starts at once
@@ -450,7 +495,7 @@ export default function Fountain({ className = "", children, clipText = false, p
     const slot: Slot = {
       canvas, visible: false, lean: [0, 0], target: [0, 0], clip: clipText,
       masks: clipText ? Array.from(canvas.parentElement?.querySelectorAll<HTMLElement>("[data-clip]") ?? []) : [],
-      size: [0, 0], mask: null, maskKey: "", sheet: canvas.closest<HTMLElement>(".sheet"), tick: 0, faded: false,
+      size: [0, 0], mask: null, maskKey: "", sheet: canvas.closest<HTMLElement>(".sheet"), tick: 0, faded: false, at: 0, pxy: null,
       route: canvas.parentElement?.classList.contains("page-plate") ?? false, amt: 1,
       p: { ...DEFAULTS, ...params }, ptr: [0.5, 0.5, 0], ptrTarget: [0.5, 0.5, 0],
     };
@@ -469,19 +514,7 @@ export default function Fountain({ className = "", children, clipText = false, p
     // no first frame in time (WebGL unavailable; the start waits for load + idle): let the DOM text carry the name
     const host = canvas.parentElement;
     const fallback = clipText ? window.setTimeout(() => { if (host && !host.dataset.live) host.dataset.fallback = ""; }, 5000) : 0;
-    const onMove = (e: PointerEvent) => {
-      // lean 3–5% toward the pointer, on a spring (applied in the shared loop)
-      const k = 0.35 * slot.p.lean;
-      slot.target = [(e.clientX / window.innerWidth - 0.5) * k, (e.clientY / window.innerHeight - 0.5) * k];
-      if (!slot.p.cursor || !host) return;
-      // the eddy follows the pointer while it is over the plate (plus a margin), and lets go when it leaves
-      const r = host.getBoundingClientRect();
-      const m = 48;
-      const over = e.clientX > r.left - m && e.clientX < r.right + m && e.clientY > r.top - m && e.clientY < r.bottom + m;
-      slot.ptrTarget = [(e.clientX - r.left) / Math.max(1, r.width), (e.clientY - r.top) / Math.max(1, r.height), over ? slot.p.cursor : 0];
-    };
-    window.addEventListener("pointermove", onMove, { passive: true });
-    return () => { window.clearTimeout(fallback); io.disconnect(); ro.disconnect(); document.fonts?.removeEventListener("loadingdone", onFonts); slots.delete(slot); window.removeEventListener("pointermove", onMove); };
+    return () => { window.clearTimeout(fallback); io.disconnect(); ro.disconnect(); document.fonts?.removeEventListener("loadingdone", onFonts); slots.delete(slot); };
   }, []);
 
   return (

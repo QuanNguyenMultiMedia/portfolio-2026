@@ -417,6 +417,21 @@ html:not([data-warp]) .riso-grain::before { animation-play-state: paused; }
   .rise { animation: sheet-fade 240ms linear calc(var(--i, 0) * 40ms) both; }
 }
 
+/* contacts card: the entrance, in CSS so it prints from the first paint. Both curves are sampled from the springs
+   the card used to enter on (Framer: stiffness 100 / damping 28 / mass 0.6 for the arrival out of depth; 90 / 13 / 0.8
+   for the throw up from below, its ink on a 0.5 s ease-out). */
+.card-arrive { animation: card-arrive 1.1s var(--spring-arrive) 80ms both; }
+.card-throw { transform-style: preserve-3d; animation: card-throw 868ms var(--spring-throw) both, sheet-fade 500ms cubic-bezier(0, 0, 0.2, 1) both; }
+@keyframes card-arrive { from { opacity: 0; transform: translate3d(0, 0, -120px) rotateY(12deg); } }
+@keyframes card-throw { from { transform: translate3d(0, 900px, 0) rotate(-15deg) rotateX(35deg); } }
+:root {
+  --spring-arrive: linear(0, 0.062, 0.161, 0.259, 0.347, 0.426, 0.495, 0.556, 0.609, 0.656, 0.698, 0.734, 0.766, 0.794, 0.819, 0.841, 0.859, 0.876, 0.891, 0.904, 0.916, 0.926, 0.935, 0.943, 0.95, 0.956, 0.961, 0.966, 0.97, 0.973, 0.977, 0.979, 0.982, 0.984, 0.986, 0.988, 0.989, 0.99, 0.992, 0.993, 1);
+  --spring-throw: linear(0, 0.013, 0.045, 0.088, 0.144, 0.203, 0.271, 0.335, 0.404, 0.467, 0.532, 0.589, 0.643, 0.696, 0.742, 0.786, 0.823, 0.857, 0.886, 0.913, 0.934, 0.953, 0.969, 0.982, 0.993, 1.002, 1.009, 1.014, 1.018, 1.02, 1.022, 1.023, 1.023, 1.022, 1.022, 1.021, 1.019, 1.018, 1.017, 1.015, 1.014, 1.012, 1.011, 1.009, 1.008, 1.007, 1.006, 1.005, 1.004, 1.003, 1.003, 1.002, 1.001, 1.001, 1.001, 1, 1, 1, 1, 1, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-arrive { animation: sheet-fade 200ms linear both; }
+  .card-throw { animation: sheet-fade 200ms linear both; }
+}
 /* contacts card: the idle float, on the compositor (ease-in-out = the old Framer easeInOut) */
 .card-float { transform-style: preserve-3d; animation: card-float 6s ease-in-out infinite paused; }
 .card-float[data-float] { animation-play-state: running; }

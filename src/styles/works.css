@@ -76,6 +76,9 @@
 /* Wall: each column drifts up to its foot and eases back; pointing at the wall holds it */
 .wk-wall-col { animation: wk-wall-drift var(--pace) var(--ease-print) var(--delay) infinite alternate; will-change: transform; }
 .wk-wall:hover .wk-wall-col { animation-play-state: paused; }
+/* off screen the loops hold (usePauseOffscreen); on a phone the wall stands still, so it runs no loop at all */
+.wk-phone.is-offscreen .wk-phone-scroll, .wk-wall.is-offscreen .wk-wall-col { animation-play-state: paused; }
+.wk-wall.is-still .wk-wall-col { animation: none; will-change: auto; }
 @keyframes wk-wall-drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, var(--drift, 0px), 0); } }
 
 /* Cuts: a cut on the edit track, inked by its act; the one playing is full strength */

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { motion, useMotionValue, useSpring, useTransform, animate, useReducedMotion, type MotionValue } from "framer-motion";
+import { m, useMotionValue, useSpring, useTransform, animate, useReducedMotion, type MotionValue } from "framer-motion";
 import PageWrapper from "@/components/PageWrapper";
 import PlateCrescent from "@/components/riso/PlateCrescent";
 import { t, motion as motionTokens, fx } from "@/lib/designSystem";
@@ -323,7 +323,7 @@ function CardFace({
   );
 
   return (
-    <motion.div
+    <m.div
       className="col-start-1 row-start-1 backface-hidden w-full preserve-3d"
       style={{
         rotateY: back ? 180 : 0,
@@ -335,7 +335,7 @@ function CardFace({
       }}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -474,15 +474,14 @@ export default function ContactsPage() {
         {/* The wrappers above the card share its 3D context, so once the card turns past 90° Chrome's hit test lands
             on them instead of the back face and the click never reaches the card. They take no pointer events; the
             card takes them back, and each face (CardFace) hands them only to the side that faces the viewer. */}
-        <motion.div
-          className="preserve-3d pointer-events-none"
-          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, z: -120, rotateY: 12 }}
-          animate={{ opacity: 1, z: 0, rotateY: 0 }}
-          transition={reduceMotion ? { duration: 0.2 } : { type: "spring", stiffness: 100, damping: 28, mass: 0.6, delay: 0.08 }}
-        >
+        {/* The entrance runs in CSS (riso.css: card-arrive, card-throw), sampled from the springs it used to run on, so
+            the card prints from the first paint instead of waiting for hydration (it is the page's largest paint).
+            Tilt and flip stay on the motion values below. */}
+        <div className="card-arrive preserve-3d pointer-events-none">
         {/* the idle float is a CSS animation (compositor-run, no per-frame JS); it holds while the card is flipped */}
         <div className="card-float pointer-events-none" data-float={isEntered && !isFlipped && !reduceMotion ? "" : undefined}>
-        <motion.div
+        <div className="card-throw preserve-3d pointer-events-none" onAnimationEnd={(e) => { if (e.animationName === "card-throw" || e.animationName === "sheet-fade") setIsEntered(true); }}>
+        <m.div
           ref={containerRef}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
@@ -498,37 +497,6 @@ export default function ContactsPage() {
           }}
           className="relative w-full cursor-pointer preserve-3d will-change-transform pointer-events-auto"
           suppressHydrationWarning
-          initial={{ y: 900, rotate: -15, rotateX: 35, opacity: 0 }}
-          animate={isEntered
-            ? {
-                y: 0,
-                rotate: 0,
-                rotateX: 0,
-                opacity: 1,
-              }
-            : {
-                y: 0,
-                rotate: 0,
-                rotateX: 0,
-                opacity: 1,
-              }
-          }
-          onAnimationComplete={() => {
-            if (!isEntered) setIsEntered(true);
-          }}
-          transition={isEntered
-            ? {
-                rotate: { duration: 0.5 },
-                rotateX: { duration: 0.5 },
-              }
-            : {
-                type: "spring",
-                stiffness: 90,
-                damping: 13,
-                mass: 0.8,
-                opacity: { duration: 0.5 },
-              }
-          }
           style={{
             x: springX,
             y: springY,
@@ -538,7 +506,7 @@ export default function ContactsPage() {
             willChange: "transform",
           }}
         >
-          <motion.div
+          <m.div
             style={{
               rotateY: flip,
               transformStyle: "preserve-3d",
@@ -591,7 +559,8 @@ export default function ContactsPage() {
                       src="/assets/portrait_sitting.jpg"
                       alt="Minh Quân Portrait"
                       fill
-                      priority
+                      loading="eager"
+                      fetchPriority="high"
                       sizes="(max-width: 767px) 100vw, (max-width: 1024px) 50vw, 40vw"
                       className="object-cover mix-blend-print"
                     />
@@ -677,10 +646,11 @@ export default function ContactsPage() {
                 </div>
               </div>
             </CardFace>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
         </div>
-        </motion.div>
+        </div>
+        </div>
       </div>
 
       <svg style={{ position: "absolute", width: 0, height: 0 }} aria-hidden="true" focusable="false">

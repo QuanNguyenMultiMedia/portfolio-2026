@@ -13,9 +13,9 @@ export const display = localFont({
 
 export const productSans = localFont({
   src: [
-    { path: "../fonts/ProductSans-Regular.ttf", weight: "400", style: "normal" },
-    { path: "../fonts/ProductSans-Italic.ttf", weight: "400", style: "italic" },
-    { path: "../fonts/ProductSans-Bold.ttf", weight: "700", style: "normal" },
+    { path: "../fonts/ProductSans-Regular-web.woff2", weight: "400", style: "normal" },
+    { path: "../fonts/ProductSans-Italic-web.woff2", weight: "400", style: "italic" },
+    { path: "../fonts/ProductSans-Bold-web.woff2", weight: "700", style: "normal" },
   ],
   variable: "--font-product",
   display: "swap",

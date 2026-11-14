@@ -68,8 +68,8 @@ export default function WorkMedia({
       alt={alt}
       fill
       sizes={sizes}
-      priority={priority}
-      loading={eager && !priority ? "eager" : undefined}
+      loading={eager || priority ? "eager" : undefined}
+      fetchPriority={priority ? "high" : undefined}
       className={`${fitClass} ${className}`}
     />
   );

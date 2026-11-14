@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { routeTopic } from "@/lib/navigation";
@@ -39,7 +39,7 @@ export default function GlobalSideBar() {
       {!mounted ? null : (
         <>
           {/* 0. Right Border Stroke */}
-          <motion.div
+          <m.div
             initial={false}
             animate={{ opacity: isHome ? 0 : 1 }}
             transition={{
@@ -53,7 +53,7 @@ export default function GlobalSideBar() {
           {/* 0.5. Back Button (only shown inside individual items) */}
           <AnimatePresence>
             {isIndividualItem && (
-              <motion.div
+              <m.div
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 48, opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
@@ -69,7 +69,7 @@ export default function GlobalSideBar() {
                     ↑
                   </span>
                 </Link>
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
 
@@ -86,7 +86,7 @@ export default function GlobalSideBar() {
               aria-label={`Switch to ${isDark ? "light" : "dark"} theme`}
             >
               <span className="w-6 md:w-8 h-full flex-shrink-0 flex items-center justify-center">
-              <motion.span
+              <m.span
                 animate={{ rotate: isDark ? 360 : 0 }}
                 transition={{ duration: 0.7, ease: fx.easeSharp }}
                 className={`block w-3.5 h-3.5 md:w-4 md:h-4 transition-colors duration-300 ${isHome ? "text-primary" : "text-foreground"} group-hover:text-foreground group-focus-visible:text-foreground`}
@@ -100,7 +100,7 @@ export default function GlobalSideBar() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                   </svg>
                 )}
-              </motion.span>
+              </m.span>
               </span>
 
               <span
@@ -118,7 +118,7 @@ export default function GlobalSideBar() {
                 </span>
             </button>
 
-            <motion.div
+            <m.div
               animate={{ opacity: isHome ? 0 : 1 }}
               transition={{
                 duration: isHome ? 0.2 : 0.4,

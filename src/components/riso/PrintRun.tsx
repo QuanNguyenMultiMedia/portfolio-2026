@@ -180,14 +180,19 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
         el.style.transform = `translate3d(${lookX.x * LOOK.shift}px,${lookY.x * LOOK.shift}px,${-d * DEPTH}px)`;
         el.style.opacity = opacity.toFixed(3);
         // an unprinted sheet is off the press (CSS hides it; under html.kbd it stays focusable, see onTab)
-        el.toggleAttribute("data-off", opacity <= 0);
+        if (el.hasAttribute("data-off") !== opacity <= 0) el.toggleAttribute("data-off", opacity <= 0);
+        // --d is read by script only (registered non-inherited, home.css); --mis restyles the sheet's plates, so
+        // it is written only when it changes (a held or passed sheet keeps 1)
         el.style.setProperty("--d", clamp(d, -1, 1).toFixed(3));
-        el.style.setProperty("--mis", (1 + ahead * 10).toFixed(2));
-        el.style.pointerEvents = Math.abs(d) < 0.3 ? "auto" : "none";
+        const mis = (1 + ahead * 10).toFixed(2);
+        if (el.style.getPropertyValue("--mis") !== mis) el.style.setProperty("--mis", mis);
+        const pe = Math.abs(d) < 0.3 ? "auto" : "none";
+        if (el.style.pointerEvents !== pe) el.style.pointerEvents = pe;
         cue(el, Math.abs(d) < CUE ? "in" : d > 0 ? "ahead" : "past");
         for (const L of layers[i]) lensLayer(L, lensPx);
       }
-      run.setAttribute("data-painted", "");
+      // an attribute on the run's root restyles the whole run (home.css reads it): set it once
+      if (!run.hasAttribute("data-painted")) run.setAttribute("data-painted", "");
       const near = Math.round(cam.x / DEPTH);
       // BlurMap's haze re-runs its whole filter chain on every step; on a sheet in projection (travelling, or
       // parked between sheets) that costs a frame budget, so the drift runs only on a held sheet

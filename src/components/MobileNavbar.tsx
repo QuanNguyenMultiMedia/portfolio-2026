@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import LogoMark from "./LogoMark";
 import { NAV_ITEMS } from "@/lib/navigation";
@@ -277,7 +277,7 @@ export default function MobileNavbar() {
       {/* Radial Menu Overlay Screen */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -322,7 +322,7 @@ export default function MobileNavbar() {
               const isSelected = activeIndex === i;
 
               return (
-                <motion.div
+                <m.div
                   key={item.path}
                   initial={{ scale: 0, opacity: 0, x: 0, y: 0 }}
                   animate={{
@@ -382,7 +382,7 @@ export default function MobileNavbar() {
                       </svg>
                     )}
                   </div>
-                </motion.div>
+                </m.div>
               );
             })}
 
@@ -408,7 +408,7 @@ export default function MobileNavbar() {
                 DRAG FINGER TO ITEM / RELEASE TO CONFIRM
               </span>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </>

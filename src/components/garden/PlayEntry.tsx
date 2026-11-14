@@ -3,7 +3,7 @@
 // Client boundary: the sandbox viewer holds frame, zoom and colour state around a live iframe.
 import { useState, useRef } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import type { PlayItem } from "@/data/play";
 import { useScreenSize } from "@/hooks/useScreenSize";
 import { fx } from "@/lib/designSystem";
@@ -49,7 +49,7 @@ export default function PlayEntry({
       <div className="absolute inset-0 pointer-events-none opacity-[0.02] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[size:100%_4px,3px_100%]" />
 
       {/* Main Screen Area - Viewfinder Frame */}
-      <motion.div
+      <m.div
         layout
         transition={{ duration: 0.7, ease: fx.easeSharp }}
         style={{
@@ -175,7 +175,7 @@ export default function PlayEntry({
           {/* Fallback/Loader/Error Layer */}
           <AnimatePresence mode="wait">
             {hasError ? (
-              <motion.div
+              <m.div
                 key="error"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -199,9 +199,9 @@ export default function PlayEntry({
                     Retry Connection
                   </button>
                 </div>
-              </motion.div>
+              </m.div>
             ) : isLoading ? (
-              <motion.div
+              <m.div
                 key="loading"
                 initial={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -235,7 +235,7 @@ export default function PlayEntry({
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             ) : null}
           </AnimatePresence>
         </div>
@@ -327,7 +327,7 @@ export default function PlayEntry({
             </button>
           </div>
         </div>
-      </motion.div>
+      </m.div>
     </div>
   );
 }

@@ -4,7 +4,7 @@
 // the paper. A click anywhere, the close mark or Escape puts it back.
 import { useEffect } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import type { GardenEntry } from "@/data/garden";
 import Portal from "@/components/Portal";
 import { fx } from "@/lib/designSystem";
@@ -21,7 +21,7 @@ export default function PhotoView({ entry, onClose }: { entry: GardenEntry; onCl
 
   return (
     <Portal>
-      <motion.div
+      <m.div
         role="dialog"
         aria-modal="true"
         aria-label={entry.title}
@@ -42,17 +42,17 @@ export default function PhotoView({ entry, onClose }: { entry: GardenEntry; onCl
             <path d="M1 1L13 13M1 13L13 1" stroke="currentColor" strokeWidth="1" />
           </svg>
         </button>
-      </motion.div>
+      </m.div>
 
       <div className="fixed inset-0 z-[101] pointer-events-none flex items-center justify-center p-6 md:p-12">
-        <motion.div
+        <m.div
           layoutId={`photo-${entry.slug}`}
           transition={{ duration: 0.8, ease: fx.easeSharp }}
           className="relative h-full max-h-full aspect-[2/3] max-w-full"
         >
-          <Image src={entry.image} alt={entry.title} fill priority sizes="(max-width: 768px) 100vw, 60vh"
+          <Image src={entry.image} alt={entry.title} fill loading="eager" sizes="(max-width: 768px) 100vw, 60vh"
             className="object-contain mix-blend-print" />
-        </motion.div>
+        </m.div>
       </div>
     </Portal>
   );

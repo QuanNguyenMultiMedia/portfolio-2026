@@ -3,7 +3,8 @@
 // badge detail card laid over its right side. A screen taller than its phone window scrolls inside it on a
 // slow loop (transform only; pointing at it holds it); under reduced motion it holds and scrolls by hand.
 // The art those screens carry (extras) sits as a small labelled strip.
-import type { CSSProperties } from "react";
+import { useRef, type CSSProperties } from "react";
+import { usePauseOffscreen } from "@/hooks/usePauseOffscreen";
 import WorkMedia from "@/components/WorkMedia";
 import { Kicker, Captioned, aspectOf, type SectionProps } from "./kit";
 import { t } from "@/lib/designSystem";
@@ -16,9 +17,12 @@ function Phone({ src, label, width, className = "", style }: { src: string; labe
   const long = a < WINDOW;
   // how far the screen travels, as a share of its own height, to bring its foot into the window
   const travel = long ? 1 - a / WINDOW : 0;
+  const win = useRef<HTMLDivElement>(null);
+  usePauseOffscreen(win);
   return (
     <figure className={`wk-in m-0 flex flex-col gap-2 ${className}`} style={{ width, ...style }}>
       <div
+        ref={win}
         className={`wk-phone relative w-full ${long ? "is-long" : ""}`}
         style={{ aspectRatio: `${long ? WINDOW : a}` }}
         tabIndex={long ? 0 : undefined}

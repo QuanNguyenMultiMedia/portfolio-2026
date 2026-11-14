@@ -5,6 +5,7 @@
 // drift, so the wall stands still in two columns. Under reduced motion it stands still everywhere.
 import { useEffect, useRef, type CSSProperties } from "react";
 import WorkMedia from "@/components/WorkMedia";
+import { usePauseOffscreen } from "@/hooks/usePauseOffscreen";
 import { Head, balance, aspectOf, type SectionProps } from "./kit";
 
 export default function Wall({ screen, isMobile, ink, n }: SectionProps) {
@@ -13,6 +14,7 @@ export default function Wall({ screen, isMobile, ink, n }: SectionProps) {
   const cols = isMobile ? 2 : 3;
   // balance by height (1 / aspect) so the columns end near each other
   const lanes = balance(cuts, (x) => 1 / aspectOf(x.src), cols);
+  usePauseOffscreen(board);
 
   useEffect(() => {
     const el = board.current;
@@ -31,7 +33,7 @@ export default function Wall({ screen, isMobile, ink, n }: SectionProps) {
   const grid = (
     <div
       ref={board}
-      className={`wk-wall grid gap-[var(--s-2)] ${isMobile ? "grid-cols-2" : "grid-cols-3 h-full overflow-hidden"}`}
+      className={`wk-wall grid gap-[var(--s-2)] ${isMobile ? "is-still grid-cols-2" : "grid-cols-3 h-full overflow-hidden"}`}
       style={isMobile ? undefined : { width: "min(62vw, 120vh)" }}
     >
       {lanes.map((lane, li) => (

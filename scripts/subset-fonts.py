@@ -27,3 +27,18 @@ for style in ("Roman", "Italic"):
     font.flavor = "woff2"
     font.save(out)
     print(out)
+
+# Product Sans (UI face): same character set, served as woff2 rather than the raw TTFs (~2.5x smaller on the wire).
+for style in ("Regular", "Italic", "Bold"):
+    font = TTFont(f"src/fonts/ProductSans-{style}.ttf")
+    opts = subset.Options()
+    opts.layout_features = ["kern", "liga", "calt", "ccmp", "mark", "mkmk", "locl"]
+    opts.name_IDs = ["*"]
+    opts.notdef_outline = True
+    sub = subset.Subsetter(opts)
+    sub.populate(unicodes=UNICODES)
+    sub.subset(font)
+    out = f"src/fonts/ProductSans-{style}-web.woff2"
+    font.flavor = "woff2"
+    font.save(out)
+    print(out)

@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { routeTopic } from "@/lib/navigation";
@@ -40,7 +40,7 @@ export default function MobileTopBar() {
       <div className="w-9 h-full flex-shrink-0 flex items-center justify-center">
         <AnimatePresence mode="wait">
           {isIndividualItem && (
-            <motion.div
+            <m.div
               layout
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -58,7 +58,7 @@ export default function MobileTopBar() {
                   ←
                 </span>
               </Link>
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
       </div>
@@ -79,7 +79,7 @@ export default function MobileTopBar() {
           className="w-full h-full flex items-center justify-center group"
           aria-label="Toggle Theme"
         >
-          <motion.div
+          <m.div
             animate={{ rotate: isDark ? 360 : 0 }}
             transition={{ duration: 0.7, ease: fx.easeSharp }}
             className="w-3.5 h-3.5 text-foreground group-hover:text-foreground transition-colors"
@@ -111,7 +111,7 @@ export default function MobileTopBar() {
                 />
               </svg>
             )}
-          </motion.div>
+          </m.div>
         </button>
       </div>
     </div>

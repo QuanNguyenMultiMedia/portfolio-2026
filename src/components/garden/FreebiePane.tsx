@@ -4,7 +4,7 @@
 // the right with what is in the file and the download. Portaled, so no transformed ancestor contains it.
 import { useEffect } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import type { FreebieItem } from "@/data/freebies";
 import HUDLabel from "@/components/HUDLabel";
 import TechButton from "@/components/TechButton";
@@ -29,7 +29,7 @@ export default function FreebiePane({ item, onClose }: { item: FreebieItem; onCl
 
   return (
     <Portal>
-      <motion.div
+      <m.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -41,17 +41,17 @@ export default function FreebiePane({ item, onClose }: { item: FreebieItem; onCl
         className="hidden md:flex fixed inset-0 z-[102] pointer-events-none items-center justify-center"
         style={{ paddingRight: `${panelWidth}px` }}
       >
-        <motion.div
+        <m.div
           layoutId={`thumb-${item.slug}`}
           className="relative w-[45vw] max-w-[55vh] h-[65vh] overflow-hidden bg-foreground/5 border border-primary/25"
           transition={{ duration: 0.8, ease: fx.easeSharp }}
         >
-          <Image src={item.image} alt={item.title} fill priority referrerPolicy="no-referrer"
+          <Image src={item.image} alt={item.title} fill loading="eager" referrerPolicy="no-referrer"
             sizes="50vw" className="object-cover mix-blend-print" />
-        </motion.div>
+        </m.div>
       </div>
 
-      <motion.div
+      <m.div
         initial={{ clipPath: "inset(0 0 0 100%)" }}
         animate={{ clipPath: `inset(0 0 0 calc(100% - ${panelWidth}px))` }}
         exit={{ clipPath: "inset(0 0 0 100%)" }}
@@ -59,9 +59,9 @@ export default function FreebiePane({ item, onClose }: { item: FreebieItem; onCl
         className="fixed inset-0 z-[110] pointer-events-none hidden md:block"
       >
         <LogoMark variant="auto" animate={false} className="!z-[110]" />
-      </motion.div>
+      </m.div>
 
-      <motion.div
+      <m.div
         role="dialog"
         aria-modal="true"
         aria-label={item.title}
@@ -117,7 +117,7 @@ export default function FreebiePane({ item, onClose }: { item: FreebieItem; onCl
             {unavailable ? "Download / Unavailable" : "Download / Free"}
           </TechButton>
         </div>
-      </motion.div>
+      </m.div>
     </Portal>
   );
 }

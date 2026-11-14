@@ -44,7 +44,7 @@ export function warmProgram(gl: WebGLRenderingContext | WebGL2RenderingContext, 
 // Past this settle time the same calls return in a few ms.
 const GPU_SETTLE = 900;
 
-/** Runs `fn` after the page has loaded and the GPU has settled, in an idle slot: context setup and shader
+/** Runs `fn` once the document is parsed and the GPU has settled, in an idle slot: context setup and shader
  * compiles never queue ahead of first paint, the first raster, or input. */
 export function afterLoadIdle(fn: () => void): () => void {
   let cancelled = false, idle = 0, timer = 0;
@@ -55,11 +55,13 @@ export function afterLoadIdle(fn: () => void): () => void {
       else run();
     }, GPU_SETTLE) as unknown as number;
   };
-  if (document.readyState === "complete") go();
-  else window.addEventListener("load", go, { once: true });
+  // the document, not every image: on a slow network `load` waits on the in-view images and held the first ink
+  // (the type's only paint, so the page's LCP) for seconds; the settle and the idle slot keep first paint clear
+  if (document.readyState !== "loading") go();
+  else document.addEventListener("DOMContentLoaded", go, { once: true });
   return () => {
     cancelled = true;
-    window.removeEventListener("load", go);
+    document.removeEventListener("DOMContentLoaded", go);
     if (idle) window.cancelIdleCallback(idle);
     if (timer) clearTimeout(timer);
   };

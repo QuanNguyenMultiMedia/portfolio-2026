@@ -8,7 +8,6 @@
 // Server component; client islands: Book (the cover), BleedName's plate, PrintRun (camera, the reel's own travel, page-fountain scope), PrintedVideo, WorkRotation, ClientWords, RegisterObserver.
 import Image from "next/image";
 import Link from "next/link";
-import { preload } from "react-dom";
 import BleedName from "@/components/riso/BleedName";
 import Book from "@/components/riso/Book";
 import ClientWords from "@/components/riso/ClientWords";
@@ -71,8 +70,8 @@ const ROTATION: RotationWork[] = cases.map((p) => {
 });
 
 export default function Home() {
-  // the reel poster is the first screen's largest paint: fetch it ahead of the scripts
-  preload(reel.coverImage ?? "/media/showreel.jpg", { as: "image", fetchPriority: "high" });
+  // the reel poster is the first screen's largest paint: its <img> is in the HTML at high fetch priority (a preload()
+  // hint here also rode along in every other route's prefetch of home, preloading the poster where it never shows)
   return (
     <main className="home">
       {/* the front cover, first visit of a session (lib/cover): turned to open the first spread */}
@@ -87,7 +86,7 @@ export default function Home() {
             cues hold until the cover is opened. */}
         <section className="sheet hero" aria-labelledby="hero-h">
           <div className="hero-bg" aria-hidden>
-            <Image src={reel.coverImage ?? "/media/showreel.jpg"} alt="" fill sizes="100vw" loading="eager" />
+            <Image src={reel.coverImage ?? "/media/showreel.jpg"} alt="" fill sizes="100vw" loading="eager" fetchPriority="high" />
             <Fountain className="hero-plate" params={{ phase: 2.4 }} />
           </div>
           <div className="hero-name" data-o="" style={cue(1)}>

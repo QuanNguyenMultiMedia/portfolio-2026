@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, use, ViewTransition } from "react";
+import { useEffect, useRef, useState, use, ViewTransition } from "react";
 import Link from "next/link";
 import { projects } from "@/data/projects";
 import { t } from "@/lib/designSystem";
@@ -137,6 +137,11 @@ export default function ProjectPageClient({
   const { slug } = use(params);
   const screenSize = useScreenSize();
   const isMobile = screenSize === "mobile";
+  // The server cannot know the screen, so its HTML is the laptop layout; a phone used to repaint the whole case
+  // as its stacked layout after hydration (CLS 0.72). The case holds unseen until the first client render, which
+  // lands in the same commit as the measured size.
+  const [measured, setMeasured] = useState(false);
+  useEffect(() => setMeasured(true), []);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const lenisRef = useLenis({
@@ -230,12 +235,16 @@ export default function ProjectPageClient({
       onClickCapture={isMobile ? undefined : swallowClickAfterDrag}
       onDragStart={isMobile ? undefined : (e) => e.preventDefault()}
       data-lenis-prevent={isMobile ? undefined : ""}
+      data-measuring={measured ? undefined : ""}
+      style={measured ? undefined : { visibility: "hidden" }}
       className={
         isMobile
           ? "relative bg-background w-full min-h-screen overflow-y-auto"
           : "relative bg-background h-screen w-full overflow-hidden select-none cursor-grab"
       }
     >
+      {/* without script the case stands as the server printed it */}
+      <noscript><style>{"[data-measuring]{visibility:visible!important}"}</style></noscript>
       <div
         data-axis={isMobile ? "block" : "inline"}
         className={

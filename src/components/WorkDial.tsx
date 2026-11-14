@@ -18,7 +18,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { plateKick } from "@/lib/plate";
-import gsap from "gsap";
 
 // white noise for the click transient (runs in the sound handler, never during render)
 function fillNoise(d: Float32Array) {
@@ -54,6 +53,7 @@ export default function WorkDial({ items, activeIndex, onChange, onOpen }: Props
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const rotation = useRef(0);
+  const tween = useRef(0); // the rAF of a dial turn easing to its stop
   const active = useRef(activeIndex);
   const row = useRef(80);
   const lastAngle = useRef<number | null>(null);
@@ -171,7 +171,7 @@ export default function WorkDial({ items, activeIndex, onChange, onOpen }: Props
     ro.observe(root);
     return () => {
       ro.disconnect();
-      gsap.killTweensOf(rotation);
+      cancelAnimationFrame(tween.current);
       audio.current?.close();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -192,17 +192,19 @@ export default function WorkDial({ items, activeIndex, onChange, onOpen }: Props
     if (d > 180) target -= 360;
     if (d < -180) target += 360;
     setTransition("none");
-    gsap.killTweensOf(rotation);
-    gsap.to(rotation, {
-      current: target,
-      duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 0.75,
-      ease: "power4.out",
-      onUpdate: () => {
-        paint(rotation.current);
-        sync(rotation.current);
-      },
-      onComplete: () => sync(target),
-    });
+    // one number eased to its stop (power4.out, 0.75 s): a rAF tween, not a whole tween engine on this route
+    cancelAnimationFrame(tween.current);
+    const from = rotation.current, dur = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 750;
+    const t0 = performance.now();
+    const step = (now: number) => {
+      const k = dur ? Math.min(1, (now - t0) / dur) : 1;
+      rotation.current = from + (target - from) * (1 - Math.pow(1 - k, 4));
+      paint(rotation.current);
+      sync(rotation.current);
+      if (k < 1) tween.current = requestAnimationFrame(step);
+      else { tween.current = 0; sync(target); }
+    };
+    tween.current = requestAnimationFrame(step);
     lockSound();
     buzz();
   };
@@ -216,7 +218,7 @@ export default function WorkDial({ items, activeIndex, onChange, onOpen }: Props
     e.preventDefault();
     e.currentTarget.setPointerCapture(e.pointerId);
     ctx();
-    gsap.killTweensOf(rotation);
+    cancelAnimationFrame(tween.current);
     setTransition(DRAG);
     lastAngle.current = angleAt(e.clientX, e.clientY);
     wound.current = 0;

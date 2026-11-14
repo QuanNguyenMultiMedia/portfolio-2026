@@ -1,3 +1,6 @@
+/* a sheet's depth from the camera (PrintRun, every frame): read only by script, so a write restyles the sheet
+   alone, not every element inside it */
+@property --d { syntax: "<number>"; inherits: false; initial-value: 0; }
 /* Home: the print run (design.md §2–4, §7), led by the work. Three sheets on a strict 12-column grid: the reel
    and the manifesto, the works in rotation, the record with the clients' words.
    Flow mode (default, phones, short screens, reduced motion): sheets read top to bottom, each opened by a
@@ -138,7 +141,10 @@ html.kbd .run.is-3d .reel .video-controls { opacity: 1; visibility: visible; }
 /* the client quotes: one pull quote, turned by its own counter */
 .words { display: grid; gap: var(--s-2); margin: 0; }
 .words-quote { margin: 0; font-family: var(--font-display); font-size: clamp(1.2rem, 1.9vw, 2.1rem); line-height: 1.1; letter-spacing: -0.015em; max-width: 34ch; text-wrap: pretty; animation: cue-settle var(--t-register) var(--ease-print) both; }
-.words-quote p::before { content: "\201C"; display: inline-block; width: 0.5em; margin-left: -0.5em; color: var(--ink-violet); }
+.words-stage { display: grid; align-items: start; }
+.words-stage > * { grid-area: 1 / 1; }
+.words-sizer { visibility: hidden; animation: none; }
+.words-sizer::before, .words-quote p::before { content: "\201C"; display: inline-block; width: 0.5em; margin-left: -0.5em; color: var(--ink-violet); }
 .words-credit { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-2); font-size: var(--t-label); }
 .words-turn { display: inline-flex; align-items: baseline; gap: var(--s-1); }
 .words-turn button { font: inherit; padding: 0.15em 0.4em; border: 0; background: none; color: inherit; cursor: pointer; transition: transform 300ms var(--ease-print), color 300ms var(--ease-print); }
