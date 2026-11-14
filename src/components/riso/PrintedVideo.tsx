@@ -4,6 +4,7 @@
 // its poster (or first frame) has decoded, so a late poster never cuts in over the ground.
 import { useEffect, useRef, useState } from "react";
 import { useSheetLive } from "@/hooks/useSheetLive";
+import { media } from "@/lib/media";
 
 export default function PrintedVideo({
   src,
@@ -57,7 +58,7 @@ export default function PrintedVideo({
       <div className="printed" style={{ width: "100%", height: "100%" }}>
         <video
           ref={ref}
-          src={src}
+          src={media(src)}
           poster={poster}
           muted
           loop

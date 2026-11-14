@@ -7,6 +7,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { mediaMeta } from "@/data/workMedia";
 import { Head, type SectionProps } from "./kit";
+import { media } from "@/lib/media";
 
 type Cut = NonNullable<SectionProps["screen"]["cuts"]>[number];
 const NONE: Cut[] = [];
@@ -58,7 +59,7 @@ export default function Cuts({ screen, isMobile, ink, n }: SectionProps) {
   const monitor = (
     <video
       ref={video}
-      src={src}
+      src={media(src)}
       poster={meta?.poster}
       controls
       muted

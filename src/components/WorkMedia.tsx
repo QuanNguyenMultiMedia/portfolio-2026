@@ -5,6 +5,7 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { mediaMeta, isVideoSrc } from "@/data/workMedia";
+import { media } from "@/lib/media";
 
 export const mediaAspect = (src: string, fallback = 16 / 10) => {
   const m = mediaMeta(src);
@@ -49,7 +50,7 @@ export default function WorkMedia({
     return (
       <video
         ref={ref}
-        src={src}
+        src={media(src)}
         poster={meta?.poster}
         muted
         loop

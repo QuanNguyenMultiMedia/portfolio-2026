@@ -7,6 +7,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { mediaMeta } from "@/data/workMedia";
 import { Head, Plate, pad2, aspectOf, type SectionProps } from "./kit";
+import { media } from "@/lib/media";
 
 const RM = "(prefers-reduced-motion: reduce)";
 const subscribeRM = (cb: () => void) => {
@@ -53,7 +54,7 @@ export default function Stages({ screen, isMobile, ink, n }: SectionProps) {
         <video
           ref={video}
           key={cur.src}
-          src={cur.src}
+          src={media(cur.src)}
           poster={mediaMeta(cur.src)?.poster}
           muted
           playsInline
