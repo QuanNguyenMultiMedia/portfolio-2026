@@ -1,0 +1,9 @@
+# Serves the R2 media bucket. Reads go only through this Worker (the bucket's r2.dev URL is off), so on the
+# Workers Free plan the daily request cap (100k) is a hard ceiling on R2 reads: well inside R2's free 10M/month.
+name = "portfolio-media"
+main = "index.js"
+compatibility_date = "2026-10-01"
+
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "minhquanworks-portfolio"

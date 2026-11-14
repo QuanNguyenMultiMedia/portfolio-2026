@@ -20,12 +20,14 @@ const files = [];
 })("public");
 
 const npx = process.platform === "win32" ? "npx.cmd" : "npx";
+// Windows runs npx.cmd through a shell, which splits unquoted args at spaces
+const q = (args) => (process.platform === "win32" ? args.map((a) => `"${a}"`) : args);
 let mb = 0;
 for (const f of files) {
   const key = relative("public", f).split(sep).join("/");
   const type = TYPES[f.split(".").pop().toLowerCase()];
-  execFileSync(npx, ["wrangler@4", "r2", "object", "put", `${bucket}/${key}`, "--file", f, "--content-type", type,
-    "--cache-control", "public, max-age=31536000, immutable", "--remote"], { stdio: "inherit", shell: process.platform === "win32" });
+  execFileSync(npx, q(["wrangler@4", "r2", "object", "put", `${bucket}/${key}`, "--file", f, "--content-type", type,
+    "--cache-control", "public, max-age=31536000, immutable", "--remote"]), { stdio: "inherit", shell: process.platform === "win32" });
   mb += statSync(f).size / 1e6;
 }
 console.log(`uploaded ${files.length} files, ${mb.toFixed(0)}MB`);

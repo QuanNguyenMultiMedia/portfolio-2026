@@ -16,7 +16,6 @@
     "test:all": "npm run test && npm run test:e2e"
   },
   "dependencies": {
-    "@mux/mux-video": "^0.31.0",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "framer-motion": "^12.38.0",

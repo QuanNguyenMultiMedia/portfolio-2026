@@ -7,7 +7,6 @@ import { t } from "@/lib/designSystem";
 import { notFound } from "next/navigation";
 import useLenis from "@/hooks/useLenis";
 import { useScreenSize } from "@/hooks/useScreenSize";
-import dynamic from "next/dynamic";
 import WorkMedia, { mediaAspect } from "@/components/WorkMedia";
 import BleedName from "@/components/riso/BleedName";
 import { Head, Plate, Lanes, Rail, type Screen, type SectionProps } from "@/components/works/kit";
@@ -29,10 +28,6 @@ import Carousel from "@/components/works/Carousel";
 import Screening from "@/components/works/Screening";
 import Trail from "@/components/works/Trail";
 import Info, { chapterId } from "@/components/works/Info";
-
-const MuxPlayerWrapper = dynamic(() => import("@/components/MuxPlayerWrapper"), {
-  ssr: false,
-});
 
 // Each section type is a module in components/works, shaped by what its media is (see projects.ts). Every
 // media frame is sized from the work's own aspect ratio, so footage is only ever scaled, never cropped. Copy
@@ -91,14 +86,9 @@ function Breakdown({ screen, isMobile, ink, n }: SectionProps) {
 
 // The film the section is about, at its own aspect, its caption set beside it rather than over it.
 function Film({ screen, isMobile, ink, n }: SectionProps) {
-  const local = screen.src?.startsWith("/");
-  const film = local ? (
+  const film = (
     <div className="wk-in self-center">
       <Plate src={screen.src!} tone="dark" sizes="80vw" size={isMobile ? { w: "100%" } : { fit: [screen.title ? "62vw" : "78vw", "72vh"] }} alt={screen.title} />
-    </div>
-  ) : (
-    <div className={isMobile ? "w-full aspect-video relative" : "h-[72vh] aspect-video relative"}>
-      <MuxPlayerWrapper playbackId={screen.src || ""} className="w-full h-full object-contain" />
     </div>
   );
   if (isMobile) {

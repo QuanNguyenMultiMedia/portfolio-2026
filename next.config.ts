@@ -6,10 +6,6 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "image.mux.com",
-      },
-      {
-        protocol: "https",
         hostname: "images.unsplash.com",
       },
       {
@@ -27,7 +23,7 @@ const nextConfig: NextConfig = {
     turbopackFileSystemCacheForDev: process.platform === "darwin" ? false : true,
   },
 
-  // Removed aggressive 60s onDemandEntries page disposal to prevent constant CPU-intensive recompilation of heavy 3D and media modules (Three.js, R3F, GSAP, Mux).
+  // Removed aggressive 60s onDemandEntries page disposal to prevent constant CPU-intensive recompilation of heavy 3D and media modules (Three.js, R3F, GSAP).
 
   // The site is served only at www.minhquan.works: on Vercel, every other host (*.vercel.app aliases, deployment
   // URLs) redirects there, path and query kept. Local dev and `next start` are untouched.
