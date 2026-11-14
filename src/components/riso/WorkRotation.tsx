@@ -41,7 +41,7 @@ function Plate({ plate, k, play }: { plate: RotationPlate; k: number; play: bool
   return (
     <div className="rot-plate printed" style={{ "--ar": plate.w / plate.h, "--k": k } as React.CSSProperties}>
       {plate.video ? (
-        <video ref={ref} src={plate.src} poster={plate.poster} muted loop playsInline preload="auto" />
+        <video ref={ref} src={plate.src} poster={plate.poster} muted loop playsInline preload={play ? "auto" : "none"} />
       ) : (
         <Image src={plate.src} alt="" width={plate.w} height={plate.h} sizes="(max-width: 640px) 100vw, 58vw" />
       )}

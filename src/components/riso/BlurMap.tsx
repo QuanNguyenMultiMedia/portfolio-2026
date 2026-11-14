@@ -30,6 +30,11 @@ const INTRO_SIGMA = 28; // comp px: 0.14 em, the word is a soft cloud
 const INTRO_S = 2.4;
 const INTRO_EASE = "0.23 1 0.32 1";
 const introId = (px: number) => `blurmap-${px}-in`;
+// The filter region is the chain's raster: every noise layer and tier fills all of it on every haze step. The
+// entrance cloud needs a wide margin; the settled haze (σ ≤ 0.012 em, roughen ≤ 0.006 em) needs a hair of one,
+// so each size drops to the tight region once its entrance has played: ~40% fewer pixels per step.
+const REGION_INTRO = { x: "-12%", y: "-45%", width: "124%", height: "190%" };
+const REGION_REST = { x: "-3%", y: "-8%", width: "106%", height: "116%" };
 // Blur tiers (fractions of MAX_SIGMA), dense at the low end: cross-fading two blurs only reads as one
 // intermediate blur when their σ are close; a wide first step shows as a crisp core inside a glow.
 const TIER_SIGMA = [0.04, 0.1, 0.2, 0.35, 0.55, 0.78, 1];
@@ -120,7 +125,7 @@ function Filter({ px, animate }: { px: number; animate: boolean }) {
     </>
   );
   return (
-    <filter id={idFor(px)} x="-12%" y="-45%" width="124%" height="190%" /* room for the entrance haze */ colorInterpolationFilters="sRGB">
+    <filter id={idFor(px)} {...(animate ? REGION_INTRO : REGION_REST)} /* room for the entrance haze */ colorInterpolationFilters="sRGB">
       {rough(11, "SourceGraphic", "r2")}
       {rotor(F_COARSE / px, COARSE_SEEDS, COARSE_TURN, COARSE_S, "nc")}
       {rotor(F_FINE / px, FINE_SEEDS, FINE_TURN, FINE_S, "nf")}
@@ -154,7 +159,10 @@ const HAZE_FPS = 24;
 export default function BlurMap() {
   const [sizes, setSizes] = useState<number[]>([]);
   const svgRef = useRef<SVGSVGElement>(null);
-  const introUntil = useRef(0); // timeline s: phones step the timeline only until the last entrance has played out
+  const onScreen = useRef(0); // display type in view: the drift only steps while someone can see it
+  const introUntil = useRef(0);
+  const playedRef = useRef(new Set<number>()); // sizes whose entrance has begun
+  const tight = useRef(new Set<number>()); // sizes already on the rest region // timeline s: phones step the timeline only until the last entrance has played out
   // reduced motion: the same graded map, held still
   const [animate, setAnimate] = useState(false);
 
@@ -176,8 +184,17 @@ export default function BlurMap() {
       const now = performance.now();
       const dt = Math.min(0.25, (now - last) / 1000);
       last = now;
-      if (document.hidden || document.documentElement.classList.contains("haze-hold")) return;
-      if (phone && svg.getCurrentTime() >= introUntil.current) return;
+      if (document.hidden) return;
+      // an entrance in flight always plays out: a held timeline would freeze a word mid-haze
+      const intro = svg.getCurrentTime() < introUntil.current;
+      if (!intro) playedRef.current.forEach((px) => {
+        if (tight.current.has(px)) return;
+        const f = document.getElementById(idFor(px));
+        if (!f) return;
+        tight.current.add(px);
+        for (const [k, v] of Object.entries(REGION_REST)) f.setAttribute(k, v);
+      });
+      if (!intro && (phone || onScreen.current === 0 || document.documentElement.classList.contains("haze-hold"))) return;
       svg.setCurrentTime(svg.getCurrentTime() + dt);
     }, 1000 / HAZE_FPS);
     return () => { window.clearInterval(id); svg.unpauseAnimations(); };
@@ -187,12 +204,19 @@ export default function BlurMap() {
     let raf = 0;
     const ro = new ResizeObserver(() => schedule());
     const seen = new WeakSet<Element>();
+    const entered = new WeakSet<Element>(); // past its entrance gate (on screen, cover turned)
     const scan = () => {
       raf = 0;
       const next = new Set<number>();
       document.querySelectorAll<HTMLElement>("[data-blurmap]").forEach((el) => {
         const px = bucket(parseFloat(getComputedStyle(el).fontSize));
-        if (!seen.has(el)) { seen.add(el); ro.observe(el); el.dataset.blurmapPx = String(px); io.observe(el); }
+        if (!seen.has(el)) { seen.add(el); ro.observe(el); el.dataset.blurmapPx = String(px); io.observe(el); vis.observe(el); }
+        else if (el.dataset.blurmapPx !== String(px)) {
+          // refit (fonts in, cover grown, viewport resized): the new size's filter starts hazed, so a word that
+          // has already entered plays that size's entrance now instead of holding the haze forever
+          el.dataset.blurmapPx = String(px);
+          if (entered.has(el)) play(px);
+        }
         next.add(px);
         // filter only what prints the ink: for fountain-filled type that is the plate's canvas, so the
         // transparent DOM text above it (there for reading and selection) keeps a clean highlight
@@ -207,15 +231,16 @@ export default function BlurMap() {
     const schedule = () => { if (!raf) raf = requestAnimationFrame(scan); };
     // Entrance: play each size's intro once, when the first element using it is on screen and its ink is up
     // (fountain type: when the plate goes live; give up waiting after INK_WAIT so nothing stays hazed).
-    const played = new Set<number>();
+    const played = playedRef.current;
     const play = (px: number, tries = 0) => {
       if (played.has(px)) return;
       const anim = document.getElementById(introId(px)) as SVGAnimationElement | null;
       if (!anim) { if (tries < 60) requestAnimationFrame(() => play(px, tries + 1)); return; }
       played.add(px);
       anim.beginElement();
+
       const svg = svgRef.current;
-      if (svg) introUntil.current = svg.getCurrentTime() + INTRO_S + 0.05;
+      if (svg) introUntil.current = Math.max(introUntil.current, svg.getCurrentTime() + INTRO_S + 0.05);
     };
     const timers = new Set<number>();
     const gated = new Set<() => void>();
@@ -225,6 +250,7 @@ export default function BlurMap() {
       const el = en.target as HTMLElement;
       // display type under the cover hazes in when the cover is turned, not unseen behind it
       if (covered() && !el.closest(".book")) { gated.add(afterCover(() => io.observe(el))); return; }
+      entered.add(el);
       const px = Number(el.dataset.blurmapPx);
       const plate = el.querySelector<HTMLElement>(".ink-fill");
       if (!plate || plate.hasAttribute("data-live")) return play(px);
@@ -232,10 +258,16 @@ export default function BlurMap() {
       watch.observe(plate, { attributes: true, attributeFilter: ["data-live"] });
       timers.add(window.setTimeout(() => { watch.disconnect(); play(px); }, INK_WAIT));
     }));
+    const shown = new Set<Element>();
+    const vis = new IntersectionObserver((entries) => {
+      entries.forEach((en) => (en.isIntersecting ? shown.add(en.target) : shown.delete(en.target)));
+      shown.forEach((el) => { if (!el.isConnected) shown.delete(el); });
+      onScreen.current = shown.size;
+    });
     const mo = new MutationObserver(schedule); // route changes bring new display type
     mo.observe(document.body, { childList: true, subtree: true });
     scan();
-    return () => { cancelAnimationFrame(raf); ro.disconnect(); mo.disconnect(); io.disconnect(); timers.forEach(clearTimeout); gated.forEach((off) => off()); };
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); mo.disconnect(); io.disconnect(); vis.disconnect(); timers.forEach(clearTimeout); gated.forEach((off) => off()); };
   }, []);
 
   return (
