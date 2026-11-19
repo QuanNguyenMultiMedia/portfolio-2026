@@ -4,7 +4,11 @@
 // aspect ratio, what it was and for whom, its chapters as ways straight into the case page, and the name printed in
 // the project's own fountain under it. The cases' names run along the foot; the held
 // one's hairline fills in its deck ink as the turn runs, and the sheet moves on when it is full.
-// Pointing at a name in the index turns the sheet to that case, so a case reads without opening it.
+// Pointing at a name in the index pulls a proof of that case: every case is laid in ahead of time as flat spot-ink
+// layers (its covers' first frames, its credits, its name in its deck ink), stacked in the same cells as the print,
+// and the pointed one overprints in, arriving off register and settling. A fast sweep overprints ink on ink; nothing
+// remounts and nothing wipes back to paper. Resting on a name (REST) or leaving the index runs the full print of it
+// underneath, quietly (no press feed: the proof already showed it), and the proof lifts off it.
 // It turns only while its sheet holds the view; pointing at it or focusing into it holds the turn, the Pause
 // control stops it (and the footage), and under reduced motion it never turns on its own.
 // Client boundary: the turn, the timer, the footage. Content comes in as props from the home page (server).
@@ -31,6 +35,8 @@ export type RotationWork = {
 };
 
 const SWIPE = 40; // px of horizontal travel on the cover that turns the sheet
+const REST = 650; // ms a pointer rests on a name before its proof is printed in full
+const LIFT = 1000; // ms the proof stays over a print it handed off to, while the fountain inks in under it
 
 function Plate({ plate, k, play }: { plate: RotationPlate; k: number; play: boolean }) {
   const ref = useRef<HTMLVideoElement>(null);
@@ -51,16 +57,36 @@ function Plate({ plate, k, play }: { plate: RotationPlate; k: number; play: bool
   );
 }
 
+// a proof's cover: the plate's first frame, flat (a still for footage with no poster). Its file is fetched only
+// once a pointer has come onto the sheet (armed): proofs are a pointer's, so a first visit never pays for them.
+function ProofPlate({ plate, armed }: { plate: RotationPlate; armed: boolean }) {
+  const still = plate.video ? plate.poster : plate.src;
+  return (
+    <div className="rot-pp" style={{ "--ar": plate.w / plate.h } as React.CSSProperties}>
+      {!armed ? null : still ? (
+        <Image src={still} alt="" width={plate.w} height={plate.h} sizes="(max-width: 640px) 100vw, 58vw" />
+      ) : (
+        <video src={media(plate.src)} muted playsInline preload="metadata" />
+      )}
+    </div>
+  );
+}
+
 export default function WorkRotation({ works }: { works: RotationWork[] }) {
   const root = useRef<HTMLDivElement>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
-  const peek = useRef(0); // the hover-preview delay: a pointer crossing the index doesn't flip every case
+  const rest = useRef(0);
+  const liftT = useRef(0);
   const swipe = useRef<{ x: number; turned: boolean }>({ x: NaN, turned: false });
   const n = works.length;
   const [i, setI] = useState(0);
   const [stopped, setStopped] = useState(false); // the viewer stopped it
   const [held, setHeld] = useState(false); // pointer over the sheet or focus inside it
   const [still, setStill] = useState(false); // reduced motion: turns by hand only
+  const [peek, setPeek] = useState<number | null>(null); // the case whose proof is up
+  const [quiet, setQuiet] = useState(false); // this turn came from a proof: print it without the press feed
+  const [armed, setArmed] = useState(false); // a pointer has been on the sheet: the proofs' covers are fetched
+  const [lift, setLift] = useState<number | null>(null); // the proof still over the print it handed off to
   const live = useSheetLive(root);
 
   useEffect(() => {
@@ -72,7 +98,12 @@ export default function WorkRotation({ works }: { works: RotationWork[] }) {
   }, []);
 
   const running = live && !stopped && !held && !still;
-  const go = (k: number) => setI(((k % n) + n) % n);
+  const go = (k: number) => { clearTimeout(rest.current); setQuiet(false); setPeek(null); setLift(null); setI(((k % n) + n) % n); };
+  const commit = (k: number) => { clearTimeout(rest.current); setQuiet(true); setI(k); setPeek(null);
+    setLift(k); clearTimeout(liftT.current); liftT.current = window.setTimeout(() => setLift(null), LIFT); };
+  const proof = peek !== null && peek !== i;
+  const shows = (k: number) => (proof ? k === peek : peek === null && k === lift) ? "" : undefined;
+  useEffect(() => () => { clearTimeout(rest.current); clearTimeout(liftT.current); }, []);
   const w = works[i];
 
   // the tabs answer the arrow keys as one control (roving focus); W/S stay the run's
@@ -90,9 +121,11 @@ export default function WorkRotation({ works }: { works: RotationWork[] }) {
       ref={root}
       className={`rot ${w.print.deck}`}
       data-running={running ? "" : undefined}
+      data-proof={proof ? "" : undefined}
+      data-quiet={quiet ? "" : undefined}
       aria-roledescription="carousel"
       aria-label="Selected work"
-      onPointerEnter={(e) => e.pointerType === "mouse" && setHeld(true)}
+      onPointerEnter={(e) => { if (e.pointerType === "mouse") { setHeld(true); setArmed(true); } }}
       onPointerLeave={() => setHeld(false)}
       onFocus={() => setHeld(true)}
       onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setHeld(false); }}
@@ -146,6 +179,31 @@ export default function WorkRotation({ works }: { works: RotationWork[] }) {
           </div>
         </div>
 
+        {/* the proofs: every case laid in flat, the pointed one overprinted in (pointer only, so hidden from AT) */}
+        <div className="rot-proof rot-proof-media" aria-hidden>
+          {works.map((x, k) => (
+            <div key={x.slug} className={`rot-proof-layer ${x.print.deck}`} data-show={shows(k)} style={{ "--n": x.plates.length } as React.CSSProperties}>
+              {x.plates.map((p) => <ProofPlate key={p.src} plate={p} armed={armed} />)}
+            </div>
+          ))}
+        </div>
+        <div className="rot-proof rot-proof-side" aria-hidden>
+          {works.map((x, k) => (
+            <div key={x.slug} className={`rot-proof-layer rot-side-in ${x.print.deck}`} data-show={shows(k)}>
+              <p className="rot-desc">{x.description}</p>
+              <p className="rot-credit">{x.client}, {x.year}</p>
+              <ul className="rot-contents" data-many={x.contents.length > 4 ? "" : undefined}>
+                {x.contents.map((c) => <li key={c.label}>{c.label}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div className="rot-proof rot-proof-name" aria-hidden>
+          {works.map((x, k) => (
+            <div key={x.slug} className={`rot-proof-layer ${x.print.deck}`} data-show={shows(k)}>{x.title}</div>
+          ))}
+        </div>
+
         {/* the name, in the project's own fountain (as its case cover prints it): the way in */}
         <h2 className="rot-name" data-o="" style={{ "--o": 2 } as React.CSSProperties}>
           <Link href={`/works/${w.slug}`} aria-label={w.title}>
@@ -155,7 +213,8 @@ export default function WorkRotation({ works }: { works: RotationWork[] }) {
       </div>
 
       {/* the index along the foot: every case by name; the held one's rule fills as its turn runs */}
-      <div className="rot-tabs" data-o="" style={{ "--o": 3 } as React.CSSProperties} role="tablist" aria-label="Case studies" onKeyDown={onTabKey}>
+      <div className="rot-tabs" data-o="" style={{ "--o": 3 } as React.CSSProperties} role="tablist" aria-label="Case studies" onKeyDown={onTabKey}
+        onPointerLeave={() => { if (peek !== null) commit(peek); }}>
         {works.map((x, k) => (
           <button
             key={x.slug}
@@ -164,16 +223,17 @@ export default function WorkRotation({ works }: { works: RotationWork[] }) {
             role="tab"
             className={`rot-tab ${x.print.deck}`}
             aria-selected={k === i}
+            data-peek={proof && k === peek ? "" : undefined}
             aria-controls="rot-panel"
             tabIndex={k === i ? 0 : -1}
             onClick={() => go(k)}
-            // pointing at a case previews it: the sheet turns to it (the pointer on the sheet already holds the turn)
+            // pointing at a case pulls its proof; resting on it prints it
             onPointerEnter={(e) => {
               if (e.pointerType !== "mouse") return;
-              clearTimeout(peek.current);
-              peek.current = window.setTimeout(() => go(k), 90);
+              clearTimeout(rest.current);
+              setPeek(k);
+              rest.current = window.setTimeout(() => commit(k), REST);
             }}
-            onPointerLeave={() => clearTimeout(peek.current)}
           >
             <span className="rot-bar" aria-hidden onAnimationEnd={k === i ? () => go(i + 1) : undefined} />
             <span className="rot-tab-title">{x.title}</span>

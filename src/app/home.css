@@ -171,7 +171,7 @@ html.kbd .run.is-3d .reel .video-controls { opacity: 1; visibility: visible; }
 
 .rot-panel { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; grid-template-rows: var(--rot-h) auto; row-gap: var(--s-4); align-items: end; }
 .rot-media { grid-column: 1 / 8; grid-row: 1; height: var(--rot-h); display: flex; align-items: flex-end; gap: var(--gutter); cursor: pointer; touch-action: pan-y; -webkit-user-drag: none; }
-.rot-plate {
+.rot-plate, .rot-pp {
   flex: none; aspect-ratio: var(--ar);
   width: min(calc((100% - (var(--n) - 1) * var(--gutter)) / var(--n)), calc(var(--rot-h) * var(--ar)));
 }
@@ -235,7 +235,41 @@ html.kbd .run.is-3d .reel .video-controls { opacity: 1; visibility: visible; }
 }
 .rot-stop:hover, .rot-stop:focus-visible { text-decoration-thickness: 2px; }
 
+/* the proof (WorkRotation): every case laid in flat in the print's own cells, the pointed one overprinted in.
+   A layer arrives off register by --proof-reg and settles; it leaves faster than it came, in place. Layers multiply,
+   so a fast sweep reads as inks overprinting, and the print under them lifts to bare paper only while one is up. */
+.rot { --proof-reg: 0.45rem; --t-proof-in: 260ms; --t-proof-set: 620ms; --t-proof-out: 180ms; }
+.rot-proof { display: grid; pointer-events: none; z-index: 1; }
+.rot-proof-media { grid-column: 1 / 8; grid-row: 1; height: var(--rot-h); }
+.rot-proof-side { grid-column: 9 / -1; grid-row: 1; }
+.rot-proof-side .rot-proof-layer { align-self: end; } /* each case sits on the cell's foot, as the print does (.rot-panel aligns end) */
+.rot-proof-name { grid-column: 1 / -1; grid-row: 2; font-family: var(--font-display); font-size: var(--t-name); line-height: 0.86; letter-spacing: -0.02em; white-space: nowrap; }
+.rot-proof-layer {
+  grid-area: 1 / 1; opacity: 0; mix-blend-mode: var(--blend);
+  transform: translate3d(var(--proof-reg), calc(var(--proof-reg) * -0.6), 0);
+  transition: opacity var(--t-proof-out) var(--ease-print), transform 0s linear var(--t-proof-out);
+}
+.rot-proof-layer[data-show] {
+  opacity: 1; transform: none;
+  transition: opacity var(--t-proof-in) var(--ease-print), transform var(--t-proof-set) var(--ease-print);
+}
+.rot-proof-media .rot-proof-layer { display: flex; align-items: flex-end; gap: var(--gutter); height: 100%; }
+.rot-pp { position: relative; overflow: hidden; background: var(--paper); }
+.rot-pp > :is(img, video) { display: block; width: 100%; height: 100%; object-fit: cover; mix-blend-mode: var(--blend); }
+.rot-proof-name .rot-proof-layer { color: var(--ink); }
+/* the print under a proof: it lifts while the proof is up, and comes back under it as the proof lifts */
+.rot :is(.rot-plate, .rot-side-in, .rot-name a) { transition: opacity var(--t-proof-in) var(--ease-print); }
+.rot[data-proof] .rot-panel > :not(.rot-proof) :is(.rot-plate, .rot-side-in, .rot-name a) { opacity: 0; transition-duration: var(--t-proof-out); }
+.rot-tab[data-peek] .rot-tab-title { opacity: 1; transform: translate3d(0.3rem, 0, 0); }
+/* a turn printed from its proof: no press feed, no rise; the proof already showed it */
+.rot[data-quiet] .rot-plate::before { animation: none; transform: scaleX(0); }
+.rot[data-quiet] :is(.rot-plate > video, .rot-plate > img, .rot-in, .rot-name-in) { animation: none; }
+html.dark .rot-pp, html.dark .rot-pp > :is(img, video) { mix-blend-mode: normal; }
+/* proofs are pulled by a pointer: a touch screen or the stacked phone sheet never lays them in */
+@media (hover: none), (max-width: 767px) { .rot-proof { display: none; } }
+
 @media (prefers-reduced-motion: reduce) {
+  .rot-proof-layer, .rot-proof-layer[data-show] { transform: none; transition: opacity 150ms var(--ease-print); }
   /* the turn changes in place: a short fade, no press, no travel, and no stagger held at zero */
   .rot-plate::before { animation: none; transform: scaleX(0); }
   .rot-plate > :is(video, img) { animation: none; transition: none; }
@@ -268,19 +302,19 @@ html.kbd .run.is-3d .reel .video-controls { opacity: 1; visibility: visible; }
   .hero-quiet { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); align-items: end; }
   .close-words { grid-column: 1 / -1; grid-row: auto; }
   .rot { --rot-h: 40svh; }
-  .rot-media { grid-column: 1 / 8; }
-  .rot-side { grid-column: 8 / -1; }
+  .rot-media, .rot-proof-media { grid-column: 1 / 8; }
+  .rot-side, .rot-proof-side { grid-column: 8 / -1; }
   .ledger, .collab { grid-column: 1 / -1; grid-row: auto; }
   .view-works { grid-column: 1 / -1; grid-row: auto; }
 }
 /* upright tablets have height to spare and no width: the cover takes the measure, its words go under it, side by side */
 @media (max-width: 1024px) and (orientation: portrait) {
   .rot { --rot-h: 34svh; }
-  .rot-media { grid-column: 1 / -1; }
-  .rot-side { grid-column: 1 / -1; grid-row: 2; }
+  .rot-media, .rot-proof-media { grid-column: 1 / -1; }
+  .rot-side, .rot-proof-side { grid-column: 1 / -1; grid-row: 2; }
   .rot-side-in { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); align-items: start; }
   .rot-contents { grid-column: 1 / -1; }
-  .rot-name { grid-row: 3; }
+  .rot-name, .rot-proof-name { grid-row: 3; }
 }
 /* ---------- phone: one column; the head and the index fold to two ---------- */
 @media (max-width: 640px) {
