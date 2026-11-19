@@ -8,8 +8,9 @@ import Image from "next/image";
 import PageWrapper from "@/components/PageWrapper";
 import PlateOn from "@/components/riso/PlateOn";
 import WorkDial from "@/components/WorkDial";
-import { projects } from "@/data/projects";
+import { featuredProjects as projects, archivedProjects } from "@/data/projects";
 import { t, fx } from "@/lib/designSystem";
+import WorksArchive from "@/components/works/Archive";
 
 export default function WorksPage() {
   const router = useRouter();
@@ -18,8 +19,9 @@ export default function WorksPage() {
   const cover = activeProject.coverImage || activeProject.screens[0]?.src || "/projects/gom-men.png";
 
   return (
-    <PageWrapper variant="hero">
+    <PageWrapper variant="heroScroll">
       <PlateOn />
+      <section className="relative h-screen w-full overflow-hidden">
       <div className="relative w-full max-w-screen-xl 3xl:max-w-[1500px] 4xl:max-w-[1800px] mx-auto h-full flex flex-col justify-start lg:justify-between gap-4 lg:gap-0 pt-12 md:pt-28 pb-16 lg:pb-24 px-6 md:px-16 3xl:px-24 4xl:px-32 overflow-hidden z-10">
         {/* entrances in CSS (.rise), so the page prints before hydration: the cover is the page's largest paint */}
         <div
@@ -93,6 +95,8 @@ export default function WorksPage() {
           </div>
         </div>
       </div>
+      </section>
+      <WorksArchive items={archivedProjects} />
       {process.env.NODE_ENV === "development" && (
         <div className="fixed bottom-28 right-8 z-50 md:bottom-32 md:right-12">
           <Link

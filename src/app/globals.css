@@ -126,3 +126,34 @@ html.dark {
   }
 }
 
+/* Under-construction marquee: a hairline ticker on the viewport's top edge */
+.construction-marquee {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 60;
+  height: 1rem;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--foreground);
+  opacity: 0.35;
+  font-family: var(--font-sans);
+  font-size: 0.5625rem;
+  line-height: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.construction-marquee__track {
+  display: flex;
+  width: max-content;
+  animation: construction-marquee 60s linear infinite;
+  will-change: transform;
+}
+.construction-marquee__run { display: flex; }
+.construction-marquee__item { padding-inline: 1.5rem; }
+@keyframes construction-marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .construction-marquee__track { animation: none; }
+}

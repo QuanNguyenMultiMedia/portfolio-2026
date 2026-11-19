@@ -6,7 +6,7 @@ import { ReactNode } from "react";
 export interface PageWrapperProps {
   children: ReactNode;
   className?: string;
-  variant?: "default" | "hero" | "full" | "story";
+  variant?: "default" | "hero" | "full" | "story" | "heroScroll";
 }
 
 export default function PageWrapper({
@@ -18,11 +18,14 @@ export default function PageWrapper({
   // variant "default" is for standard content pages
   // variant "full" is for edge-to-edge content
   // variant "story" is for the scroll-based storytelling homepage
+  // variant "heroScroll" is a viewport-tall hero that scrolls on into more content (works + archive)
 
   const baseStyles =
     variant === "hero"
       ? "h-screen w-full overflow-hidden relative"
-      : "min-h-screen relative";
+      : variant === "heroScroll"
+        ? "min-h-screen w-full relative"
+        : "min-h-screen relative";
 
   const paddingStyles =
     variant === "default"

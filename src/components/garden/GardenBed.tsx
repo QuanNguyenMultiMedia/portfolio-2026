@@ -208,11 +208,14 @@ export default function GardenBed({ entries, initialOpen, children }: { entries:
             className="relative [--cell:clamp(19rem,30vw,34rem)] w-[calc(var(--cell)*var(--cols))] h-[calc(var(--cell)*var(--rows))]"
             style={sheetSize}
           >
-            <div ref={name} className={`rise snap-center space-y-6 3xl:space-y-8 ${placed}`} style={namePlace}>
-              <h1 className={t.sectionHeaderDisplay} data-blurmap="">
-                Garden
-              </h1>
-              {children}
+            <div className={`rise ${placed}`} style={namePlace}>
+              {/* the landing point is the word itself, not the two cells it is given */}
+              <div ref={name} className="w-fit snap-center space-y-6 3xl:space-y-8">
+                <h1 className={t.sectionHeaderDisplay} data-blurmap="">
+                  Garden
+                </h1>
+                {children}
+              </div>
             </div>
             {pieces.map(({ entry, style }) => (
               <div key={entry.slug} data-piece="" className={`rise ${placed}`} style={style}>

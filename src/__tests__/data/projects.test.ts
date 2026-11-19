@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { projects } from "@/data/projects";
 
 describe("projects data", () => {
-  it("has 5 projects", () => {
-    expect(projects).toHaveLength(5);
+  it("has 8 projects", () => {
+    expect(projects).toHaveLength(8);
   });
 
   it("each project has required fields", () => {

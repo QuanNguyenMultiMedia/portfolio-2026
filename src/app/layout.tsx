@@ -24,6 +24,7 @@ import Portal from "@/components/Portal";
 import ExitChoreographer from "@/components/ExitChoreographer";
 import WarpField from "@/components/WarpField";
 import KeyFlight from "@/components/KeyFlight";
+import ConstructionMarquee from "@/components/ConstructionMarquee";
 
 
 
@@ -112,6 +113,7 @@ export default function RootLayout({
               </div>
             </SmoothScroll>
             <Portal>
+              <ConstructionMarquee />
               <MobileTopBar />
               <Navbar />
               <MobileNavbar />

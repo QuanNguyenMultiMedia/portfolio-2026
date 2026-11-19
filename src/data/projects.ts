@@ -35,6 +35,8 @@ export interface Project {
   coverVideo?: string;
   client?: string;
   role?: string;
+  /** kept and listed under the Works archive, off the dial: past work outside the current identity */
+  archived?: boolean;
   services?: string[];
   screens: {
     type:
@@ -731,6 +733,230 @@ export const projects: Project[] = [
     ],
   },
   {
+    title: "Defrasoft Website",
+    slug: "defrasoft-website",
+    print: { fountain: "electric", deck: "ink-blue" },
+    year: "2026",
+    category: "Web Design & Development",
+    id: "PRJ_006",
+    client: "Defrasoft",
+    role: "Web Designer & Developer",
+    services: ["Web Design", "Front-end Development", "Motion"],
+    colors: ["#1e3a8a", "#0f766e", "#f4f1ea"],
+    description:
+      "The website for defrasoft.com, an independent studio making privacy-first apps. Designed and built end to end.",
+    coverImage: "/works/defrasoft-website/name-b.webp",
+    screens: [
+      { type: "zine-cover" },
+      // what the site is and what it is made of; then each standout component on its own, recorded from the live site
+      {
+        type: "editorial-text",
+        info: "intro",
+        lead: "Web Designer & Developer\nVite, GSAP, Lenis, Three.js",
+        content: "The website for defrasoft.com, an independent studio making privacy-first apps. Designed and built end to end.",
+        chapters: ["Name intro", "Promise chips", "App spreads", "System", "On a phone"],
+      },
+      {
+        type: "deliverable-breakdown",
+        chapter: "Components",
+        title: "Name intro",
+        layout: "feature",
+        description: "A first-load mark intro: the D glitches in, the name sets over the haze, and on scroll the scene exits as a scrubbed camera dolly through the mark into paper, with depth-layered parallax.",
+        images: ["/works/defrasoft-website/name.mp4", "/works/defrasoft-website/name-a.webp", "/works/defrasoft-website/name-b.webp", "/works/defrasoft-website/name-c.webp"],
+      },
+      {
+        type: "deliverable-breakdown",
+        chapter: "Components",
+        title: "Promise chips",
+        layout: "feature",
+        description: "The four promises run as one sentence of chips that build on scroll; each chip names a rule and the card stack beside it holds the proof.",
+        images: ["/works/defrasoft-website/problem.mp4", "/works/defrasoft-website/problem-a.webp", "/works/defrasoft-website/problem-c.webp"],
+      },
+      {
+        type: "deliverable-breakdown",
+        chapter: "Components",
+        title: "App spreads",
+        layout: "feature",
+        description: "Each app gets an editorial spread on the 12-column grid: real app recordings playing in the phone, an ambient loop behind it, store badges and three facts.",
+        images: ["/works/defrasoft-website/spreads.mp4", "/works/defrasoft-website/spreads-a.webp", "/works/defrasoft-website/spreads-b.webp", "/works/defrasoft-website/spreads-c.webp"],
+      },
+      // the type and colour the build actually renders, set on the live page in its own fonts
+      {
+        type: "library",
+        chapter: "System",
+        title: "System",
+        items: [{"src": "/works/defrasoft-website/type-display.webp", "label": "Display · LT Superior"}, {"src": "/works/defrasoft-website/palette.webp", "label": "Colour"}],
+      },
+      {
+        type: "screens",
+        chapter: "On a phone",
+        title: "On a phone",
+        items: [{ src: "/works/defrasoft-website/mobile.webp", label: "defrasoft.com" }],
+      },
+      { type: "zine-outro" },
+    ],
+  },
+  {
+    title: "DeName Website",
+    slug: "dename-website",
+    print: { fountain: "mint", deck: "ink-orange" },
+    year: "2026",
+    category: "Web Design & Development",
+    id: "PRJ_007",
+    client: "DeName Labs",
+    role: "Web Designer & Developer",
+    services: ["Web Design", "Front-end Development", "Motion"],
+    colors: ["#2f5d1f", "#5ea33a", "#ecebe6"],
+    description:
+      "The landing page for dename.org, DeName Labs' mobile app studio. Designed and built end to end.",
+    coverImage: "/works/dename-website/hero-c.webp",
+    screens: [
+      { type: "zine-cover" },
+      // what the site is and what it is made of; then each standout component on its own, recorded from the live site
+      {
+        type: "editorial-text",
+        info: "intro",
+        lead: "Web Designer & Developer\nVite, React, GSAP, Lenis, WebGL",
+        content: "The landing page for dename.org, DeName Labs' mobile app studio. Designed and built end to end.",
+        chapters: ["Hero entrance", "Seed handoff", "Vision", "WebGL bonsai", "Reviews over the tree", "Mark rig", "System", "On a phone"],
+      },
+      {
+        type: "deliverable-breakdown",
+        chapter: "Components",
+        title: "Hero entrance",
+        layout: "feature",
+        description: "A single seed of light lands, then the headline sets word by word over a drifting grain-gradient field.",
+        images: ["/works/dename-website/hero.mp4", "/works/dename-website/hero-a.webp", "/works/dename-website/hero-b.webp", "/works/dename-website/hero-c.webp"],
+      },
+      {
+        type: "deliverable-breakdown",
+        chapter: "Components",
+        title: "Seed handoff",
+        layout: "feature",
+        description: "The seed carries the reader out of the hero and drops into the partners spread, where the logos sit over a photographic grid.",
+        images: ["/works/dename-website/seed.mp4", "/works/dename-website/seed-a.webp", "/works/dename-website/seed-b.webp", "/works/dename-website/seed-c.webp"],
+      },
+      {
+        type: "deliverable-breakdown",
+        chapter: "Components",
+        title: "Vision",
+        layout: "feature",
+        description: "The mission set as one serif sentence, with the key words lifted onto highlighter chips.",
+        images: ["/works/dename-website/vision.mp4", "/works/dename-website/vision-a.webp", "/works/dename-website/vision-c.webp"],
+      },
+      {
+        type: "deliverable-breakdown",
+        chapter: "Components",
+        title: "WebGL bonsai",
+        layout: "feature",
+        description: "A WebGL bonsai engine grows the tree with the scroll, from a sprout under the headline to a full tree over the landscape, with a depth frame around it.",
+        images: ["/works/dename-website/bonsai.mp4", "/works/dename-website/bonsai-a.webp", "/works/dename-website/bonsai-b.webp", "/works/dename-website/bonsai-c.webp"],
+      },
+      {
+        type: "deliverable-breakdown",
+        chapter: "Components",
+        title: "Reviews over the tree",
+        layout: "feature",
+        description: "The testimonials pass as a horizontal run of cards in front of the grown tree, with the rating set in thin numerals.",
+        images: ["/works/dename-website/reviews.mp4", "/works/dename-website/reviews-a.webp", "/works/dename-website/reviews-c.webp"],
+      },
+      {
+        type: "deliverable-breakdown",
+        chapter: "Components",
+        title: "Mark rig",
+        layout: "feature",
+        description: "A tool for building the logo: width, height and proportions on powers of φ, construction grid and tone switches, so every lockup is generated rather than redrawn.",
+        images: ["/works/dename-website/rig-a.webp"],
+      },
+      // the type and colour the build actually renders, set on the live page in its own fonts
+      {
+        type: "library",
+        chapter: "System",
+        title: "System",
+        items: [{"src": "/works/dename-website/type-display.webp", "label": "Display · Coaster Sans"}, {"src": "/works/dename-website/type-text.webp", "label": "Text · Paragon"}, {"src": "/works/dename-website/type-mono.webp", "label": "Mono · ui-monospace"}, {"src": "/works/dename-website/palette.webp", "label": "Colour"}],
+      },
+      {
+        type: "screens",
+        chapter: "On a phone",
+        title: "On a phone",
+        items: [{ src: "/works/dename-website/mobile.webp", label: "dename.org" }],
+      },
+      { type: "zine-outro" },
+    ],
+  },
+  {
+    title: "Herond Labs Website",
+    slug: "herondlabs-website",
+    print: { fountain: "herond", deck: "ink-orange" },
+    year: "2026",
+    category: "Web Design & Development",
+    id: "PRJ_008",
+    client: "Herond Labs",
+    role: "Web Designer & Developer",
+    services: ["Web Design", "Front-end Development", "Motion"],
+    colors: ["#2a120a", "#f39200", "#f7f4ee"],
+    description:
+      "The website for herondlabs.com, Herond Labs' product engineering studio. Designed and built with the team.",
+    coverImage: "/works/herondlabs-website/cover-c.webp",
+    screens: [
+      { type: "zine-cover" },
+      // what the site is and what it is made of; then each standout component on its own, recorded from the live site
+      {
+        type: "editorial-text",
+        info: "intro",
+        lead: "Web Designer & Developer\nNext.js, GSAP, Lenis, GLSL",
+        content: "The website for herondlabs.com, Herond Labs' product engineering studio. Designed and built with the team.",
+        chapters: ["Cover", "Header", "Engagement track", "Product proof", "System", "On a phone"],
+      },
+      {
+        type: "deliverable-breakdown",
+        chapter: "Components",
+        title: "Cover",
+        layout: "feature",
+        description: "A brand preloader hands off to the cover: a full-bleed photographic stage revealed through a GLSL depth-wipe, with the headline set as a monument.",
+        images: ["/works/herondlabs-website/cover.mp4", "/works/herondlabs-website/cover-a.webp", "/works/herondlabs-website/cover-c.webp"],
+      },
+      {
+        type: "deliverable-breakdown",
+        chapter: "Components",
+        title: "Header",
+        layout: "feature",
+        description: "The header is a rail and a plate: hovering a section opens its index as a full-width panel.",
+        images: ["/works/herondlabs-website/nav.mp4", "/works/herondlabs-website/nav-a.webp", "/works/herondlabs-website/nav-b.webp"],
+      },
+      {
+        type: "deliverable-breakdown",
+        chapter: "Components",
+        title: "Engagement track",
+        layout: "feature",
+        description: "The three engagement models sit on one continuous pinned sheet that the reader scrolls through.",
+        images: ["/works/herondlabs-website/engagement.mp4", "/works/herondlabs-website/engagement-a.webp", "/works/herondlabs-website/engagement-b.webp"],
+      },
+      {
+        type: "deliverable-breakdown",
+        chapter: "Components",
+        title: "Product proof",
+        layout: "feature",
+        description: "Herond Browser as the proof block: the product beside its numbers, set in mono annotation.",
+        images: ["/works/herondlabs-website/build.mp4", "/works/herondlabs-website/build-a.webp"],
+      },
+      // the type and colour the build actually renders, set on the live page in its own fonts
+      {
+        type: "library",
+        chapter: "System",
+        title: "System",
+        items: [{"src": "/works/herondlabs-website/type-display.webp", "label": "Display · Inter"}, {"src": "/works/herondlabs-website/type-text.webp", "label": "Text · IBM Plex Mono"}, {"src": "/works/herondlabs-website/palette.webp", "label": "Colour"}],
+      },
+      {
+        type: "screens",
+        chapter: "On a phone",
+        title: "On a phone",
+        items: [{ src: "/works/herondlabs-website/mobile.webp", label: "herondlabs.com" }],
+      },
+      { type: "zine-outro" },
+    ],
+  },
+  {
     title: "Select Freelance Work",
     slug: "select-freelance-work",
     print: { fountain: "tide", deck: "ink-indigo" },
@@ -804,3 +1030,7 @@ export const projects: Project[] = [
     ],
   },
 ];
+
+// the dial carries the featured work; archived projects list below it (works/page)
+export const featuredProjects = projects.filter((p) => !p.archived);
+export const archivedProjects = projects.filter((p) => p.archived);

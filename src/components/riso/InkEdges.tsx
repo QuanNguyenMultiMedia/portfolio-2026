@@ -18,8 +18,7 @@ export default function InkEdges() {
 
   useEffect(() => {
     const fit = () => {
-      const s = window.innerWidth / BOARD;
-      GRADES.forEach(([, border, scale], i) => {
+      const s = window.innerWidth / BOARD;      GRADES.forEach(([, border, scale], i) => {
         const f = refs.current[i];
         f?.querySelector("feTurbulence")?.setAttribute("baseFrequency", String(1 / (scale * s)));
         // both axes displace independently, so the border spreads in quadrature
