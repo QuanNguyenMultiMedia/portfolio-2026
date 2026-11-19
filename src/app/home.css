@@ -205,8 +205,6 @@ html.kbd .run.is-3d .reel .video-controls { opacity: 1; visibility: visible; }
 .rot-name .bleed-name { --t-bleed: var(--t-name); }
 /* full density along the whole word: at this size the case pages' left-to-right falloff left the tail too pale to read */
 .rot-name .bleed-fill > canvas { -webkit-mask-image: none; mask-image: none; }
-.rot-name .view-arrow { font-size: 0.5em; color: var(--ink); }
-.rot-name a:is(:hover, :focus-visible) .view-arrow, .rot:has(.rot-media:hover) .rot-name .view-arrow { transform: translate3d(0.2em, 0, 0); }
 .rot-name-in { animation: cue-settle var(--t-register) var(--ease-print) calc(var(--t-cue-lead) + var(--t-ink-stagger)) both; }
 
 /* turn-in for the quiet zone: each line settles a beat after the one before */

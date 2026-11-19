@@ -4,6 +4,7 @@
 // aspect ratio, what it was and for whom, its chapters as ways straight into the case page, and the name printed in
 // the project's own fountain under it. The cases' names run along the foot; the held
 // one's hairline fills in its deck ink as the turn runs, and the sheet moves on when it is full.
+// Pointing at a name in the index turns the sheet to that case, so a case reads without opening it.
 // It turns only while its sheet holds the view; pointing at it or focusing into it holds the turn, the Pause
 // control stops it (and the footage), and under reduced motion it never turns on its own.
 // Client boundary: the turn, the timer, the footage. Content comes in as props from the home page (server).
@@ -53,6 +54,7 @@ function Plate({ plate, k, play }: { plate: RotationPlate; k: number; play: bool
 export default function WorkRotation({ works }: { works: RotationWork[] }) {
   const root = useRef<HTMLDivElement>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const peek = useRef(0); // the hover-preview delay: a pointer crossing the index doesn't flip every case
   const swipe = useRef<{ x: number; turned: boolean }>({ x: NaN, turned: false });
   const n = works.length;
   const [i, setI] = useState(0);
@@ -148,7 +150,6 @@ export default function WorkRotation({ works }: { works: RotationWork[] }) {
         <h2 className="rot-name" data-o="" style={{ "--o": 2 } as React.CSSProperties}>
           <Link href={`/works/${w.slug}`} aria-label={w.title}>
             <BleedName key={w.slug} as="div" title={w.title} print={w.print} className="rot-name-in" />
-            <span className="view-arrow" aria-hidden>→</span>
           </Link>
         </h2>
       </div>
@@ -166,13 +167,20 @@ export default function WorkRotation({ works }: { works: RotationWork[] }) {
             aria-controls="rot-panel"
             tabIndex={k === i ? 0 : -1}
             onClick={() => go(k)}
+            // pointing at a case previews it: the sheet turns to it (the pointer on the sheet already holds the turn)
+            onPointerEnter={(e) => {
+              if (e.pointerType !== "mouse") return;
+              clearTimeout(peek.current);
+              peek.current = window.setTimeout(() => go(k), 90);
+            }}
+            onPointerLeave={() => clearTimeout(peek.current)}
           >
             <span className="rot-bar" aria-hidden onAnimationEnd={k === i ? () => go(i + 1) : undefined} />
             <span className="rot-tab-title">{x.title}</span>
           </button>
         ))}
         {still ? null : (
-          <button type="button" className="rot-stop" onClick={() => setStopped((s) => !s)} aria-pressed={stopped}>
+          <button type="button" className="rot-stop" data-magnetic="0.5" onClick={() => setStopped((s) => !s)} aria-pressed={stopped}>
             {stopped ? "Play" : "Pause"}
           </button>
         )}

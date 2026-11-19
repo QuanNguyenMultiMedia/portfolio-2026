@@ -65,7 +65,11 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
     const stage = run.firstElementChild as HTMLElement;
     const sheets = Array.from(run.querySelectorAll<HTMLElement>(":scope > .run-stage > .sheet"));
     const n = sheets.length;
-    run.style.setProperty("--n", String(n));
+    // a sheet marked [data-dwell] holds the camera for that many extra screens of scroll: a beat to read it,
+    // so one flick of the wheel doesn't carry past it
+    const dwell = sheets.map((sh) => Math.max(0, parseFloat(sh.dataset.dwell ?? "") || 0));
+    const units = n - 1 + dwell.reduce((a, b) => a + b, 0);
+    run.style.setProperty("--n", String(units + 1));
     const mq = window.matchMedia(ENABLED);
     // the cued parts are also what the lens blurs: each by where it sits on the viewport ramp
     type Layer = { el: HTMLElement; nx: number; ny: number; hw: number; hh: number; blur: number };
@@ -160,7 +164,25 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
       const v = cam.v / DEPTH; // sheets per second
       plateSurge(k, k > 0 ? (v < 0 ? -1 : 1) * Math.max(Math.abs(v) * SURGE_GAIN, SURGE_STIR * k) : 0);
     };
-    const target = () => clamp((window.scrollY - top) / span) * (n - 1) * DEPTH;
+    // scroll (0..1 of the run) → camera depth: a flat hold over each sheet's dwell, one screen between sheets
+    const depthAt = (f: number) => {
+      let u = clamp(f) * units;
+      for (let i = 0; i < n; i++) {
+        if (u <= dwell[i]) return i * DEPTH;
+        u -= dwell[i];
+        if (i === n - 1) break;
+        if (u <= 1) return (i + u) * DEPTH;
+        u -= 1;
+      }
+      return (n - 1) * DEPTH;
+    };
+    // the scroll that holds sheet i: the middle of its dwell
+    const scrollFor = (i: number) => {
+      let u = dwell[i] / 2;
+      for (let j = 0; j < i; j++) u += dwell[j] + 1;
+      return top + (units > 0 ? u / units : 0) * span;
+    };
+    const target = () => depthAt((window.scrollY - top) / span);
 
     const root = document.documentElement;
     const setPlate = (on: boolean) => root.classList.toggle("plate-on", on);
@@ -244,7 +266,7 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
       if (!mq.matches) return;
       const i = sheets.findIndex((el) => el.contains(e.target as Node));
       if (i < 0) return;
-      const y = top + (i / (n - 1)) * span;
+      const y = scrollFor(i);
       if (Math.abs(window.scrollY - y) > 4) window.scrollTo({ top: y, behavior: "instant" as ScrollBehavior });
     };
     // hidden sheets skip paint, but hidden links can't take focus: the first Tab keeps them all focusable
@@ -275,7 +297,7 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
     const goto = (i: number) => {
       pending = i; pendingUntil = performance.now() + 900;
       const behavior = scrollBehavior();
-      if (mq.matches) window.scrollTo({ top: top + (n > 1 ? i / (n - 1) : 0) * span, behavior });
+      if (mq.matches) window.scrollTo({ top: scrollFor(i), behavior });
       else { const el = sheets[i]; if (el) el.scrollIntoView({ behavior, block: "start" }); }
     };
     const onGoto = (e: Event) => goto((e as CustomEvent<{ i: number }>).detail.i);

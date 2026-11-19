@@ -301,6 +301,11 @@ html.plate-route:not(.plate-faint) main { --ink-display: var(--ink-display-print
 /* the boards' name thins along the word (05: dense green D, pale cyan t): the ink density falls off left to
    right. */
 .bleed-fill > canvas { -webkit-mask-image: linear-gradient(90deg, #000 20%, rgb(0 0 0 / 0.45)); mask-image: linear-gradient(90deg, #000 20%, rgb(0 0 0 / 0.45)); }
+/* fountain over fountain: where the page plate is up under a fountain name (html.plate-under, lib/plate), the
+   name's ink prints as its own inverse (the dark of the same hue), so ink on ink reads instead of vanishing */
+.bleed-fill > canvas { transition: filter 600ms var(--ease-print); }
+html.plate-under .bleed-fill > canvas { filter: invert(1) hue-rotate(180deg) saturate(1.6) brightness(0.55) contrast(1.5); }
+@media (prefers-reduced-motion: reduce) { .bleed-fill > canvas { transition-duration: 150ms; } }
 .bleed-word { display: inline-block; margin-right: 0.22em; }
 .bleed-word:last-child { margin-right: 0; }
 .bleed-letter { display: inline-block; } /* every letter on the baseline: no per-letter stepping, anywhere */
@@ -446,3 +451,15 @@ html:not([data-warp]) .riso-grain::before { animation-play-state: paused; }
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(.cover-morph) { animation-duration: 0s; }
 }
+
+/* ---------- the cursor (MagneticCursor) ----------
+   A square of ink that overprints in difference, so it reads on paper, on the black nav and on the fountain alike.
+   Over a [data-magnetic] part it opens into a plate under the part's box; over any other way in it swells.
+   Fine pointers only, never under reduced motion: there the native cursor stays. Transform and opacity only. */
+html.has-cursor, html.has-cursor :is(a, button, [role="tab"], label) { cursor: none; }
+.cursor {
+  position: fixed; left: 0; top: 0; z-index: 2147483000; width: 10px; height: 10px; margin: -5px 0 0 -5px;
+  background: #fff; mix-blend-mode: difference; pointer-events: none; transform-origin: 50% 50%;
+  opacity: 0; transition: opacity 250ms var(--ease-print); will-change: transform;
+}
+html.has-cursor .cursor[data-on] { opacity: 1; }

@@ -14,6 +14,7 @@ const GAIN = 2.2;
 const EASE = 0.14; // per-frame approach of the shown density to the charge: swells, never pops
 const SPIN_TAU = 0.45; // s: how long the ink keeps stirring after the wheel stops
 const FAINT = 0.45; // below this the type leaves the print-black override (the dark-stock plate density)
+const UNDER = 0.12; // above this the fountain type over the plate prints in its inverse (riso.css html.plate-under)
 
 const SURGE_RISE = 12; // 1/s: the wave floods in within ~0.2 s
 const SURGE_FALL = 0.8; // s: ebb time constant once the next sheet holds
@@ -23,6 +24,7 @@ let charge = 0, shown = 0, spin = 0, level = 1, reset = 0, t0 = 0, last = 0, las
 const write = (v: number) => {
   level = v;
   document.documentElement.classList.toggle("plate-faint", v < FAINT);
+  document.documentElement.classList.toggle("plate-under", v > UNDER);
 };
 
 const frame = (now: number) => {
@@ -102,7 +104,7 @@ export function plateOut() {
   cancelAnimationFrame(raf); raf = 0;
   // the plate leaves through its CSS fade (riso.css, 1200 ms) as it stands, then other routes print it in full
   reset = window.setTimeout(() => { level = 1; }, 1300);
-  document.documentElement.classList.remove("plate-faint");
+  document.documentElement.classList.remove("plate-faint", "plate-under");
 }
 
 /** The wheel turned at `degPerSec` (signed) over the last `dtMs`: charge the plate and stir the ink. */

@@ -9,6 +9,7 @@ import "../styles/riso.css";
 import "../styles/works.css";
 import { display, productSans } from "./fonts";
 import Fountain from "@/components/riso/Fountain";
+import MagneticCursor from "@/components/MagneticCursor";
 import BlurMap from "@/components/riso/BlurMap";
 import InkEdges from "@/components/riso/InkEdges";
 import { COVER_SCRIPT } from "@/lib/cover";
@@ -122,6 +123,7 @@ export default function RootLayout({
             <div className="riso-grain" aria-hidden />
             {/* display-type print stack (MainTitle.aep): Roughen Edges → Compound Blur on the BlurMap */}
             <BlurMap />
+            <MagneticCursor />
             {/* Roughen Edges on all other type, one global border as in the comp */}
             <InkEdges />
             <Analytics />

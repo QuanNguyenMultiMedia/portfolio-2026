@@ -98,7 +98,7 @@ export default function Home() {
               My craft is in making people stay and rewind. I believe motion and interaction is the{" "}
               <Plates over="ink-violet" under="ink-indigo" i={2}>soul</Plates> of each brand, product, and experience.
             </p>
-            <Link href="/works" className="hero-cta">
+            <Link href="/works" className="hero-cta" data-magnetic="">
               <span>View Works</span>
               <span className="view-arrow" aria-hidden>→</span>
             </Link>
@@ -121,7 +121,7 @@ export default function Home() {
         </section>
 
         {/* sheet 2 · the works in rotation: every case study, one turn each */}
-        <section className="sheet rotation" aria-label="Selected work">
+        <section className="sheet rotation" data-dwell="1.25" aria-label="Selected work">
           <WorkRotation works={ROTATION} />
         </section>
 
@@ -143,7 +143,7 @@ export default function Home() {
           </div>
           <div className="view-works" data-blurmap="" data-o="" style={cue(3)}>
             {/* the sign-off word, printed as 12.End prints "See ya!": black display ink, roughened, compound blur */}
-            <Link href="/works">
+            <Link href="/works" data-magnetic="0.2">
               <span>View Works</span>
               <span className="view-arrow" aria-hidden>→</span>
             </Link>

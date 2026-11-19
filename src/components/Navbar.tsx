@@ -83,6 +83,7 @@ export default function Navbar() {
               key={item.path}
               href={item.path}
               data-active={isActive}
+              data-magnetic="0.4"
               aria-current={isActivePath(pathname, item.path) ? "page" : undefined}
               className={`relative px-4 py-1.5 text-[14px] font-sans tracking-[-0.01em] transition-colors duration-500 ease-(--ease-editorial-sharp) ${
                 isActive
