@@ -27,6 +27,8 @@ import Cuts from "@/components/works/Cuts";
 import Carousel from "@/components/works/Carousel";
 import Screening from "@/components/works/Screening";
 import Trail from "@/components/works/Trail";
+import Play from "@/components/works/Play";
+import System from "@/components/works/System";
 import Info, { chapterId } from "@/components/works/Info";
 
 // Each section type is a module in components/works, shaped by what its media is (see projects.ts). Every
@@ -50,11 +52,13 @@ const MODULES: Partial<Record<Screen["type"], (p: SectionProps) => React.ReactNo
   carousel: Carousel,
   screening: Screening,
   trail: Trail,
+  play: Play,
+  system: System,
 };
 
 // Photo essays and mixed print sets: `feature` stands its first piece at full height, the rest as lanes after it.
 // Boards that print edge to edge: their ground covers the whole section, so the section adds no gutter.
-const BLEED: Screen["type"][] = ["editorial-text", "stages", "wall", "trail"];
+const BLEED: Screen["type"][] = ["editorial-text", "stages", "wall", "trail", "play", "system"];
 
 function Breakdown({ screen, isMobile, ink, n }: SectionProps) {
   const images = (screen.images ?? []).map((src) => ({ src }));
@@ -173,6 +177,8 @@ export default function ProjectPageClient({
 
   const handlePointerDown = (e: React.PointerEvent) => {
     if (e.pointerType !== "mouse" || e.button !== 0 || !lenisRef.current) return;
+    // a ported component owns its own pointer: dragging a slider or a mark edge never scrolls the spread
+    if ((e.target as Element).closest("[data-play]")) return;
     lenisRef.current.stop();
     lenisRef.current.start();
     drag.current = { active: true, moved: false, x: e.clientX, scroll: lenisRef.current.scroll, lastX: e.clientX, lastT: e.timeStamp, v: 0 };

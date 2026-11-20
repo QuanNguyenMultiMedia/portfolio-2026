@@ -63,7 +63,9 @@ export interface Project {
       | "cuts" // a reel and its edit decision list: every cut at its timecode, by act (src, cuts)
       | "carousel" // portrait ads on a turning ring, as on the AE carousel board (items)
       | "screening" // full-length films with their sound, one monitor and a programme (items)
-      | "trail"; // work at volume on one stacked, snaking trail; hover lifts a piece whole (items, or tables flattened)
+      | "trail" // work at volume on one stacked, snaking trail; hover lifts a piece whole (items, or tables flattened)
+      | "play" // a component from the site's own code, ported and running natively in its own system (kit, piece)
+      | "system"; // the site's design system set from its real tokens, in its own fonts (kit)
     // Standard properties
     title?: string;
     /** evolution: names what its extras are (where it was built) */
@@ -92,6 +94,10 @@ export interface Project {
     cuts?: { at: number; label: string; act: string; href?: string }[];
     /** cuts: each act's ink on the edit track (a riso.css ink var) */
     acts?: { name: string; ink: string }[];
+    /** play / system: whose design system the section wears (src/components/showcase/<kit>) */
+    kit?: "dename" | "herondlabs" | "defrasoft";
+    /** play: which ported component it runs (showcase registry key) */
+    piece?: string;
     /** library: what the two setups are called when items carry a variant */
     variantLabels?: [string, string];
   }[];
@@ -812,74 +818,56 @@ export const projects: Project[] = [
     coverImage: "/works/dename-website/hero-c.webp",
     screens: [
       { type: "zine-cover" },
-      // what the site is and what it is made of; then each standout component on its own, recorded from the live site
       {
         type: "editorial-text",
         info: "intro",
-        lead: "Web Designer & Developer\nVite, React, GSAP, Lenis, WebGL",
-        content: "The landing page for dename.org, DeName Labs' mobile app studio. Designed and built end to end.",
-        chapters: ["Hero entrance", "Seed handoff", "Vision", "WebGL bonsai", "Reviews over the tree", "Mark rig", "System", "On a phone"],
+        lead: "Web Designer & Developer\nVite, React 19, GSAP, Lenis, WebGL",
+        content:
+          "dename.org is the front door of a studio that ships utility, AI and photo apps to millions. The brief was calm, living technology: a wellness product that happens to be a tech company. So nothing on the page is drawn by hand. The badge, every chip and every card come from one golden construction, and the scroll grows a bonsai from a single seed.",
+        chapters: ["Mark rig", "Badge surfaces", "Blob tracker", "Lily water", "System"],
       },
       {
-        type: "deliverable-breakdown",
-        chapter: "Components",
-        title: "Hero entrance",
-        layout: "feature",
-        description: "A single seed of light lands, then the headline sets word by word over a drifting grain-gradient field.",
-        images: ["/works/dename-website/hero.mp4", "/works/dename-website/hero-a.webp", "/works/dename-website/hero-b.webp", "/works/dename-website/hero-c.webp"],
-      },
-      {
-        type: "deliverable-breakdown",
-        chapter: "Components",
-        title: "Seed handoff",
-        layout: "feature",
-        description: "The seed carries the reader out of the hero and drops into the partners spread, where the logos sit over a photographic grid.",
-        images: ["/works/dename-website/seed.mp4", "/works/dename-website/seed-a.webp", "/works/dename-website/seed-b.webp", "/works/dename-website/seed-c.webp"],
-      },
-      {
-        type: "deliverable-breakdown",
-        chapter: "Components",
-        title: "Vision",
-        layout: "feature",
-        description: "The mission set as one serif sentence, with the key words lifted onto highlighter chips.",
-        images: ["/works/dename-website/vision.mp4", "/works/dename-website/vision-a.webp", "/works/dename-website/vision-c.webp"],
-      },
-      {
-        type: "deliverable-breakdown",
-        chapter: "Components",
-        title: "WebGL bonsai",
-        layout: "feature",
-        description: "A WebGL bonsai engine grows the tree with the scroll, from a sprout under the headline to a full tree over the landscape, with a depth frame around it.",
-        images: ["/works/dename-website/bonsai.mp4", "/works/dename-website/bonsai-a.webp", "/works/dename-website/bonsai-b.webp", "/works/dename-website/bonsai-c.webp"],
-      },
-      {
-        type: "deliverable-breakdown",
-        chapter: "Components",
-        title: "Reviews over the tree",
-        layout: "feature",
-        description: "The testimonials pass as a horizontal run of cards in front of the grown tree, with the rating set in thin numerals.",
-        images: ["/works/dename-website/reviews.mp4", "/works/dename-website/reviews-a.webp", "/works/dename-website/reviews-c.webp"],
-      },
-      {
-        type: "deliverable-breakdown",
+        type: "play",
+        kit: "dename",
+        piece: "mark-rig",
         chapter: "Components",
         title: "Mark rig",
-        layout: "feature",
-        description: "A tool for building the logo: width, height and proportions on powers of φ, construction grid and tone switches, so every lockup is generated rather than redrawn.",
-        images: ["/works/dename-website/rig-a.webp"],
+        description:
+          "The logo is a function, not a drawing. Every proportion is a power of φ, so each slider is an exponent. Stretch it and only the body grows; spikes, corners and border keep their absolute size. Favicons, app icons and lockups are all generated from this one function.",
       },
-      // the type and colour the build actually renders, set on the live page in its own fonts
       {
-        type: "library",
+        type: "play",
+        kit: "dename",
+        piece: "chips",
+        chapter: "Components",
+        title: "Badge surfaces",
+        description:
+          "Buttons and cards take the badge's silhouette from the same construction, so they always match the mark. The path is live: hover deepens and sharpens the spikes, a press bites, release springs back. Each frame writes the path straight to the DOM, and the frosted glass is clipped to it.",
+      },
+      {
+        type: "play",
+        kit: "dename",
+        piece: "bonsai",
+        chapter: "Components",
+        title: "Blob tracker",
+        description:
+          "The tree as a tracking camera would see it, cut on a lattice traced from its own alpha. A wavefront leaves the trunk, and each cell it passes locks on in hard, halving steps, like a tracker re-acquiring. Afterwards a third of the cells drift at a time, so the tree breathes without ever going still.",
+      },
+      {
+        type: "play",
+        kit: "dename",
+        piece: "water",
+        chapter: "Components",
+        title: "Lily water",
+        description:
+          "One body of water runs under three sections. A 96-cell velocity field advects itself and decays, packed into 8-bit RGBA so it renders on any GPU. The painting is sampled through it. On the site, scroll speed stirs it and a heading lands as the drop.",
+      },
+      {
+        type: "system",
+        kit: "dename",
         chapter: "System",
-        title: "System",
-        items: [{"src": "/works/dename-website/type-display.webp", "label": "Display · Coaster Sans"}, {"src": "/works/dename-website/type-text.webp", "label": "Text · Paragon"}, {"src": "/works/dename-website/type-mono.webp", "label": "Mono · ui-monospace"}, {"src": "/works/dename-website/palette.webp", "label": "Colour"}],
-      },
-      {
-        type: "screens",
-        chapter: "On a phone",
-        title: "On a phone",
-        items: [{ src: "/works/dename-website/mobile.webp", label: "dename.org" }],
+        title: "Calm, living technology",
+        description: "Every colour is sampled from a pin on the moodboard. Three voices, one job each: serif for feeling, sans for information, mono for labels.",
       },
       { type: "zine-outro" },
     ],

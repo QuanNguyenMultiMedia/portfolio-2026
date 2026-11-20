@@ -1,0 +1,50 @@
+/* DeName pieces, in the values of herondlabs/dename-landing-page (tokens: ../kits.css .sc-dename). */
+
+/* mark rig: the tool's own grey studio, canvas left, panel right */
+.dn-rig { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr minmax(15rem, 19rem); background: var(--dn-rig-ground); color: var(--dn-mist); font-family: var(--dn-sans); font-size: 0.8125rem; }
+@media (width < 48rem) { .dn-rig { grid-template-columns: 1fr; grid-template-rows: 55% 1fr; } }
+.dn-rig-canvas { position: relative; overflow: hidden; }
+.dn-rig-canvas.is-paper { background: var(--dn-paper); }
+.dn-rig-panel { display: flex; flex-direction: column; gap: 1.25rem; overflow-y: auto; padding: 1.25rem; background: var(--dn-rig); overscroll-behavior: contain; }
+.dn-rig-h { margin: 0; font-family: var(--dn-mono); font-size: 0.6875rem; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, var(--dn-mist) 60%, transparent); }
+.dn-formula { font-family: var(--dn-mono); color: color-mix(in srgb, var(--dn-mist) 70%, transparent); }
+.dn-btn { border-radius: 0.375rem; padding: 0.375rem 0.625rem; background: color-mix(in srgb, var(--dn-mist) 12%, transparent); color: inherit; cursor: pointer; transition: background-color 140ms var(--dn-ease-expo); }
+.dn-btn:hover { background: color-mix(in srgb, var(--dn-mist) 22%, transparent); }
+.dn-btn[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--dn-mist); }
+.dn-link { font-size: 0.75rem; text-decoration: underline; cursor: pointer; color: inherit; }
+.dn-rig input[type="range"] { accent-color: var(--dn-chartreuse); width: 100%; }
+.dn-rig input[type="checkbox"] { accent-color: var(--dn-chartreuse); }
+.dn-badge { fill: var(--dn-green); }
+.dn-badge-paper { stroke: var(--dn-paper); }
+.dn-ghost { fill: none; stroke: var(--dn-ghost); }
+.dn-grid line, .dn-grid circle, .dn-grid rect, .dn-grid path { stroke: var(--dn-rig-ink); stroke-width: 1; }
+.dn-grid .is-sky { stroke: var(--dn-rig-sky); }
+.dn-grid-text text { fill: var(--dn-rig-ink); stroke: none; }
+.dn-grid-text text.is-sky { fill: var(--dn-rig-sky); }
+.dn-handle { fill: var(--dn-mist); stroke: var(--dn-rig); }
+.dn-readout { position: absolute; left: 1rem; bottom: 1rem; margin: 0; font-family: var(--dn-mono); font-size: 0.75rem; color: color-mix(in srgb, white 80%, transparent); mix-blend-mode: difference; pointer-events: none; }
+
+/* chips: the badge silhouette as a surface, over the site's lily water photograph */
+.dn-pond { position: absolute; inset: 0; display: grid; place-content: center; gap: 2.5rem; padding: 2rem; background: var(--dn-lily-water) center / cover no-repeat; }
+.dn-pond::before { content: ""; position: absolute; inset: 0; background: color-mix(in srgb, var(--dn-lily-water) 35%, transparent); }
+.dn-chip-row { position: relative; display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
+.dn-chip { display: inline-grid; place-items: center; min-height: 3.25rem; padding: 0.9rem 1.6rem 0.9rem; font-family: var(--dn-sans); font-size: 0.9375rem; color: var(--dn-ink); cursor: pointer; }
+.dn-chip.is-glass { color: var(--dn-mist); }
+.dn-card { width: min(19rem, 70vw); padding: 1.5rem 1.5rem 1.75rem; color: var(--dn-mist); text-align: left; cursor: pointer; }
+.dn-card h4 { margin: 0 0 0.5rem; font-family: var(--dn-serif); font-weight: 400; font-size: 1.6rem; line-height: 1.05; }
+.dn-card p { margin: 0; font-size: 0.9375rem; line-height: 1.5; color: color-mix(in srgb, var(--dn-mist) 85%, transparent); }
+.dn-fill-paper { fill: var(--dn-paper); }
+.dn-fill-chartreuse { fill: var(--dn-chartreuse); }
+.dn-fill-glass { fill: color-mix(in srgb, white 10%, transparent); }
+.dn-ring { stroke: color-mix(in srgb, white 80%, transparent); stroke-width: 1.25px; }
+
+/* bonsai: the tracker canvas on the site's ink ground, a scrub rail under it */
+.dn-tree { position: absolute; inset: 0; display: grid; grid-template-rows: minmax(0, 1fr) auto; container-type: size; background: radial-gradient(closest-side at 50% 60%, color-mix(in oklab, var(--dn-chartreuse) 18%, transparent), transparent), var(--dn-night); color: var(--dn-mist); }
+.dn-tree-stage { position: relative; align-self: end; justify-self: center; width: min(100cqw - 3rem, (100cqh - 6rem) * 764 / 703); }
+.dn-scrub { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.5rem 1.25rem; font-family: var(--dn-mono); font-size: 0.75rem; letter-spacing: var(--dn-tracking-label); }
+.dn-scrub input { flex: 1; accent-color: var(--dn-chartreuse); }
+.dn-scrub output { min-width: 4ch; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* water */
+.dn-water { position: absolute; inset: 0; background: var(--dn-lily-water); touch-action: none; }
+.dn-water canvas { position: absolute; inset: 0; width: 100%; height: 100%; }

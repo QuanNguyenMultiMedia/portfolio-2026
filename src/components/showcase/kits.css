@@ -1,0 +1,61 @@
+/* The sites' own systems, scoped. Each .sc-<kit> carries the values its repo's theme file ships (named after the
+   repo's tokens), so a ported piece renders in the type, palette and radii it was built with, and the portfolio's
+   own tokens never leak in or out. Fonts are the sites' self-hosted files, copied to public/showcase/<kit>/fonts. */
+
+@font-face { font-family: "DN Coaster Sans"; src: url("/showcase/dename/fonts/CoasterSans-Regular.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "DN Uncut Sans"; src: url("/showcase/dename/fonts/UncutSans-Variable.woff2") format("woff2"); font-weight: 300 700; font-display: swap; }
+@font-face { font-family: "DN Paragon"; src: url("/showcase/dename/fonts/Paragon-Regular.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "DN Paragon"; src: url("/showcase/dename/fonts/Paragonitalic-Regular.woff2") format("woff2"); font-style: italic; font-display: swap; }
+
+/* herondlabs/dename-landing-page src/index.css @theme */
+.sc-dename {
+  --dn-paper: #edece8;
+  --dn-mist: #eef1ea;
+  --dn-ink: #1a1f17;
+  --dn-ink-muted: #5c6656;
+  --dn-night: #080808;
+  --dn-chartreuse: #d4f25a;
+  --dn-green: #5f9848; /* mark.ts GREEN: the badge */
+  --dn-forest: #1a3312; /* mark.ts FOREST */
+  --dn-lily-water: #262e1c;
+  --dn-rig: #2b2b2b; /* the mark rig's tool panel */
+  --dn-rig-ground: #5f5f5f;
+  --dn-rig-ink: #e6007e; /* construction lines */
+  --dn-rig-sky: #00a0e6; /* the φ-cut */
+  --dn-ghost: #ffd400;
+  --dn-display: "DN Coaster Sans", "DN Uncut Sans", ui-sans-serif, sans-serif;
+  --dn-serif: "DN Paragon", ui-serif, Georgia, serif;
+  --dn-sans: "DN Uncut Sans", ui-sans-serif, system-ui, sans-serif;
+  --dn-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --dn-radius-glass: 1.5rem;
+  --dn-tracking-label: 0.08em;
+  --dn-ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --sc-ground: var(--dn-paper);
+  --sc-ink: var(--dn-ink);
+  --sc-ink-muted: var(--dn-ink-muted);
+  --sc-title-font: var(--dn-serif);
+  --sc-body-font: var(--dn-sans);
+  --sc-label-font: var(--dn-mono);
+  --sc-label-tracking: var(--dn-tracking-label);
+  --sc-radius: var(--dn-radius-glass);
+  --sc-stage: var(--dn-lily-water);
+}
+
+/* shared frame: the section wears the kit's ground, the note its voices */
+.sc { background: var(--sc-ground); color: var(--sc-ink); }
+.sc-label { font-family: var(--sc-label-font); font-size: 0.75rem; letter-spacing: var(--sc-label-tracking); text-transform: uppercase; color: var(--sc-ink-muted); }
+.sc-title { font-family: var(--sc-title-font); font-weight: 400; font-size: clamp(2rem, 3.2vw, 3.25rem); line-height: 1.02; letter-spacing: -0.01em; padding-bottom: 0.08em; }
+.sc-body { font-family: var(--sc-body-font); font-size: 1rem; line-height: 1.55; color: var(--sc-ink); max-width: 36ch; }
+.sc-stage { border-radius: var(--sc-radius); background: var(--sc-stage); flex-shrink: 0; align-self: center; height: 100%; max-height: calc(100svh - 8rem); }
+.sc-stage :focus-visible { outline: 2px solid var(--dn-chartreuse, currentColor); outline-offset: 2px; }
+
+/* system sheet */
+.sc-system em { font-style: italic; }
+.sc-swatch { display: flex; flex-direction: column; gap: 0.25rem; width: clamp(4.5rem, 6vw, 6.5rem); }
+.sc-swatch-chip { display: block; aspect-ratio: 4 / 5; background: var(--sw); border: 1px solid color-mix(in srgb, var(--sc-ink) 12%, transparent); transition: transform 220ms var(--dn-ease-expo, ease); }
+.sc-swatch:hover .sc-swatch-chip { transform: translate3d(0, -0.35rem, 0); }
+.sc-swatch-name { font-family: var(--sc-body-font); font-size: 0.75rem; }
+.sc-swatch-value { font-family: var(--sc-label-font); font-size: 0.6875rem; color: var(--sc-ink-muted); }
+.sc-bar { display: block; height: 0.5rem; background: var(--sc-ink); }
+.sc-radius { display: block; width: 4rem; height: 4rem; border: 1px solid var(--sc-ink); }
