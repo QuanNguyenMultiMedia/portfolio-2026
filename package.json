@@ -16,6 +16,7 @@
     "test:all": "npm run test && npm run test:e2e"
   },
   "dependencies": {
+    "@chenglou/pretext": "0.0.8",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "framer-motion": "^12.38.0",

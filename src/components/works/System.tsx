@@ -4,10 +4,11 @@
 import type { CSSProperties } from "react";
 import type { KitSystem } from "@/components/showcase/system";
 import { dename } from "@/components/showcase/dename/tokens";
+import { herondlabs } from "@/components/showcase/herondlabs/tokens";
 import "@/components/showcase/kits.css";
 import { type SectionProps } from "./kit";
 
-const SYSTEMS: Partial<Record<NonNullable<SectionProps["screen"]["kit"]>, KitSystem>> = { dename };
+const SYSTEMS: Partial<Record<NonNullable<SectionProps["screen"]["kit"]>, KitSystem>> = { dename, herondlabs };
 
 const rich = (s: string) => s.split(/(\*[^*]+\*)/).map((p, i) => (p.startsWith("*") ? <em key={i}>{p.slice(1, -1)}</em> : p));
 
@@ -29,7 +30,7 @@ export default function System({ screen, isMobile }: SectionProps) {
         {sys.type.map((t) => (
           <div key={t.role} className="flex flex-col gap-2 border-t border-current/20 pt-3">
             <span className="sc-label flex justify-between"><span>{t.role}</span><span>{t.family}</span></span>
-            <span style={{ fontFamily: t.font, fontSize: t.size, letterSpacing: t.tracking, lineHeight: 1.08, paddingBottom: "0.1em" }}>{rich(t.sample)}</span>
+            <span style={{ fontFamily: t.font, fontSize: t.size, letterSpacing: t.tracking, fontWeight: t.weight, lineHeight: 1.08, paddingBottom: "0.1em" }}>{rich(t.sample)}</span>
           </div>
         ))}
       </section>
@@ -56,7 +57,7 @@ export default function System({ screen, isMobile }: SectionProps) {
           <span className="sc-label">Space</span>
           {sys.space.map((s) => (
             <div key={s.name} className="flex items-center gap-3">
-              <span className="sc-label w-6">{s.name}</span>
+              <span className="sc-label w-14 flex-shrink-0">{s.name}</span>
               <span className="sc-bar" style={{ width: s.value }} />
             </div>
           ))}

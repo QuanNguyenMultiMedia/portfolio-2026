@@ -1,0 +1,54 @@
+/* Herond Labs pieces, in the values of herondlabs/herondlabs-website (tokens: ../kits.css .sc-herondlabs).
+   The specimen sheet: Paper ground, ruled structure, mono annotation on artifacts only, zero radius. */
+
+.hl-annot { font-family: var(--hl-mono); font-weight: 500; font-size: 0.6875rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--hl-ink-600); font-variant-numeric: tabular-nums; }
+.hl-btn, .hl-seg { font-family: var(--hl-mono); font-weight: 500; font-size: 0.6875rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.5rem 0.75rem; border: 1px solid var(--hl-border); background: var(--hl-paper); color: var(--hl-ink); cursor: pointer; transition: background-color 140ms cubic-bezier(0, 0, 0.2, 1), color 140ms cubic-bezier(0, 0, 0.2, 1); }
+.hl-btn:hover, .hl-seg:hover { background: var(--hl-ember-100); }
+.hl-btn[aria-pressed="true"], .hl-seg[aria-checked="true"] { background: var(--hl-ink); color: var(--hl-paper); border-color: var(--hl-ink); }
+.hl-seg + .hl-seg { border-left: 0; }
+
+/* heron rig: the figure on Paper, the tuning panel ruled off at the right */
+.hl-rig { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr minmax(14rem, 17rem); background: var(--hl-paper); color: var(--hl-ink); font-family: var(--hl-sans); }
+@media (width < 48rem) { .hl-rig { grid-template-columns: 1fr; grid-template-rows: 60% 1fr; } }
+.hl-rig-figure { position: relative; overflow: hidden; container-type: size; }
+/* the sprite is mostly sky above the bird: frame the bird (60% down the sprite), not the canvas */
+.hl-rig-bird { position: absolute; left: 50%; top: 50%; height: 165cqh; aspect-ratio: 842 / 1184; translate: -50% -60%; }
+.hl-rig-figure figcaption { position: absolute; left: 1rem; bottom: 0.75rem; }
+.hl-rig-panel { display: flex; flex-direction: column; justify-content: center; gap: 1rem; padding: 1.25rem; border-left: 1px solid var(--hl-border); overflow-y: auto; overscroll-behavior: contain; }
+@media (width < 48rem) { .hl-rig-panel { border-left: 0; border-top: 1px solid var(--hl-border); } }
+.hl-knob { display: grid; gap: 0.375rem; font-size: 0.875rem; color: var(--hl-ink-700); }
+.hl-knob input { accent-color: var(--hl-ember-500); width: 100%; }
+.hl-pins { pointer-events: none; transform-origin: 50% 50%; }
+.hl-pin-reach { fill: none; stroke: var(--hl-ember-500); stroke-width: 1.5; stroke-dasharray: 4 6; opacity: 0.55; }
+.hl-pin { fill: var(--hl-ember-500); stroke: var(--hl-ink); stroke-width: 2; }
+.is-fixed .hl-pin { fill: var(--hl-paper); }
+.is-fixed .hl-pin-reach { stroke: var(--hl-ink-400); }
+
+/* line engine: a ruled datasheet field, the measure as a draggable rule */
+.hl-sheet { position: absolute; inset: 0; display: grid; grid-template-rows: auto 1fr; background: var(--hl-paper); color: var(--hl-ink); }
+.hl-sheet-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--hl-border); }
+.hl-sheet-field { position: relative; padding: clamp(1.5rem, 4vw, 3rem) 1.25rem; overflow: hidden; background-image: linear-gradient(to right, var(--hl-border) 1px, transparent 1px); background-size: 10% 100%; }
+.hl-measure { position: relative; padding-right: 0; }
+.hl-line { position: relative; display: block; white-space: pre; color: var(--hl-ink); }
+.hl-line-ink { display: inline-block; box-shadow: inset 0 -1px 0 var(--hl-ember-200); padding-bottom: 0.06em; }
+.hl-line-w { position: absolute; left: 100%; top: 50%; translate: 0.75rem -50%; white-space: nowrap; }
+.hl-used { position: absolute; top: -0.75rem; bottom: -0.75rem; width: 0; border-left: 1px dashed var(--hl-ember-800); }
+.hl-handle { position: absolute; top: -1.25rem; bottom: -1.25rem; right: -0.5rem; width: 1rem; cursor: ew-resize; touch-action: none; }
+.hl-handle::before { content: ""; position: absolute; inset: 0 auto 0 50%; border-left: 1px solid var(--hl-ink); }
+.hl-handle::after { content: ""; position: absolute; left: calc(50% - 0.4375rem); top: calc(50% - 0.4375rem); width: 0.875rem; height: 0.875rem; background: var(--hl-ember-500); transition: transform 140ms cubic-bezier(0, 0, 0.2, 1); }
+.hl-handle:hover::after, .hl-handle:focus-visible::after { transform: scale(1.3); }
+
+/* studio clocks: the one module with corners and a wash (SaigonClock.tsx) */
+.hl-clocks { position: absolute; inset: 0; display: grid; align-content: center; gap: 1rem; padding: clamp(1rem, 3vw, 2.5rem); background: var(--hl-paper); overflow-y: auto; }
+.hl-clock { overflow: hidden; border-radius: 20px; background: radial-gradient(130% 105% at 78% 12%, var(--hl-ember-200) 0%, var(--hl-ember-100) 42%, var(--hl-paper) 80%); }
+.hl-micro { margin: 0; padding: 1rem 1.25rem; font-family: var(--hl-sans); font-size: 0.8125rem; color: var(--hl-ink-700); }
+.hl-micro .is-open { color: var(--hl-positive); }
+.hl-clock-face { position: relative; height: clamp(8rem, 22cqh, 15rem); }
+.hl-clocks { container-type: size; }
+.hl-hands { position: absolute; bottom: 50%; left: 24%; }
+.hl-hand { position: absolute; bottom: 0; left: 0; width: 1px; background: color-mix(in srgb, var(--hl-ink) 70%, transparent); transform-origin: bottom center; }
+.hl-hand.is-hour { height: clamp(2.25rem, 6cqh, 4rem); }
+.hl-hand.is-min { height: clamp(3.5rem, 10cqh, 6.5rem); }
+.hl-pivot { position: absolute; left: -2px; bottom: -2px; width: 4px; height: 4px; border-radius: 50%; background: var(--hl-ink); }
+.hl-numerals { position: absolute; right: 1.25rem; top: 0; margin: 0; text-align: right; font-family: var(--hl-sans); font-weight: 100; font-size: clamp(3.25rem, 9cqh, 5.25rem); line-height: 0.92; letter-spacing: -0.02em; color: var(--hl-ink); font-variant-numeric: tabular-nums; }
+.hl-secs { font-family: var(--hl-mono); font-weight: 500; font-size: 0.9375rem; letter-spacing: 0.06em; color: var(--hl-ink-700); }

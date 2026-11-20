@@ -42,13 +42,49 @@
   --sc-stage: var(--dn-lily-water);
 }
 
+@font-face { font-family: "HL Inter"; src: url("/showcase/herondlabs/fonts/inter-latin.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "HL Newsreader"; src: url("/showcase/herondlabs/fonts/newsreader-normal-latin.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "HL Newsreader"; src: url("/showcase/herondlabs/fonts/newsreader-italic-latin.woff2") format("woff2"); font-weight: 300; font-style: italic; font-display: swap; }
+@font-face { font-family: "HL Plex Mono"; src: url("/showcase/herondlabs/fonts/plexmono-latin.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+
+/* herondlabs/herondlabs-website src/styles/tokens.css (generated from brand/tokens/herond-labs.tokens.json) */
+.sc-herondlabs {
+  --hl-paper: #faf7f5;
+  --hl-card: #ffffff;
+  --hl-ink: #160502;
+  --hl-border: #e4dcda;
+  --hl-ink-700: #3e2f29;
+  --hl-ink-600: #5c4c45;
+  --hl-ink-400: #a89a93;
+  --hl-ember-100: #fde9ce;
+  --hl-ember-200: #fbd49e;
+  --hl-ember-500: #f7941d;
+  --hl-ember-800: #a35a00;
+  --hl-positive: #2e7d3e;
+  --hl-sans: "HL Inter", ui-sans-serif, system-ui, sans-serif;
+  --hl-serif: "HL Newsreader", ui-serif, Georgia, serif;
+  --hl-mono: "HL Plex Mono", ui-monospace, monospace;
+
+  --sc-ground: var(--hl-paper);
+  --sc-ink: var(--hl-ink);
+  --sc-ink-muted: var(--hl-ink-600);
+  --sc-title-font: var(--hl-sans);
+  --sc-body-font: var(--hl-sans);
+  --sc-label-font: var(--hl-mono);
+  --sc-label-tracking: 0.06em;
+  --sc-radius: 0; /* zero radius everywhere, no exceptions (DESIGN.md) */
+  --sc-stage: var(--hl-card);
+}
+.sc-herondlabs .sc-title { font-weight: 700; letter-spacing: -0.06em; line-height: 1.08; }
+.sc-herondlabs .sc-stage { border: 1px solid var(--hl-border); }
+
 /* shared frame: the section wears the kit's ground, the note its voices */
 .sc { background: var(--sc-ground); color: var(--sc-ink); }
 .sc-label { font-family: var(--sc-label-font); font-size: 0.75rem; letter-spacing: var(--sc-label-tracking); text-transform: uppercase; color: var(--sc-ink-muted); }
 .sc-title { font-family: var(--sc-title-font); font-weight: 400; font-size: clamp(2rem, 3.2vw, 3.25rem); line-height: 1.02; letter-spacing: -0.01em; padding-bottom: 0.08em; }
 .sc-body { font-family: var(--sc-body-font); font-size: 1rem; line-height: 1.55; color: var(--sc-ink); max-width: 36ch; }
 .sc-stage { border-radius: var(--sc-radius); background: var(--sc-stage); flex-shrink: 0; align-self: center; height: 100%; max-height: calc(100svh - 8rem); }
-.sc-stage :focus-visible { outline: 2px solid var(--dn-chartreuse, currentColor); outline-offset: 2px; }
+.sc-stage :focus-visible { outline: 2px solid var(--dn-chartreuse, var(--hl-ember-500, currentColor)); outline-offset: 2px; }
 
 /* system sheet */
 .sc-system em { font-style: italic; }
