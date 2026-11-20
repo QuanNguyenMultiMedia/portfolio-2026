@@ -5,10 +5,11 @@ import type { CSSProperties } from "react";
 import type { KitSystem } from "@/components/showcase/system";
 import { dename } from "@/components/showcase/dename/tokens";
 import { herondlabs } from "@/components/showcase/herondlabs/tokens";
+import { defrasoft } from "@/components/showcase/defrasoft/tokens";
 import "@/components/showcase/kits.css";
 import { type SectionProps } from "./kit";
 
-const SYSTEMS: Partial<Record<NonNullable<SectionProps["screen"]["kit"]>, KitSystem>> = { dename, herondlabs };
+const SYSTEMS: Partial<Record<NonNullable<SectionProps["screen"]["kit"]>, KitSystem>> = { dename, herondlabs, defrasoft };
 
 const rich = (s: string) => s.split(/(\*[^*]+\*)/).map((p, i) => (p.startsWith("*") ? <em key={i}>{p.slice(1, -1)}</em> : p));
 

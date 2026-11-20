@@ -28,7 +28,7 @@ export default function Play({ screen, isMobile }: SectionProps) {
         data-play=""
         data-lenis-prevent=""
         className="sc-stage wk-in relative overflow-hidden"
-        style={isMobile ? { height: "78svh" } : { width: "min(66vw, calc((100svh - 8rem) * 1.6))" }}
+        style={isMobile ? { height: "78svh", width: "100%" } : { width: "min(66vw, calc((100svh - 8rem) * 1.6))" }}
       >
         {Piece && <Piece />}
       </div>

@@ -15,6 +15,8 @@ export const PIECES: Record<string, ComponentType> = {
   "herondlabs/heron": lazy(() => import("./herondlabs/Heron")),
   "herondlabs/linebreak": lazy(() => import("./herondlabs/Linebreak")),
   "herondlabs/clocks": lazy(() => import("./herondlabs/Clocks")),
+  "defrasoft/field": lazy(() => import("./defrasoft/Field")),
+  "defrasoft/glyphs": lazy(() => import("./defrasoft/Glyphs")),
 };
 
 export const KITS = ["dename", "herondlabs", "defrasoft"] as const;

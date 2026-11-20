@@ -78,13 +78,44 @@
 .sc-herondlabs .sc-title { font-weight: 700; letter-spacing: -0.06em; line-height: 1.08; }
 .sc-herondlabs .sc-stage { border: 1px solid var(--hl-border); }
 
+@font-face { font-family: "DF Funnel Display"; src: url("/showcase/defrasoft/fonts/FunnelDisplay.woff2") format("woff2"); font-weight: 300 800; font-display: swap; }
+@font-face { font-family: "DF LT Superior"; src: url("/showcase/defrasoft/fonts/LTSuperior-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "DF LT Superior"; src: url("/showcase/defrasoft/fonts/LTSuperior-Medium.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+
+/* herondlabs/defrasoft-landing-page web/src/styles/tokens.css */
+.sc-defrasoft {
+  --df-canvas: #faf9f5;
+  --df-canvas-dim: #ece9e1;
+  --df-ink: #121316;
+  --df-ink-secondary: #494b57;
+  --df-rule: rgb(18 19 22 / 0.1);
+  --df-cobalt: #2355f6;
+  --df-emerald: #047857;
+  --df-mist: #9fb3c8;
+  --df-fog: #cfd8dc;
+  --df-display: "DF Funnel Display", ui-sans-serif, system-ui, sans-serif;
+  --df-sans: "DF LT Superior", ui-sans-serif, system-ui, sans-serif;
+
+  --sc-ground: var(--df-canvas);
+  --sc-ink: var(--df-ink);
+  --sc-ink-muted: var(--df-ink-secondary);
+  --sc-title-font: var(--df-display);
+  --sc-body-font: var(--df-sans);
+  --sc-label-font: var(--df-sans);
+  --sc-label-tracking: 0.02em;
+  --sc-radius: 16px;
+  --sc-stage: var(--df-canvas);
+}
+.sc-defrasoft .sc-title { font-weight: 600; letter-spacing: -0.02em; line-height: 1.05; }
+.sc-defrasoft .sc-stage { border: 1px solid var(--df-rule); }
+
 /* shared frame: the section wears the kit's ground, the note its voices */
 .sc { background: var(--sc-ground); color: var(--sc-ink); }
 .sc-label { font-family: var(--sc-label-font); font-size: 0.75rem; letter-spacing: var(--sc-label-tracking); text-transform: uppercase; color: var(--sc-ink-muted); }
 .sc-title { font-family: var(--sc-title-font); font-weight: 400; font-size: clamp(2rem, 3.2vw, 3.25rem); line-height: 1.02; letter-spacing: -0.01em; padding-bottom: 0.08em; }
 .sc-body { font-family: var(--sc-body-font); font-size: 1rem; line-height: 1.55; color: var(--sc-ink); max-width: 36ch; }
 .sc-stage { border-radius: var(--sc-radius); background: var(--sc-stage); flex-shrink: 0; align-self: center; height: 100%; max-height: calc(100svh - 8rem); }
-.sc-stage :focus-visible { outline: 2px solid var(--dn-chartreuse, var(--hl-ember-500, currentColor)); outline-offset: 2px; }
+.sc-stage :focus-visible { outline: 2px solid var(--dn-chartreuse, var(--hl-ember-500, var(--df-cobalt, currentColor))); outline-offset: 2px; }
 
 /* system sheet */
 .sc-system em { font-style: italic; }
