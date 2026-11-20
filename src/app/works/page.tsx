@@ -28,7 +28,8 @@ export default function WorksPage() {
           style={{ "--i": 0 } as React.CSSProperties}
           className="rise mb-8 lg:mb-12 space-y-4 3xl:space-y-6 shrink-0 max-md:sr-only" /* phones: the top bar already names the page; the heading stays for screen readers */
         >
-          <h1 className={t.sectionHeaderDisplay} data-blurmap="">
+          {/* w-fit: the haze filter runs over the element box, so a full-width block made every haze step raster the whole row */}
+          <h1 className={`${t.sectionHeaderDisplay} w-fit`} data-blurmap="">
             Works
           </h1>
         </div>

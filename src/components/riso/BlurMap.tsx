@@ -115,7 +115,7 @@ function Filter({ px, animate }: { px: number; animate: boolean }) {
   const mask = (i: number, out: string) => {
     const lo = i ? TIER_AT[i - 1] : 0;
     const g = 1 / (TIER_AT[i] - lo);
-    return <feColorMatrix in="map" type="matrix" result={out} values={`0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  ${g} 0 0 0 ${-g * lo}`} />;
+    return <feColorMatrix in="mapt" type="matrix" result={out} values={`0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  ${g} 0 0 0 ${-g * lo}`} />;
   };
   const lerp = (a: string, b: string, m: string, out: string) => (
     <>
@@ -135,11 +135,17 @@ function Filter({ px, animate }: { px: number; animate: boolean }) {
           values={SWELL.map(windowMatrix).join(";")} keyTimes="0;0.25;0.5;0.75;1" calcMode="spline" keySplines={spline(4)} />}
       </feColorMatrix>
       <feComponentTransfer in="win" result="map"><feFuncR type="table" tableValues={MAP_TABLE} /></feComponentTransfer>
+      {/* Pass-throughs (one tile over the whole region: identical pixels). Each tier's blur asks its input for a margin of
+          its own σ, and Skia caches a node's result per requested rect, so without these the roughen and the four noise
+          layers were re-run for every tier, on every haze step (7× the work; on a CPU raster the commit stalled ~0.2 s per
+          step). feTile always asks for the input's whole subregion, so every tier hits the same cached result. */}
+      <feTile in="r2" result="r2t" />
+      <feTile in="map" result="mapt" />
       {TIER_SIGMA.map((f, i) => (
         <Fragment key={i}>
           {mask(i, `m${i + 1}`)}
-          <feGaussianBlur in="r2" stdDeviation={MAX_SIGMA * f * k} result={`b${i + 1}`} />
-          {lerp(i ? `t${i}` : "r2", `b${i + 1}`, `m${i + 1}`, `t${i + 1}`)}
+          <feGaussianBlur in="r2t" stdDeviation={MAX_SIGMA * f * k} result={`b${i + 1}`} />
+          {lerp(i ? `t${i}` : "r2t", `b${i + 1}`, `m${i + 1}`, `t${i + 1}`)}
         </Fragment>
       ))}
       <feGaussianBlur in={`t${TIER_SIGMA.length}`} stdDeviation={animate ? INTRO_SIGMA * k : 0}>
