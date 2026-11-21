@@ -324,7 +324,7 @@ export default function WorkDial({ items, activeIndex, onChange, onOpen }: Props
               >
                 {/* one ink for every title, as on the boards: depth comes from the wheel, never a paler ink */}
                 <h2
-                  className={`font-display font-bold tracking-tighter leading-[1.2] truncate origin-left transition-[color,transform] duration-300 group-hover/item:skew-x-[-10deg] text-(--ink-display) ${
+                  className={`font-display font-bold tracking-tighter leading-[1.2] truncate origin-left transition-transform duration-500 ease-(--ease-print) group-hover/item:translate-x-[0.3rem] group-focus-visible/item:translate-x-[0.3rem] motion-reduce:transition-none text-(--ink-display) ${
                     item.title.length > 15
                       ? "text-xl md:text-3xl lg:text-[2rem] xl:text-[2.25rem] 3xl:text-[2.75rem] 4xl:text-[3.5rem]"
                       : "text-2xl md:text-4xl lg:text-[2.75rem] xl:text-[3rem] 3xl:text-[3.75rem] 4xl:text-[4.5rem]"
