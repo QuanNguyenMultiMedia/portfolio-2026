@@ -328,7 +328,8 @@ export default function WorkDial({ items, activeIndex, onChange, onOpen, onPeek 
               >
                 {/* one ink for every title, as on the boards: depth comes from the wheel, never a paler ink */}
                 <h2
-                  className={`font-display font-bold tracking-tighter leading-[1.2] truncate origin-left transition-transform duration-500 ease-(--ease-print) group-hover/item:translate-x-[0.3rem] group-focus-visible/item:translate-x-[0.3rem] motion-reduce:transition-none text-(--ink-display) ${
+                  data-magnetic="0.4" /* the nav's hover: the title leans to the pointer and springs home (MagneticCursor) */
+                  className={`font-display font-bold tracking-tighter leading-[1.2] truncate origin-left text-(--ink-display) ${
                     item.title.length > 15
                       ? "text-xl md:text-3xl lg:text-[2rem] xl:text-[2.25rem] 3xl:text-[2.75rem] 4xl:text-[3.5rem]"
                       : "text-2xl md:text-4xl lg:text-[2.75rem] xl:text-[3rem] 3xl:text-[3.75rem] 4xl:text-[4.5rem]"

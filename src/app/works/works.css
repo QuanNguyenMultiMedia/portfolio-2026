@@ -1,10 +1,10 @@
-/* The works cover: printed at its own proportions (--ar), as large as the stage takes it, on the stage's foot and
+/* The works cover: printed at its own proportions (--ar), as large as the stage takes it, on the stage's head and
    its outer edge (right from lg, left on the stacked layout). The proofs follow the home index (home.css, .rot-proof):
    a pointed case arrives off register by --proof-reg and settles, leaves faster than it came, and the print under it
    lifts to bare paper while it is up. Transform and opacity only. */
 .works-stage { container-type: size; --proof-reg: 0.45rem; --t-proof-in: 260ms; --t-proof-set: 620ms; --t-proof-out: 180ms; }
 .works-frame {
-  position: absolute; bottom: 0; left: 0;
+  position: absolute; top: 0; left: 0;
   width: min(100cqw, 100cqh * var(--ar)); aspect-ratio: var(--ar);
   overflow: hidden; background: var(--paper); outline: 1px solid color-mix(in oklab, var(--ink-black) 25%, transparent);
 }
