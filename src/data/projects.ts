@@ -31,6 +31,8 @@ export interface Project {
   id: string;
   description: string;
   coverImage?: string;
+  /** the cover still's intrinsic size: the works frame prints it at its own proportions */
+  coverSize?: { w: number; h: number };
   /** Looping cover footage; coverImage stays its still poster for listings. */
   coverVideo?: string;
   client?: string;
@@ -135,6 +137,7 @@ export const projects: Project[] = [
     description:
       "Works I love from the past year, mainly from my time as an inhouse creative for Herond Labs",
     coverImage: "/media/showreel.jpg",
+    coverSize: { w: 1280, h: 720 },
     coverVideo: "/media/showreel.mp4",
     screens: [
       { type: "zine-cover" },
@@ -208,6 +211,7 @@ export const projects: Project[] = [
     description:
       "Rebranding, motion assets, 3D systems, interactive front-end concepts, and day-to-day creative during Herond's transition to an agentic rewards-focused browser model.",
     coverImage: "/works/herond-browser/ui-film.webp",
+    coverSize: { w: 1280, h: 720 },
     coverVideo: "/works/herond-browser/ui-film.mp4",
     screens: [
       { type: "zine-cover" },
@@ -489,6 +493,7 @@ export const projects: Project[] = [
     description:
       "ASO design, paid channel performance ads, AI UGC content generation, and lightweight in-app motion across five mobile applications.",
     coverImage: "/works/defrasoft/x-apppub-gifs-ex-dedup-recover.webp",
+    coverSize: { w: 720, h: 1280 },
     coverVideo: "/works/defrasoft/x-apppub-gifs-ex-dedup-recover.mp4",
     screens: [
       { type: "zine-cover" },
@@ -660,6 +665,7 @@ export const projects: Project[] = [
     description:
       "End-to-end creative direction, brand identity, campaign motion design, and photography for a social communication campaign promoting writing as a tool for mental health.",
     coverImage: "/works/z-cung-viet/photo.webp",
+    coverSize: { w: 1800, h: 1198 },
     screens: [
       { type: "zine-cover" },
       // 07.Zcungviet_Info 2: the whole board black, the billboard beside the intro, the chapters scattered under
@@ -752,6 +758,7 @@ export const projects: Project[] = [
     description:
       "The website for defrasoft.com, an independent studio making privacy-first apps. Designed and built end to end.",
     coverImage: "/works/defrasoft-website/name-b.webp",
+    coverSize: { w: 1280, h: 800 },
     screens: [
       { type: "zine-cover" },
       {
@@ -803,6 +810,7 @@ export const projects: Project[] = [
     description:
       "The landing page for dename.org, DeName Labs' mobile app studio. Designed and built end to end.",
     coverImage: "/works/dename-website/hero-c.webp",
+    coverSize: { w: 1280, h: 800 },
     screens: [
       { type: "zine-cover" },
       {
@@ -873,6 +881,7 @@ export const projects: Project[] = [
     description:
       "The website for herondlabs.com, Herond Labs' product engineering studio. Designed and built with the team.",
     coverImage: "/works/herondlabs-website/cover-c.webp",
+    coverSize: { w: 1280, h: 800 },
     screens: [
       { type: "zine-cover" },
       {
@@ -939,6 +948,7 @@ export const projects: Project[] = [
     description:
       "A curated selection of freelance projects spanning motion design, explainer videos, social media campaigns, and brand films for clients across industries and continents.",
     coverImage: "/works/select-freelance-work/freightos.webp",
+    coverSize: { w: 512, h: 512 },
     coverVideo: "/works/select-freelance-work/freightos.mp4",
     screens: [
       { type: "zine-cover" },

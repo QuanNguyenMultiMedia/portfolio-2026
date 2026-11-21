@@ -11,12 +11,19 @@ import WorkDial from "@/components/WorkDial";
 import { featuredProjects as projects, archivedProjects } from "@/data/projects";
 import { t, fx } from "@/lib/designSystem";
 import WorksArchive from "@/components/works/Archive";
+import "./works.css";
+
+type P = (typeof projects)[number];
+const cover = (p: P) => p.coverImage || p.screens[0]?.src || "/projects/gom-men.png";
+const ar = (p: P) => (p.coverSize ? p.coverSize.w / p.coverSize.h : 16 / 9);
 
 export default function WorksPage() {
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
   const activeProject = projects[activeIndex] ?? projects[0];
-  const cover = activeProject.coverImage || activeProject.screens[0]?.src || "/projects/gom-men.png";
+  const [peek, setPeek] = useState<number | null>(null); // the title a pointer rests on: its proof is up
+  const [armed, setArmed] = useState(false); // proofs' covers load once a pointer has come onto the dial
+  const proof = peek !== null && peek !== activeIndex;
 
   return (
     <PageWrapper variant="heroScroll">
@@ -41,27 +48,29 @@ export default function WorksPage() {
             style={{ "--i": 1 } as React.CSSProperties}
             className="rise col-span-full lg:col-span-5 min-w-0 flex flex-col justify-between h-full min-h-0 space-y-6 lg:space-y-8 3xl:space-y-12 items-start text-left lg:items-end lg:text-right pb-2"
           >
-            <div className="relative -mx-6 w-[calc(100%+48px)] self-stretch lg:self-auto lg:mx-0 lg:w-full aspect-video lg:aspect-auto lg:h-auto lg:flex-1 min-h-0 lg:min-h-[260px] 3xl:min-h-[380px] 4xl:min-h-[480px] bg-transparent border-y lg:border border-primary/25 overflow-hidden group transition-all duration-700 mb-6 lg:mb-0 block">
-              <AnimatePresence mode="wait" initial={false}>
+            {/* the cover prints at its own proportions, as large as the column takes it; pointing at a title on the
+                dial pulls that case's proof over it (works.css), as the home index does */}
+            <div className="works-stage relative -mx-6 w-[calc(100%+48px)] self-stretch lg:mx-0 lg:w-full aspect-video lg:aspect-auto lg:flex-1 min-h-0 lg:min-h-[260px] 3xl:min-h-[380px] 4xl:min-h-[480px] mb-6 lg:mb-0" data-proof={proof ? "" : undefined}>
+              <AnimatePresence initial={false}>
                 <m.div
                   key={activeProject.slug}
                   initial={{ opacity: 0, scale: 1.03 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.98 }}
                   transition={{ duration: 0.6, ease: fx.easeSharp }}
-                  className="w-full h-full absolute inset-0"
+                  className="works-frame works-print"
+                  style={{ "--ar": ar(activeProject) } as React.CSSProperties}
                 >
-                  <Image
-                    src={cover}
-                    alt={activeProject.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    loading="eager"
-                    fetchPriority="high"
-                    className="object-cover transition-transform mix-blend-print"
-                  />
+                  <Image src={cover(activeProject)} alt={activeProject.title} fill sizes="(max-width: 768px) 100vw, 42vw" loading="eager" fetchPriority="high" className="object-cover mix-blend-print" />
                 </m.div>
               </AnimatePresence>
+              <div className="works-proofs" aria-hidden>
+                {armed && projects.map((p, k) => (
+                  <div key={p.slug} className="works-frame works-proof" data-show={k === peek && k !== activeIndex ? "" : undefined} style={{ "--ar": ar(p) } as React.CSSProperties}>
+                    <Image src={cover(p)} alt="" fill sizes="42vw" className="object-cover mix-blend-print" />
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="w-full flex-shrink-0 min-h-[3lh] lg:min-h-[6lh]">
@@ -92,6 +101,7 @@ export default function WorksPage() {
               activeIndex={activeIndex}
               onChange={setActiveIndex}
               onOpen={(i) => router.push(`/works/${projects[i].slug}`)}
+              onPeek={(i) => { setArmed(true); setPeek(i); }}
             />
           </div>
         </div>

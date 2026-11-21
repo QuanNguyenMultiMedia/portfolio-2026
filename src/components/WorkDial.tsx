@@ -31,6 +31,8 @@ type Props = {
   activeIndex: number;
   onChange: (index: number) => void;
   onOpen: (index: number) => void;
+  /** a pointer rests on a title (null when it leaves): the page pulls that case's proof */
+  onPeek?: (index: number | null) => void;
 };
 
 const TICK_DEG = 15;
@@ -43,7 +45,7 @@ const CHORD = "calc((var(--dial) / 2 + sqrt(var(--dial) * var(--dial) / 4 - var(
 
 const wrap = (i: number, n: number) => ((i % n) + n) % n;
 
-export default function WorkDial({ items, activeIndex, onChange, onOpen }: Props) {
+export default function WorkDial({ items, activeIndex, onChange, onOpen, onPeek }: Props) {
   const N = items.length;
   const sector = 360 / N;
 
@@ -311,7 +313,9 @@ export default function WorkDial({ items, activeIndex, onChange, onOpen }: Props
                 role="button"
                 tabIndex={isActive ? 0 : -1}
                 aria-label={isActive ? `Open ${item.title}` : `Select ${item.title}`}
-                onClick={() => (isActive ? onOpen(i) : go(i))}
+                onPointerEnter={(e) => { if (e.pointerType === "mouse") onPeek?.(i); }}
+                onPointerLeave={() => onPeek?.(null)}
+                onClick={() => { onPeek?.(null); if (isActive) onOpen(i); else go(i); }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();

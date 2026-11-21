@@ -1,0 +1,31 @@
+/* The works cover: printed at its own proportions (--ar), as large as the stage takes it, on the stage's foot and
+   its outer edge (right from lg, left on the stacked layout). The proofs follow the home index (home.css, .rot-proof):
+   a pointed case arrives off register by --proof-reg and settles, leaves faster than it came, and the print under it
+   lifts to bare paper while it is up. Transform and opacity only. */
+.works-stage { container-type: size; --proof-reg: 0.45rem; --t-proof-in: 260ms; --t-proof-set: 620ms; --t-proof-out: 180ms; }
+.works-frame {
+  position: absolute; bottom: 0; left: 0;
+  width: min(100cqw, 100cqh * var(--ar)); aspect-ratio: var(--ar);
+  overflow: hidden; background: var(--paper); outline: 1px solid color-mix(in oklab, var(--ink-black) 25%, transparent);
+}
+@media (min-width: 1024px) { .works-frame { left: auto; right: 0; } }
+.works-proofs { position: absolute; inset: 0; pointer-events: none; }
+
+.works-print { transition: opacity var(--t-proof-in) var(--ease-print); }
+.works-stage[data-proof] .works-print { opacity: 0 !important; transition-duration: var(--t-proof-out); }
+
+.works-proof {
+  opacity: 0; mix-blend-mode: var(--blend);
+  transform: translate3d(var(--proof-reg), calc(var(--proof-reg) * -0.6), 0);
+  transition: opacity var(--t-proof-out) var(--ease-print), transform 0s linear var(--t-proof-out);
+}
+.works-proof[data-show] {
+  opacity: 1; transform: none;
+  transition: opacity var(--t-proof-in) var(--ease-print), transform var(--t-proof-set) var(--ease-print);
+}
+
+/* proofs are pulled by a pointer: a touch screen never lays them in */
+@media (hover: none) { .works-proofs { display: none; } .works-stage[data-proof] .works-print { opacity: 1 !important; } }
+@media (prefers-reduced-motion: reduce) {
+  .works-proof, .works-proof[data-show] { transform: none; transition: opacity 150ms var(--ease-print); }
+}
