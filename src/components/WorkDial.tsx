@@ -289,7 +289,7 @@ export default function WorkDial({ items, activeIndex, onChange, onOpen, onPeek 
 
       {/* Title cylinder, clipped to the viewfinder's span and feathered at both ends */}
       <div
-        className="absolute left-0 inset-y-0 overflow-hidden"
+        className="absolute left-0 inset-y-0 overflow-clip" /* clip, not hidden: a hidden box scrolls itself when a title takes focus, knocking the wheel off the viewfinder */
         style={{
           right: CHORD,
           perspective: "1500px",
