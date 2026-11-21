@@ -200,7 +200,10 @@ export default function WorkRotation({ works }: { works: RotationWork[] }) {
         </div>
         <div className="rot-proof rot-proof-name" aria-hidden>
           {works.map((x, k) => (
-            <div key={x.slug} className={`rot-proof-layer ${x.print.deck}`} data-show={shows(k)}>{x.title}</div>
+            <div key={x.slug} className={`rot-proof-layer ${x.print.deck}`} data-show={shows(k)}>
+              {/* the proof's name prints in its own fountain too (only the one up: one plate, never a solid stand-in) */}
+              {shows(k) === "" ? <BleedName as="div" title={x.title} print={x.print} className="rot-name-in" /> : null}
+            </div>
           ))}
         </div>
 

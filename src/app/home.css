@@ -243,7 +243,9 @@ html.kbd .run.is-3d .reel .video-controls { opacity: 1; visibility: visible; }
 .rot-proof-media { grid-column: 1 / 8; grid-row: 1; height: var(--rot-h); }
 .rot-proof-side { grid-column: 9 / -1; grid-row: 1; }
 .rot-proof-side .rot-proof-layer { align-self: end; } /* each case sits on the cell's foot, as the print does (.rot-panel aligns end) */
-.rot-proof-name { grid-column: 1 / -1; grid-row: 2; font-family: var(--font-display); font-size: var(--t-name); line-height: 0.86; letter-spacing: -0.02em; white-space: nowrap; }
+.rot-proof-name { grid-column: 1 / -1; grid-row: 2; font-family: var(--font-display); font-weight: 400; font-size: var(--t-name); line-height: 0.86; }
+.rot-proof-name .bleed-name { --t-bleed: var(--t-name); }
+.rot-proof-name .bleed-fill > canvas { -webkit-mask-image: none; mask-image: none; }
 .rot-proof-layer {
   grid-area: 1 / 1; opacity: 0; mix-blend-mode: var(--blend);
   transform: translate3d(var(--proof-reg), calc(var(--proof-reg) * -0.6), 0);
@@ -256,7 +258,6 @@ html.kbd .run.is-3d .reel .video-controls { opacity: 1; visibility: visible; }
 .rot-proof-media .rot-proof-layer { display: flex; align-items: flex-end; gap: var(--gutter); height: 100%; }
 .rot-pp { position: relative; overflow: hidden; background: var(--paper); }
 .rot-pp > :is(img, video) { display: block; width: 100%; height: 100%; object-fit: cover; mix-blend-mode: var(--blend); }
-.rot-proof-name .rot-proof-layer { color: var(--ink); }
 /* the print under a proof: it lifts while the proof is up, and comes back under it as the proof lifts */
 .rot :is(.rot-plate, .rot-side-in, .rot-name a) { transition: opacity var(--t-proof-in) var(--ease-print); }
 .rot[data-proof] .rot-panel > :not(.rot-proof) :is(.rot-plate, .rot-side-in, .rot-name a) { opacity: 0; transition-duration: var(--t-proof-out); }

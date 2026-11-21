@@ -121,7 +121,7 @@ export default function Home() {
         </section>
 
         {/* sheet 2 · the works in rotation: every case study, one turn each */}
-        <section className="sheet rotation" data-dwell="1.25" aria-label="Selected work">
+        <section className="sheet rotation" data-dwell="0.5" aria-label="Selected work">
           <WorkRotation works={ROTATION} />
         </section>
 
