@@ -72,7 +72,12 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 .hud-scrub:hover, .hud-scrub:focus-visible { transform: scaleY(2); }
 .hud-scrub:focus-visible { outline: 1.5px solid var(--ink-black); outline-offset: 3px; }
 .hud-scrub-fill { position: absolute; inset: 0; background: var(--paper); transform: scaleX(0); transform-origin: 0 50%; }
-.printed-video:fullscreen { display: grid; place-items: center; background: var(--ink-black); }
+/* fullscreen sits on black: the ink blend would multiply the footage to black, so it prints straight, letterboxed */
+.printed-video:fullscreen { background: var(--ink-black); }
+.printed-video:fullscreen :is(.printed, .printed > video) { mix-blend-mode: normal; }
+.printed-video:fullscreen .printed > video { object-fit: contain; }
+.printed-video:fullscreen .printed { background: var(--ink-black); }
+.printed-video:fullscreen .printed::after { display: none; }
 
 /* ---------- sheet 1 · the hero ----------
    Read in this order: the name, the line, the statement, the way in. The reel prints under the whole spread, pale
