@@ -63,7 +63,10 @@ html.kbd .run.is-3d .sheet { visibility: visible; }
 }
 .video-toggle:hover, .video-toggle:focus-visible { background: var(--ink-black); color: var(--paper); }
 /* the reel's HUD: a scrub line over a full-width row (play + timecode left, sound + fullscreen right) */
-.video-hud { left: var(--s-1); flex-direction: column; gap: var(--s-1); }
+/* a full-frame overlay: PrintRun scales the reel up to cover the screen (--reel-s), and the HUD scales back by the
+   same amount about the same centre, so the controls hold the focused frame's size and place through the zoom */
+.video-hud { inset: 0; padding: var(--s-1); flex-direction: column; justify-content: flex-end; gap: var(--s-1); pointer-events: none; transform: scale(calc(1 / var(--reel-s, 1))); transform-origin: 50% 50%; }
+.video-hud > * { pointer-events: auto; }
 .hud-row { display: flex; align-items: center; gap: var(--s-1); }
 .hud-gap { flex: 1; }
 .hud-square { width: 2.2em; padding-inline: 0; text-align: center; }
@@ -150,9 +153,7 @@ html.dark .run.is-3d .hero > .hero-name { mix-blend-mode: exclusion; }
    Scaled by --wash like the rest of the ground, so a reel already in focus is never held back (nor without WebGL). */
 .reel:has(> .reel-plate:not([data-live])) .reel-wash { opacity: var(--wash, 1); }
 .run:not(.is-3d) :is(.reel-plate, .reel-wash) { display: none; }
-.reel .video-controls { z-index: 2; transition: opacity var(--t-cue-fade) var(--ease-print); }
-.run.is-3d .reel:not([data-focus]) .video-controls { opacity: 0; visibility: hidden; transition-duration: 200ms; }
-html.kbd .run.is-3d .reel .video-controls { opacity: 1; visibility: visible; }
+.reel .video-controls { z-index: 2; }
 
 /* the client quotes: one pull quote, turned by its own counter */
 .words { display: grid; gap: var(--s-2); margin: 0; }

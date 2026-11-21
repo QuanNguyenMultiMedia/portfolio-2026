@@ -156,6 +156,7 @@ export default function PrintRun({ children }: { children: React.ReactNode }) {
       cue(el, u < 1 ? "in" : "past");
       if (reelScale) {
         reelScale.style.transform = `translate3d(${(reelBox.dx * (1 - e)).toFixed(1)}px,${(reelBox.dy * (1 - e)).toFixed(1)}px,0) scale(${s.toFixed(4)})`;
+        reelScale.style.setProperty("--reel-s", s.toFixed(4));
       }
       // the hero's ground: the paper wash and the fountain over the footage, both lifting as it comes into focus
       el.style.setProperty("--wash", (1 - e).toFixed(3));
