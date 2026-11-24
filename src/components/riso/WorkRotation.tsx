@@ -4,7 +4,7 @@
 // aspect ratio, what it was and for whom, its chapters as ways straight into the case page, and the name printed in
 // the project's own fountain under it. The cases' names run along the foot; the held
 // one's hairline fills in its deck ink as the turn runs, and the sheet moves on when it is full.
-// Pointing at a name in the index pulls a proof of that case: every case is laid in ahead of time as flat spot-ink
+// Clicking a name opens its case page. Pointing at a name in the index pulls a proof of that case: every case is laid in ahead of time as flat spot-ink
 // layers (its covers' first frames, its credits, its name in its deck ink), stacked in the same cells as the print,
 // and the pointed one overprints in, arriving off register and settling. A fast sweep overprints ink on ink; nothing
 // remounts and nothing wipes back to paper. Resting on a name (REST) or leaving the index runs the full print of it
@@ -15,6 +15,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import BleedName from "./BleedName";
 import { useSheetLive } from "@/hooks/useSheetLive";
 import type { Project } from "@/data/projects";
@@ -98,6 +99,7 @@ export default function WorkRotation({ works }: { works: RotationWork[] }) {
   }, []);
 
   const running = live && !stopped && !held && !still;
+  const router = useRouter();
   const go = (k: number) => { clearTimeout(rest.current); setQuiet(false); setPeek(null); setLift(null); setI(((k % n) + n) % n); };
   const commit = (k: number) => { clearTimeout(rest.current); setQuiet(true); setI(k); setPeek(null);
     setLift(k); clearTimeout(liftT.current); liftT.current = window.setTimeout(() => setLift(null), LIFT); };
@@ -229,7 +231,9 @@ export default function WorkRotation({ works }: { works: RotationWork[] }) {
             data-peek={proof && k === peek ? "" : undefined}
             aria-controls="rot-panel"
             tabIndex={k === i ? 0 : -1}
-            onClick={() => go(k)}
+            // a name opens its case: straight away under the mouse (pointing already pulled its proof) or from the
+            // keys; a tap on a name not yet showing prints it first, and a second tap opens it
+            onClick={(e) => (e.detail === 0 || k === i || peek === k ? router.push(`/works/${x.slug}`) : go(k))}
             // pointing at a case pulls its proof; resting on it prints it
             onPointerEnter={(e) => {
               if (e.pointerType !== "mouse") return;
