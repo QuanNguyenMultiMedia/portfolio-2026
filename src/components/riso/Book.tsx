@@ -21,14 +21,14 @@ import { COVER_ATTR, COVER_EVENT, COVER_KEY, LOCK_ATTR } from "@/lib/cover";
 import Fountain from "./Fountain";
 import "@/styles/book.css";
 
-const PRINT_AT = 0.3; // share of the pass at which the first spread starts printing, while the cover clears
+const PRINT_AT = 0.82; // share of the pass at which the first spread starts printing: the cover is all but off the press, so the next sheet is bare paper behind it until then (the reel under its paper, the type unprinted)
 const MIN_PRINT = 1500; // ms after the plate is down: the lockup's own print-in plays out before the hint arrives
 const PLATE_WAIT = 4500; // ms: no shader frame by then (no WebGL, a stalled GPU): print on the CSS ramp
 const GIVE_UP = 7000; // ms after the plate: ready whatever is still loading
 const PASS_MS = 900; // --t-cover-pass
 const PASS_Z = 560; // px of Z toward the camera (the run's 1000px perspective): 0.4 of a sheet's depth, where PrintRun has a passing sheet gone
 const PASS_FADE = 0.7; // share of the pass by which the sheet is off the press
-const HERO_SETTLE = 900; // ms after the cover is gone: the hero's parts print in before scrolling is handed back
+const HERO_SETTLE = 1400; // ms after the cover is gone: the hero's parts print in before scrolling is handed back
 
 // the house curve (designSystem fx.ease), solved for x → y
 function bezier([x1, y1, x2, y2]: readonly number[]) {
