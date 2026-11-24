@@ -396,6 +396,9 @@ html.dark .rot-pp, html.dark .rot-pp > :is(img, video) { mix-blend-mode: normal;
 .run[data-cued] .sheet[data-cue="past"] [data-o] { opacity: var(--cue-density); clip-path: var(--wipe-past); }
 /* media stay put and are covered instead: the paper runs back over them as they leave, and off them as they print */
 .run[data-cued] .sheet[data-cue] [data-o].cue-press, .run[data-cued] .sheet[data-cue] [data-o]:has(> .cue-press) { opacity: 1; clip-path: none; }
+/* a sheet still ahead holds its media back entirely: its paper sheet alone would print as a pale block on whatever
+   ground is behind it (the reel's fountain, as it flies back) before the camera reaches it */
+.run[data-cued] .sheet[data-cue="ahead"] [data-o].cue-press, .run[data-cued] .sheet[data-cue="ahead"] [data-o]:has(> .cue-press) { opacity: 0; transition: none; }
 .cue-press { position: relative; }
 .run[data-cued] .cue-press::before {
   content: ""; position: absolute; inset: 0; z-index: 3; background: var(--paper); pointer-events: none;
