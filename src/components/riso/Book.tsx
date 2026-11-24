@@ -12,7 +12,9 @@
 // the first spread starts printing (html[data-cover] lifts, cover-open fires). Scrolling stays held from the first
 // frame until the hero has printed in (html[data-lock], Lenis stopped, wheel and touch swallowed).
 // Client boundary: focus (a modal <dialog>), the scroll hold and the turn. Per-frame writes go straight to style.
-// Reduced motion: the cover fades instead of passing; the print-in is a fade.
+// Print-in is all press: the plate rolls on, each line of type is laid down by a drum pass (no part ever slides),
+// and the name's two plates land off register and settle. Reduced motion: the cover fades instead of passing; the
+// print-in is a fade with the plates already in register.
 import { useEffect, useRef, useState } from "react";
 import { fx } from "@/lib/designSystem";
 import { COVER_ATTR, COVER_EVENT, COVER_KEY, LOCK_ATTR } from "@/lib/cover";
@@ -211,11 +213,16 @@ export default function Book({ poster }: { poster: string }) {
               <p className="book-line" style={{ "--o": 0 } as React.CSSProperties}>a motion + design<br />portfolio</p>
               <span className="book-rule" aria-hidden><span ref={ruleRef} /></span>
               <p className="book-by" style={{ "--o": 1 } as React.CSSProperties}>by</p>
-              <p id="book-name" className="book-name" data-blurmap="">
-                <span style={{ "--o": 2 } as React.CSSProperties}>NGUYEN</span>
-                <span style={{ "--o": 3 } as React.CSSProperties}>MINH</span>
-                <span style={{ "--o": 4 } as React.CSSProperties}>QUÂN</span>
-              </p>
+              {/* the name prints twice, as 01.Title's lockup does: the violet plate goes down first, then the black
+                  drum lays its plate over it well off register and the sheet settles into the page's fixed offset */}
+              <div className="book-name-run">
+                <p className="book-name book-name-under" aria-hidden>
+                  <span>NGUYEN</span><span>MINH</span><span>QUÂN</span>
+                </p>
+                <p id="book-name" className="book-name book-name-key" data-blurmap="">
+                  <span>NGUYEN</span><span>MINH</span><span>QUÂN</span>
+                </p>
+              </div>
             </div>
             <button type="button" className="book-turn">
               Open <span className="book-turn-arrow" aria-hidden>→</span>

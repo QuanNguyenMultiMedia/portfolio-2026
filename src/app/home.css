@@ -226,7 +226,7 @@ html.dark .run.is-3d .hero > .hero-name { mix-blend-mode: exclusion; }
 
 /* turn-in for the quiet zone: each line settles a beat after the one before */
 .rot-in { animation: cue-settle var(--t-register) var(--ease-print) calc(var(--t-cue-lead) + var(--k, 0) * var(--t-ink-stagger)) both; }
-@keyframes cue-settle { from { opacity: 0; transform: translate3d(0, var(--cue-rise), 0); } }
+@keyframes cue-settle { from { opacity: var(--cue-density); clip-path: var(--wipe-ahead); } to { clip-path: var(--wipe-on); } }
 
 /* the index: the cases by name, three columns each. Its rule is the timer: the held turn's fills in the deck ink
    while the sheet runs, and the turn moves on when it is full (WorkRotation listens for the end) */
@@ -384,17 +384,18 @@ html.dark .rot-pp, html.dark .rot-pp > :is(img, video) { mix-blend-mode: normal;
 .run[data-cued] .sheet [data-o] {
   transition:
     opacity var(--t-lift) var(--ease-lift) calc(var(--o, 0) * var(--t-lift-stagger)),
-    transform var(--t-lift) var(--ease-lift) calc(var(--o, 0) * var(--t-lift-stagger));
+    clip-path var(--t-lift) var(--ease-lift) calc(var(--o, 0) * var(--t-lift-stagger));
 }
 .run[data-cued] .sheet[data-cue="in"] [data-o] {
   transition:
     opacity var(--t-cue-fade) var(--ease-print) calc(var(--t-cue-lead) + var(--o, 0) * var(--t-ink-stagger)),
-    transform var(--t-register) var(--ease-print) calc(var(--t-cue-lead) + var(--o, 0) * var(--t-ink-stagger));
+    clip-path var(--t-register) var(--ease-print) calc(var(--t-cue-lead) + var(--o, 0) * var(--t-ink-stagger));
+  clip-path: var(--wipe-on); /* media parts (.cue-press, below) never clip: the reel scales out past any box */
 }
-.run[data-cued] .sheet[data-cue="ahead"] [data-o] { opacity: 0; transform: translate3d(0, var(--cue-rise), 0); }
-.run[data-cued] .sheet[data-cue="past"] [data-o] { opacity: 0; transform: translate3d(0, calc(var(--cue-rise) * -0.6), 0); }
+.run[data-cued] .sheet[data-cue="ahead"] [data-o] { opacity: var(--cue-density); clip-path: var(--wipe-ahead); }
+.run[data-cued] .sheet[data-cue="past"] [data-o] { opacity: var(--cue-density); clip-path: var(--wipe-past); }
 /* media stay put and are covered instead: the paper runs back over them as they leave, and off them as they print */
-.run[data-cued] .sheet[data-cue] [data-o].cue-press, .run[data-cued] .sheet[data-cue] [data-o]:has(> .cue-press) { opacity: 1; transform: none; }
+.run[data-cued] .sheet[data-cue] [data-o].cue-press, .run[data-cued] .sheet[data-cue] [data-o]:has(> .cue-press) { opacity: 1; clip-path: none; }
 .cue-press { position: relative; }
 .run[data-cued] .cue-press::before {
   content: ""; position: absolute; inset: 0; z-index: 3; background: var(--paper); pointer-events: none;
@@ -409,19 +410,20 @@ html.dark .rot-pp, html.dark .rot-pp > :is(img, video) { mix-blend-mode: normal;
 /* the first sheet on load: the same settle, transform only, so the masthead and the reel poster paint from the
    first frame (an opacity fade here delayed first paint). Backwards fill: once played, the cues own the parts. */
 .hero [data-o] { animation: cue-first var(--t-register) var(--ease-print) calc(var(--t-cue-lead) + var(--o, 0) * var(--t-ink-stagger)) backwards; }
-@keyframes cue-first { from { transform: translate3d(0, var(--cue-rise), 0); } }
+@keyframes cue-first { from { clip-path: var(--wipe-ahead); } to { clip-path: var(--wipe-on); } }
 /* under the cover (Book) the first sheet holds unprinted: when the cover lifts, its parts print in through the
    sheet's own cue transition, in their order, and the reel's paper runs off it */
 html[data-cover], html[data-lock] { overflow: hidden; } /* Book holds scrolling until the hero has printed */
-html[data-cover] .hero [data-o] { animation: none; opacity: 0; transform: translate3d(0, var(--cue-rise), 0); }
+html[data-cover] .hero [data-o] { animation: none; opacity: var(--cue-density); clip-path: var(--wipe-ahead); }
 html[data-cover] .run[data-cued] .sheet.reel .cue-press::before { transform: scaleX(1); transition: none; }
 @media (prefers-reduced-motion: reduce) {
   /* the same states, as a short fade in place: no travel, no stagger held at zero, no paper */
   .run[data-cued] .sheet [data-o], .run[data-cued] .sheet[data-cue="in"] [data-o] { transition: opacity 200ms var(--ease-print) 0s; }
-  .run[data-cued] .sheet[data-cue] [data-o] { transform: none; }
+  .run[data-cued] .sheet[data-cue] [data-o] { clip-path: none; }
   .run[data-cued] .cue-press::before { display: none; }
   .hero [data-o] { animation: none; }
-  html[data-cover] .hero [data-o] { transform: none; }
+  html[data-cover] .hero [data-o] { clip-path: none; opacity: 0; }
+  .run[data-cued] .sheet:is([data-cue="ahead"], [data-cue="past"]) [data-o] { opacity: 0; }
 }
 
 /* speed lens: PrintRun blurs each moving layer by its place on a viewport-space ramp (content only) */

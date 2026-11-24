@@ -91,7 +91,13 @@
   --t-lift: 480ms;
   --t-lift-stagger: 30ms;
   --ease-lift: cubic-bezier(0.7, 0, 0.84, 0);
-  --cue-rise: 1.5rem;    /* how far a part settles onto the sheet (cues, turns, quotes) */
+  /* a part prints as the drum passes over it: ink runs on top to bottom under the paper (clip), density coming up
+     behind it; a pulled sheet takes its ink off the same way, top first. Never a slide: type holds its place. The
+     insets spill past the box so italics, descenders and the roughen filter are never cut once printed. */
+  --wipe-on: inset(-30% -15% -30% -15%);
+  --wipe-ahead: inset(-30% -15% 100% -15%);
+  --wipe-past: inset(100% -15% -30% -15%);
+  --cue-density: 0.35;   /* the ink's first density as the drum lays it down */
 
   /* the cover (Book: MainTitle.aep › 01.Title, the 2800 px board). Lockup sizes are the comp's share of the
      board's width (cqi of the board); phones keep a floor so the lockup still reads at 375 px */

@@ -70,27 +70,43 @@ html[data-cover] .book, .book[data-held] { display: block; } /* held: mounted, u
 .book-name > span { display: block; white-space: nowrap; }
 .book-name > span:nth-child(2) { padding-left: 0.6em; }
 .book-name > span:nth-child(3) { padding-left: 1.3em; }
+/* the two plates share one cell; the violet under-plate overprints the paper and the fountain, the key plate over it */
+.book-name-run { display: grid; }
+.book-name-run > .book-name { grid-area: 1 / 1; }
+.book-name-under {
+  color: var(--ink-violet); mix-blend-mode: var(--blend); opacity: 0.78;
+  translate: var(--book-reg-x) var(--book-reg-y);
+}
+.book-name-run { --book-reg-x: -0.035em; --book-reg-y: 0.02em; } /* the violet drum's fixed offset, at display size */
 
 /* nothing prints before the plate: every print-in holds at its first frame (bare paper, lockup unset) */
-.book:not([data-plate]) :is(.book-line, .book-by, .book-name > span) { animation-play-state: paused; }
+.book:not([data-plate]) :is(.book-line, .book-by, .book-name) { animation-play-state: paused; }
 .book:not([data-plate]) .book-board::after { animation-play-state: paused; }
 .book:not([data-plate]) .book-rule { opacity: 0; } /* the loader too: the plate is the first thing that prints */
 
-/* print-in: each part settles in reading order on the house curve, after the plate is down (cue-settle, fade-in: home.css) */
-.book-line, .book-by, .book-name > span {
-  animation: cue-settle var(--t-register) var(--ease-print) calc(var(--t-cover-plate) * 0.55 + var(--o, 0) * var(--t-ink-stagger) * 2) both;
+/* print-in, all on the press. The sans lines are laid by the drum, top to bottom (cue-settle: the clip runs off,
+   density comes up). The violet plate is laid next, slower, as a heavier ink; then the black plate is laid over it
+   from well off register and the sheet comes to rest at the fixed offset: the overprint finds its third colour as
+   it settles. The word never travels, only the plate's register does. */
+.book-line, .book-by { animation: cue-settle var(--t-register) var(--ease-print) calc(var(--t-cover-plate) * 0.5 + var(--o, 0) * var(--t-ink-stagger) * 2) both; }
+.book-name-under { animation: cue-settle calc(var(--t-register) * 1.3) var(--ease-print) calc(var(--t-cover-plate) * 0.5 + var(--t-ink-stagger) * 4) both; }
+.book-name-key {
+  animation:
+    cue-settle var(--t-register) var(--ease-print) calc(var(--t-cover-plate) * 0.5 + var(--t-ink-stagger) * 8) both,
+    book-register calc(var(--t-register) * 1.6) var(--ease-print) calc(var(--t-cover-plate) * 0.5 + var(--t-ink-stagger) * 8) both;
 }
+@keyframes book-register { from { translate: 0.22em -0.1em; } to { translate: 0 0; } }
 
 /* ---------- the way in ---------- */
 .book-turn {
   position: absolute; z-index: 2; right: var(--s-3); bottom: var(--s-3);
   display: inline-flex; align-items: baseline; gap: 0.5em; min-height: 2.75rem; padding: 0.6em 0.2em;
   border: 0; background: none; color: var(--ink-black); font: inherit; font-size: var(--t-body); cursor: pointer;
-  opacity: 0; transform: translate3d(0, var(--cue-rise), 0); pointer-events: none;
-  transition: opacity var(--t-cue-fade) var(--ease-print), transform var(--t-register) var(--ease-print);
+  opacity: 0; pointer-events: none;
+  transition: opacity var(--t-cue-fade) var(--ease-print);
 }
-.book[data-ready] .book-turn { opacity: 1; transform: none; pointer-events: auto; }
-.book-turn:focus-visible { opacity: 1; transform: none; } /* reachable before it is offered: keys never wait */
+.book[data-ready] .book-turn { opacity: 1; pointer-events: auto; }
+.book-turn:focus-visible { opacity: 1; } /* reachable before it is offered: keys never wait */
 .book-turn-arrow { display: inline-block; transition: transform 500ms var(--ease-print); }
 .book-turn:is(:hover, :focus-visible) .book-turn-arrow, .book-leaf:hover .book-turn-arrow { transform: translate3d(0.3em, 0, 0); }
 
@@ -102,7 +118,6 @@ html[data-cover] .book, .book[data-held] { display: block; } /* held: mounted, u
 
 @media (prefers-reduced-motion: reduce) {
   .book-board::after { animation: none; transform: scaleY(0); }
-  .book-line, .book-by, .book-name > span { animation: fade-in 240ms linear 0s both; }
+  .book-line, .book-by, .book-name { animation: fade-in 240ms linear 0s both; }
   .book-rule > span, .book-turn { transition-duration: 200ms; }
-  .book-turn { transform: none; }
 }
